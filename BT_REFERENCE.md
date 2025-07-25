@@ -73,11 +73,15 @@ Condition ScriptName {
 - `duration: 2.0` - 実行時間（秒）
 - `tolerance: 0.5` - 位置の許容誤差
 - `cooldown: 1.0` - クールダウン時間（秒）
+- `scan_radius: 15.0` - スキャンの範囲（ScanEnvironment用）
+- `attack_range: 2.0` - 攻撃範囲（AttackTarget用）
+- `wander_radius: 10.0` - 徘徨範囲（RandomWander用）
 
 ### Condition専用プロパティ
 - `min_health: 50` - 最小体力しきい値
 - `detection_range: 10.0` - 検出範囲
-- `min_mana: 30` - 最小マナ量
+- `bb_key: "key_name"` - BlackBoardのキー名（HasSharedEnemyInfo用）
+- `min_mana: 30` - 最小マナ量（未実装）
 
 ### Parallel専用プロパティ
 - `success_policy: "require_one"` - 成功条件（require_one/require_all）
@@ -118,21 +122,24 @@ Sequence patrol_with_health_check {
 ### Action用スクリプト
 - `MoveToPosition` - 指定位置への移動
 - `Wait` - 指定時間待機
-- `Attack` - 基本攻撃
 - `AttackEnemy` - 敵への攻撃
-- `UseItem` - アイテム使用
-- `FleeToSafety` - 安全地帯への逃走
-- `Interact` - オブジェクトとの相互作用
-- `RandomWander` - ランダム移動
+- `ScanEnvironment` - 環境スキャンして敵情報をBlackBoardに保存
+- `MoveToEnemy` - BlackBoardから敵位置を取得して移動
+- `AttackTarget` - BlackBoardの敵情報を使用して攻撃
+- `RandomWander` - ランダム徘徨
+- `UseItem` - アイテム使用（未実装）
+- `FleeToSafety` - 安全地帯への逃走（未実装）
+- `Interact` - オブジェクトとの相互作用（未実装）
 
 ### Condition用スクリプト
 - `HealthCheck` - 体力チェック
 - `EnemyCheck` - 敵検出
-- `HasTarget` - ターゲット所持確認
 - `HasItem` - アイテム所持確認
-- `HasMana` - マナ量確認
-- `IsInitialized` - 初期化状態確認
-- `EnemyHealthCheck` - 敵の体力確認
+- `HasSharedEnemyInfo` - BlackBoardに共有された敵情報の有無をチェック
+- `HasTarget` - ターゲット所持確認（未実装）
+- `HasMana` - マナ量確認（未実装）
+- `IsInitialized` - 初期化状態確認（未実装）
+- `EnemyHealthCheck` - 敵の体力確認（未実装）
 
 ## 完全な例
 
@@ -359,13 +366,14 @@ Vector3 pos = blackBoard.GetValue<Vector3>("player_position");
   - "Reload Behaviour Tree" - .btファイルを再読み込み
 
 ## 新しいスクリプトの追加手順
-1. `Assets/Scripts/BehaviourTree/Actions/`または`Conditions/`フォルダにC#スクリプトを作成
+1. `Assets/Scripts/BehaviourTree/Actions/`または`Conditions/`フォルダにC#スクリプトを作成（1ファイル1クラス）
 2. `BTActionNode`または`BTConditionNode`を継承
-3. 必要なプロパティを`[SerializeField]`で定義
-4. `ExecuteAction()`または`CheckCondition()`をオーバーライド
+3. `SetProperty(string key, string value)` メソッドをオーバーライド（パラメータは`string`型）
+4. `ExecuteAction()` または `protected override BTNodeResult CheckCondition()` をオーバーライド
 5. BlackBoard機能を使用する場合は`blackBoard.SetValue()`/`GetValue()`を活用
 6. 動的条件チェックに対応する場合は`OnConditionFailed()`をオーバーライド
-7. .btファイルで`Action NewScript`または`Condition NewScript`として使用
+7. `BTParser.cs` の `CreateNodeFromScript()` メソッドにケースを追加
+8. .btファイルで`Action NewScript { ... }`または`Condition NewScript { ... }`として使用（script属性不要）
 
 ## 新機能の活用例
 
@@ -380,14 +388,30 @@ tree DataSharingExample {
             scan_radius: 15.0
         }
         
-        Action MoveToEnemy {
-            # BlackBoardから敵の位置を取得して移動
-            speed: 4.0
-        }
-        
-        Action AttackTarget {
-            # BlackBoardの敵情報を使用して攻撃
-            damage: 30
+        Selector movement_behavior {
+            # 敵が見つかった場合
+            Sequence move_to_enemy {
+                Condition HasSharedEnemyInfo {
+                    # BlackBoardの"enemy_location"をチェック
+                }
+                
+                Action MoveToEnemy {
+                    # BlackBoardから敵の位置を取得して移動
+                    speed: 4.0
+                    tolerance: 1.5
+                }
+                
+                Action AttackTarget {
+                    # BlackBoardの敵情報を使用して攻撃
+                    damage: 30
+                }
+            }
+            
+            # 敵が見つからない場合
+            Action RandomWander {
+                wander_radius: 10.0
+                speed: 2.0
+            }
         }
     }
 }

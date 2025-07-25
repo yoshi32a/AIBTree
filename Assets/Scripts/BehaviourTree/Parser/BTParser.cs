@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using BehaviourTree.Core;
 using BehaviourTree.Nodes;
+using BehaviourTree.Actions;
+using BehaviourTree.Conditions;
 using UnityEngine;
 
 namespace BehaviourTree.Parser
@@ -416,11 +418,26 @@ namespace BehaviourTree.Parser
                         node = new AttackEnemyAction();
                         Debug.Log($"✅ Created AttackEnemyAction");
                         break;
+                    case "ScanEnvironment":
+                        node = new ScanEnvironmentAction();
+                        Debug.Log($"✅ Created ScanEnvironmentAction");
+                        break;
+                    case "MoveToEnemy":
+                        node = new MoveToEnemyAction();
+                        Debug.Log($"✅ Created MoveToEnemyAction");
+                        break;
+                    case "AttackTarget":
+                        node = new AttackTargetAction();
+                        Debug.Log($"✅ Created AttackTargetAction");
+                        break;
+                    case "RandomWander":
+                        node = new RandomWanderAction();
+                        Debug.Log($"✅ Created RandomWanderAction");
+                        break;
                     case "Attack":
                     case "UseItem":
                     case "FleeToSafety":
                     case "Interact":
-                    case "RandomWander":
                         // 未実装のアクションは CustomActionNode を使用
                         node = new CustomActionNode();
                         Debug.Log($"⚠️ Using CustomActionNode for {scriptName}");
@@ -448,6 +465,10 @@ namespace BehaviourTree.Parser
                     case "HasItem":
                         node = new HasItemCondition();
                         Debug.Log($"✅ Created HasItemCondition");
+                        break;
+                    case "HasSharedEnemyInfo":
+                        node = new HasSharedEnemyInfoCondition();
+                        Debug.Log($"✅ Created HasSharedEnemyInfoCondition");
                         break;
                     case "IsInitialized":
                     case "HasTarget":

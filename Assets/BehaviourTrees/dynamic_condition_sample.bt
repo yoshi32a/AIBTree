@@ -31,14 +31,14 @@ tree DynamicConditionSample {
                 speed: 3.0
             }
             
-            Action UseItem {
-                item_type: "healing_potion"
+            Action Wait {
                 duration: 3.0
+                # item_type: "healing_potion"
             }
         }
         
         # 緊急逃走（体力が極めて低い）
-        Action FleeToSafety {
+        Action MoveToPosition {
             target: "emergency_exit"
             speed: 6.0  # 高速で逃走
         }

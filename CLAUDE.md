@@ -30,9 +30,12 @@ Unity プロジェクトは Unity エディタを通じてビルドされます�
 3. **Build** または **Build and Run** をクリック
 
 ### テストフレームワーク
-プロジェクトには Unity Test Framework が含まれています：
+プロジェクトには Unity Test Framework と包括的なBTテストスイートが含まれています：
 - **Window > General > Test Runner** からアクセス
-- `Assets/Tests/` にテストを書く（必要に応じてフォルダを作成）
+- `Assets/Tests/` にテストスイート実装済み
+- **BTParsingTests.cs**: 全.btファイルのパーステスト
+- **BTFileValidationTests.cs**: ファイル構造の詳細検証
+- **BTTestRunner.cs**: エディターメニュー統合（BehaviourTree → Run BT File Tests）
 - ユニットテストには `[Test]` 属性、コルーチンベースのテストには `[UnityTest]` 属性を使用
 
 ## プロジェクト構造
@@ -63,15 +66,26 @@ Unity プロジェクトは Unity エディタを通じてビルドされます�
   - `MoveToPositionAction.cs` - 移動アクション（BlackBoard対応）
   - `AttackEnemyAction.cs` - 攻撃アクション
   - `WaitAction.cs` - 待機アクション
+  - `ScanEnvironmentAction.cs` - 環境スキャン（BlackBoard連携）
+  - `MoveToEnemyAction.cs` - 敵への移動（BlackBoard参照）
+  - `AttackTargetAction.cs` - ターゲット攻撃（BlackBoard連携）
+  - `RandomWanderAction.cs` - ランダム徘徊
 - `Assets/Scripts/BehaviourTree/Conditions/` - 条件ノード実装
   - `HealthCheckCondition.cs` - 体力チェック条件（BlackBoard対応）
   - `EnemyCheckCondition.cs` - 敵検出条件
   - `HasItemCondition.cs` - アイテム所持チェック
+  - `HasSharedEnemyInfoCondition.cs` - BlackBoard敵情報チェック
 - `Assets/Scripts/BehaviourTree/Nodes/` - レガシーノード（後方互換性）
   - `CustomActionNode.cs` / `CustomConditionNode.cs`
 - `Assets/Scripts/Components/` - 汎用コンポーネント
   - `Health.cs` - 体力管理コンポーネント
   - `Inventory.cs` - インベントリ管理コンポーネント
+  - `InventoryItem.cs` - インベントリアイテム定義
+- `Assets/Tests/` - テストスイート
+  - `BTParsingTests.cs` - 全BTファイルパーステスト
+  - `BTFileValidationTests.cs` - ファイル構造詳細検証
+  - `BTTestRunner.cs` - エディターメニュー統合
+  - `Tests.asmdef` - テスト用アセンブリ定義
 - `Assets/BehaviourTrees/` - .btファイルとサンプル
   - `blackboard_sample.bt` - BlackBoard基本使用例
   - `team_coordination_sample.bt` - チーム連携例
@@ -107,21 +121,30 @@ Unity プロジェクトは Unity エディタを通じてビルドされます�
 1. `Assets/Scripts/BehaviourTree/Actions/` に `[ActionName]Action.cs` を作成（1ファイル1クラス）
 2. `BTActionNode` を継承
 3. `ExecuteAction()` メソッドをオーバーライド
-4. `Initialize(MonoBehaviour, BlackBoard)` メソッドをオーバーライド
-5. BlackBoardを活用して状態管理・データ共有を実装
-6. `OnConditionFailed()` で動的条件失敗時の処理を実装
-7. .btファイルで `Action ActionName { ... }` として使用
+4. `SetProperty(string key, string value)` メソッドをオーバーライド（パラメータは`string`型）
+5. `Initialize(MonoBehaviour, BlackBoard)` メソッドをオーバーライド
+6. BlackBoardを活用して状態管理・データ共有を実装
+7. `OnConditionFailed()` で動的条件失敗時の処理を実装
+8. .btファイルで `Action ActionName { ... }` として使用（script属性不要）
+9. `BTParser.cs` の `CreateNodeFromScript()` にケースを追加
 
 ### 新しいConditionノード作成（BlackBoard対応）
 1. `Assets/Scripts/BehaviourTree/Conditions/` に `[ConditionName]Condition.cs` を作成（1ファイル1クラス）
 2. `BTConditionNode` を継承
-3. `CheckCondition()` メソッドをオーバーライド
-4. `Initialize(MonoBehaviour, BlackBoard)` メソッドをオーバーライド
-5. BlackBoardに状態を記録してデータ共有を実現
-6. .btファイルで `Condition ConditionName { ... }` として使用
+3. `protected override BTNodeResult CheckCondition()` メソッドをオーバーライド（`protected`必須、戻り値は`BTNodeResult`）
+4. `SetProperty(string key, string value)` メソッドをオーバーライド（パラメータは`string`型）
+5. `Initialize(MonoBehaviour, BlackBoard)` メソッドをオーバーライド
+6. BlackBoardに状態を記録してデータ共有を実現
+7. .btファイルで `Condition ConditionName { ... }` として使用（script属性不要）
+8. `BTParser.cs` の `CreateNodeFromScript()` にケースを追加
 
 ### テストとデバッグ
-- **テストシーン設定**: `UNITY_TEST_SETUP.md` を参照
+- **自動テスト実行**:
+  - Unity Test Runner: `Window > General > Test Runner`
+  - エディターメニュー: `BehaviourTree > Run BT File Tests`
+  - 個別ファイルテスト: `BehaviourTree > Test [FileName] Sample`
+  - パフォーマンステスト: `BehaviourTree > Performance Test`
+- **テストシーン設定**: `UNITY_TEST_SETUP.md` を参照（BlackBoard対応版）
 - **ログ確認**: Consoleウィンドウで実行状況をモニター
 - **体力テスト**: Healthコンポーネントの右クリックメニューを使用
 - **BlackBoardデバッグ**: BehaviourTreeRunnerの右クリック → "Show BlackBoard Contents"
@@ -184,6 +207,25 @@ public class ExampleClass : BaseClass
 
 ## 重要なファイル
 - `BT_REFERENCE.md` - .btファイル形式の完全リファレンス
-- `UNITY_TEST_SETUP.md` - Unityテストシーンの設定方法
-- `AI_INSTRUCTIONS.md` - 最新のUnityコンパイル状況
+- `UNITY_TEST_SETUP.md` - Unityテストシーンの設定方法（BlackBoard対応版）
+- `README.md` - プロジェクト概要とBlackBoard機能説明
+- `AI_INSTRUCTIONS.md` - コンパイル状況とエラーログ
 - `.editorconfig` - C#コーディング規約設定
+
+## 実装済みBlackBoard対応スクリプト一覧
+
+### Action Scripts
+- `ScanEnvironmentAction` - 環境スキャンして敵情報をBlackBoardに保存
+- `MoveToEnemyAction` - BlackBoardから敵位置を取得して移動
+- `AttackTargetAction` - BlackBoardの敵情報を使用して攻撃
+- `RandomWanderAction` - ランダムに徘徊するアクション
+
+### Condition Scripts  
+- `HasSharedEnemyInfoCondition` - BlackBoardに共有された敵情報があるかチェック
+
+### コンパイルエラー対応
+- すべてのスクリプトで `SetProperty(string, string)` 形式に統一
+- `CheckCondition()` は `protected override BTNodeResult` 形式に統一
+- `owner` → `ownerComponent`, `owner.transform` → `transform` に統一
+- `debugMode` 参照を削除してログ直接出力に変更
+- `Components.Health` → `Health` に修正（namespace修正）

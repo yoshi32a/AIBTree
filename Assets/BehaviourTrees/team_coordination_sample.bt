@@ -7,11 +7,12 @@ tree TeamCoordinationSample {
         
         # 偵察役：敵情報をBlackBoardに共有
         Sequence scout_role {
-            Action PatrolArea {
-                patrol_radius: 20.0
+            Action RandomWander {
+                wander_radius: 20.0
+                speed: 3.0
             }
             
-            Action ReportEnemyLocation {
+            Action ScanEnvironment {
                 # 発見した敵の位置を"enemy_location"キーで共有
                 scan_radius: 15.0
             }
@@ -23,7 +24,7 @@ tree TeamCoordinationSample {
                 # BlackBoardの"enemy_location"をチェック
             }
             
-            Action AttackSharedTarget {
+            Action AttackTarget {
                 # 共有された敵位置に攻撃
                 damage: 40
                 attack_range: 3.0
@@ -36,7 +37,8 @@ tree TeamCoordinationSample {
                 min_health: 30
             }
             
-            Action SetTeamHealthStatus {
+            Action Wait {
+                duration: 1.0
                 # チーム全体の体力状況をBlackBoardに記録
             }
         }
