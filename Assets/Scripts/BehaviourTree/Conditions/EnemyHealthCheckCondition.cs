@@ -1,11 +1,10 @@
 using UnityEngine;
 using BehaviourTree.Core;
+using Components;
 
 namespace BehaviourTree.Conditions
 {
-    /// <summary>
-    /// 敵の体力をチェックする条件
-    /// </summary>
+    /// <summary>敵の体力をチェックする条件</summary>
     public class EnemyHealthCheckCondition : BTConditionNode
     {
         int minHealth = 80;

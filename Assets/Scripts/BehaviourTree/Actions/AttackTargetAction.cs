@@ -1,11 +1,10 @@
 using UnityEngine;
 using BehaviourTree.Core;
+using Components;
 
 namespace BehaviourTree.Actions
 {
-    /// <summary>
-    /// BlackBoardの敵情報を使用して攻撃するアクション
-    /// </summary>
+    /// <summary>BlackBoardの敵情報を使用して攻撃するアクション</summary>
     public class AttackTargetAction : BTActionNode
     {
         int damage = 25;

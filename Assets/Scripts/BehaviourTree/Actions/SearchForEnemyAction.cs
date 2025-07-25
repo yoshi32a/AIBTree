@@ -1,11 +1,10 @@
 using UnityEngine;
 using BehaviourTree.Core;
+using Components;
 
 namespace BehaviourTree.Actions
 {
-    /// <summary>
-    /// 敵を検索するアクション
-    /// </summary>
+    /// <summary>敵を検索するアクション</summary>
     public class SearchForEnemyAction : BTActionNode
     {
         float searchRadius = 15.0f;

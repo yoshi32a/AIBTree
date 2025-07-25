@@ -1,11 +1,10 @@
 using UnityEngine;
 using BehaviourTree.Core;
+using Components;
 
 namespace BehaviourTree.Actions
 {
-    /// <summary>
-    /// 魔法を詠唱するアクション
-    /// </summary>
+    /// <summary>魔法を詠唱するアクション</summary>
     public class CastSpellAction : BTActionNode
     {
         string spellName = "fireball";

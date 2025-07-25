@@ -1,11 +1,10 @@
 using UnityEngine;
 using BehaviourTree.Core;
+using Components;
 
 namespace BehaviourTree.Actions
 {
-    /// <summary>
-    /// 通常攻撃アクション
-    /// </summary>
+    /// <summary>通常攻撃アクション</summary>
     public class NormalAttackAction : BTActionNode
     {
         int damage = 15;

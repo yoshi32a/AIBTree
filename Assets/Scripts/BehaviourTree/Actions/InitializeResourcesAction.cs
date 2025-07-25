@@ -1,11 +1,10 @@
 using UnityEngine;
 using BehaviourTree.Core;
+using Components;
 
 namespace BehaviourTree.Actions
 {
-    /// <summary>
-    /// リソースを初期化するアクション
-    /// </summary>
+    /// <summary>リソースを初期化するアクション</summary>
     public class InitializeResourcesAction : BTActionNode
     {
         protected override BTNodeResult ExecuteAction()
