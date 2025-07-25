@@ -8,9 +8,9 @@ public class HasItemCondition : BTConditionNode
 
     Inventory inventoryComponent;
     
-    public override void Initialize(MonoBehaviour owner)
+    public override void Initialize(MonoBehaviour owner, BlackBoard sharedBlackBoard = null)
     {
-        base.Initialize(owner);
+        base.Initialize(owner, sharedBlackBoard);
         inventoryComponent = GetComponent<Inventory>();
         
         if (inventoryComponent == null)

@@ -11,9 +11,9 @@ public class AttackEnemyAction : BTActionNode
 
     float lastAttackTime = 0f;
     
-    public override void Initialize(MonoBehaviour owner)
+    public override void Initialize(MonoBehaviour owner, BlackBoard sharedBlackBoard = null)
     {
-        base.Initialize(owner);
+        base.Initialize(owner, sharedBlackBoard);
     }
     
     protected override BTNodeResult ExecuteAction()

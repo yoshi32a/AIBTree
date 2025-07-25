@@ -8,9 +8,9 @@ public class WaitAction : BTActionNode
 
     float startTime = -1f;
     
-    public override void Initialize(MonoBehaviour owner)
+    public override void Initialize(MonoBehaviour owner, BlackBoard sharedBlackBoard = null)
     {
-        base.Initialize(owner);
+        base.Initialize(owner, sharedBlackBoard);
         startTime = -1f; // リセット
     }
     
