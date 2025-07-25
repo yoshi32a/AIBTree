@@ -101,7 +101,7 @@ namespace BehaviourTree.Tests
             
             // 結果の出力
             Debug.Log($"🎯 Parsing Test Results:");
-            Debug.Log($"📊 Total files: {btFiles.Length}");
+            Debug.Log($"📊 Total files: {btFiles.Count}");
             Debug.Log($"✅ Successful: {successfulFiles.Count}");
             Debug.Log($"❌ Failed: {failedFiles.Count}");
             
@@ -113,10 +113,10 @@ namespace BehaviourTree.Tests
             if (failedFiles.Count > 0)
             {
                 Debug.LogError($"❌ Failed to parse files:\n  - {string.Join("\n  - ", failedFiles)}");
-                Assert.Fail($"Failed to parse {failedFiles.Count} out of {btFiles.Length} BT files:\n- {string.Join("\n- ", failedFiles)}");
+                Assert.Fail($"Failed to parse {failedFiles.Count} out of {btFiles.Count} BT files:\n- {string.Join("\n- ", failedFiles)}");
             }
             
-            Assert.Pass($"All {btFiles.Length} BT files parsed successfully!");
+            Assert.Pass($"All {btFiles.Count} BT files parsed successfully!");
         }
         
         /// <summary>

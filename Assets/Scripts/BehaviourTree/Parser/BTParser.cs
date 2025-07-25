@@ -437,18 +437,44 @@ namespace BehaviourTree.Parser
                         Debug.Log($"✅ Created CastSpellAction");
                         break;
                     case "Attack":
+                        node = new AttackAction();
+                        Debug.Log($"✅ Created AttackAction");
+                        break;
                     case "NormalAttack":
+                        node = new NormalAttackAction();
+                        Debug.Log($"✅ Created NormalAttackAction");
+                        break;
                     case "UseItem":
+                        node = new UseItemAction();
+                        Debug.Log($"✅ Created UseItemAction");
+                        break;
                     case "FleeToSafety":
+                        node = new FleeToSafetyAction();
+                        Debug.Log($"✅ Created FleeToSafetyAction");
+                        break;
                     case "Interact":
+                        node = new InteractAction();
+                        Debug.Log($"✅ Created InteractAction");
+                        break;
                     case "MoveToTarget":
+                        node = new MoveToTargetAction();
+                        Debug.Log($"✅ Created MoveToTargetAction");
+                        break;
                     case "EnvironmentScan":
+                        node = new EnvironmentScanAction();
+                        Debug.Log($"✅ Created EnvironmentScanAction");
+                        break;
                     case "InitializeResources":
+                        node = new InitializeResourcesAction();
+                        Debug.Log($"✅ Created InitializeResourcesAction");
+                        break;
                     case "RestoreSmallMana":
+                        node = new RestoreSmallManaAction();
+                        Debug.Log($"✅ Created RestoreSmallManaAction");
+                        break;
                     case "SearchForEnemy":
-                        // 未実装のアクションは CustomActionNode を使用
-                        node = new CustomActionNode();
-                        Debug.Log($"⚠️ Using CustomActionNode for {scriptName}");
+                        node = new SearchForEnemyAction();
+                        Debug.Log($"✅ Created SearchForEnemyAction");
                         break;
                     default:
                         Debug.LogWarning($"Unknown action script: {scriptName}, using CustomActionNode");
@@ -483,14 +509,28 @@ namespace BehaviourTree.Parser
                         Debug.Log($"✅ Created EnemyInRangeCondition");
                         break;
                     case "IsInitialized":
+                        node = new IsInitializedCondition();
+                        Debug.Log($"✅ Created IsInitializedCondition");
+                        break;
                     case "HasTarget":
+                        node = new HasTargetCondition();
+                        Debug.Log($"✅ Created HasTargetCondition");
+                        break;
                     case "HasMana":
+                        node = new HasManaCondition();
+                        Debug.Log($"✅ Created HasManaCondition");
+                        break;
                     case "EnemyHealthCheck":
+                        node = new EnemyHealthCheckCondition();
+                        Debug.Log($"✅ Created EnemyHealthCheckCondition");
+                        break;
                     case "ScanForInterest":
+                        node = new ScanForInterestCondition();
+                        Debug.Log($"✅ Created ScanForInterestCondition");
+                        break;
                     case "CheckManaResource":
-                        // 未実装の条件は CustomConditionNode を使用
-                        node = new CustomConditionNode();
-                        Debug.Log($"⚠️ Using CustomConditionNode for {scriptName}");
+                        node = new CheckManaResourceCondition();
+                        Debug.Log($"✅ Created CheckManaResourceCondition");
                         break;
                     default:
                         Debug.LogWarning($"Unknown condition script: {scriptName}, using CustomConditionNode");

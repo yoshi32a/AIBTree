@@ -78,12 +78,6 @@ namespace BehaviourTree.Actions
             return BTNodeResult.Running;
         }
         
-        public override void Reset()
-        {
-            base.Reset();
-            isMoving = false;
-        }
-        
         void OnDrawGizmosSelected()
         {
             if (ownerComponent != null && blackBoard != null)
