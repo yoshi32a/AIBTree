@@ -58,10 +58,10 @@ namespace BehaviourTree.Actions
                         
                         foreach (var zone in safeZones)
                         {
-                            float distance = Vector3.Distance(transform.position, zone.transform.position);
-                            if (distance < nearestDistance)
+                            float zoneDistance = Vector3.Distance(transform.position, zone.transform.position);
+                            if (zoneDistance < nearestDistance)
                             {
-                                nearestDistance = distance;
+                                nearestDistance = zoneDistance;
                                 nearestSafeZone = zone;
                             }
                         }

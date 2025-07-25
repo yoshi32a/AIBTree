@@ -108,9 +108,9 @@ namespace BehaviourTree.Actions
                 var item = target.GetComponent<InventoryItem>();
                 if (item != null)
                 {
-                    inventory.AddItem(item.ItemType, 1);
+                    inventory.AddItem(item.itemType, 1);
                     Object.Destroy(target);
-                    blackBoard.SetValue("collected_item", item.ItemType);
+                    blackBoard.SetValue("collected_item", item.itemType);
                     return true;
                 }
             }
