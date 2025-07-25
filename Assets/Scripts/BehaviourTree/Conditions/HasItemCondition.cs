@@ -1,8 +1,12 @@
 using UnityEngine;
 using BehaviourTree.Core;
+using Components;
 
-[System.Serializable]
-public class HasItemCondition : BTConditionNode
+namespace BehaviourTree.Conditions
+{
+    /// <summary>アイテム所持状態をチェックする条件</summary>
+    [System.Serializable]
+    public class HasItemCondition : BTConditionNode
 {
     [SerializeField] string itemType;
 
@@ -55,4 +59,5 @@ public class HasItemCondition : BTConditionNode
                 break;
         }
     }
+}
 }

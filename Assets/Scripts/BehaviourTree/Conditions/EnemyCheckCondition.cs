@@ -1,8 +1,11 @@
 using UnityEngine;
 using BehaviourTree.Core;
 
-[System.Serializable]
-public class EnemyCheckCondition : BTConditionNode
+namespace BehaviourTree.Conditions
+{
+    /// <summary>敵検出条件</summary>
+    [System.Serializable]
+    public class EnemyCheckCondition : BTConditionNode
 {
     [SerializeField] float detectionRange = 5.0f;
     
@@ -62,4 +65,5 @@ public class EnemyCheckCondition : BTConditionNode
                 break;
         }
     }
+}
 }

@@ -1,8 +1,12 @@
 using UnityEngine;
 using BehaviourTree.Core;
+using Components;
 
-[System.Serializable]
-public class HealthCheckCondition : BTConditionNode
+namespace BehaviourTree.Conditions
+{
+    /// <summary>体力チェック条件</summary>
+    [System.Serializable]
+    public class HealthCheckCondition : BTConditionNode
 {
     [SerializeField] int minHealth = 50;
 
@@ -68,4 +72,5 @@ public class HealthCheckCondition : BTConditionNode
                 break;
         }
     }
+}
 }
