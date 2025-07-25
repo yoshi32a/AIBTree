@@ -11,7 +11,6 @@ namespace BehaviourTree.Actions
         float speed = 3.5f;
         float tolerance = 1.0f;
         Vector3 targetPosition;
-        bool isMoving = false;
         
         public override void SetProperty(string key, string value)
         {

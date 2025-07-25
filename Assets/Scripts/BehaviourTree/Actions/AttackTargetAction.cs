@@ -8,7 +8,7 @@ namespace BehaviourTree.Actions
     /// </summary>
     public class AttackTargetAction : BTActionNode
     {
-        float damage = 25.0f;
+        int damage = 25;
         float attackRange = 2.0f;
         float attackCooldown = 1.0f;
         float lastAttackTime = 0f;
@@ -18,7 +18,7 @@ namespace BehaviourTree.Actions
             switch (key)
             {
                 case "damage":
-                    damage = System.Convert.ToSingle(value);
+                    damage = System.Convert.ToInt32(value);
                     break;
                 case "attack_range":
                     attackRange = System.Convert.ToSingle(value);
