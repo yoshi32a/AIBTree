@@ -12,16 +12,16 @@ public class AttackEnemyAction : BTActionNode
     [SerializeField] string attackType = "melee";
 
     float lastAttackTime = 0f;
-    
+
     public override void Initialize(MonoBehaviour owner, BlackBoard sharedBlackBoard = null)
     {
         base.Initialize(owner, sharedBlackBoard);
     }
-    
+
     protected override BTNodeResult ExecuteAction()
     {
         Debug.Log($"=== AttackEnemyAction '{Name}' EXECUTING ===");
-        
+
         // クールダウンチェック
         if (Time.time - lastAttackTime < cooldown)
         {
@@ -29,12 +29,12 @@ public class AttackEnemyAction : BTActionNode
             Debug.Log($"AttackEnemy '{Name}': On cooldown ({remainingCooldown:F1}s remaining)");
             return BTNodeResult.Running;
         }
-        
+
         // 攻撃範囲内の敵を検索
         var enemies = GameObject.FindGameObjectsWithTag("Enemy");
         GameObject targetEnemy = null;
         var closestDistance = float.MaxValue;
-        
+
         foreach (var enemy in enemies)
         {
             var distance = Vector3.Distance(transform.position, enemy.transform.position);
@@ -44,16 +44,16 @@ public class AttackEnemyAction : BTActionNode
                 closestDistance = distance;
             }
         }
-        
+
         if (targetEnemy == null)
         {
             Debug.Log($"AttackEnemy '{Name}': No enemies in attack range {attackRange} ✗");
             return BTNodeResult.Failure;
         }
-        
+
         // 攻撃実行
         Debug.Log($"AttackEnemy '{Name}': Attacking {targetEnemy.name} with {damage} {attackType} damage ⚔️");
-        
+
         // 敵にダメージを与える
         var enemyHealth = targetEnemy.GetComponent<Health>();
         if (enemyHealth != null)
@@ -65,11 +65,11 @@ public class AttackEnemyAction : BTActionNode
         {
             Debug.Log($"AttackEnemy '{Name}': Enemy has no Health component - attack missed");
         }
-        
+
         lastAttackTime = Time.time;
         return BTNodeResult.Success;
     }
-    
+
     public override void SetProperty(string propertyName, string value)
     {
         switch (propertyName.ToLower())

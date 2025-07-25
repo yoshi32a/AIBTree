@@ -9,7 +9,7 @@ namespace BehaviourTree.Actions
     {
         string interactionType = "examine";
         float interactionRange = 2.0f;
-        
+
         public override void SetProperty(string key, string value)
         {
             switch (key)
@@ -22,27 +22,27 @@ namespace BehaviourTree.Actions
                     break;
             }
         }
-        
+
         protected override BTNodeResult ExecuteAction()
         {
             if (ownerComponent == null || blackBoard == null)
             {
                 return BTNodeResult.Failure;
             }
-            
+
             // インタラクト対象を取得
             GameObject target = blackBoard.GetValue<GameObject>("interest_target");
             if (target == null)
             {
                 target = blackBoard.GetValue<GameObject>("interact_target");
             }
-            
+
             if (target == null || !target.activeInHierarchy)
             {
                 Debug.Log("Interact: No interaction target found");
                 return BTNodeResult.Failure;
             }
-            
+
             // 範囲チェック
             float distance = Vector3.Distance(transform.position, target.transform.position);
             if (distance > interactionRange)
@@ -50,7 +50,7 @@ namespace BehaviourTree.Actions
                 Debug.Log($"Interact: Target out of range ({distance:F1} > {interactionRange})");
                 return BTNodeResult.Failure;
             }
-            
+
             // インタラクションタイプに応じた処理
             bool success = false;
             switch (interactionType)
@@ -71,14 +71,14 @@ namespace BehaviourTree.Actions
                     success = DefaultInteraction(target);
                     break;
             }
-            
+
             if (success)
             {
                 // インタラクション成功をBlackBoardに記録
                 blackBoard.SetValue("last_interaction_type", interactionType);
                 blackBoard.SetValue("last_interaction_target", target.name);
                 blackBoard.SetValue("last_interaction_time", Time.time);
-                
+
                 Debug.Log($"Interact: Successfully {interactionType}ed '{target.name}'");
                 return BTNodeResult.Success;
             }
@@ -88,7 +88,7 @@ namespace BehaviourTree.Actions
                 return BTNodeResult.Failure;
             }
         }
-        
+
         bool ExamineObject(GameObject target)
         {
             // オブジェクトを調査
@@ -97,7 +97,7 @@ namespace BehaviourTree.Actions
             blackBoard.SetValue("object_position", target.transform.position);
             return true;
         }
-        
+
         bool CollectObject(GameObject target)
         {
             // アイテムを収集
@@ -113,9 +113,10 @@ namespace BehaviourTree.Actions
                     return true;
                 }
             }
+
             return false;
         }
-        
+
         bool ActivateObject(GameObject target)
         {
             // オブジェクトを起動
@@ -126,9 +127,10 @@ namespace BehaviourTree.Actions
                 blackBoard.SetValue("activated_object", target.name);
                 return true;
             }
+
             return false;
         }
-        
+
         bool OpenObject(GameObject target)
         {
             // オブジェクトを開く
@@ -136,7 +138,7 @@ namespace BehaviourTree.Actions
             // 宝箱やドアなどの処理をここに追加
             return true;
         }
-        
+
         bool DefaultInteraction(GameObject target)
         {
             // デフォルトインタラクション
@@ -144,7 +146,7 @@ namespace BehaviourTree.Actions
             return true;
         }
     }
-    
+
     // インタラクト可能オブジェクト用インターフェース
     public interface IActivatable
     {

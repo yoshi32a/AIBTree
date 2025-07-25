@@ -9,15 +9,20 @@ namespace BehaviourTree.Examples
         [SerializeField] float health = 100f;
         [SerializeField] Transform[] patrolPoints;
         [SerializeField] Transform target;
-        
-        public float Health 
-        { 
-            get => health; 
-            set => health = Mathf.Clamp(value, 0f, 100f); 
+
+        public float Health
+        {
+            get => health;
+            set => health = Mathf.Clamp(value, 0f, 100f);
         }
-        
+
         public Transform[] PatrolPoints => patrolPoints;
-        public Transform Target { get => target; set => target = value; }
+
+        public Transform Target
+        {
+            get => target;
+            set => target = value;
+        }
 
         void Start()
         {
@@ -58,7 +63,7 @@ namespace BehaviourTree.Examples
             {
                 var direction = (targetTransform.position - transform.position).normalized;
                 transform.position += direction * speed * Time.deltaTime;
-                
+
                 Debug.Log($"Moving to {targetName} at speed {speed}");
             }
         }
@@ -108,10 +113,10 @@ namespace BehaviourTree.Examples
             Gizmos.color = Color.red;
             var healthBarPos = transform.position + Vector3.up * 2f;
             Gizmos.DrawWireCube(healthBarPos, new Vector3(2f, 0.2f, 0f));
-            
+
             Gizmos.color = Color.green;
             var healthRatio = health / 100f;
-            Gizmos.DrawCube(healthBarPos - Vector3.right * (1f - healthRatio), 
+            Gizmos.DrawCube(healthBarPos - Vector3.right * (1f - healthRatio),
                 new Vector3(2f * healthRatio, 0.2f, 0f));
 
             // パトロールポイント

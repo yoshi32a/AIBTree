@@ -14,13 +14,13 @@ namespace BehaviourTree.Core
         float lastTickTime;
         BTParser parser;
         BlackBoard blackBoard;
-        
-        public BTNode RootNode 
-        { 
+
+        public BTNode RootNode
+        {
             get => rootNode;
             set => rootNode = value;
         }
-        
+
         public BlackBoard BlackBoard
         {
             get => blackBoard;
@@ -49,19 +49,19 @@ namespace BehaviourTree.Core
                     Debug.Log($"🌳 === BEHAVIOUR TREE UPDATE CYCLE === (Tick: {Time.frameCount})");
                     Debug.Log($"🌳 Executing root node: '{rootNode.Name}' ({rootNode.GetType().Name})");
                 }
-                
+
                 var result = rootNode.Execute();
-                
+
                 if (debugMode)
                 {
                     var resultIcon = result == BTNodeResult.Success ? "✅" :
-                                      result == BTNodeResult.Failure ? "❌" : 
-                                      result == BTNodeResult.Running ? "🔄" : "❓";
-                    
+                        result == BTNodeResult.Failure ? "❌" :
+                        result == BTNodeResult.Running ? "🔄" : "❓";
+
                     Debug.Log($"🌳 Behaviour Tree '{rootNode.Name}' result: {result} {resultIcon}");
                     Debug.Log($"🌳 === END UPDATE CYCLE ===");
                 }
-                
+
                 lastTickTime = Time.time;
             }
         }
@@ -72,7 +72,7 @@ namespace BehaviourTree.Core
             {
                 // Assetsフォルダ内のパスを絶対パスに変換
                 var fullPath = Path.Combine(Application.dataPath, filePath.TrimStart('/'));
-                
+
                 if (!File.Exists(fullPath))
                 {
                     // Assets/BehaviourTrees/内を試す
@@ -87,17 +87,17 @@ namespace BehaviourTree.Core
                         return false;
                     }
                 }
-                
+
                 rootNode = parser.ParseFile(fullPath);
-                
+
                 if (rootNode != null)
                 {
                     // ルートノードとすべての子ノードを初期化
                     InitializeNodeTree(rootNode);
-                    
+
                     // 動的条件チェックを設定
                     SetupDynamicConditionChecking(rootNode);
-                    
+
                     Debug.Log($"Successfully loaded behaviour tree from: {filePath}");
                     Debug.Log($"Root node: {rootNode.Name} ({rootNode.GetType().Name})");
                     LogTreeStructure(rootNode, 0);
@@ -125,14 +125,14 @@ namespace BehaviourTree.Core
 
             // このMonoBehaviourとBlackBoardを渡してノードを初期化
             node.Initialize(this, blackBoard);
-            
+
             // 子ノードも再帰的に初期化
             foreach (var child in node.Children)
             {
                 InitializeNodeTree(child);
             }
         }
-        
+
         /// <summary>動的条件チェックを設定する</summary>
         void SetupDynamicConditionChecking(BTNode node)
         {
@@ -140,7 +140,7 @@ namespace BehaviourTree.Core
             {
                 composite.SetupDynamicConditionChecking();
             }
-            
+
             // 子ノードも再帰的に設定
             foreach (var child in node.Children)
             {
@@ -153,7 +153,7 @@ namespace BehaviourTree.Core
             try
             {
                 rootNode = parser.ParseContent(content);
-                
+
                 if (rootNode != null)
                 {
                     Debug.Log("Successfully loaded behaviour tree from content");
@@ -202,7 +202,7 @@ namespace BehaviourTree.Core
 
             var indent = new string(' ', depth * 2);
             Debug.Log($"{indent}{node.Name} ({node.GetType().Name})");
-            
+
             foreach (var child in node.Children)
             {
                 LogTreeStructure(child, depth + 1);
@@ -225,7 +225,7 @@ namespace BehaviourTree.Core
             ResetTree();
             Debug.Log("Behaviour tree state reset");
         }
-        
+
         [ContextMenu("Show BlackBoard Contents")]
         void ShowBlackBoardContents()
         {
@@ -238,7 +238,7 @@ namespace BehaviourTree.Core
                 Debug.Log("BlackBoard is null");
             }
         }
-        
+
         [ContextMenu("Clear BlackBoard")]
         void ClearBlackBoard()
         {

@@ -10,7 +10,7 @@ namespace BehaviourTree.Actions
         float speedMultiplier = 1.5f;
         Vector3 fleeTarget;
         bool hasFleeTarget = false;
-        
+
         public override void SetProperty(string key, string value)
         {
             switch (key)
@@ -23,14 +23,14 @@ namespace BehaviourTree.Actions
                     break;
             }
         }
-        
+
         protected override BTNodeResult ExecuteAction()
         {
             if (ownerComponent == null || blackBoard == null)
             {
                 return BTNodeResult.Failure;
             }
-            
+
             // 逃走先を決定
             if (!hasFleeTarget)
             {
@@ -39,13 +39,13 @@ namespace BehaviourTree.Actions
                 {
                     threat = blackBoard.GetValue<GameObject>("current_target");
                 }
-                
+
                 if (threat != null)
                 {
                     // 脅威から離れる方向を計算
                     Vector3 fleeDirection = (transform.position - threat.transform.position).normalized;
                     fleeTarget = transform.position + fleeDirection * minDistance;
-                    
+
                     // 安全地点を探す（Safe Zoneタグのオブジェクトがあれば）
                     GameObject[] safeZones = GameObject.FindGameObjectsWithTag("SafeZone");
                     if (safeZones.Length > 0)
@@ -53,7 +53,7 @@ namespace BehaviourTree.Actions
                         // 最も近い安全地点を選択
                         GameObject nearestSafeZone = null;
                         float nearestDistance = float.MaxValue;
-                        
+
                         foreach (var zone in safeZones)
                         {
                             float zoneDistance = Vector3.Distance(transform.position, zone.transform.position);
@@ -63,13 +63,13 @@ namespace BehaviourTree.Actions
                                 nearestSafeZone = zone;
                             }
                         }
-                        
+
                         if (nearestSafeZone != null)
                         {
                             fleeTarget = nearestSafeZone.transform.position;
                         }
                     }
-                    
+
                     hasFleeTarget = true;
                     blackBoard.SetValue("flee_target", fleeTarget);
                 }
@@ -79,7 +79,7 @@ namespace BehaviourTree.Actions
                     return BTNodeResult.Failure;
                 }
             }
-            
+
             // 逃走先に移動
             float distance = Vector3.Distance(transform.position, fleeTarget);
             if (distance <= 1.0f)
@@ -90,24 +90,24 @@ namespace BehaviourTree.Actions
                 Debug.Log("FleeToSafety: Reached safety");
                 return BTNodeResult.Success;
             }
-            
+
             // 移動処理
             Vector3 direction = (fleeTarget - transform.position).normalized;
             float moveSpeed = 3.5f * speedMultiplier;
             transform.position += direction * moveSpeed * Time.deltaTime;
-            
+
             // 移動中は向きを更新
             if (direction != Vector3.zero)
             {
                 transform.rotation = Quaternion.LookRotation(direction);
             }
-            
+
             blackBoard.SetValue("is_fleeing", true);
             blackBoard.SetValue("flee_distance_remaining", distance);
-            
+
             return BTNodeResult.Running;
         }
-        
+
         public override void Reset()
         {
             base.Reset();

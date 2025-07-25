@@ -9,17 +9,17 @@ namespace BehaviourTree.Nodes
     {
         Dictionary<string, string> properties = new Dictionary<string, string>();
         ExampleAI aiController;
-        
+
         public override void SetProperty(string key, string value)
         {
             properties[key] = value;
         }
-        
+
         public string GetProperty(string key)
         {
             return properties.GetValueOrDefault(key, "");
         }
-        
+
         protected override BTNodeResult OnExecute()
         {
             // AIコントローラーを取得
@@ -33,13 +33,13 @@ namespace BehaviourTree.Nodes
             }
 
             var script = GetProperty("script");
-            
+
             if (string.IsNullOrEmpty(script))
             {
                 Debug.LogWarning($"No script specified for action node: {Name}");
                 return BTNodeResult.Failure;
             }
-            
+
             // スクリプト実行ロジック
             return ExecuteScript(script);
         }
@@ -72,7 +72,7 @@ namespace BehaviourTree.Nodes
             var target = GetProperty("target");
             var speed = float.Parse(GetProperty("speed") ?? "3.5");
             var tolerance = float.Parse(GetProperty("tolerance") ?? "0.5");
-            
+
             if (string.IsNullOrEmpty(target))
             {
                 Debug.LogWarning("No target specified for move action");
@@ -94,7 +94,7 @@ namespace BehaviourTree.Nodes
         {
             var damage = int.Parse(GetProperty("damage") ?? "25");
             var attackRange = float.Parse(GetProperty("attack_range") ?? "2.0");
-            
+
             aiController.AttackEnemy(damage, attackRange);
             return BTNodeResult.Success;
         }

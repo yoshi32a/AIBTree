@@ -9,23 +9,23 @@ namespace BehaviourTree.Core
             for (int i = currentChildIndex; i < Children.Count; i++)
             {
                 var result = Children[i].Execute();
-                
+
                 switch (result)
                 {
                     case BTNodeResult.Success:
                         currentChildIndex = i + 1;
                         continue;
-                        
+
                     case BTNodeResult.Running:
                         currentChildIndex = i;
                         return BTNodeResult.Running;
-                        
+
                     case BTNodeResult.Failure:
                         Reset();
                         return BTNodeResult.Failure;
                 }
             }
-            
+
             Reset();
             return BTNodeResult.Success;
         }

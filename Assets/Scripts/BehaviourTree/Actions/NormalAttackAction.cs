@@ -10,7 +10,7 @@ namespace BehaviourTree.Actions
         int damage = 15;
         float cooldown = 1.0f;
         float lastAttackTime = 0f;
-        
+
         public override void SetProperty(string key, string value)
         {
             switch (key)
@@ -23,44 +23,44 @@ namespace BehaviourTree.Actions
                     break;
             }
         }
-        
+
         protected override BTNodeResult ExecuteAction()
         {
             if (ownerComponent == null || blackBoard == null)
             {
                 return BTNodeResult.Failure;
             }
-            
+
             // ターゲットを取得
             GameObject target = blackBoard.GetValue<GameObject>("nearest_enemy");
             if (target == null)
             {
                 target = blackBoard.GetValue<GameObject>("current_target");
             }
-            
+
             if (target == null || !target.activeInHierarchy)
             {
                 Debug.Log("NormalAttack: No valid target found");
                 return BTNodeResult.Failure;
             }
-            
+
             // クールダウンチェック
             if (Time.time - lastAttackTime < cooldown)
             {
                 return BTNodeResult.Running;
             }
-            
+
             // 通常攻撃実行
             Health targetHealth = target.GetComponent<Health>();
             if (targetHealth != null)
             {
                 targetHealth.TakeDamage(damage);
                 lastAttackTime = Time.time;
-                
+
                 // BlackBoardに攻撃情報を記録
                 blackBoard.SetValue("last_normal_attack_time", Time.time);
                 blackBoard.SetValue("normal_attack_count", blackBoard.GetValue<int>("normal_attack_count", 0) + 1);
-                
+
                 Debug.Log($"NormalAttack: Normal attack on '{target.name}' for {damage} damage");
                 return BTNodeResult.Success;
             }
@@ -70,7 +70,7 @@ namespace BehaviourTree.Actions
                 return BTNodeResult.Failure;
             }
         }
-        
+
         public override void Reset()
         {
             base.Reset();

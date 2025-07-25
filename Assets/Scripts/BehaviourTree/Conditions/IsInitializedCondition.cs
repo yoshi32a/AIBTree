@@ -12,10 +12,10 @@ namespace BehaviourTree.Conditions
             {
                 return BTNodeResult.Failure;
             }
-            
+
             // BlackBoardから初期化状態を確認
             bool isInitialized = blackBoard.GetValue<bool>("is_initialized", false);
-            
+
             if (!isInitialized)
             {
                 // 初期化を試行
@@ -24,7 +24,7 @@ namespace BehaviourTree.Conditions
                 Debug.Log("IsInitialized: System initialized");
                 return BTNodeResult.Success;
             }
-            
+
             return BTNodeResult.Success;
         }
     }

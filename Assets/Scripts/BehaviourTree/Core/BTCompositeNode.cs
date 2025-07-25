@@ -5,13 +5,13 @@ namespace BehaviourTree.Core
     public abstract class BTCompositeNode : BTNode
     {
         protected int currentChildIndex = 0;
-        
+
         public override void Reset()
         {
             base.Reset();
             currentChildIndex = 0;
         }
-        
+
         /// <summary>動的条件チェックを設定（ConditionとActionを関連付け）</summary>
         public void SetupDynamicConditionChecking()
         {

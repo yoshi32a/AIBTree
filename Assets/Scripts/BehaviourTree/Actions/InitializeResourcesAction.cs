@@ -13,21 +13,21 @@ namespace BehaviourTree.Actions
             {
                 return BTNodeResult.Failure;
             }
-            
+
             // リソースの初期化
             InitializeHealth();
             InitializeMana();
             InitializeInventory();
             InitializeOtherResources();
-            
+
             // 初期化完了をBlackBoardに記録
             blackBoard.SetValue("resources_initialized", true);
             blackBoard.SetValue("initialization_time", Time.time);
-            
+
             Debug.Log("InitializeResources: All resources initialized");
             return BTNodeResult.Success;
         }
-        
+
         void InitializeHealth()
         {
             var health = ownerComponent.GetComponent<Health>();
@@ -43,18 +43,18 @@ namespace BehaviourTree.Actions
                 blackBoard.SetValue("current_health", 100);
             }
         }
-        
+
         void InitializeMana()
         {
             // マナリソースの初期化
             int maxMana = 100;
             int currentMana = maxMana;
-            
+
             blackBoard.SetValue("max_mana", maxMana);
             blackBoard.SetValue("current_mana", currentMana);
             blackBoard.SetValue("mana_regeneration_rate", 5); // 毎秒5マナ回復
         }
-        
+
         void InitializeInventory()
         {
             var inventory = ownerComponent.GetComponent<Inventory>();
@@ -70,7 +70,7 @@ namespace BehaviourTree.Actions
                 blackBoard.SetValue("has_inventory", false);
             }
         }
-        
+
         void InitializeOtherResources()
         {
             // その他のリソースの初期化
@@ -78,17 +78,17 @@ namespace BehaviourTree.Actions
             blackBoard.SetValue("max_stamina", 100);
             blackBoard.SetValue("experience", 0);
             blackBoard.SetValue("level", 1);
-            
+
             // AIの状態初期化
             blackBoard.SetValue("is_alert", false);
             blackBoard.SetValue("is_in_combat", false);
             blackBoard.SetValue("is_patrolling", false);
             blackBoard.SetValue("current_state", "idle");
-            
+
             // 位置情報の初期化
             blackBoard.SetValue("spawn_position", transform.position);
             blackBoard.SetValue("last_known_player_position", Vector3.zero);
-            
+
             // カウンター類の初期化
             blackBoard.SetValue("kill_count", 0);
             blackBoard.SetValue("death_count", 0);

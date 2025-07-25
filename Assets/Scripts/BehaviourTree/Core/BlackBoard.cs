@@ -14,7 +14,7 @@ namespace BehaviourTree.Core
         {
             data[key] = value;
             dataTypes[key] = typeof(T);
-            
+
             Debug.Log($"🗂️ BlackBoard: Set '{key}' = {value} ({typeof(T).Name})");
         }
 
@@ -33,7 +33,7 @@ namespace BehaviourTree.Core
                     return defaultValue;
                 }
             }
-            
+
             return defaultValue;
         }
 

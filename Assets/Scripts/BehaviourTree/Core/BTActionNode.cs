@@ -8,7 +8,7 @@ namespace BehaviourTree.Core
     {
         // このActionが依存する条件ノード（動的チェック用）
         protected List<BTConditionNode> watchedConditions = new List<BTConditionNode>();
-        
+
         // Action実行中かどうか
         protected bool isExecuting = false;
 
@@ -16,7 +16,7 @@ namespace BehaviourTree.Core
         {
             // Action開始時に実行中フラグを設定
             isExecuting = true;
-            
+
             // 依存する条件を動的にチェック
             if (watchedConditions.Count > 0)
             {
@@ -31,20 +31,20 @@ namespace BehaviourTree.Core
                     }
                 }
             }
-            
+
             var result = ExecuteAction();
-            
+
             // Action完了時に実行中フラグをクリア
             if (result != BTNodeResult.Running)
             {
                 isExecuting = false;
             }
-            
+
             return result;
         }
 
         protected abstract BTNodeResult ExecuteAction();
-        
+
         /// <summary>動的にチェックする条件を追加</summary>
         public void AddWatchedCondition(BTConditionNode condition)
         {
@@ -53,16 +53,16 @@ namespace BehaviourTree.Core
                 watchedConditions.Add(condition);
             }
         }
-        
+
         /// <summary>条件が失敗した時に呼ばれる（オーバーライド可能）</summary>
         protected virtual void OnConditionFailed()
         {
             // デフォルトでは何もしない
         }
-        
+
         /// <summary>現在実行中かどうか</summary>
         public bool IsExecuting => isExecuting;
-        
+
         public override void Reset()
         {
             base.Reset();

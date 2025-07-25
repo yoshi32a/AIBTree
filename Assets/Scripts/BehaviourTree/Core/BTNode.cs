@@ -9,7 +9,7 @@ namespace BehaviourTree.Core
         public string Name { get; set; }
         public BTNode Parent { get; set; }
         public List<BTNode> Children { get; set; }
-        
+
         // Unity関連の参照（実行時に設定）
         protected Transform transform;
         protected GameObject gameObject;
@@ -23,8 +23,8 @@ namespace BehaviourTree.Core
 
         public abstract BTNodeResult Execute();
 
-        public virtual void Initialize(MonoBehaviour owner, BlackBoard sharedBlackBoard = null) 
-        { 
+        public virtual void Initialize(MonoBehaviour owner, BlackBoard sharedBlackBoard = null)
+        {
             ownerComponent = owner;
             blackBoard = sharedBlackBoard;
             if (owner != null)
@@ -33,12 +33,12 @@ namespace BehaviourTree.Core
                 this.gameObject = owner.gameObject;
             }
         }
-        
+
         public virtual void SetProperty(string propertyName, string value)
         {
             // デフォルト実装：何もしない
         }
-        
+
         // Unity関連のヘルパーメソッド
         protected T GetComponent<T>() where T : Component
         {
@@ -49,7 +49,7 @@ namespace BehaviourTree.Core
         {
             child.Parent = this;
             Children.Add(child);
-            
+
             // 子ノードにも同じownerとblackBoardを設定
             if (ownerComponent != null)
             {
@@ -71,8 +71,4 @@ namespace BehaviourTree.Core
             }
         }
     }
-
-
-
-
 }

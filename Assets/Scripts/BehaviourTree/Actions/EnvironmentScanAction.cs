@@ -9,7 +9,7 @@ namespace BehaviourTree.Actions
         float scanInterval = 2.0f;
         float scanRadius = 15.0f;
         float lastScanTime = 0f;
-        
+
         public override void SetProperty(string key, string value)
         {
             switch (key)
@@ -22,37 +22,37 @@ namespace BehaviourTree.Actions
                     break;
             }
         }
-        
+
         protected override BTNodeResult ExecuteAction()
         {
             if (ownerComponent == null || blackBoard == null)
             {
                 return BTNodeResult.Failure;
             }
-            
+
             // スキャン間隔チェック
             if (Time.time - lastScanTime < scanInterval)
             {
                 return BTNodeResult.Running;
             }
-            
+
             lastScanTime = Time.time;
-            
+
             // 環境をスキャン
             int enemyCount = 0;
             int itemCount = 0;
             int interactableCount = 0;
-            
+
             // 敵を検索
             Collider[] enemies = Physics.OverlapSphere(transform.position, scanRadius, LayerMask.GetMask("Enemy"));
             enemyCount = enemies.Length;
-            
+
             if (enemyCount > 0)
             {
                 // 最も近い敵を記録
                 GameObject nearestEnemy = null;
                 float nearestDistance = float.MaxValue;
-                
+
                 foreach (var enemy in enemies)
                 {
                     float distance = Vector3.Distance(transform.position, enemy.transform.position);
@@ -62,35 +62,35 @@ namespace BehaviourTree.Actions
                         nearestEnemy = enemy.gameObject;
                     }
                 }
-                
+
                 if (nearestEnemy != null)
                 {
                     blackBoard.SetValue("scanned_enemy", nearestEnemy);
                     blackBoard.SetValue("scanned_enemy_distance", nearestDistance);
                 }
             }
-            
+
             // アイテムを検索
             Collider[] items = Physics.OverlapSphere(transform.position, scanRadius, LayerMask.GetMask("Item"));
             itemCount = items.Length;
-            
+
             if (itemCount > 0)
             {
                 blackBoard.SetValue("scanned_items", items.Length);
                 blackBoard.SetValue("nearest_item", items[0].gameObject);
             }
-            
+
             // インタラクト可能オブジェクトを検索
             Collider[] interactables = Physics.OverlapSphere(transform.position, scanRadius, LayerMask.GetMask("Interactable"));
             interactableCount = interactables.Length;
-            
+
             // スキャン結果をBlackBoardに記録
             blackBoard.SetValue("environment_scan_time", Time.time);
             blackBoard.SetValue("enemies_detected", enemyCount);
             blackBoard.SetValue("items_detected", itemCount);
             blackBoard.SetValue("interactables_detected", interactableCount);
             blackBoard.SetValue("scan_radius_used", scanRadius);
-            
+
             // 環境の脅威レベルを計算
             string threatLevel = "safe";
             if (enemyCount > 3)
@@ -99,20 +99,20 @@ namespace BehaviourTree.Actions
                 threatLevel = "medium";
             else if (enemyCount > 0)
                 threatLevel = "low";
-            
+
             blackBoard.SetValue("threat_level", threatLevel);
-            
+
             Debug.Log($"EnvironmentScan: Enemies:{enemyCount}, Items:{itemCount}, Threat:{threatLevel}");
-            
+
             return BTNodeResult.Success;
         }
-        
+
         public override void Reset()
         {
             base.Reset();
             lastScanTime = 0f;
         }
-        
+
         void OnDrawGizmosSelected()
         {
             if (ownerComponent != null)

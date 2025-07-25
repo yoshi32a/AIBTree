@@ -14,12 +14,12 @@ namespace BehaviourTree.Nodes
         {
             properties[key] = value;
         }
-        
+
         public string GetProperty(string key)
         {
             return properties.GetValueOrDefault(key, "");
         }
-        
+
         protected override bool CheckCondition()
         {
             // AIコントローラーを取得
@@ -33,13 +33,13 @@ namespace BehaviourTree.Nodes
             }
 
             var script = GetProperty("script");
-            
+
             if (string.IsNullOrEmpty(script))
             {
                 Debug.LogWarning($"No script specified for condition node: {Name}");
                 return false;
             }
-            
+
             return ExecuteConditionScript(script);
         }
 

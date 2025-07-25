@@ -9,7 +9,7 @@ namespace BehaviourTree.Actions
         string moveType = "normal";
         float speed = 2.0f;
         float tolerance = 1.0f;
-        
+
         public override void SetProperty(string key, string value)
         {
             switch (key)
@@ -25,18 +25,18 @@ namespace BehaviourTree.Actions
                     break;
             }
         }
-        
+
         protected override BTNodeResult ExecuteAction()
         {
             if (ownerComponent == null || blackBoard == null)
             {
                 return BTNodeResult.Failure;
             }
-            
+
             // 移動タイプに応じてターゲットを取得
             GameObject target = null;
             Vector3 targetPosition = Vector3.zero;
-            
+
             switch (moveType)
             {
                 case "investigate":
@@ -52,7 +52,7 @@ namespace BehaviourTree.Actions
                     target = blackBoard.GetValue<GameObject>("move_target");
                     break;
             }
-            
+
             if (target != null && target.activeInHierarchy)
             {
                 targetPosition = target.transform.position;
@@ -67,7 +67,7 @@ namespace BehaviourTree.Actions
                     return BTNodeResult.Failure;
                 }
             }
-            
+
             // 目標位置までの距離をチェック
             float distance = Vector3.Distance(transform.position, targetPosition);
             if (distance <= tolerance)
@@ -78,31 +78,31 @@ namespace BehaviourTree.Actions
                 Debug.Log($"MoveToTarget: Reached target ({moveType})");
                 return BTNodeResult.Success;
             }
-            
+
             // 移動処理
             Vector3 direction = (targetPosition - transform.position).normalized;
             transform.position += direction * speed * Time.deltaTime;
-            
+
             // 移動方向を向く
             if (direction != Vector3.zero)
             {
                 transform.rotation = Quaternion.LookRotation(direction);
             }
-            
+
             // BlackBoardに移動状態を記録
             blackBoard.SetValue("is_moving", true);
             blackBoard.SetValue("move_distance_remaining", distance);
             blackBoard.SetValue("move_direction", direction);
-            
+
             return BTNodeResult.Running;
         }
-        
+
         public override void Reset()
         {
             base.Reset();
             blackBoard?.SetValue("is_moving", false);
         }
-        
+
         void OnDrawGizmosSelected()
         {
             if (ownerComponent != null && blackBoard != null)

@@ -12,10 +12,10 @@ namespace BehaviourTree.Conditions
             {
                 return BTNodeResult.Failure;
             }
-            
+
             // BlackBoardからターゲット情報を取得
             GameObject target = blackBoard.GetValue<GameObject>("current_target");
-            
+
             if (target != null && target.activeInHierarchy)
             {
                 // ターゲットが有効な場合、距離も記録
@@ -23,11 +23,11 @@ namespace BehaviourTree.Conditions
                 blackBoard.SetValue("target_distance", distance);
                 return BTNodeResult.Success;
             }
-            
+
             // ターゲット情報をクリア
             blackBoard.SetValue("current_target", (GameObject)null);
             blackBoard.RemoveValue("target_distance");
-            
+
             return BTNodeResult.Failure;
         }
     }

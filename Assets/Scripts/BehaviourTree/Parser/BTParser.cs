@@ -18,7 +18,7 @@ namespace BehaviourTree.Parser
             public string Type;
             public string Value;
             public int Line;
-            
+
             public Token(string type, string value, int line)
             {
                 Type = type;
@@ -29,7 +29,7 @@ namespace BehaviourTree.Parser
 
         List<Token> tokens;
         int currentTokenIndex;
-        
+
         public BTNode ParseFile(string filePath)
         {
             if (!File.Exists(filePath))
@@ -37,16 +37,16 @@ namespace BehaviourTree.Parser
                 Debug.LogError($"BT file not found: {filePath}");
                 return null;
             }
-            
+
             var content = File.ReadAllText(filePath);
             return ParseContent(content);
         }
-        
+
         public BTNode ParseContent(string content)
         {
             tokens = Tokenize(content);
             currentTokenIndex = 0;
-            
+
             while (currentTokenIndex < tokens.Count)
             {
                 var token = tokens[currentTokenIndex];
@@ -54,9 +54,10 @@ namespace BehaviourTree.Parser
                 {
                     return ParseTree();
                 }
+
                 currentTokenIndex++;
             }
-            
+
             Debug.LogError("No tree definition found");
             return null;
         }
@@ -65,11 +66,11 @@ namespace BehaviourTree.Parser
         {
             var tokens = new List<Token>();
             var lines = content.Split('\n');
-            
+
             for (var lineNum = 0; lineNum < lines.Length; lineNum++)
             {
                 var line = lines[lineNum].Trim();
-                
+
                 if (string.IsNullOrEmpty(line) || line.StartsWith("#"))
                 {
                     continue;
@@ -84,13 +85,13 @@ namespace BehaviourTree.Parser
                 while (position < line.Length)
                 {
                     var c = line[position];
-                    
+
                     if (char.IsWhiteSpace(c))
                     {
                         position++;
                         continue;
                     }
-                    
+
                     if (c == '{')
                     {
                         tokens.Add(new Token("LBRACE", "{", lineNum));
@@ -116,6 +117,7 @@ namespace BehaviourTree.Parser
                         {
                             position++;
                         }
+
                         var str = line.Substring(start, position - start);
                         tokens.Add(new Token("STRING", str, lineNum));
                         if (position < line.Length)
@@ -131,8 +133,9 @@ namespace BehaviourTree.Parser
                         {
                             position++;
                         }
+
                         var word = line.Substring(start, position - start);
-                        
+
                         if (IsKeyword(word))
                         {
                             tokens.Add(new Token("KEYWORD", word, lineNum));
@@ -147,8 +150,8 @@ namespace BehaviourTree.Parser
                         // 数値
                         var start = position;
                         var hasDot = false;
-                        while (position < line.Length && (char.IsDigit(line[position]) || 
-                               (line[position] == '.' && !hasDot)))
+                        while (position < line.Length && (char.IsDigit(line[position]) ||
+                                                          (line[position] == '.' && !hasDot)))
                         {
                             if (line[position] == '.')
                             {
@@ -157,6 +160,7 @@ namespace BehaviourTree.Parser
 
                             position++;
                         }
+
                         var number = line.Substring(start, position - start);
                         tokens.Add(new Token("NUMBER", number, lineNum));
                     }
@@ -166,13 +170,13 @@ namespace BehaviourTree.Parser
                     }
                 }
             }
-            
+
             return tokens;
         }
 
         bool IsKeyword(string word)
         {
-            return word == "tree" || word == "Sequence" || word == "Selector" || 
+            return word == "tree" || word == "Sequence" || word == "Selector" ||
                    word == "Action" || word == "Condition" || word == "Parallel";
         }
 
@@ -180,34 +184,35 @@ namespace BehaviourTree.Parser
         {
             // "tree" keyword
             currentTokenIndex++;
-            
+
             // tree name
             if (currentTokenIndex >= tokens.Count || tokens[currentTokenIndex].Type != "IDENTIFIER")
             {
                 Debug.LogError("Expected tree name");
                 return null;
             }
-            
+
             var treeName = tokens[currentTokenIndex].Value;
             currentTokenIndex++;
-            
+
             // opening brace
             if (currentTokenIndex >= tokens.Count || tokens[currentTokenIndex].Type != "LBRACE")
             {
                 Debug.LogError("Expected '{' after tree name");
                 return null;
             }
+
             currentTokenIndex++;
-            
+
             // parse first node as root
             var rootNode = ParseNode();
-            
+
             // closing brace
             if (currentTokenIndex < tokens.Count && tokens[currentTokenIndex].Type == "RBRACE")
             {
                 currentTokenIndex++;
             }
-            
+
             return rootNode;
         }
 
@@ -218,37 +223,38 @@ namespace BehaviourTree.Parser
                 Debug.LogError("Expected node type keyword");
                 return null;
             }
-            
+
             var nodeType = tokens[currentTokenIndex].Value;
             currentTokenIndex++;
-            
+
             // script name (for Action/Condition) or node name (for Sequence/Selector)
             if (currentTokenIndex >= tokens.Count || tokens[currentTokenIndex].Type != "IDENTIFIER")
             {
                 Debug.LogError($"Expected script/node name after {nodeType}");
                 return null;
             }
-            
+
             var scriptOrNodeName = tokens[currentTokenIndex].Value;
             currentTokenIndex++;
-            
+
             // opening brace
             if (currentTokenIndex >= tokens.Count || tokens[currentTokenIndex].Type != "LBRACE")
             {
                 Debug.LogError("Expected '{' after node name");
                 return null;
             }
+
             currentTokenIndex++;
-            
+
             // まずプロパティを収集
             var properties = new Dictionary<string, string>();
             var childNodes = new List<BTNode>();
-            
+
             // parse properties and child nodes
             while (currentTokenIndex < tokens.Count && tokens[currentTokenIndex].Type != "RBRACE")
             {
                 var token = tokens[currentTokenIndex];
-                
+
                 if (token.Type == "KEYWORD")
                 {
                     // child node
@@ -263,30 +269,33 @@ namespace BehaviourTree.Parser
                     // property
                     var propertyName = tokens[currentTokenIndex].Value;
                     currentTokenIndex++;
-                    
+
                     if (currentTokenIndex >= tokens.Count || tokens[currentTokenIndex].Type != "COLON")
                     {
                         Debug.LogError("Expected ':' after property name");
                         return null;
                     }
+
                     currentTokenIndex++;
-                    
-                    if (currentTokenIndex >= tokens.Count || 
+
+                    if (currentTokenIndex >= tokens.Count ||
                         (tokens[currentTokenIndex].Type != "STRING" && tokens[currentTokenIndex].Type != "NUMBER"))
                     {
-                        Debug.LogError($"Expected property value, got: {(currentTokenIndex < tokens.Count ? tokens[currentTokenIndex].Type : "END_OF_TOKENS")}");
+                        Debug.LogError(
+                            $"Expected property value, got: {(currentTokenIndex < tokens.Count ? tokens[currentTokenIndex].Type : "END_OF_TOKENS")}");
                         return null;
                     }
-                    
+
                     var propertyValue = tokens[currentTokenIndex].Value;
                     // Remove quotes from string value only
-                    if (tokens[currentTokenIndex].Type == "STRING" && 
+                    if (tokens[currentTokenIndex].Type == "STRING" &&
                         propertyValue.StartsWith("\"") && propertyValue.EndsWith("\""))
                     {
                         propertyValue = propertyValue.Substring(1, propertyValue.Length - 2);
                     }
+
                     currentTokenIndex++;
-                    
+
                     properties[propertyName] = propertyValue;
                 }
                 else
@@ -294,18 +303,18 @@ namespace BehaviourTree.Parser
                     currentTokenIndex++;
                 }
             }
-            
+
             // closing brace
             if (currentTokenIndex < tokens.Count && tokens[currentTokenIndex].Type == "RBRACE")
             {
                 currentTokenIndex++;
             }
-            
+
             // 新フォーマット: Action/Condition は直接スクリプト名、Sequence/Selector は従来通り
             BTNode node = null;
             Debug.Log($"🔍 Creating node: {nodeType} {scriptOrNodeName}");
             Debug.Log($"🔍 Properties: {string.Join(", ", properties.Select(p => $"{p.Key}={p.Value}"))}");
-            
+
             if (nodeType == "Action" || nodeType == "Condition")
             {
                 Debug.Log($"🚀 Creating {nodeType} with script '{scriptOrNodeName}'");
@@ -323,13 +332,13 @@ namespace BehaviourTree.Parser
                     }
                 }
             }
-            
+
             if (node == null)
             {
                 Debug.LogError($"Failed to create node of type: {nodeType}");
                 return null;
             }
-            
+
             // Set name: for Action/Condition use script name, for others use node name
             if (nodeType == "Action" || nodeType == "Condition")
             {
@@ -339,13 +348,13 @@ namespace BehaviourTree.Parser
             {
                 node.Name = scriptOrNodeName;
             }
-            
+
             // 子ノードを追加
             foreach (var childNode in childNodes)
             {
                 node.AddChild(childNode);
             }
-            
+
             return node;
         }
 
@@ -358,26 +367,27 @@ namespace BehaviourTree.Parser
 
             var propertyName = tokens[currentTokenIndex].Value;
             currentTokenIndex++;
-            
+
             // colon
             if (currentTokenIndex >= tokens.Count || tokens[currentTokenIndex].Type != "COLON")
             {
                 Debug.LogError($"Expected ':' after property name '{propertyName}'");
                 return;
             }
+
             currentTokenIndex++;
-            
+
             // value
             if (currentTokenIndex >= tokens.Count)
             {
                 Debug.LogError($"Expected value for property '{propertyName}'");
                 return;
             }
-            
+
             var valueToken = tokens[currentTokenIndex];
             var propertyValue = valueToken.Value;
             currentTokenIndex++;
-            
+
             // set property
             node.SetProperty(propertyName, propertyValue);
         }
@@ -402,7 +412,7 @@ namespace BehaviourTree.Parser
         {
             Debug.Log($"🔧 CreateNodeFromScript: script='{scriptName}', type='{nodeType}'");
             BTNode node = null;
-            
+
             if (nodeType == "Action")
             {
                 Debug.Log($"🔧 Creating ACTION node for script: {scriptName}");
@@ -543,7 +553,7 @@ namespace BehaviourTree.Parser
                         break;
                 }
             }
-            
+
             if (node != null)
             {
                 // プロパティを設定
@@ -552,7 +562,7 @@ namespace BehaviourTree.Parser
                     node.SetProperty(prop.Key, prop.Value);
                 }
             }
-            
+
             return node;
         }
     }
