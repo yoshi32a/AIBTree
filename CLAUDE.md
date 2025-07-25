@@ -8,6 +8,8 @@
 
 ### 主要機能
 - **BehaviourTree実行エンジン**: C#による階層的なノード構造の実装
+- **BlackBoardシステム**: AIノード間でのデータ共有とリアルタイム状態管理
+- **動的条件チェック**: Action実行中の条件変化に即座に対応
 - **.btファイル形式**: 人間が読みやすい階層形式でのAI定義
 - **VSCode拡張機能**: シンタックスハイライト、自動補完、診断機能
 - **動的スクリプトローダー**: .btファイルからC#クラスへの動的マッピング
@@ -46,23 +48,35 @@ Unity プロジェクトは Unity エディタを通じてビルドされます�
 
 ### BehaviourTree システム構造
 - `Assets/Scripts/BehaviourTree/Core/` - コアシステム
-  - `BTNode.cs` - ベースノードクラス（MonoBehaviour継承）
+  - `BTNode.cs` - ベースノードクラス（BlackBoard対応）
   - `BTNodeResult.cs` - 実行結果の列挙型
-  - `BTActionNode.cs` / `BTConditionNode.cs` - 抽象ベースクラス
-  - `BehaviourTreeRunner.cs` - .btファイル実行エンジン
+  - `BTActionNode.cs` / `BTConditionNode.cs` - 抽象ベースクラス（動的条件チェック対応）
+  - `BTCompositeNode.cs` - 複合ノードの基底クラス
+  - `BTSequenceNode.cs` - Sequenceノード（順次実行）
+  - `BTSelectorNode.cs` - Selectorノード（選択実行）
+  - `BTParallelNode.cs` - Parallelノード（並列実行）
+  - `BlackBoard.cs` - データ共有システム
+  - `BehaviourTreeRunner.cs` - .btファイル実行エンジン（BlackBoard管理）
 - `Assets/Scripts/BehaviourTree/Parser/` - .btファイルパーサー
   - `BTParser.cs` - トークンベースパーサー
 - `Assets/Scripts/BehaviourTree/Actions/` - アクションノード実装
-  - `MoveToPositionAction.cs` - 移動アクション
+  - `MoveToPositionAction.cs` - 移動アクション（BlackBoard対応）
+  - `AttackEnemyAction.cs` - 攻撃アクション
+  - `WaitAction.cs` - 待機アクション
 - `Assets/Scripts/BehaviourTree/Conditions/` - 条件ノード実装
-  - `HealthCheckCondition.cs` - 体力チェック条件
+  - `HealthCheckCondition.cs` - 体力チェック条件（BlackBoard対応）
+  - `EnemyCheckCondition.cs` - 敵検出条件
+  - `HasItemCondition.cs` - アイテム所持チェック
 - `Assets/Scripts/BehaviourTree/Nodes/` - レガシーノード（後方互換性）
   - `CustomActionNode.cs` / `CustomConditionNode.cs`
 - `Assets/Scripts/Components/` - 汎用コンポーネント
   - `Health.cs` - 体力管理コンポーネント
-- `Assets/BehaviourTrees/` - .btファイル
-  - `example.bt` - 複雑なガードAIの例
-  - `test_simple.bt` - 簡単なテスト用AI
+  - `Inventory.cs` - インベントリ管理コンポーネント
+- `Assets/BehaviourTrees/` - .btファイルとサンプル
+  - `blackboard_sample.bt` - BlackBoard基本使用例
+  - `team_coordination_sample.bt` - チーム連携例
+  - `resource_management_sample.bt` - リソース管理例
+  - `dynamic_condition_sample.bt` - 動的条件チェック例
 
 ### VSCode拡張機能
 - `vscode-bt-extension/` - VSCode拡張機能
@@ -85,27 +99,34 @@ Unity プロジェクトは Unity エディタを通じてビルドされます�
 ### .btファイル作成
 - **場所**: `Assets/BehaviourTrees/` フォルダに配置
 - **拡張子**: `.bt`
-- **形式**: 階層型記述（例：`tree TreeName { sequence root { ... } }`）
+- **形式**: 階層型記述（例：`tree TreeName { Sequence root { ... } }`）
+- **正しい形式**: 大文字始まり、script属性不要
 - **リファレンス**: `BT_REFERENCE.md` を参照
 
-### 新しいActionノード作成
-1. `Assets/Scripts/BehaviourTree/Actions/` に `[ActionName]Action.cs` を作成
+### 新しいActionノード作成（BlackBoard対応）
+1. `Assets/Scripts/BehaviourTree/Actions/` に `[ActionName]Action.cs` を作成（1ファイル1クラス）
 2. `BTActionNode` を継承
 3. `ExecuteAction()` メソッドをオーバーライド
-4. `SetProperty()` でプロパティ処理を実装
-5. .btファイルで `script: "ActionName"` として使用
+4. `Initialize(MonoBehaviour, BlackBoard)` メソッドをオーバーライド
+5. BlackBoardを活用して状態管理・データ共有を実装
+6. `OnConditionFailed()` で動的条件失敗時の処理を実装
+7. .btファイルで `Action ActionName { ... }` として使用
 
-### 新しいConditionノード作成
-1. `Assets/Scripts/BehaviourTree/Conditions/` に `[ConditionName]Condition.cs` を作成
+### 新しいConditionノード作成（BlackBoard対応）
+1. `Assets/Scripts/BehaviourTree/Conditions/` に `[ConditionName]Condition.cs` を作成（1ファイル1クラス）
 2. `BTConditionNode` を継承
 3. `CheckCondition()` メソッドをオーバーライド
-4. `SetProperty()` でプロパティ処理を実装
-5. .btファイルで `script: "ConditionName"` として使用
+4. `Initialize(MonoBehaviour, BlackBoard)` メソッドをオーバーライド
+5. BlackBoardに状態を記録してデータ共有を実現
+6. .btファイルで `Condition ConditionName { ... }` として使用
 
 ### テストとデバッグ
 - **テストシーン設定**: `UNITY_TEST_SETUP.md` を参照
 - **ログ確認**: Consoleウィンドウで実行状況をモニター
 - **体力テスト**: Healthコンポーネントの右クリックメニューを使用
+- **BlackBoardデバッグ**: BehaviourTreeRunnerの右クリック → "Show BlackBoard Contents"
+- **ツリー状態リセット**: BehaviourTreeRunnerの右クリック → "Reset Tree State"
+- **動的条件チェック確認**: 実行中の条件変化でActionが即座に中断されることを確認
 
 ### Unity 6000.1.10f1 対応
 - `Object.FindFirstObjectByType<T>()` を使用（`FindObjectOfType` は非推奨）
@@ -113,8 +134,13 @@ Unity プロジェクトは Unity エディタを通じてビルドされます�
 
 ### VSCode拡張機能
 - **インストール**: `vsce package` → `code --install-extension *.vsix`
+- **最新版**: v1.1.0（BlackBoard・Parallel対応）
 - **設定**: `.vscode/settings.json` で診断機能の有効/無効を制御
-- **機能**: シンタックスハイライト、自動補完、ホバーヘルプ、スニペット
+- **機能**: 
+  - シンタックスハイライト（新形式対応）
+  - 自動補完（BlackBoard対応スニペット）
+  - ホバーヘルプ
+  - スニペット（`tree`, `sequence`, `action`, `condition`, `parallel`, `blackboard`）
 
 ### バージョン管理に関する注意
 - `Library/`、`Temp/`、`Logs/`、`obj/` フォルダは .gitignore で無視
@@ -132,6 +158,7 @@ Unity プロジェクトは Unity エディタを通じてビルドされます�
 - `public` 修飾子は明示的に記述
 - 単一ステートメントでも波括弧を必須
 - varの使用を推奨
+- **1ファイル1クラスの原則**を厳守
 
 **例:**
 ```csharp
