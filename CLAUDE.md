@@ -119,24 +119,27 @@ Unity プロジェクトは Unity エディタを通じてビルドされます�
 
 ### 新しいActionノード作成（BlackBoard対応）
 1. `Assets/Scripts/BehaviourTree/Actions/` に `[ActionName]Action.cs` を作成（1ファイル1クラス）
-2. `BTActionNode` を継承
-3. `ExecuteAction()` メソッドをオーバーライド
-4. `SetProperty(string key, string value)` メソッドをオーバーライド（パラメータは`string`型）
-5. `Initialize(MonoBehaviour, BlackBoard)` メソッドをオーバーライド
-6. BlackBoardを活用して状態管理・データ共有を実装
-7. `OnConditionFailed()` で動的条件失敗時の処理を実装
-8. .btファイルで `Action ActionName { ... }` として使用（script属性不要）
-9. `BTParser.cs` の `CreateNodeFromScript()` にケースを追加
+2. `namespace BehaviourTree.Actions` 内で `BTActionNode` を継承
+3. `/// <summary>説明</summary>` 形式のXMLコメントを追加
+4. `protected override BTNodeResult ExecuteAction()` メソッドをオーバーライド
+5. `public override void SetProperty(string key, string value)` メソッドをオーバーライド（パラメータは`string`型）
+6. `public override void Initialize(MonoBehaviour, BlackBoard)` メソッドをオーバーライド
+7. BlackBoardを活用して状態管理・データ共有を実装
+8. 必要に応じて `using Components;` ディレクティブを追加
+9. .btファイルで `Action ActionName { ... }` として使用（script属性不要）
+10. `BTParser.cs` の `CreateNodeFromScript()` にケースを追加
 
 ### 新しいConditionノード作成（BlackBoard対応）
 1. `Assets/Scripts/BehaviourTree/Conditions/` に `[ConditionName]Condition.cs` を作成（1ファイル1クラス）
-2. `BTConditionNode` を継承
-3. `protected override BTNodeResult CheckCondition()` メソッドをオーバーライド（`protected`必須、戻り値は`BTNodeResult`）
-4. `SetProperty(string key, string value)` メソッドをオーバーライド（パラメータは`string`型）
-5. `Initialize(MonoBehaviour, BlackBoard)` メソッドをオーバーライド
-6. BlackBoardに状態を記録してデータ共有を実現
-7. .btファイルで `Condition ConditionName { ... }` として使用（script属性不要）
-8. `BTParser.cs` の `CreateNodeFromScript()` にケースを追加
+2. `namespace BehaviourTree.Conditions` 内で `BTConditionNode` を継承
+3. `/// <summary>説明</summary>` 形式のXMLコメントを追加
+4. `protected override BTNodeResult CheckCondition()` メソッドをオーバーライド（`protected`必須、戻り値は`BTNodeResult`）
+5. `public override void SetProperty(string key, string value)` メソッドをオーバーライド（パラメータは`string`型）
+6. `public override void Initialize(MonoBehaviour, BlackBoard)` メソッドをオーバーライド
+7. BlackBoardに状態を記録してデータ共有を実現
+8. 必要に応じて `using Components;` ディレクティブを追加
+9. .btファイルで `Condition ConditionName { ... }` として使用（script属性不要）
+10. `BTParser.cs` の `CreateNodeFromScript()` にケースを追加
 
 ### テストとデバッグ
 - **自動テスト実行**:
@@ -214,18 +217,52 @@ public class ExampleClass : BaseClass
 
 ## 実装済みBlackBoard対応スクリプト一覧
 
-### Action Scripts
+### 実装完了のAction Scripts（15個）
 - `ScanEnvironmentAction` - 環境スキャンして敵情報をBlackBoardに保存
 - `MoveToEnemyAction` - BlackBoardから敵位置を取得して移動
 - `AttackTargetAction` - BlackBoardの敵情報を使用して攻撃
 - `RandomWanderAction` - ランダムに徘徊するアクション
+- `CastSpellAction` - 魔法詠唱（マナ消費、ダメージ対応）
+- `AttackAction` - 汎用攻撃システム（範囲・クールダウン対応）
+- `NormalAttackAction` - 通常攻撃
+- `UseItemAction` - アイテム使用（体力・マナポーション対応）
+- `FleeToSafetyAction` - 安全地帯への逃走
+- `MoveToTargetAction` - 柔軟なターゲット移動
+- `EnvironmentScanAction` - 包括的な環境スキャン
+- `InteractAction` - オブジェクトとの相互作用
+- `InitializeResourcesAction` - 各種リソースの初期化
+- `RestoreSmallManaAction` - マナ回復
+- `SearchForEnemyAction` - 敵の能動的検索
 
-### Condition Scripts  
+### 実装完了のCondition Scripts（12個）
 - `HasSharedEnemyInfoCondition` - BlackBoardに共有された敵情報があるかチェック
+- `EnemyInRangeCondition` - 攻撃範囲内の敵検出
+- `IsInitializedCondition` - 初期化状態のチェック
+- `HasTargetCondition` - ターゲットの存在確認
+- `HasManaCondition` - マナ量のチェック
+- `EnemyHealthCheckCondition` - 敵の体力チェック
+- `ScanForInterestCondition` - 興味のあるオブジェクトのスキャン
+- `CheckManaResourceCondition` - マナリソースの詳細チェック
+- `HealthCheckCondition` - 体力チェック条件
+- `EnemyCheckCondition` - 敵検出条件
+- `HasItemCondition` - アイテム所持チェック
 
-### コンパイルエラー対応
+### 名前空間とコード品質対応
+- **Components名前空間**: Health, Inventory, InventoryItem
+- **BehaviourTree.Actions名前空間**: 全Actionスクリプト
+- **BehaviourTree.Conditions名前空間**: 全Conditionスクリプト
+- **XMLコメント形式統一**: `/// <summary>説明</summary>` 形式に統一
+- **using Components;** ディレクティブを適切に配置
+
+### テストシステム完備
+- **BTParsingTests.cs**: 全BTファイルのパース検証
+- **BTFileValidationTests.cs**: ファイル構造の詳細検証
+- **BTTestRunner.cs**: エディターメニュー統合
+- **Tests.asmdef**: Editor専用に設定（Burstエラー解決）
+
+### コンパイルエラー対応完了
 - すべてのスクリプトで `SetProperty(string, string)` 形式に統一
 - `CheckCondition()` は `protected override BTNodeResult` 形式に統一
 - `owner` → `ownerComponent`, `owner.transform` → `transform` に統一
-- `debugMode` 参照を削除してログ直接出力に変更
-- `Components.Health` → `Health` に修正（namespace修正）
+- 変数名重複エラーの解決
+- プロパティ型の一致（damage: float → int）
