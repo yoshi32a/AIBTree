@@ -1,0 +1,125 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "Behaviour Tree",
+  "scopeName": "source.bt",
+  "patterns": [
+    {
+      "include": "#comments"
+    },
+    {
+      "include": "#keywords"
+    },
+    {
+      "include": "#strings"
+    },
+    {
+      "include": "#numbers"
+    },
+    {
+      "include": "#identifiers"
+    },
+    {
+      "include": "#punctuation"
+    }
+  ],
+  "repository": {
+    "comments": {
+      "patterns": [
+        {
+          "name": "comment.line.hash.bt",
+          "match": "#.*$"
+        }
+      ]
+    },
+    "keywords": {
+      "patterns": [
+        {
+          "name": "keyword.control.bt",
+          "match": "\\b(tree|Sequence|Selector|Action|Condition|Parallel)\\b"
+        },
+        {
+          "name": "entity.name.type.bt",
+          "match": "\\b(MoveToPosition|Wait|AttackEnemy|Attack|UseItem|FleeToSafety|Interact|RandomWander|CastSpell|NormalAttack|MoveToTarget|EnvironmentScan|ScanForInterest|SearchForEnemy|HealthCheck|EnemyCheck|HasTarget|HasItem|HasMana|IsInitialized|EnemyHealthCheck|EnemyInRange|ScanForInterest|CheckAlertFlag|DebugBlackBoard)\\b"
+        },
+        {
+          "name": "storage.type.bt",
+          "match": "\\b(target|speed|damage|duration|min_health|detection_range|attack_range|tolerance|cooldown|mana_cost|spell_name|item_type|move_type|interaction_type|wander_radius|pause_duration|scan_radius|min_distance|speed_multiplier|min_mana|search_radius|attack_type|range|radius|success_policy|failure_policy|scan_interval|patrol_radius|search_intensity|route|mana_gain|alert_reason)\\b"
+        },
+        {
+          "name": "constant.language.boolean.bt",
+          "match": "\\b(true|false)\\b"
+        },
+        {
+          "name": "constant.language.policy.bt",
+          "match": "\\b(require_one|require_all)\\b"
+        },
+        {
+          "name": "constant.language.special.bt",
+          "match": "\\b(fireball|healing_potion|health_potion|bow|ranged|melee|investigate|examine|high|standard_route|healthy|low_health|condition_failed)\\b"
+        }
+      ]
+    },
+    "strings": {
+      "patterns": [
+        {
+          "name": "string.quoted.double.bt",
+          "begin": "\"",
+          "end": "\"",
+          "patterns": [
+            {
+              "name": "constant.character.escape.bt",
+              "match": "\\\\."
+            }
+          ]
+        },
+        {
+          "name": "string.quoted.single.bt", 
+          "begin": "'",
+          "end": "'",
+          "patterns": [
+            {
+              "name": "constant.character.escape.bt",
+              "match": "\\\\."
+            }
+          ]
+        }
+      ]
+    },
+    "numbers": {
+      "patterns": [
+        {
+          "name": "constant.numeric.bt",
+          "match": "\\b\\d+\\.\\d+\\b"
+        },
+        {
+          "name": "constant.numeric.bt",
+          "match": "\\b\\d+\\b"
+        }
+      ]
+    },
+    "identifiers": {
+      "patterns": [
+        {
+          "name": "entity.name.function.bt",
+          "match": "\\b[a-zA-Z_][a-zA-Z0-9_]*(?=\\s*\\{)"
+        },
+        {
+          "name": "variable.other.bt",
+          "match": "\\b[a-zA-Z_][a-zA-Z0-9_]*\\b"
+        }
+      ]
+    },
+    "punctuation": {
+      "patterns": [
+        {
+          "name": "punctuation.definition.block.bt",
+          "match": "[{}]"
+        },
+        {
+          "name": "punctuation.separator.bt",
+          "match": ":"
+        }
+      ]
+    }
+  }
+}

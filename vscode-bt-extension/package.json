@@ -1,0 +1,66 @@
+{
+  "name": "behaviour-tree-language",
+  "displayName": "Behaviour Tree Language Support",
+  "description": "Language support for .bt (Behaviour Tree) files",
+  "version": "1.1.0",
+  "publisher": "aibtree",
+  "engines": {
+    "vscode": "^1.60.0"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "contributes": {
+    "languages": [
+      {
+        "id": "bt",
+        "aliases": [
+          "Behaviour Tree",
+          "bt"
+        ],
+        "extensions": [
+          ".bt"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "bt",
+        "scopeName": "source.bt",
+        "path": "./syntaxes/bt.tmLanguage.json"
+      }
+    ],
+    "snippets": [
+      {
+        "language": "bt",
+        "path": "./snippets/bt.json"
+      }
+    ],
+    "configuration": {
+      "title": "Behaviour Tree",
+      "properties": {
+        "bt.diagnostics.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable or disable syntax diagnostics for .bt files"
+        },
+        "bt.completion.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable or disable auto-completion for .bt files"
+        }
+      }
+    }
+  },
+  "activationEvents": [
+    "onLanguage:bt"
+  ],
+  "main": "./src/extension.js",
+  "scripts": {
+    "test": "echo \"No tests specified\" && exit 0"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.60.0"
+  }
+}

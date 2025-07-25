@@ -1,0 +1,120 @@
+# より複雑なBehaviourTreeの例（並列処理やネストした構造）
+
+tree ComplexAI {
+    Sequence root {
+        # 初期化チェック
+        Condition IsInitialized {
+        }
+        
+        # メイン行動ループ
+        Selector main_loop {
+            # 緊急時の対応
+            Sequence emergency_response {
+                Condition HealthCheck {
+                    min_health: 20
+                }
+                
+                Selector escape_options {
+                    # 回復アイテムを使用
+                    Sequence use_healing {
+                        Condition HasItem {
+                            item_type: "healing_potion"
+                        }
+                        
+                        Action UseItem {
+                            item_type: "healing_potion"
+                        }
+                    }
+                    
+                    # 安全な場所に逃げる
+                    Action FleeToSafety {
+                        min_distance: 20.0
+                        speed_multiplier: 1.5
+                    }
+                }
+            }
+            
+            # 戦闘行動（複数条件の動的チェック）
+            Sequence combat_behavior {
+                Condition EnemyInRange {
+                    attack_range: 5.0
+                }
+                
+                # 体力チェック（戦闘中も監視）
+                Condition HealthCheck {
+                    min_health: 30
+                }
+                
+                Selector combat_strategy {
+                    # 強力な攻撃（条件付き）
+                    Sequence special_attack {
+                        Condition HasMana {
+                            min_mana: 50
+                        }
+                        
+                        Condition EnemyHealthCheck {
+                            min_health: 80
+                        }
+                        
+                        Action CastSpell {
+                            spell_name: "fireball"
+                            damage: 40
+                            mana_cost: 50
+                        }
+                    }
+                    
+                    # 通常攻撃
+                    Action NormalAttack {
+                        damage: 15
+                        cooldown: 1.0
+                    }
+                }
+            }
+            
+            # 探索・巡回行動（BlackBoard情報活用）
+            Sequence exploration {
+                Selector move_behavior {
+                    # 興味のあるオブジェクトに向かう
+                    Sequence investigate {
+                        Condition ScanForInterest {
+                            scan_radius: 12.0
+                        }
+                        
+                        Action MoveToTarget {
+                            move_type: "investigate"
+                            speed: 2.0
+                        }
+                        
+                        Action Interact {
+                            interaction_type: "examine"
+                        }
+                    }
+                    
+                    # ランダムに移動
+                    Action RandomWander {
+                        wander_radius: 10.0
+                        speed: 1.5
+                        pause_duration: 3.0
+                    }
+                }
+            }
+            
+            # 並列処理の例：監視しながら待機
+            Parallel monitoring_idle {
+                success_policy: "require_one"
+                failure_policy: "require_all"
+                
+                # バックグラウンドで環境監視
+                Action EnvironmentScan {
+                    scan_interval: 2.0
+                    scan_radius: 15.0
+                }
+                
+                # 待機行動
+                Action Wait {
+                    duration: 5.0
+                }
+            }
+        }
+    }
+}

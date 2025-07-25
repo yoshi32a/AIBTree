@@ -1,0 +1,152 @@
+# 高度なガードAI - 新フォーマット版
+tree AdvancedGuardAI {
+    Sequence main_loop {
+        # 初期化チェック
+        Condition IsInitialized {
+        }
+        
+        # メイン行動選択（複雑な優先順位）
+        Selector priority_behavior {
+            # 緊急事態: 体力が危険域
+            Sequence emergency_retreat {
+                Condition HealthCheck {
+                    min_health: 20
+                }
+                
+                Selector retreat_options {
+                    # 回復アイテムがあれば使用
+                    Sequence use_healing {
+                        Condition HasItem {
+                            item_type: "health_potion"
+                        }
+                        
+                        Action UseItem {
+                            item_type: "health_potion"
+                            duration: 2.0
+                        }
+                    }
+                    
+                    # 安全地帯への退避
+                    Action FleeToSafety {
+                        target: "safe_zone"
+                        speed: 5.0
+                        tolerance: 2.0
+                    }
+                }
+            }
+            
+            # 戦闘行動: 敵が近くにいる場合
+            Sequence combat_behavior {
+                Condition EnemyCheck {
+                    detection_range: 8.0
+                }
+                
+                Selector combat_tactics {
+                    # 遠距離攻撃が可能な場合
+                    Sequence ranged_attack {
+                        Condition EnemyCheck {
+                            detection_range: 6.0
+                        }
+                        
+                        Condition HasItem {
+                            item_type: "bow"
+                        }
+                        
+                        Action Attack {
+                            attack_type: "ranged"
+                            damage: 30
+                            range: 6.0
+                            cooldown: 1.5
+                        }
+                    }
+                    
+                    # 近接戦闘
+                    Sequence melee_combat {
+                        Action MoveToPosition {
+                            target: "detected_enemy"
+                            speed: 4.0
+                            tolerance: 1.5
+                        }
+                        
+                        Action AttackEnemy {
+                            damage: 40
+                            attack_range: 2.0
+                            cooldown: 1.0
+                        }
+                    }
+                }
+                
+                # 戦闘後の短い休憩
+                Action Wait {
+                    duration: 0.5
+                }
+            }
+            
+            # 警戒パトロール: 通常時の行動
+            Sequence patrol_behavior {
+                Condition HealthCheck {
+                    min_health: 50
+                }
+                
+                Selector patrol_pattern {
+                    # パトロールポイント1への移動
+                    Sequence patrol_to_point1 {
+                        Action MoveToPosition {
+                            target: "patrol_point_1"
+                            speed: 2.5
+                            tolerance: 1.0
+                        }
+                        
+                        Action Wait {
+                            duration: 3.0
+                        }
+                        
+                        Condition HasTarget {
+                            target: "patrol_point_2"
+                        }
+                    }
+                    
+                    # パトロールポイント2への移動
+                    Sequence patrol_to_point2 {
+                        Action MoveToPosition {
+                            target: "patrol_point_2"
+                            speed: 2.5
+                            tolerance: 1.0
+                        }
+                        
+                        Action Wait {
+                            duration: 2.5
+                        }
+                    }
+                    
+                    # 中央拠点への帰還
+                    Sequence return_to_base {
+                        Action MoveToPosition {
+                            target: "guard_post"
+                            speed: 3.0
+                            tolerance: 0.8
+                        }
+                        
+                        Action Wait {
+                            duration: 4.0
+                        }
+                    }
+                }
+            }
+            
+            # フォールバック: 待機行動
+            Sequence idle_behavior {
+                Action Wait {
+                    duration: 1.0
+                }
+                
+                # ランダムな見回し行動
+                Action RandomWander {
+                    radius: 2.0
+                    speed: 1.5
+                    duration: 2.0
+                }
+            }
+        }
+    }
+}

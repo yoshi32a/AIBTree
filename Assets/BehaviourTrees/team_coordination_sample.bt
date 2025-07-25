@@ -1,0 +1,44 @@
+# チーム連携BlackBoardサンプル
+
+tree TeamCoordinationSample {
+    Parallel team_behavior {
+        success_policy: "require_one"
+        failure_policy: "require_all"
+        
+        # 偵察役：敵情報をBlackBoardに共有
+        Sequence scout_role {
+            Action PatrolArea {
+                patrol_radius: 20.0
+            }
+            
+            Action ReportEnemyLocation {
+                # 発見した敵の位置を"enemy_location"キーで共有
+                scan_radius: 15.0
+            }
+        }
+        
+        # 戦闘役：共有された敵情報を使用
+        Sequence combat_role {
+            Condition HasSharedEnemyInfo {
+                # BlackBoardの"enemy_location"をチェック
+            }
+            
+            Action AttackSharedTarget {
+                # 共有された敵位置に攻撃
+                damage: 40
+                attack_range: 3.0
+            }
+        }
+        
+        # 支援役：体力情報を管理
+        Sequence support_role {
+            Condition HealthCheck {
+                min_health: 30
+            }
+            
+            Action SetTeamHealthStatus {
+                # チーム全体の体力状況をBlackBoardに記録
+            }
+        }
+    }
+}

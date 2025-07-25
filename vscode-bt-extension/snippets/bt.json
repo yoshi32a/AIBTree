@@ -1,0 +1,157 @@
+{
+  "Tree Structure": {
+    "prefix": "tree",
+    "body": [
+      "tree ${1:TreeName} {",
+      "\t${2:Sequence} ${3:root} {",
+      "\t\t$0",
+      "\t}",
+      "}"
+    ],
+    "description": "Basic tree structure"
+  },
+  "Sequence Node": {
+    "prefix": "sequence",
+    "body": [
+      "Sequence ${1:node_name} {",
+      "\t$0",
+      "}"
+    ],
+    "description": "Sequence node (all children must succeed)"
+  },
+  "Selector Node": {
+    "prefix": "selector",
+    "body": [
+      "Selector ${1:node_name} {",
+      "\t$0",
+      "}"
+    ],
+    "description": "Selector node (first child to succeed)"
+  },
+  "Parallel Node": {
+    "prefix": "parallel",
+    "body": [
+      "Parallel ${1:node_name} {",
+      "\tsuccess_policy: \"${2:require_one}\"",
+      "\tfailure_policy: \"${3:require_all}\"",
+      "\t$0",
+      "}"
+    ],
+    "description": "Parallel node (simultaneous execution)"
+  },
+  "Action Node": {
+    "prefix": "action",
+    "body": [
+      "Action ${1:ScriptName} {",
+      "\t$0",
+      "}"
+    ],
+    "description": "Action node"
+  },
+  "Condition Node": {
+    "prefix": "condition",
+    "body": [
+      "Condition ${1:ScriptName} {",
+      "\t$0",
+      "}"
+    ],
+    "description": "Condition node"
+  },
+  "Move Action": {
+    "prefix": "move",
+    "body": [
+      "Action MoveToPosition {",
+      "\ttarget: \"${1:target_point}\"",
+      "\tspeed: ${2:3.5}",
+      "\ttolerance: ${3:0.5}",
+      "}"
+    ],
+    "description": "Move to position action"
+  },
+  "Wait Action": {
+    "prefix": "wait",
+    "body": [
+      "Action Wait {",
+      "\tduration: ${1:2.0}",
+      "}"
+    ],
+    "description": "Wait action"
+  },
+  "Attack Action": {
+    "prefix": "attack",
+    "body": [
+      "Action Attack {",
+      "\tdamage: ${1:25}",
+      "\tattack_range: ${2:2.0}",
+      "\tcooldown: ${3:1.0}",
+      "}"
+    ],
+    "description": "Attack action"
+  },
+  "Health Check": {
+    "prefix": "health",
+    "body": [
+      "Condition HealthCheck {",
+      "\tmin_health: ${1:50}",
+      "}"
+    ],
+    "description": "Health condition check"
+  },
+  "Enemy Detection": {
+    "prefix": "enemy",
+    "body": [
+      "Condition EnemyCheck {",
+      "\tdetection_range: ${1:10.0}",
+      "}"
+    ],
+    "description": "Enemy detection condition"
+  },
+  "Combat Sequence": {
+    "prefix": "combat",
+    "body": [
+      "Sequence ${1:combat_sequence} {",
+      "\tCondition EnemyCheck {",
+      "\t\tdetection_range: ${2:10.0}",
+      "\t}",
+      "\t",
+      "\tAction Attack {",
+      "\t\tdamage: ${3:25}",
+      "\t\tattack_range: ${4:2.0}",
+      "\t}",
+      "}"
+    ],
+    "description": "Complete combat sequence"
+  },
+  "Patrol Sequence": {
+    "prefix": "patrol",
+    "body": [
+      "Sequence ${1:patrol_sequence} {",
+      "\tAction MoveToPosition {",
+      "\t\ttarget: \"${2:patrol_point_1}\"",
+      "\t\tspeed: ${3:3.5}",
+      "\t\ttolerance: ${4:0.5}",
+      "\t}",
+      "\t",
+      "\tAction Wait {",
+      "\t\tduration: ${5:2.0}",
+      "\t}",
+      "}"
+    ],
+    "description": "Complete patrol sequence"
+  },
+  "BlackBoard Example": {
+    "prefix": "blackboard",
+    "body": [
+      "Sequence ${1:blackboard_example} {",
+      "\tAction ${2:ScanEnvironment} {",
+      "\t\tscan_radius: ${3:15.0}",
+      "\t}",
+      "\t",
+      "\tAction ${4:MoveToEnemy} {",
+      "\t\tspeed: ${5:4.0}",
+      "\t}",
+      "}"
+    ],
+    "description": "BlackBoard data sharing example"
+  }
+}

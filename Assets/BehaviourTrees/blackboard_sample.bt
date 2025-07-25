@@ -1,0 +1,37 @@
+# BlackBoard使用例サンプル
+
+tree BlackBoardSample {
+    Sequence main {
+        # 1. 環境をスキャンして敵情報をBlackBoardに保存
+        Action ScanEnvironment {
+            scan_radius: 15.0
+        }
+        
+        # 2. BlackBoardから敵情報を取得して移動
+        Selector movement_behavior {
+            # 敵が見つかった場合
+            Sequence move_to_enemy {
+                Condition HasSharedEnemyInfo {
+                    # BlackBoardの"enemy_location"をチェック
+                }
+                
+                Action MoveToEnemy {
+                    # BlackBoardから敵位置を取得して移動
+                    speed: 4.0
+                    tolerance: 1.5
+                }
+                
+                Action AttackTarget {
+                    # BlackBoardの敵情報を使用して攻撃
+                    damage: 30
+                }
+            }
+            
+            # 敵が見つからない場合
+            Action RandomWander {
+                wander_radius: 10.0
+                speed: 2.0
+            }
+        }
+    }
+}

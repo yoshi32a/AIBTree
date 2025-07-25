@@ -1,0 +1,20 @@
+# シンプルなBehaviourTreeの例
+
+tree SimpleAI {
+    Selector root {
+        # 敵を攻撃する
+        Sequence attack_behavior {
+            Condition HasTarget {
+            }
+            
+            Action Attack {
+                damage: 10
+            }
+        }
+        
+        # 敵を探す
+        Action SearchForEnemy {
+            search_radius: 15.0
+        }
+    }
+}

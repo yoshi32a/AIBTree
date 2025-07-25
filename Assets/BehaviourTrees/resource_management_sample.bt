@@ -1,0 +1,57 @@
+# リソース管理BlackBoardサンプル
+
+tree ResourceManagementSample {
+    Sequence main {
+        # 初期リソース設定
+        Action InitializeResources {
+            # BlackBoardにマナとアイテム情報を設定
+        }
+        
+        # メイン行動ループ
+        Selector resource_behavior {
+            # マナが十分な場合の魔法攻撃
+            Sequence magic_attack {
+                Condition CheckManaResource {
+                    # BlackBoardの"current_mana"をチェック
+                    min_mana: 50
+                }
+                
+                Action CastSpell {
+                    # マナを消費してBlackBoardを更新
+                    spell_name: "fireball"
+                    mana_cost: 50
+                    damage: 60
+                }
+            }
+            
+            # 体力が低い場合の回復行動
+            Sequence healing_behavior {
+                Condition HealthCheck {
+                    min_health: 30
+                }
+                
+                Condition HasItem {
+                    item_type: "healing_potion"
+                }
+                
+                Action UseItem {
+                    # アイテムを使用してBlackBoardを更新
+                    item_type: "healing_potion"
+                    duration: 2.0
+                }
+            }
+            
+            # マナ不足時の物理攻撃
+            Sequence physical_attack {
+                Action Attack {
+                    damage: 25
+                }
+                
+                Action RestoreSmallMana {
+                    # 少量のマナ回復をBlackBoardに反映
+                    mana_gain: 10
+                }
+            }
+        }
+    }
+}

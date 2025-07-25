@@ -1,0 +1,46 @@
+# 動的条件チェック + BlackBoardサンプル
+
+tree DynamicConditionSample {
+    Selector main {
+        # 体力が十分で敵がいる場合の戦闘（動的条件チェック）
+        Sequence healthy_combat {
+            Condition HealthCheck {
+                min_health: 50  # この条件を動的監視
+            }
+            
+            Condition EnemyCheck {
+                detection_range: 10.0  # この条件も動的監視
+            }
+            
+            # 両方の条件が満たされている間のみ実行
+            # どちらかが失敗すると即座に中断
+            Action AttackEnemy {
+                damage: 35
+                attack_range: 2.5
+            }
+        }
+        
+        # 体力は低いが安全な場所での回復
+        Sequence safe_healing {
+            Condition HealthCheck {
+                min_health: 20  # 最低限の体力条件
+            }
+            
+            Action MoveToPosition {
+                target: "safe_zone"  # 体力が20未満になると移動中断
+                speed: 3.0
+            }
+            
+            Action UseItem {
+                item_type: "healing_potion"
+                duration: 3.0
+            }
+        }
+        
+        # 緊急逃走（体力が極めて低い）
+        Action FleeToSafety {
+            target: "emergency_exit"
+            speed: 6.0  # 高速で逃走
+        }
+    }
+}
