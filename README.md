@@ -1,13 +1,15 @@
-# AIBTree - Behaviour Tree System for Unity
+# AIBTree - Advanced Behaviour Tree System for Unity
 
-BehaviourTreeで動くAIシステムです。階層型の`.bt`ファイル形式を使用し、VSCodeでシンタックスハイライトと入力補完をサポートします。
+Unity用の高度なBehaviourTreeシステムです。BlackBoardによるデータ共有、動的条件チェック、VSCode完全対応を特徴とします。
 
-## 特徴
+## ✨ 主要機能
 
-- **直感的な階層型記述**: ネストした構文でツリー構造が一目で分かる
-- **VSCode完全対応**: シンタックスハイライト、入力補完、エラーチェック
-- **Unity統合**: C#で実装され、Unityで直接実行可能
-- **拡張可能**: カスタムノードとスクリプトを簡単に追加
+- **🧠 BlackBoardシステム**: AIノード間でのリアルタイムデータ共有
+- **⚡ 動的条件チェック**: Action実行中の条件変化に即座に対応
+- **🌲 階層型.btファイル**: 直感的な階層構造でAI定義
+- **🔧 VSCode完全対応**: シンタックスハイライト、スニペット、自動補完
+- **⚙️ Unity統合**: C#による高性能な実行エンジン
+- **🚀 並列実行**: Parallelノードによる複数行動の同時実行
 
 ## プロジェクト構成
 
@@ -15,19 +17,34 @@ BehaviourTreeで動くAIシステムです。階層型の`.bt`ファイル形式
 Assets/
 ├── Scripts/
 │   └── BehaviourTree/
-│       ├── Core/                 # 基本クラス
-│       ├── Nodes/                # ノード実装
-│       ├── Parser/               # btファイルパーサー
-│       └── Examples/             # サンプルAI
-├── BehaviourTrees/               # btファイル保存場所
-│   ├── example.bt
-│   ├── simple_example.bt
-│   └── complex_example.bt
-vscode-bt-extension/              # VSCode拡張機能
+│       ├── Core/                 # コアシステム
+│       │   ├── BTNode.cs        # ベースノード（BlackBoard対応）
+│       │   ├── BlackBoard.cs    # データ共有システム
+│       │   ├── BTActionNode.cs  # アクション基底（動的条件対応）
+│       │   ├── BTConditionNode.cs
+│       │   ├── BTSequenceNode.cs # Sequenceノード
+│       │   ├── BTSelectorNode.cs # Selectorノード
+│       │   └── BTParallelNode.cs # Parallelノード
+│       ├── Actions/              # アクション実装
+│       │   ├── MoveToPositionAction.cs
+│       │   ├── AttackEnemyAction.cs
+│       │   └── WaitAction.cs
+│       ├── Conditions/           # 条件実装
+│       │   ├── HealthCheckCondition.cs
+│       │   ├── EnemyCheckCondition.cs
+│       │   └── HasItemCondition.cs
+│       ├── Parser/               # .btファイルパーサー
+│       └── Components/           # 汎用コンポーネント
+├── BehaviourTrees/               # .btファイルとサンプル
+│   ├── blackboard_sample.bt      # BlackBoard基本例
+│   ├── team_coordination_sample.bt # チーム連携例
+│   ├── resource_management_sample.bt # リソース管理例
+│   └── dynamic_condition_sample.bt # 動的条件例
+vscode-bt-extension/              # VSCode拡張機能 v1.1.0
 ├── package.json
-├── syntaxes/
-├── snippets/
-└── src/
+├── syntaxes/bt.tmLanguage.json   # 新形式対応
+├── snippets/bt.json              # BlackBoard対応スニペット
+└── src/extension.js
 ```
 
 ## btファイル形式
@@ -37,13 +54,13 @@ vscode-bt-extension/              # VSCode拡張機能
 ```bt
 tree TreeName {
     # ノードタイプ ノード名 { プロパティとネストした子ノード }
-    sequence root {
-        condition health_check {
+    Sequence root {
+        Condition health_check {
             script: "HealthCheck"
             min_health: 50
         }
         
-        action move {
+        Action move {
             script: "MoveToPosition"
             target: "patrol_point_1"
             speed: 3.5
@@ -54,10 +71,11 @@ tree TreeName {
 
 ### サポートするノードタイプ
 
-- **sequence**: 全ての子ノードが成功するまで順次実行
-- **selector**: いずれかの子ノードが成功するまで実行
-- **action**: 実際のアクションを実行
-- **condition**: 条件をチェック
+- **Sequence**: 全ての子ノードが成功するまで順次実行
+- **Selector**: いずれかの子ノードが成功するまで実行
+- **Parallel**: 複数の子ノードを並行実行
+- **Action**: 実際のアクションを実行
+- **Condition**: 条件をチェック
 
 ### よく使用するプロパティ
 
@@ -68,6 +86,8 @@ tree TreeName {
 - `duration`: 実行時間
 - `min_health`: 最小体力閾値
 - `detection_range`: 検出範囲
+- `bb_key`: BlackBoardのキー名（データ読み書き用）
+- `bb_value`: BlackBoardに書き込む値
 
 ## VSCode拡張機能のインストール
 
@@ -101,32 +121,40 @@ code --install-extension behaviour-tree-language-1.0.0.vsix
 
 ### 1. BehaviourTreeRunnerの設定
 
-1. GameObjectに`BehaviourTreeRunner`と`ExampleAI`コンポーネントを追加
-2. `Behaviour Tree File Path`に`.bt`ファイル名を設定（例：`example.bt`）
-3. パトロールポイントやターゲットを設定
+1. GameObjectに`BehaviourTreeRunner`と`Health`コンポーネントを追加
+2. `Behaviour Tree File Path`に`.bt`ファイル名を設定（例：`blackboard_sample.bt`）
+3. BlackBoardとHealthコンポーネントが自動的に連携されます
 
-### 2. カスタムAIの作成
+### 2. BlackBoardの使用方法
 
 ```csharp
 public class MyCustomAI : MonoBehaviour
 {
     private BehaviourTreeRunner treeRunner;
+    private BlackBoard blackBoard;
 
     void Start()
     {
         treeRunner = GetComponent<BehaviourTreeRunner>();
+        blackBoard = treeRunner.GetBlackBoard();
+        
+        // 初期値を設定
+        blackBoard.SetValue("enemy_target", (GameObject)null);
+        blackBoard.SetValue("patrol_index", 0);
+        
         treeRunner.LoadBehaviourTree("my_ai.bt");
     }
     
-    // btファイルから呼び出されるメソッド
-    public bool MyCondition()
+    // BlackBoardから値を取得
+    public GameObject GetEnemyTarget()
     {
-        return someCondition;
+        return blackBoard.GetValue<GameObject>("enemy_target");
     }
     
-    public void MyAction()
+    // BlackBoardに値を設定
+    public void SetEnemyTarget(GameObject target)
     {
-        // アクション実装
+        blackBoard.SetValue("enemy_target", target);
     }
 }
 ```
@@ -141,59 +169,58 @@ public class MyCustomAI : MonoBehaviour
 
 ## サンプル
 
-### シンプルなAI
+### BlackBoard使用例
 
 ```bt
-tree SimpleAI {
-    selector root {
-        sequence attack_behavior {
-            condition has_target {
-                script: "HasTarget"
-            }
-            action attack {
-                script: "Attack"
-                damage: 10
-            }
+tree BlackBoardAI {
+    Sequence root {
+        Condition has_target {
+            script: "HasItem"
+            bb_key: "enemy_target"
         }
-        action search_for_enemy {
-            script: "SearchForEnemy"
-            search_radius: 15.0
+        Action attack {
+            script: "AttackEnemy"
+            damage: 10
+            bb_target_key: "enemy_target"
         }
     }
 }
 ```
 
-### 複雑なパトロールAI
+### 動的条件チェック付きAI
 
 ```bt
-tree PatrolAI {
-    sequence root {
-        condition check_health {
+tree DynamicPatrolAI {
+    Sequence root {
+        Condition check_health {
             script: "HealthCheck"
             min_health: 50
         }
         
-        selector main_behavior {
-            sequence combat_sequence {
-                condition enemy_detected {
+        Selector main_behavior {
+            Sequence combat_sequence {
+                Condition enemy_detected {
                     script: "EnemyCheck"
                     detection_range: 10.0
+                    bb_key: "enemy_target"
                 }
-                action attack_enemy {
+                Action attack_enemy {
                     script: "AttackEnemy"
                     damage: 25
                     attack_range: 2.0
+                    # この条件が満たされなくなったら中断
+                    dynamic_conditions: ["enemy_detected"]
                 }
             }
             
-            sequence patrol_sequence {
-                action move_to_patrol {
+            Sequence patrol_sequence {
+                Action move_to_patrol {
                     script: "MoveToPosition"
-                    target: "patrol_point_1"
+                    bb_key: "current_patrol_point"
                     speed: 3.5
                     tolerance: 0.5
                 }
-                action wait_at_point {
+                Action wait_at_point {
                     script: "Wait"
                     duration: 2.0
                 }
@@ -203,19 +230,78 @@ tree PatrolAI {
 }
 ```
 
+## BlackBoard機能
+
+### 基本的な使用方法
+
+```csharp
+// 値の設定
+blackBoard.SetValue("player_health", 100);
+blackBoard.SetValue("enemy_position", transform.position);
+blackBoard.SetValue("has_key", true);
+
+// 値の取得
+int health = blackBoard.GetValue<int>("player_health", 0);
+Vector3 pos = blackBoard.GetValue<Vector3>("enemy_position");
+bool hasKey = blackBoard.GetValue<bool>("has_key", false);
+
+// キーの存在確認
+if (blackBoard.HasKey("enemy_target"))
+{
+    // 処理
+}
+```
+
+### 動的条件チェック
+
+Actionノード実行中に条件が変化した場合、自動的に行動を中断して上位ノードに制御を戻します：
+
+```csharp
+public class MyAction : BTActionNode
+{
+    protected override BTNodeResult ExecuteAction()
+    {
+        // 長時間実行されるアクション
+        while (IsRunning())
+        {
+            // 監視中の条件が失敗したら自動的に中断
+            if (AreWatchedConditionsFailing())
+            {
+                OnConditionFailed();
+                return BTNodeResult.Failure;
+            }
+            
+            // アクション処理
+            DoAction();
+        }
+        
+        return BTNodeResult.Success;
+    }
+}
+```
+
 ## 開発・拡張
 
-### 新しいスクリプトの追加
+### 新しいActionノードの作成
 
-1. `CustomActionNode`または`CustomConditionNode`の`switch`文に追加
-2. `ExampleAI`クラスに対応するメソッドを追加
-3. VSCode拡張の補完リストに追加
+1. `Assets/Scripts/BehaviourTree/Actions/`に新しいクラスを作成
+2. `BTActionNode`を継承
+3. `ExecuteAction()`メソッドを実装
+4. `SetProperty()`でプロパティ処理を追加
+
+### 新しいConditionノードの作成
+
+1. `Assets/Scripts/BehaviourTree/Conditions/`に新しいクラスを作成
+2. `BTConditionNode`を継承
+3. `CheckCondition()`メソッドを実装
+4. `SetProperty()`でプロパティ処理を追加
 
 ### デバッグ
 
 - `BehaviourTreeRunner`の`Debug Mode`を有効にしてコンソール出力を確認
+- Unity Inspectorで右クリック → `Show BlackBoard Contents`でデータ確認
+- Unity Inspectorで右クリック → `Clear BlackBoard`でデータクリア
 - Unity Inspectorで右クリック → `Reload Behaviour Tree`でファイルを再読み込み
-- Unity Inspectorで右クリック → `Reset Tree State`でツリー状態をリセット
 
 ## ライセンス
 
@@ -225,10 +311,19 @@ MIT License
 
 プルリクエストやイシューの報告を歓迎します。
 
+## 実装済み機能
+
+- [x] BlackBoardシステム（データ共有）
+- [x] 動的条件チェック（実行中の条件監視）
+- [x] 並列実行ノード（Parallel）の実装
+- [x] VSCode完全対応（v1.1.0）
+- [x] 複合ノード（Sequence, Selector, Parallel）
+- [x] デバッグ機能（BlackBoard表示、ツリー状態管理）
+
 ## 今後の予定
 
-- [ ] 並列実行ノード（parallel）の実装
-- [ ] デコレータノード（repeat, timeout, etc.）の実装
+- [ ] デコレータノード（repeat, timeout, inverter等）の実装
 - [ ] ビジュアルエディタの開発
-- [ ] より詳細なデバッグ機能
-- [ ] パフォーマンス最適化
+- [ ] より詳細なパフォーマンス解析機能
+- [ ] ネットワーク対応（マルチプレイヤーAI）
+- [ ] AI行動の録画・再生機能
