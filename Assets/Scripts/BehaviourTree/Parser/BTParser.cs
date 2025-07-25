@@ -386,9 +386,7 @@ namespace BehaviourTree.Parser
                 case "Selector":
                     return new SelectorNode();
                 case "Parallel":
-                    // TODO: Implement ParallelNode if needed
-                    Debug.LogWarning("Parallel node not implemented yet");
-                    return null;
+                    return new BTParallelNode();
                 default:
                     Debug.LogError($"Unknown composite node type: {nodeType}");
                     return null;
@@ -434,10 +432,20 @@ namespace BehaviourTree.Parser
                         node = new RandomWanderAction();
                         Debug.Log($"✅ Created RandomWanderAction");
                         break;
+                    case "CastSpell":
+                        node = new CastSpellAction();
+                        Debug.Log($"✅ Created CastSpellAction");
+                        break;
                     case "Attack":
+                    case "NormalAttack":
                     case "UseItem":
                     case "FleeToSafety":
                     case "Interact":
+                    case "MoveToTarget":
+                    case "EnvironmentScan":
+                    case "InitializeResources":
+                    case "RestoreSmallMana":
+                    case "SearchForEnemy":
                         // 未実装のアクションは CustomActionNode を使用
                         node = new CustomActionNode();
                         Debug.Log($"⚠️ Using CustomActionNode for {scriptName}");
@@ -470,10 +478,16 @@ namespace BehaviourTree.Parser
                         node = new HasSharedEnemyInfoCondition();
                         Debug.Log($"✅ Created HasSharedEnemyInfoCondition");
                         break;
+                    case "EnemyInRange":
+                        node = new EnemyInRangeCondition();
+                        Debug.Log($"✅ Created EnemyInRangeCondition");
+                        break;
                     case "IsInitialized":
                     case "HasTarget":
                     case "HasMana":
                     case "EnemyHealthCheck":
+                    case "ScanForInterest":
+                    case "CheckManaResource":
                         // 未実装の条件は CustomConditionNode を使用
                         node = new CustomConditionNode();
                         Debug.Log($"⚠️ Using CustomConditionNode for {scriptName}");

@@ -6,7 +6,9 @@
         "UnityEditor.TestRunner",
         "App"
     ],
-    "includePlatforms": [],
+    "includePlatforms": [
+        "Editor"
+    ],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": true,
