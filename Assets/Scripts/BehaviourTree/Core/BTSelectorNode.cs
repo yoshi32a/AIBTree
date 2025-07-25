@@ -1,8 +1,6 @@
 namespace BehaviourTree.Core
 {
-    /// <summary>
-    /// Selectorノード：いずれかの子ノードが成功するまで実行
-    /// </summary>
+    /// <summary>Selectorノード：いずれかの子ノードが成功するまで実行</summary>
     [System.Serializable]
     public class BTSelectorNode : BTCompositeNode
     {

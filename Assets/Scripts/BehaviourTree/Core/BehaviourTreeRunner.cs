@@ -133,9 +133,7 @@ namespace BehaviourTree.Core
             }
         }
         
-        /// <summary>
-        /// 動的条件チェックを設定する
-        /// </summary>
+        /// <summary>動的条件チェックを設定する</summary>
         void SetupDynamicConditionChecking(BTNode node)
         {
             if (node is BTCompositeNode composite)

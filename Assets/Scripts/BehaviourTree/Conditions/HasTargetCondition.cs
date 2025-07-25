@@ -3,9 +3,7 @@ using BehaviourTree.Core;
 
 namespace BehaviourTree.Conditions
 {
-    /// <summary>
-    /// ターゲットの存在をチェックする条件
-    /// </summary>
+    /// <summary>ターゲットの存在をチェックする条件</summary>
     public class HasTargetCondition : BTConditionNode
     {
         protected override BTNodeResult CheckCondition()

@@ -3,9 +3,7 @@ using BehaviourTree.Core;
 
 namespace BehaviourTree.Actions
 {
-    /// <summary>
-    /// 環境をスキャンして敵情報をBlackBoardに保存するアクション
-    /// </summary>
+    /// <summary>環境をスキャンして敵情報をBlackBoardに保存するアクション</summary>
     public class ScanEnvironmentAction : BTActionNode
     {
         float scanRadius = 10.0f;

@@ -3,9 +3,7 @@ using BehaviourTree.Core;
 
 namespace BehaviourTree.Conditions
 {
-    /// <summary>
-    /// マナ量をチェックする条件
-    /// </summary>
+    /// <summary>マナ量をチェックする条件</summary>
     public class HasManaCondition : BTConditionNode
     {
         int minMana = 50;

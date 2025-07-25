@@ -75,6 +75,11 @@ namespace BehaviourTree.Parser
                     continue;
                 }
 
+                if (line.Contains("#"))
+                {
+                    line = line[..line.IndexOf("#", StringComparison.Ordinal)];
+                }
+
                 var position = 0;
                 while (position < line.Length)
                 {

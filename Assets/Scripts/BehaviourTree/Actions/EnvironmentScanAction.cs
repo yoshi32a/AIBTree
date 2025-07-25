@@ -3,9 +3,7 @@ using BehaviourTree.Core;
 
 namespace BehaviourTree.Actions
 {
-    /// <summary>
-    /// 環境をスキャンするアクション
-    /// </summary>
+    /// <summary>環境をスキャンするアクション</summary>
     public class EnvironmentScanAction : BTActionNode
     {
         float scanInterval = 2.0f;

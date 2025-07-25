@@ -3,9 +3,7 @@ using BehaviourTree.Core;
 
 namespace BehaviourTree.Actions
 {
-    /// <summary>
-    /// BlackBoardから敵位置を取得して移動するアクション
-    /// </summary>
+    /// <summary>BlackBoardから敵位置を取得して移動するアクション</summary>
     public class MoveToEnemyAction : BTActionNode
     {
         float speed = 3.5f;

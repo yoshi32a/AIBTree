@@ -3,9 +3,7 @@ using BehaviourTree.Core;
 
 namespace BehaviourTree.Conditions
 {
-    /// <summary>
-    /// BlackBoardに共有された敵情報があるかチェックする条件
-    /// </summary>
+    /// <summary>BlackBoardに共有された敵情報があるかチェックする条件</summary>
     public class HasSharedEnemyInfoCondition : BTConditionNode
     {
         string blackBoardKey = "has_enemy_info";

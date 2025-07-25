@@ -3,9 +3,7 @@ using BehaviourTree.Core;
 
 namespace BehaviourTree.Conditions
 {
-    /// <summary>
-    /// 攻撃範囲内に敵がいるかチェックする条件
-    /// </summary>
+    /// <summary>攻撃範囲内に敵がいるかチェックする条件</summary>
     public class EnemyInRangeCondition : BTConditionNode
     {
         float attackRange = 5.0f;

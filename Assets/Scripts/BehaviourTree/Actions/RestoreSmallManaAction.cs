@@ -3,9 +3,7 @@ using BehaviourTree.Core;
 
 namespace BehaviourTree.Actions
 {
-    /// <summary>
-    /// 少量のマナを回復するアクション
-    /// </summary>
+    /// <summary>少量のマナを回復するアクション</summary>
     public class RestoreSmallManaAction : BTActionNode
     {
         int manaGain = 10;

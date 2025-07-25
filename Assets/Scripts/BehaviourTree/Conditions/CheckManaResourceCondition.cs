@@ -3,9 +3,7 @@ using BehaviourTree.Core;
 
 namespace BehaviourTree.Conditions
 {
-    /// <summary>
-    /// マナリソースをチェックする条件
-    /// </summary>
+    /// <summary>マナリソースをチェックする条件</summary>
     public class CheckManaResourceCondition : BTConditionNode
     {
         int minMana = 50;

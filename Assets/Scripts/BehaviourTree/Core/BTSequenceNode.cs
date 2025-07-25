@@ -1,8 +1,6 @@
 namespace BehaviourTree.Core
 {
-    /// <summary>
-    /// Sequenceノード：全ての子ノードが成功するまで実行
-    /// </summary>
+    /// <summary>Sequenceノード：全ての子ノードが成功するまで実行</summary>
     [System.Serializable]
     public class BTSequenceNode : BTCompositeNode
     {

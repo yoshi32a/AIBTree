@@ -1,8 +1,6 @@
 namespace BehaviourTree.Core
 {
-    /// <summary>
-    /// Parallelノード：全ての子ノードを並行実行
-    /// </summary>
+    /// <summary>Parallelノード：全ての子ノードを並行実行</summary>
     [System.Serializable]
     public class BTParallelNode : BTCompositeNode
     {

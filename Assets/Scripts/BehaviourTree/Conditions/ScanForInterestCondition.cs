@@ -3,9 +3,7 @@ using BehaviourTree.Core;
 
 namespace BehaviourTree.Conditions
 {
-    /// <summary>
-    /// 興味のあるオブジェクトをスキャンする条件
-    /// </summary>
+    /// <summary>興味のあるオブジェクトをスキャンする条件</summary>
     public class ScanForInterestCondition : BTConditionNode
     {
         float scanRadius = 12.0f;

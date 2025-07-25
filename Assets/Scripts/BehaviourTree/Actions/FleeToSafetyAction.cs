@@ -3,9 +3,7 @@ using BehaviourTree.Core;
 
 namespace BehaviourTree.Actions
 {
-    /// <summary>
-    /// 安全な場所に逃走するアクション
-    /// </summary>
+    /// <summary>安全な場所に逃走するアクション</summary>
     public class FleeToSafetyAction : BTActionNode
     {
         float minDistance = 20.0f;

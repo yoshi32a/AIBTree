@@ -3,9 +3,7 @@ using BehaviourTree.Core;
 
 namespace BehaviourTree.Conditions
 {
-    /// <summary>
-    /// 初期化状態をチェックする条件
-    /// </summary>
+    /// <summary>初期化状態をチェックする条件</summary>
     public class IsInitializedCondition : BTConditionNode
     {
         protected override BTNodeResult CheckCondition()

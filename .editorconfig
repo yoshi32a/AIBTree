@@ -1,4 +1,7 @@
-﻿[*.cs]
+﻿root = true
+
+[*.cs]
+
 # private修飾子を暗黙的にする
 resharper_csharp_default_private_modifier = implicit
 # this修飾子を削除する
@@ -24,3 +27,7 @@ resharper_braces_for_dowhile = required
 resharper_braces_for_using = required
 resharper_braces_for_lock = required
 resharper_braces_for_fixed = required
+
+# ReSharperのXMLコメント設定
+resharper_xmldoc_blank_line_after_pi = false
+resharper_xmldoc_indent_child_elements = donottouch

@@ -1,8 +1,6 @@
 namespace BehaviourTree.Core
 {
-    /// <summary>
-    /// 複合ノードのベースクラス
-    /// </summary>
+    /// <summary>複合ノードのベースクラス</summary>
     [System.Serializable]
     public abstract class BTCompositeNode : BTNode
     {
@@ -14,9 +12,7 @@ namespace BehaviourTree.Core
             currentChildIndex = 0;
         }
         
-        /// <summary>
-        /// 動的条件チェックを設定（ConditionとActionを関連付け）
-        /// </summary>
+        /// <summary>動的条件チェックを設定（ConditionとActionを関連付け）</summary>
         public void SetupDynamicConditionChecking()
         {
             for (int i = 0; i < Children.Count - 1; i++)

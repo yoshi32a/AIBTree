@@ -3,9 +3,7 @@ using BehaviourTree.Core;
 
 namespace BehaviourTree.Actions
 {
-    /// <summary>
-    /// ターゲットに移動するアクション
-    /// </summary>
+    /// <summary>ターゲットに移動するアクション</summary>
     public class MoveToTargetAction : BTActionNode
     {
         string moveType = "normal";

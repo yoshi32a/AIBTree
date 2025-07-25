@@ -45,9 +45,7 @@ namespace BehaviourTree.Core
 
         protected abstract BTNodeResult ExecuteAction();
         
-        /// <summary>
-        /// 動的にチェックする条件を追加
-        /// </summary>
+        /// <summary>動的にチェックする条件を追加</summary>
         public void AddWatchedCondition(BTConditionNode condition)
         {
             if (!watchedConditions.Contains(condition))
@@ -56,17 +54,13 @@ namespace BehaviourTree.Core
             }
         }
         
-        /// <summary>
-        /// 条件が失敗した時に呼ばれる（オーバーライド可能）
-        /// </summary>
+        /// <summary>条件が失敗した時に呼ばれる（オーバーライド可能）</summary>
         protected virtual void OnConditionFailed()
         {
             // デフォルトでは何もしない
         }
         
-        /// <summary>
-        /// 現在実行中かどうか
-        /// </summary>
+        /// <summary>現在実行中かどうか</summary>
         public bool IsExecuting => isExecuting;
         
         public override void Reset()

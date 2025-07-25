@@ -3,9 +3,7 @@ using BehaviourTree.Core;
 
 namespace BehaviourTree.Actions
 {
-    /// <summary>
-    /// ランダムに徘徊するアクション
-    /// </summary>
+    /// <summary>ランダムに徘徊するアクション</summary>
     public class RandomWanderAction : BTActionNode
     {
         float wanderRadius = 10.0f;

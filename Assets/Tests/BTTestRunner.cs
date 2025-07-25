@@ -11,16 +11,14 @@ namespace BehaviourTree.Tests
     /// </summary>
     public class BTTestRunner
     {
-        /// <summary>
-        /// メニューから全BTファイルの簡易テストを実行
-        /// </summary>
+        /// <summary>メニューから全BTファイルの簡易テストを実行</summary>
         [MenuItem("BehaviourTree/Run BT File Tests")]
         public static void RunBTFileTests()
         {
             Debug.Log("🧪 Starting BT File Tests...");
             
             var parser = new BehaviourTree.Parser.BTParser();
-            string btDirectory = Path.Combine(Application.dataPath, "BehaviourTrees");
+            var btDirectory = Path.Combine(Application.dataPath, "BehaviourTrees");
             
             if (!Directory.Exists(btDirectory))
             {
@@ -28,16 +26,16 @@ namespace BehaviourTree.Tests
                 return;
             }
             
-            string[] btFiles = Directory.GetFiles(btDirectory, "*.bt");
+            var btFiles = Directory.GetFiles(btDirectory, "*.bt");
             Debug.Log($"📁 Found {btFiles.Length} BT files to test");
             
-            int successCount = 0;
-            int failCount = 0;
+            var successCount = 0;
+            var failCount = 0;
             var failedFiles = new List<string>();
             
-            foreach (string filePath in btFiles)
+            foreach (var filePath in btFiles)
             {
-                string fileName = Path.GetFileName(filePath);
+                var fileName = Path.GetFileName(filePath);
                 Debug.Log($"🔍 Testing: {fileName}");
                 
                 try
@@ -83,9 +81,7 @@ namespace BehaviourTree.Tests
             }
         }
         
-        /// <summary>
-        /// 個別ファイルテスト用メニュー
-        /// </summary>
+        /// <summary>個別ファイルテスト用メニュー</summary>
         [MenuItem("BehaviourTree/Test BlackBoard Sample")]
         public static void TestBlackBoardSample()
         {
@@ -104,15 +100,13 @@ namespace BehaviourTree.Tests
             TestSpecificFile("dynamic_condition_sample.bt");
         }
         
-        /// <summary>
-        /// 特定ファイルのテスト実行
-        /// </summary>
+        /// <summary>特定ファイルのテスト実行</summary>
         static void TestSpecificFile(string fileName)
         {
             Debug.Log($"🧪 Testing specific file: {fileName}");
             
             var parser = new BehaviourTree.Parser.BTParser();
-            string filePath = Path.Combine(Application.dataPath, "BehaviourTrees", fileName);
+            var filePath = Path.Combine(Application.dataPath, "BehaviourTrees", fileName);
             
             if (!File.Exists(filePath))
             {
@@ -140,25 +134,21 @@ namespace BehaviourTree.Tests
             }
         }
         
-        /// <summary>
-        /// ノード情報を簡潔にログ出力
-        /// </summary>
+        /// <summary>ノード情報を簡潔にログ出力</summary>
         static void LogNodeInfo(BehaviourTree.Core.BTNode node, string fileName)
         {
             if (node == null) return;
             
-            int totalNodes = CountNodes(node);
+            var totalNodes = CountNodes(node);
             Debug.Log($"📋 {fileName}: Root='{node.Name}', Total nodes={totalNodes}");
         }
         
-        /// <summary>
-        /// ノード情報を詳細にログ出力
-        /// </summary>
+        /// <summary>ノード情報を詳細にログ出力</summary>
         static void LogDetailedNodeInfo(BehaviourTree.Core.BTNode node, string fileName, int depth)
         {
             if (node == null) return;
             
-            string indent = new string(' ', depth * 2);
+            var indent = new string(' ', depth * 2);
             Debug.Log($"{indent}🔹 {node.Name} ({node.GetType().Name})");
             
             if (node.Children != null && node.Children.Count > 0)
@@ -170,14 +160,12 @@ namespace BehaviourTree.Tests
             }
         }
         
-        /// <summary>
-        /// ノード数を再帰的にカウント
-        /// </summary>
+        /// <summary>ノード数を再帰的にカウント</summary>
         static int CountNodes(BehaviourTree.Core.BTNode node)
         {
             if (node == null) return 0;
             
-            int count = 1; // 自分自身
+            var count = 1; // 自分自身
             
             if (node.Children != null)
             {
@@ -190,29 +178,27 @@ namespace BehaviourTree.Tests
             return count;
         }
         
-        /// <summary>
-        /// パフォーマンステスト用メニュー
-        /// </summary>
+        /// <summary>パフォーマンステスト用メニュー</summary>
         [MenuItem("BehaviourTree/Performance Test")]
         public static void RunPerformanceTest()
         {
             Debug.Log("⏱️ Starting BT Performance Test...");
             
             var parser = new BehaviourTree.Parser.BTParser();
-            string btDirectory = Path.Combine(Application.dataPath, "BehaviourTrees");
-            string[] btFiles = Directory.GetFiles(btDirectory, "*.bt");
+            var btDirectory = Path.Combine(Application.dataPath, "BehaviourTrees");
+            var btFiles = Directory.GetFiles(btDirectory, "*.bt");
             
             var stopwatch = new System.Diagnostics.Stopwatch();
             
-            foreach (string filePath in btFiles)
+            foreach (var filePath in btFiles)
             {
-                string fileName = Path.GetFileName(filePath);
+                var fileName = Path.GetFileName(filePath);
                 
                 // 10回パースして平均時間を計測
                 long totalMs = 0;
-                int iterations = 10;
+                var iterations = 10;
                 
-                for (int i = 0; i < iterations; i++)
+                for (var i = 0; i < iterations; i++)
                 {
                     stopwatch.Restart();
                     var result = parser.ParseFile(filePath);
@@ -220,7 +206,7 @@ namespace BehaviourTree.Tests
                     totalMs += stopwatch.ElapsedMilliseconds;
                 }
                 
-                double avgMs = totalMs / (double)iterations;
+                var avgMs = totalMs / (double)iterations;
                 Debug.Log($"⏱️ {fileName}: {avgMs:F2}ms average ({totalMs}ms total for {iterations} iterations)");
                 
                 if (avgMs > 100)
