@@ -53,15 +53,13 @@ vscode-bt-extension/              # VSCode拡張機能 v1.1.0
 
 ```bt
 tree TreeName {
-    # ノードタイプ ノード名 { プロパティとネストした子ノード }
+    # ノードタイプ スクリプト名 { プロパティとネストした子ノード }
     Sequence root {
-        Condition health_check {
-            script: "HealthCheck"
+        Condition HealthCheck {
             min_health: 50
         }
         
-        Action move {
-            script: "MoveToPosition"
+        Action MoveToPosition {
             target: "patrol_point_1"
             speed: 3.5
         }
@@ -79,15 +77,17 @@ tree TreeName {
 
 ### よく使用するプロパティ
 
-- `script`: 実行するスクリプト名
 - `target`: 移動先やターゲット名
 - `speed`: 移動速度
 - `damage`: ダメージ量
 - `duration`: 実行時間
 - `min_health`: 最小体力閾値
 - `detection_range`: 検出範囲
-- `bb_key`: BlackBoardのキー名（データ読み書き用）
-- `bb_value`: BlackBoardに書き込む値
+- `scan_radius`: スキャン範囲（ScanEnvironment用）
+- `attack_range`: 攻撃範囲（AttackTarget用）
+- `wander_radius`: 徘徊範囲（RandomWander用）
+- `tolerance`: 位置の許容誤差
+- `cooldown`: クールダウン時間
 
 ## VSCode拡張機能のインストール
 
@@ -174,14 +174,29 @@ public class MyCustomAI : MonoBehaviour
 ```bt
 tree BlackBoardAI {
     Sequence root {
-        Condition has_target {
-            script: "HasItem"
-            bb_key: "enemy_target"
+        Action ScanEnvironment {
+            scan_radius: 15.0
         }
-        Action attack {
-            script: "AttackEnemy"
-            damage: 10
-            bb_target_key: "enemy_target"
+        
+        Selector behavior_selection {
+            Sequence attack_sequence {
+                Condition HasSharedEnemyInfo {
+                    # BlackBoardの敵情報をチェック
+                }
+                Action MoveToEnemy {
+                    speed: 4.0
+                    tolerance: 1.5
+                }
+                Action AttackTarget {
+                    damage: 30
+                    attack_range: 2.0
+                }
+            }
+            
+            Action RandomWander {
+                wander_radius: 10.0
+                speed: 2.0
+            }
         }
     }
 }
@@ -192,36 +207,29 @@ tree BlackBoardAI {
 ```bt
 tree DynamicPatrolAI {
     Sequence root {
-        Condition check_health {
-            script: "HealthCheck"
+        Condition HealthCheck {
             min_health: 50
         }
         
         Selector main_behavior {
             Sequence combat_sequence {
-                Condition enemy_detected {
-                    script: "EnemyCheck"
+                Condition EnemyCheck {
                     detection_range: 10.0
-                    bb_key: "enemy_target"
                 }
-                Action attack_enemy {
-                    script: "AttackEnemy"
+                Action AttackEnemy {
                     damage: 25
                     attack_range: 2.0
-                    # この条件が満たされなくなったら中断
-                    dynamic_conditions: ["enemy_detected"]
+                    # 体力やEnemyCheckの条件が満たされなくなったら中断
                 }
             }
             
             Sequence patrol_sequence {
-                Action move_to_patrol {
-                    script: "MoveToPosition"
-                    bb_key: "current_patrol_point"
+                Action MoveToPosition {
+                    target: "patrol_point_1"
                     speed: 3.5
                     tolerance: 0.5
                 }
-                Action wait_at_point {
-                    script: "Wait"
+                Action Wait {
                     duration: 2.0
                 }
             }
