@@ -10,7 +10,7 @@ namespace BehaviourTree.Nodes
         Dictionary<string, string> properties = new Dictionary<string, string>();
         ExampleAI aiController;
         
-        public void SetProperty(string key, string value)
+        public override void SetProperty(string key, string value)
         {
             properties[key] = value;
         }
