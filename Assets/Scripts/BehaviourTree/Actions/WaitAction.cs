@@ -1,8 +1,11 @@
 using UnityEngine;
 using BehaviourTree.Core;
 
-[System.Serializable]
-public class WaitAction : BTActionNode
+namespace BehaviourTree.Actions
+{
+    /// <summary>指定時間待機するアクション</summary>
+    [System.Serializable]
+    public class WaitAction : BTActionNode
 {
     [SerializeField] float duration = 1.0f;
 
@@ -54,4 +57,5 @@ public class WaitAction : BTActionNode
                 break;
         }
     }
+}
 }

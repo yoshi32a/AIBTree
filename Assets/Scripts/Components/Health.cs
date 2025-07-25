@@ -1,7 +1,10 @@
 using UnityEngine;
 
-[System.Serializable]
-public class Health : MonoBehaviour
+namespace Components
+{
+    /// <summary>体力システムを管理するコンポーネント</summary>
+    [System.Serializable]
+    public class Health : MonoBehaviour
 {
     [SerializeField] int maxHealth = 100;
     [SerializeField] int currentHealth;
@@ -40,4 +43,5 @@ public class Health : MonoBehaviour
     {
         Heal(25);
     }
+}
 }

@@ -1,11 +1,10 @@
 using UnityEngine;
 using BehaviourTree.Core;
+using Components;
 
 namespace BehaviourTree.Actions
 {
-    /// <summary>
-    /// オブジェクトとの相互作用アクション
-    /// </summary>
+    /// <summary>オブジェクトとの相互作用アクション</summary>
     public class InteractAction : BTActionNode
     {
         string interactionType = "examine";

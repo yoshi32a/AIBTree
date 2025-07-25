@@ -1,11 +1,10 @@
 using UnityEngine;
 using BehaviourTree.Core;
+using Components;
 
 namespace BehaviourTree.Actions
 {
-    /// <summary>
-    /// アイテムを使用するアクション
-    /// </summary>
+    /// <summary>アイテムを使用するアクション</summary>
     public class UseItemAction : BTActionNode
     {
         string itemType = "healing_potion";

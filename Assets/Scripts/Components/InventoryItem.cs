@@ -1,12 +1,16 @@
-﻿[System.Serializable]
-public class InventoryItem
+namespace Components
 {
-    public string itemType;
-    public int quantity;
-    
-    public InventoryItem(string type, int qty)
+    /// <summary>インベントリアイテムを表すクラス</summary>
+    [System.Serializable]
+    public class InventoryItem
     {
-        itemType = type;
-        quantity = qty;
+        public string itemType;
+        public int quantity;
+        
+        public InventoryItem(string type, int qty)
+        {
+            itemType = type;
+            quantity = qty;
+        }
     }
 }

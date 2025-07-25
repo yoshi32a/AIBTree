@@ -1,8 +1,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[System.Serializable]
-public class Inventory : MonoBehaviour
+namespace Components
+{
+    /// <summary>インベントリシステムを管理するコンポーネント</summary>
+    [System.Serializable]
+    public class Inventory : MonoBehaviour
 {
     [SerializeField] List<InventoryItem> items = new List<InventoryItem>();
     
@@ -91,4 +94,5 @@ public class Inventory : MonoBehaviour
     {
         UseItem("health_potion", 1);
     }
+}
 }

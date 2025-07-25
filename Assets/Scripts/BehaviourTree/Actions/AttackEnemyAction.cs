@@ -1,6 +1,8 @@
 using UnityEngine;
 using BehaviourTree.Core;
+using Components;
 
+/// <summary>敵を攻撃するアクション</summary>
 [System.Serializable]
 public class AttackEnemyAction : BTActionNode
 {
