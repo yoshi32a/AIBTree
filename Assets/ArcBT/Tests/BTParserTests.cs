@@ -176,6 +176,7 @@ namespace ArcBT.Tests
                 }";
 
             // Expect error for unknown action
+            LogAssert.Expect(LogType.Error, "[ERR][SYS]: Unknown action script: UnknownAction");
             LogAssert.Expect(LogType.Error, "[ERR][PRS]: Unknown action script: UnknownAction. Please register the action in BTNodeRegistry.");
             LogAssert.Expect(LogType.Error, "[ERR][PRS]: Failed to create node of type: Action");
 
@@ -268,6 +269,7 @@ namespace ArcBT.Tests
                 }";
 
             // Expect error for unknown condition
+            LogAssert.Expect(LogType.Error, "[ERR][SYS]: Unknown condition script: UnknownCondition");
             LogAssert.Expect(LogType.Error, "[ERR][PRS]: Unknown condition script: UnknownCondition. Please register the condition in BTNodeRegistry.");
             LogAssert.Expect(LogType.Error, "[ERR][PRS]: Failed to create node of type: Condition");
 
