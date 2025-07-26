@@ -162,7 +162,7 @@ namespace ArcBT.Generators
                 sb.AppendLine();
             }
             
-            sb.AppendLine($"            BTLogger.LogSystem($\"{{assemblyName}} ノードを自動登録しました (Actions: {actionNodes.Count()}, Conditions: {conditionNodes.Count()})\");");
+            sb.AppendLine($"            BTLogger.LogSystem($\"{assemblyName} ノードを自動登録しました (Actions: {actionNodes.Count()}, Conditions: {conditionNodes.Count()})\");");
             sb.AppendLine("        }");
             sb.AppendLine("    }");
             sb.AppendLine("}");
