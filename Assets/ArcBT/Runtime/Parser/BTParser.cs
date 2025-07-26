@@ -395,9 +395,9 @@ namespace ArcBT.Parser
             switch (nodeType)
             {
                 case "Sequence":
-                    return new SequenceNode();
+                    return new BTSequenceNode();
                 case "Selector":
-                    return new SelectorNode();
+                    return new BTSelectorNode();
                 case "Parallel":
                     return new BTParallelNode();
                 default:

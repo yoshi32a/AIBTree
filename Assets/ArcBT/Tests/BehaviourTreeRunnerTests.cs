@@ -147,7 +147,7 @@ namespace ArcBT.Tests
         public void SetRootNode_ValidNode_SetsCorrectly()
         {
             // Arrange
-            var testNode = new SequenceNode();
+            var testNode = new BTSequenceNode();
             testNode.Name = "TestSequence";
 
             // Act
@@ -223,7 +223,7 @@ namespace ArcBT.Tests
         public void BlackBoard_Integration_SharesDataBetweenNodes()
         {
             // Arrange
-            var sequence = new SequenceNode();
+            var sequence = new BTSequenceNode();
             sequence.Name = "TestSequence";
 
             var scanAction = new ScanEnvironmentAction();
@@ -362,10 +362,10 @@ namespace ArcBT.Tests
         public void ComplexTree_NestedStructure_ExecutesCorrectly()
         {
             // Arrange: 複雑なツリー構造を作成
-            var rootSelector = new SelectorNode();
+            var rootSelector = new BTSelectorNode();
             rootSelector.Name = "RootSelector";
 
-            var combatSequence = new SequenceNode();
+            var combatSequence = new BTSequenceNode();
             combatSequence.Name = "CombatSequence";
 
             var scanAction = new ScanEnvironmentAction();

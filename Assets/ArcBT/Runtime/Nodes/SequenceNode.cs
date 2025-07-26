@@ -1,7 +1,13 @@
+using System;
 using ArcBT.Core;
 
 namespace ArcBT.Nodes
 {
+    /// <summary>
+    /// 非推奨: BTSequenceNodeを使用してください
+    /// Legacy sequence node class. Use BTSequenceNode instead.
+    /// </summary>
+    [Obsolete("SequenceNodeは非推奨です。BTSequenceNodeを使用してください。", false)]
     public class SequenceNode : CompositeNode
     {
         public override BTNodeResult Execute()

@@ -1,7 +1,13 @@
+using System;
 using ArcBT.Core;
 
 namespace ArcBT.Nodes
 {
+    /// <summary>
+    /// 非推奨: BTSelectorNodeを使用してください
+    /// Legacy selector node class. Use BTSelectorNode instead.
+    /// </summary>
+    [Obsolete("SelectorNodeは非推奨です。BTSelectorNodeを使用してください。", false)]
     public class SelectorNode : CompositeNode
     {
         public override BTNodeResult Execute()
