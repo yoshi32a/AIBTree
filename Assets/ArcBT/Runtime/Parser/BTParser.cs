@@ -8,21 +8,53 @@ namespace ArcBT.Parser
 {
     public class BTParser
     {
-        struct Token
+        enum TokenType : byte  // byteで十分、メモリ節約
         {
-            public string Type;
-            public string Value;
-            public int Line;
+            Keyword,
+            Identifier,
+            String,
+            Number,
+            LeftBrace,
+            RightBrace,
+            Colon
+        }
 
-            public Token(string type, string value, int line)
+        // 最適化されたToken構造体
+        readonly struct Token
+        {
+            public readonly TokenType Type;
+            public readonly string Value;
+            public readonly ushort Line;  // 65535行まで対応、intより小さい
+
+            public Token(TokenType type, string value, int line)
             {
                 Type = type;
                 Value = value;
-                Line = line;
+                Line = (ushort)line;
             }
+
+            // 高速比較用メソッド
+            public bool IsKeyword(string keyword) => Type == TokenType.Keyword && Value == keyword;
+            public bool IsType(TokenType type) => Type == type;
+
+            // デバッグ用のToString
+            public override string ToString() => $"{Type}:{Value}@{Line}";
         }
 
-        List<Token> tokens;
+        // よく使用されるキーワードを静的参照として保持
+        static readonly HashSet<string> keywords = new()
+        {
+            "tree", "Sequence", "Selector", "Action", "Condition", "Parallel"
+        };
+
+        // よく使われる文字列の事前割り当て（GC負荷軽減）
+        const string TREE_KEYWORD = "tree";
+        const string LEFT_BRACE = "{";
+        const string RIGHT_BRACE = "}";
+        const string COLON = ":";
+
+
+        Token[] tokens;  // Listより配列の方が高速アクセス
         int currentTokenIndex;
 
         public BTNode ParseFile(string filePath)
@@ -39,13 +71,14 @@ namespace ArcBT.Parser
 
         public BTNode ParseContent(string content)
         {
-            tokens = Tokenize(content);
+            var tokenList = Tokenize(content);
+            tokens = tokenList.ToArray();  // 配列に変換
             currentTokenIndex = 0;
 
-            while (currentTokenIndex < tokens.Count)
+            while (currentTokenIndex < tokens.Length)
             {
                 var token = tokens[currentTokenIndex];
-                if (token.Type == "KEYWORD" && token.Value == "tree")
+                if (token.IsKeyword(TREE_KEYWORD))
                 {
                     return ParseTree();
                 }
@@ -118,17 +151,17 @@ namespace ArcBT.Parser
 
                     if (c == '{')
                     {
-                        tokens.Add(new Token("LBRACE", "{", lineNum));
+                        tokens.Add(new Token(TokenType.LeftBrace, LEFT_BRACE, lineNum));
                         linePos++;
                     }
                     else if (c == '}')
                     {
-                        tokens.Add(new Token("RBRACE", "}", lineNum));
+                        tokens.Add(new Token(TokenType.RightBrace, RIGHT_BRACE, lineNum));
                         linePos++;
                     }
                     else if (c == ':')
                     {
-                        tokens.Add(new Token("COLON", ":", lineNum));
+                        tokens.Add(new Token(TokenType.Colon, COLON, lineNum));
                         linePos++;
                     }
                     else if (c is '"' or '\'')
@@ -143,7 +176,7 @@ namespace ArcBT.Parser
                         }
 
                         var str = linePos > start ? lineSpan.Slice(start, linePos - start).ToString() : string.Empty;
-                        tokens.Add(new Token("STRING", str, lineNum));
+                        tokens.Add(new Token(TokenType.String, str, lineNum));
                         if (linePos < lineSpan.Length)
                         {
                             linePos++; // 終端のクォートをスキップ
@@ -153,7 +186,7 @@ namespace ArcBT.Parser
                     {
                         // 識別子またはキーワード
                         var start = linePos;
-                        while (linePos < lineSpan.Length && 
+                        while (linePos < lineSpan.Length &&
                                (char.IsLetterOrDigit(lineSpan[linePos]) || lineSpan[linePos] == '_'))
                         {
                             linePos++;
@@ -164,11 +197,11 @@ namespace ArcBT.Parser
 
                         if (IsKeyword(word))
                         {
-                            tokens.Add(new Token("KEYWORD", word, lineNum));
+                            tokens.Add(new Token(TokenType.Keyword, word, lineNum));
                         }
                         else
                         {
-                            tokens.Add(new Token("IDENTIFIER", word, lineNum));
+                            tokens.Add(new Token(TokenType.Identifier, word, lineNum));
                         }
                     }
                     else if (char.IsDigit(c) || c == '.')
@@ -176,7 +209,7 @@ namespace ArcBT.Parser
                         // 数値
                         var start = linePos;
                         var hasDot = false;
-                        while (linePos < lineSpan.Length && 
+                        while (linePos < lineSpan.Length &&
                                (char.IsDigit(lineSpan[linePos]) ||
                                 (lineSpan[linePos] == '.' && !hasDot)))
                         {
@@ -189,7 +222,7 @@ namespace ArcBT.Parser
                         }
 
                         var number = lineSpan.Slice(start, linePos - start).ToString();
-                        tokens.Add(new Token("NUMBER", number, lineNum));
+                        tokens.Add(new Token(TokenType.Number, number, lineNum));
                     }
                     else
                     {
@@ -203,15 +236,10 @@ namespace ArcBT.Parser
             return tokens;
         }
 
-        // よく使用されるキーワードを静的参照として保持
-        static readonly HashSet<string> Keywords = new HashSet<string>
-        {
-            "tree", "Sequence", "Selector", "Action", "Condition", "Parallel"
-        };
 
-        bool IsKeyword(string word)
+        static bool IsKeyword(string word)
         {
-            return Keywords.Contains(word);
+            return keywords.Contains(word);
         }
 
         BTNode ParseTree()
@@ -220,7 +248,7 @@ namespace ArcBT.Parser
             currentTokenIndex++;
 
             // tree name
-            if (currentTokenIndex >= tokens.Count || tokens[currentTokenIndex].Type != "IDENTIFIER")
+            if (currentTokenIndex >= tokens.Length || tokens[currentTokenIndex].Type != TokenType.Identifier)
             {
                 BTLogger.LogError(LogCategory.Parser, "Expected tree name");
                 return null;
@@ -229,8 +257,10 @@ namespace ArcBT.Parser
             var treeName = tokens[currentTokenIndex].Value;
             currentTokenIndex++;
 
+            BTLogger.Log(LogLevel.Info, LogCategory.Parser, $"📋 Parsing tree: {treeName}");
+
             // opening brace
-            if (currentTokenIndex >= tokens.Count || tokens[currentTokenIndex].Type != "LBRACE")
+            if (currentTokenIndex >= tokens.Length || tokens[currentTokenIndex].Type != TokenType.LeftBrace)
             {
                 BTLogger.LogError(LogCategory.Parser, "Expected '{' after tree name");
                 return null;
@@ -241,8 +271,15 @@ namespace ArcBT.Parser
             // parse first node as root
             var rootNode = ParseNode();
 
+            if (rootNode != null)
+            {
+                // ツリー名をルートノードのプロパティとして設定
+                rootNode.SetProperty("treeName", treeName);
+                BTLogger.Log(LogLevel.Debug, LogCategory.Parser, $"✅ Successfully parsed tree '{treeName}' with root node: {rootNode.Name}");
+            }
+
             // closing brace
-            if (currentTokenIndex < tokens.Count && tokens[currentTokenIndex].Type == "RBRACE")
+            if (currentTokenIndex < tokens.Length && tokens[currentTokenIndex].Type == TokenType.RightBrace)
             {
                 currentTokenIndex++;
             }
@@ -252,7 +289,7 @@ namespace ArcBT.Parser
 
         BTNode ParseNode()
         {
-            if (currentTokenIndex >= tokens.Count || tokens[currentTokenIndex].Type != "KEYWORD")
+            if (currentTokenIndex >= tokens.Length || tokens[currentTokenIndex].Type != TokenType.Keyword)
             {
                 BTLogger.LogError(LogCategory.Parser, "Expected node type keyword");
                 return null;
@@ -262,7 +299,7 @@ namespace ArcBT.Parser
             currentTokenIndex++;
 
             // script name (for Action/Condition) or node name (for Sequence/Selector)
-            if (currentTokenIndex >= tokens.Count || tokens[currentTokenIndex].Type != "IDENTIFIER")
+            if (currentTokenIndex >= tokens.Length || tokens[currentTokenIndex].Type != TokenType.Identifier)
             {
                 BTLogger.LogError(LogCategory.Parser, $"Expected script/node name after {nodeType}");
                 return null;
@@ -272,7 +309,7 @@ namespace ArcBT.Parser
             currentTokenIndex++;
 
             // opening brace
-            if (currentTokenIndex >= tokens.Count || tokens[currentTokenIndex].Type != "LBRACE")
+            if (currentTokenIndex >= tokens.Length || tokens[currentTokenIndex].Type != TokenType.LeftBrace)
             {
                 BTLogger.LogError(LogCategory.Parser, "Expected '{' after node name");
                 return null;
@@ -285,11 +322,11 @@ namespace ArcBT.Parser
             var childNodes = new List<BTNode>();
 
             // parse properties and child nodes
-            while (currentTokenIndex < tokens.Count && tokens[currentTokenIndex].Type != "RBRACE")
+            while (currentTokenIndex < tokens.Length && tokens[currentTokenIndex].Type != TokenType.RightBrace)
             {
                 var token = tokens[currentTokenIndex];
 
-                if (token.Type == "KEYWORD")
+                if (token.Type == TokenType.Keyword)
                 {
                     // child node
                     var childNode = ParseNode();
@@ -298,39 +335,17 @@ namespace ArcBT.Parser
                         childNodes.Add(childNode);
                     }
                 }
-                else if (token.Type == "IDENTIFIER")
+                else if (token.Type == TokenType.Identifier)
                 {
                     // property
-                    var propertyName = tokens[currentTokenIndex].Value;
-                    currentTokenIndex++;
-
-                    if (currentTokenIndex >= tokens.Count || tokens[currentTokenIndex].Type != "COLON")
+                    if (TryParseProperty(out var propertyName, out var propertyValue))
                     {
-                        BTLogger.LogError(LogCategory.Parser, "Expected ':' after property name");
+                        properties[propertyName] = propertyValue;
+                    }
+                    else
+                    {
                         return null;
                     }
-
-                    currentTokenIndex++;
-
-                    if (currentTokenIndex >= tokens.Count ||
-                        (tokens[currentTokenIndex].Type != "STRING" && tokens[currentTokenIndex].Type != "NUMBER"))
-                    {
-                        BTLogger.LogError(LogCategory.Parser,
-                            $"Expected property value, got: {(currentTokenIndex < tokens.Count ? tokens[currentTokenIndex].Type : "END_OF_TOKENS")}");
-                        return null;
-                    }
-
-                    var propertyValue = tokens[currentTokenIndex].Value;
-                    // Remove quotes from string value only
-                    if (tokens[currentTokenIndex].Type == "STRING" &&
-                        propertyValue.StartsWith("\"") && propertyValue.EndsWith("\""))
-                    {
-                        propertyValue = propertyValue.Substring(1, propertyValue.Length - 2);
-                    }
-
-                    currentTokenIndex++;
-
-                    properties[propertyName] = propertyValue;
                 }
                 else
                 {
@@ -339,7 +354,7 @@ namespace ArcBT.Parser
             }
 
             // closing brace
-            if (currentTokenIndex < tokens.Count && tokens[currentTokenIndex].Type == "RBRACE")
+            if (currentTokenIndex < tokens.Length && tokens[currentTokenIndex].Type == TokenType.RightBrace)
             {
                 currentTokenIndex++;
             }
@@ -392,38 +407,45 @@ namespace ArcBT.Parser
             return node;
         }
 
-        void ParseProperty(BTNode node)
+        bool TryParseProperty(out string propertyName, out string propertyValue)
         {
-            if (currentTokenIndex >= tokens.Count || tokens[currentTokenIndex].Type != "IDENTIFIER")
+            propertyName = null;
+            propertyValue = null;
+
+            if (currentTokenIndex >= tokens.Length || tokens[currentTokenIndex].Type != TokenType.Identifier)
             {
-                return;
+                return false;
             }
 
-            var propertyName = tokens[currentTokenIndex].Value;
+            propertyName = tokens[currentTokenIndex].Value;
             currentTokenIndex++;
 
-            // colon
-            if (currentTokenIndex >= tokens.Count || tokens[currentTokenIndex].Type != "COLON")
+            if (currentTokenIndex >= tokens.Length || tokens[currentTokenIndex].Type != TokenType.Colon)
             {
-                BTLogger.LogError(LogCategory.Parser, $"Expected ':' after property name '{propertyName}'");
-                return;
+                BTLogger.LogError(LogCategory.Parser, "Expected ':' after property name");
+                return false;
             }
 
             currentTokenIndex++;
 
-            // value
-            if (currentTokenIndex >= tokens.Count)
+            if (currentTokenIndex >= tokens.Length ||
+                (tokens[currentTokenIndex].Type != TokenType.String && tokens[currentTokenIndex].Type != TokenType.Number))
             {
-                BTLogger.LogError(LogCategory.Parser, $"Expected value for property '{propertyName}'");
-                return;
+                BTLogger.LogError(LogCategory.Parser,
+                    $"Expected property value, got: {(currentTokenIndex < tokens.Length ? tokens[currentTokenIndex].Type.ToString() : "END_OF_TOKENS")}");
+                return false;
             }
 
-            var valueToken = tokens[currentTokenIndex];
-            var propertyValue = valueToken.Value;
-            currentTokenIndex++;
+            propertyValue = tokens[currentTokenIndex].Value;
+            // Remove quotes from string value only
+            if (tokens[currentTokenIndex].Type == TokenType.String &&
+                propertyValue.StartsWith("\"") && propertyValue.EndsWith("\""))
+            {
+                propertyValue = propertyValue.Substring(1, propertyValue.Length - 2);
+            }
 
-            // set property
-            node.SetProperty(propertyName, propertyValue);
+            currentTokenIndex++;
+            return true;
         }
 
         BTNode CreateNode(string nodeType)
@@ -450,10 +472,10 @@ namespace ArcBT.Parser
             if (nodeType == "Action")
             {
                 BTLogger.Log(LogLevel.Debug, LogCategory.Parser, $"🔧 Creating ACTION node for script: {scriptName}");
-                
+
                 // 静的レジストリから作成（リフレクション不使用）
                 node = BTStaticNodeRegistry.CreateAction(scriptName);
-                
+
                 if (node != null)
                 {
                     BTLogger.Log(LogLevel.Info, LogCategory.Parser, $"✅ Created action for script '{scriptName}'");
@@ -467,17 +489,18 @@ namespace ArcBT.Parser
             else if (nodeType == "Condition")
             {
                 BTLogger.Log(LogLevel.Debug, LogCategory.Parser, $"🔧 Creating CONDITION node for script: {scriptName}");
-                
+
                 // 静的レジストリから作成（リフレクション不使用）
                 node = BTStaticNodeRegistry.CreateCondition(scriptName);
-                
+
                 if (node != null)
                 {
                     BTLogger.Log(LogLevel.Info, LogCategory.Parser, $"✅ Created condition for script '{scriptName}'");
                 }
                 else
                 {
-                    BTLogger.Log(LogLevel.Error, LogCategory.Parser, $"Unknown condition script: {scriptName}. Please register the condition in BTNodeRegistry.");
+                    BTLogger.Log(LogLevel.Error, LogCategory.Parser,
+                        $"Unknown condition script: {scriptName}. Please register the condition in BTNodeRegistry.");
                     return null;
                 }
             }
