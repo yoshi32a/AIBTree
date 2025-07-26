@@ -20,12 +20,12 @@ namespace ArcBT.Parser
             Colon
         }
 
-        // 最適化されたToken構造体
+        // 最適化されたToken構造体（フィールド順序を最適化）
         readonly struct Token
         {
-            public readonly TokenType Type;
-            public readonly string Value;
-            public readonly ushort Line;  // 65535行まで対応、intより小さい
+            public readonly string Value;      // 参照型を先頭に配置
+            public readonly ushort Line;       // 65535行まで対応、intより小さい
+            public readonly TokenType Type;    // byteサイズ、最後に配置
 
             public Token(TokenType type, string value, int line)
             {
@@ -84,7 +84,8 @@ namespace ArcBT.Parser
         public BTNode ParseContent(string content)
         {
             var tokenList = Tokenize(content);
-            tokens = tokenList.ToArray();  // 配列に変換
+            // 配列への変換（Unity互換性のためToArrayを使用）
+            tokens = tokenList.ToArray();
             currentTokenIndex = 0;
 
             while (currentTokenIndex < tokens.Length)
@@ -198,14 +199,16 @@ namespace ArcBT.Parser
                         }
 
                         var wordSpan = lineSpan.Slice(start, linePos - start);
-                        var word = new string(wordSpan);
-
-                        if (IsKeyword(word))
+                        
+                        // キーワードチェックを先に行い、文字列生成を最小化
+                        if (IsKeywordSpan(wordSpan))
                         {
+                            var word = new string(wordSpan);
                             tokens.Add(new Token(TokenType.Keyword, word, lineNum));
                         }
                         else
                         {
+                            var word = new string(wordSpan);
                             tokens.Add(new Token(TokenType.Identifier, word, lineNum));
                         }
                     }
@@ -246,6 +249,20 @@ namespace ArcBT.Parser
         static bool IsKeyword(string word)
         {
             return keywords.Contains(word);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        static bool IsKeywordSpan(ReadOnlySpan<char> span)
+        {
+            // 長さベースの早期リターン
+            return span.Length switch
+            {
+                4 => span.SequenceEqual("tree".AsSpan()),
+                6 => span.SequenceEqual("Action".AsSpan()),
+                8 => span.SequenceEqual("Sequence".AsSpan()) || span.SequenceEqual("Selector".AsSpan()) || span.SequenceEqual("Parallel".AsSpan()),
+                9 => span.SequenceEqual("Condition".AsSpan()),
+                _ => false
+            };
         }
 
         BTNode ParseTree()
@@ -438,15 +455,16 @@ namespace ArcBT.Parser
                 return false;
             }
 
-            propertyValue = tokens[currentTokenIndex].Value;
+            var currentToken = tokens[currentTokenIndex++]; // 値の取得とインクリメントを同時に実行
+            propertyValue = currentToken.Value;
+            
             // Remove quotes from string value only
-            if (tokens[currentTokenIndex].Type == TokenType.String &&
+            if (currentToken.Type == TokenType.String &&
                 propertyValue.StartsWith("\"") && propertyValue.EndsWith("\""))
             {
                 propertyValue = propertyValue.Substring(1, propertyValue.Length - 2);
             }
 
-            currentTokenIndex++;
             return true;
         }
 

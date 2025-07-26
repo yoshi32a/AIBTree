@@ -10,27 +10,10 @@ namespace ArcBT.Core
     public static class BTStaticNodeRegistry
     {
         // アクション生成関数の登録（実行時に追加可能）
-        static readonly Dictionary<string, Func<BTActionNode>> actionCreators = new()
-        {
-            // コアノードのみここで登録
-            // RPGサンプルは RPGNodeRegistration.cs で動的に登録される
-            ["MoveToPosition"] = () => new Actions.MoveToPositionAction(),
-            ["Wait"] = () => new Actions.WaitAction(),
-            ["ScanEnvironment"] = () => new Actions.ScanEnvironmentAction(),
-            ["SearchForEnemy"] = () => new Actions.SearchForEnemyAction(),
-            ["NormalAttack"] = () => new Actions.NormalAttackAction(),
-            ["Interact"] = () => new Actions.InteractAction(),
-            ["EnvironmentScan"] = () => new Actions.EnvironmentScanAction(),
-        };
+        static readonly Dictionary<string, Func<BTActionNode>> actionCreators = new();
         
         // 条件生成関数の登録（実行時に追加可能）
-        static readonly Dictionary<string, Func<BTConditionNode>> conditionCreators = new()
-        {
-            ["HasSharedEnemyInfo"] = () => new Conditions.HasSharedEnemyInfoCondition(),
-            ["HasTarget"] = () => new Conditions.HasTargetCondition(),
-            ["EnemyHealthCheck"] = () => new Conditions.EnemyHealthCheckCondition(),
-            ["ScanForInterest"] = () => new Conditions.ScanForInterestCondition(),
-        };
+        static readonly Dictionary<string, Func<BTConditionNode>> conditionCreators = new();
         
         /// <summary>アクションを作成（リフレクション不使用）</summary>
         public static BTActionNode CreateAction(string scriptName)
