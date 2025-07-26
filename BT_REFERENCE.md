@@ -153,11 +153,99 @@ Sequence patrol_with_health_check {
 - `HasItem` - アイテム所持確認
 - `HasSharedEnemyInfo` - BlackBoardに共有された敵情報の有無をチェック
 - `HasTarget` - ターゲット所持確認（未実装）
-- `HasMana` - マナ量確認（未実装）
-- `IsInitialized` - 初期化状態確認（未実装）
-- `EnemyHealthCheck` - 敵の体力確認（未実装）
+- `HasMana` - マナ量確認（RPGサンプルで実装済み）
+- `IsInitialized` - 初期化状態確認（RPGサンプルで実装済み）
+- `EnemyHealthCheck` - 敵の体力確認（RPGサンプルで実装済み）
 - `CheckManaResource` - マナリソースチェック
 - `CheckAlertFlag` - アラート状態フラグチェック
+
+## BTLoggerシステム
+
+ArcBTには高性能なログシステムが統合されており、Debug.Logの性能問題を解決します。
+
+### 主要機能
+- **条件付きコンパイル**: 本番ビルドでログ処理を完全除去
+- **カテゴリベースフィルタリング**: Combat、Movement、Parser、System等のカテゴリ別制御
+- **ログレベル制御**: Error、Warning、Info、Debug、Traceの5段階
+- **エディター統合**: `Window > BehaviourTree > Logger Settings`でリアルタイム制御
+
+### 使用方法
+```csharp
+// カテゴリ別ログ出力
+BTLogger.LogSystem("システム初期化完了");
+BTLogger.LogCombat("戦闘開始", nodeName, context);
+BTLogger.LogMovement("移動先到達", nodeName, context);
+BTLogger.LogParser("パース成功", nodeName, context);
+
+// レベル指定ログ
+BTLogger.Log(LogLevel.Warning, LogCategory.System, "警告メッセージ");
+BTLogger.Log(LogLevel.Error, LogCategory.Parser, "エラーメッセージ");
+
+// Debug.Logからの移行用
+BTLogger.Info("情報メッセージ");
+BTLogger.Warning("警告メッセージ");
+BTLogger.Error("エラーメッセージ");
+```
+
+### 出力フォーマット
+```
+[INF][SYS]: システム情報メッセージ
+[ERR][PRS]: パーサーエラーメッセージ  
+[WRN][MOV]: 移動関連警告
+[DBG][CMB][NodeName]: 戦闘デバッグ情報
+```
+
+## RPGサンプルノード詳細
+
+### RPG戦闘アクション
+- **AttackAction**: 基本物理攻撃（ダメージ、射程設定可能）
+- **AttackEnemyAction**: 特定敵への攻撃（BlackBoard連携）
+- **CastSpellAction**: 魔法詠唱システム（マナ消費、各種呪文対応）
+- **FleeToSafetyAction**: 安全地帯への逃走（SafeZoneタグ検索）
+
+### RPG条件ノード
+- **HealthCheckCondition**: 体力閾値チェック（実装済み）
+- **HasManaCondition**: マナ量確認（実装済み）
+- **EnemyInRangeCondition**: 敵との距離判定
+- **EnemyHealthCheckCondition**: 敵の体力監視（実装済み）
+- **HasItemCondition**: アイテム所持確認
+- **IsInitializedCondition**: 初期化状態確認（実装済み）
+
+### 使用例：RPG戦闘AI
+```bt
+tree RPGCombatAI {
+    Selector main {
+        # 緊急時：体力が25%以下で回復アイテム使用
+        Sequence emergency_heal {
+            Condition HealthCheck { min_health: 25 }
+            Condition HasItem { item_type: "healing_potion", min_quantity: 1 }
+            Action UseItem { item_type: "healing_potion" }
+        }
+        
+        # 魔法攻撃：マナが30以上で敵が8m以内
+        Sequence magic_attack {
+            Condition HasMana { required_mana: 30 }
+            Condition EnemyInRange { max_distance: 8.0 }
+            Action CastSpell { spell_name: "fireball", mana_cost: 30, damage: 50 }
+        }
+        
+        # 物理攻撃：敵が2m以内
+        Sequence physical_attack {
+            Condition EnemyInRange { max_distance: 2.0 }
+            Action AttackEnemy { damage: 25, attack_speed: 1.2 }
+        }
+        
+        # 逃走：体力が低い場合
+        Sequence flee_sequence {
+            Condition HealthCheck { min_health: 30 }
+            Action FleeToSafety { min_distance: 15.0, speed_multiplier: 1.5 }
+        }
+        
+        # 探索：デフォルト行動
+        Action SearchForEnemy { search_radius: 12.0 }
+    }
+}
+```
 
 ## 完全な例
 

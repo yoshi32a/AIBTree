@@ -10,41 +10,65 @@ Unity用の高度なBehaviourTreeシステムです。BlackBoardによるデー�
 - **🔧 VSCode完全対応**: シンタックスハイライト、スニペット、自動補完
 - **⚙️ Unity統合**: C#による高性能な実行エンジン
 - **🚀 並列実行**: Parallelノードによる複数行動の同時実行
+- **📊 BTLoggerシステム**: 高性能な条件付きログシステム（カテゴリ別フィルタリング、本番環境完全最適化）
 
 ## プロジェクト構成
 
 ```
 Assets/
-├── Scripts/
-│   └── BehaviourTree/
-│       ├── Core/                 # コアシステム
-│       │   ├── BTNode.cs        # ベースノード（BlackBoard対応）
-│       │   ├── BlackBoard.cs    # データ共有システム
-│       │   ├── BTActionNode.cs  # アクション基底（動的条件対応）
-│       │   ├── BTConditionNode.cs
-│       │   ├── BTSequenceNode.cs # Sequenceノード
-│       │   ├── BTSelectorNode.cs # Selectorノード
-│       │   └── BTParallelNode.cs # Parallelノード
-│       ├── Actions/              # アクション実装（18種類）
-│       │   ├── MoveToPositionAction.cs
-│       │   ├── AttackEnemyAction.cs
-│       │   ├── WaitAction.cs
-│       │   ├── ScanEnvironmentAction.cs
-│       │   ├── UseItemAction.cs
-│       │   ├── FleeToSafetyAction.cs
-│       │   └── その他12種類...
-│       ├── Conditions/           # 条件実装（6種類）
-│       │   ├── HealthCheckCondition.cs
-│       │   ├── EnemyCheckCondition.cs
-│       │   ├── HasItemCondition.cs
-│       │   └── HasSharedEnemyInfoCondition.cs
-│       ├── Parser/               # .btファイルパーサー
-│       └── Components/           # 汎用コンポーネント
+├── ArcBT/                        # ArcBTパッケージ（独立パッケージ）
+│   ├── Runtime/
+│   │   ├── Core/                 # コアシステム
+│   │   │   ├── BTNode.cs        # ベースノード（BlackBoard対応）
+│   │   │   ├── BlackBoard.cs    # データ共有システム
+│   │   │   ├── BTActionNode.cs  # アクション基底（動的条件対応）
+│   │   │   ├── BTConditionNode.cs
+│   │   │   ├── BTSequenceNode.cs # Sequenceノード
+│   │   │   ├── BTSelectorNode.cs # Selectorノード
+│   │   │   ├── BTParallelNode.cs # Parallelノード
+│   │   │   ├── BTLogger.cs      # 高性能ログシステム
+│   │   │   ├── BehaviourTreeRunner.cs # 実行エンジン
+│   │   │   └── MovementController.cs # 移動制御
+│   │   ├── Actions/              # 基本アクション（4種類）
+│   │   │   ├── MoveToPositionAction.cs
+│   │   │   ├── WaitAction.cs
+│   │   │   ├── ScanEnvironmentAction.cs
+│   │   │   └── RandomWanderAction.cs
+│   │   ├── Conditions/           # 基本条件（1種類）
+│   │   │   └── HasSharedEnemyInfoCondition.cs
+│   │   ├── Parser/               # .btファイルパーサー
+│   │   │   └── BTParser.cs
+│   │   ├── Examples/             # 使用例
+│   │   │   └── ExampleAI.cs
+│   │   └── Nodes/                # レガシーノード（後方互換性）
+│   ├── Samples/                  # サンプル実装
+│   │   ├── RPGExample/           # 完全なRPGサンプル
+│   │   │   ├── Actions/          # RPG用アクション（13種類）
+│   │   │   ├── Conditions/       # RPG用条件（9種類）
+│   │   │   ├── Components/       # Health、Mana、Inventory
+│   │   │   └── README.md
+│   │   └── Documentation/        # 実装ガイド
+│   │       └── RPG_IMPLEMENTATION_GUIDE.md
+│   ├── Tests/                    # 包括的テストスイート
+│   │   ├── BlackBoardTests.cs    # 34テスト
+│   │   ├── ActionNodeTests.cs    # 20テスト
+│   │   ├── ConditionNodeTests.cs # 22テスト
+│   │   ├── BehaviourTreeRunnerTests.cs # 22テスト
+│   │   ├── BTLoggerTests.cs      # 9テスト
+│   │   ├── BTLoggerPerformanceTests.cs # 7テスト
+│   │   └── その他38テスト...
+│   ├── Editor/                   # エディター拡張
+│   │   └── BTLoggerEditor.cs     # ログシステム管理UI
+│   ├── README.md                 # パッケージ概要
+│   └── package.json              # パッケージ定義
 ├── BehaviourTrees/               # .btファイルとサンプル
 │   ├── blackboard_sample.bt      # BlackBoard基本例
 │   ├── team_coordination_sample.bt # チーム連携例
 │   ├── resource_management_sample.bt # リソース管理例
 │   └── dynamic_condition_sample.bt # 動的条件例
+├── Scripts/                      # アプリケーション固有スクリプト
+│   ├── UI/                       # 視覚的フィードバックシステム
+│   └── Camera/                   # カメラ制御システム
 vscode-bt-extension/              # VSCode拡張機能 v1.2.0
 ├── package.json
 ├── syntaxes/bt.tmLanguage.json   # 新形式対応
@@ -331,7 +355,7 @@ MIT License
 - [x] **豊富なノード実装**（18種類のAction、6種類のCondition）
 - [x] **並列実行ノード**（Parallel、success/failure policy対応）
 - [x] **VSCode完全対応**（v1.2.0、シンタックスハイライト、自動補完、診断）
-- [x] **包括的テストスイート**（38テストケース、Unity Test Framework）
+- [x] **包括的テストスイート**（152テストケース、Unity Test Framework、コードカバレッジ70.00%）
 - [x] **複合ノード**（Sequence, Selector, Parallel）
 - [x] **デバッグ機能**（BlackBoard表示、ツリー状態管理、右クリックメニュー）
 - [x] **エディターメニュー統合**（個別ファイルテスト、パフォーマンステスト）

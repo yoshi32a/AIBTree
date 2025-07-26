@@ -153,15 +153,23 @@ MoveToPosition: Using BlackBoard key 'current_patrol_point' = patrol_point_1
 ### Unity Test Runnerの使用
 1. **Window > General > Test Runner** でテストランナーを開く
 2. **EditModeタブ**を選択してエディターテストを実行
-3. **主要なテストクラス**:
-   - `BTParsingTests` - .btファイルパーシングテスト（26テスト）
-   - `BTFileValidationTests` - ファイル構造検証テスト（12テスト）
+3. **主要なテストクラス**（152テスト全て成功、コードカバレッジ70.00%）:
+   - `BlackBoardTests` - BlackBoardシステムテスト（34テスト）
+   - `ActionNodeTests` - アクションノードテスト（20テスト）
+   - `ConditionNodeTests` - 条件ノードテスト（22テスト）
+   - `BehaviourTreeRunnerTests` - 実行エンジンテスト（22テスト）
+   - `BTParserTests` - パーサーテスト（26テスト）
+   - `BTLoggerTests` - ログシステムテスト（9テスト）
+   - `BTLoggerPerformanceTests` - ログ性能テスト（7テスト）
+   - `BTParsingTests` - .btファイルパーシングテスト（6テスト）
+   - `BTFileValidationTests` - ファイル構造検証テスト（6テスト）
 
-### テストアセンブリ構成
-- `Assets/Tests/Tests.asmdef` - テスト用アセンブリ定義
-- 参照: UnityEngine.TestRunner, UnityEditor.TestRunner, App
+### テストアセンブリ構成（ArcBTパッケージ対応）
+- `Assets/ArcBT/Tests/ArcBT.Tests.asmdef` - ArcBTパッケージテスト用アセンブリ定義
+- 参照: ArcBT, ArcBT.Samples, UnityEngine.TestRunner, UnityEditor.TestRunner
 - エディターモード専用テスト（Editor platform）
 - NUnit framework使用
+- UNITY_INCLUDE_TESTS define constraint適用
 
 ### エディターメニューからのテスト実行
 - **BehaviourTree > Run BT File Tests** - 全テスト実行
@@ -199,3 +207,109 @@ MoveToPosition: Using BlackBoard key 'current_patrol_point' = patrol_point_1
 - BlackBoard初期化タイミングを確認
 - .btファイル内のプロパティ名が正確か確認
 - GameObject名とBlackBoardキーの整合性を確認
+
+## 8. ArcBTパッケージ対応テスト
+
+### パッケージ化されたテスト構造
+- **場所**: `Assets/ArcBT/Tests/` フォルダ
+- **アセンブリ**: ArcBT.Tests.asmdef（独立したテストアセンブリ）
+- **参照関係**: ArcBT（Runtime）とArcBT.Samples（Samples）にアクセス可能
+- **テスト総数**: 152テスト（100%成功率、コードカバレッジ70.00%）
+
+### RPGサンプルテスト
+1. **RPGコンポーネントテスト**:
+   - Health、Mana、Inventoryコンポーネントの動作確認
+   - リソース管理システムの正確性検証
+   - アイテムシステムの統合テスト
+
+2. **RPGアクション・条件ノードテスト**:
+   - 13種類のRPGアクションノード動作確認
+   - 9種類のRPG条件ノード検証
+   - 戦闘システムの統合テスト
+
+### コードカバレッジテスト
+```bash
+# Unity Code Coverageによる自動テスト実行
+./run-coverage.bat
+
+# カバレッジレポート確認
+# CodeCoverage/Report/index.html を開く
+```
+
+## 9. BTLoggerシステムテスト
+
+### ログシステムの検証
+1. **基本ログ機能テスト**:
+   ```csharp
+   BTLogger.LogSystem("テストメッセージ");
+   BTLogger.LogCombat("戦闘テスト", "NodeName", this);
+   BTLogger.LogMovement("移動テスト", "NodeName", this);
+   ```
+
+2. **パフォーマンステスト**:
+   - 大量ログ出力（10,000回）での性能測定
+   - 条件付きコンパイルによる本番環境での除去確認
+   - メモリリーク検出テスト
+
+3. **エディター統合テスト**:
+   - `Window > BehaviourTree > Logger Settings` でUI動作確認
+   - カテゴリフィルタリング機能の検証
+   - ログレベル動的変更の確認
+
+### ログカテゴリテスト
+- **System**: システム初期化・終了処理
+- **Combat**: 戦闘関連処理
+- **Movement**: 移動・ナビゲーション処理
+- **Parser**: .btファイル解析処理
+- **BlackBoard**: データ共有処理
+
+### 期待される出力フォーマット
+```
+[INF][SYS]: BTLoggerシステム初期化完了
+[DBG][CMB][AttackAction]: 攻撃実行中 - ターゲット: Enemy
+[WRN][MOV][MoveToTarget]: 目標地点が見つかりません
+[ERR][PRS]: .btファイル解析エラー: 構文不正
+```
+
+## 10. 自動テスト実行とCI/CD対応
+
+### バッチ実行
+```bash
+# 全テスト実行（152テスト）
+Unity.exe -runTests -batchmode -quit -projectPath . -testResults TestResults.xml
+
+# カバレッジ付きテスト実行
+./run-coverage.bat
+```
+
+### テスト結果の確認
+- **TestResults.xml**: NUnit形式のテスト結果
+- **コンソール出力**: リアルタイム実行状況
+- **Unity Test Runner**: GUI統合テスト環境
+- **エディターメニュー**: `BehaviourTree > Run BT File Tests`
+
+### 継続的統合対応
+- 全152テストの自動実行
+- コードカバレッジ70.00%の維持
+- .btファイル解析テストの自動化
+- パフォーマンス回帰テストの実行
+
+## 11. 最新機能のテスト方法
+
+### Unity 6000.1.10f1対応テスト
+- `FindFirstObjectByType<T>()`の動作確認
+- Input Systemとの統合テスト
+- URP環境でのレンダリングテスト
+
+### 視覚的フィードバックシステムテスト
+1. **AIStatusDisplay**: 画面左上のUI表示確認
+2. **ActionIndicator**: AI頭上のアクションアイコン表示
+3. **SceneCamera**: カメラ制御システム（F/R/WASD/QE操作）
+
+### テスト環境の素早いセットアップ
+```
+Unity → BehaviourTree → Quick Setup → Complex Example Test Environment
+```
+- 自動的にテスト用シーンを構築
+- AI、敵、パトロールポイント、安全地帯を配置
+- 視覚的フィードバックシステムを有効化
