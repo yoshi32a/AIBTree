@@ -95,8 +95,11 @@ namespace ArcBT.Generators
             }
 
             // アセンブリごとに登録コードを生成
-            foreach (var (assemblyName, nodes) in nodesByAssembly)
+            foreach (var kvp in nodesByAssembly)
             {
+                var assemblyName = kvp.Key;
+                var nodes = kvp.Value;
+                
                 if (nodes.Count == 0)
                     continue;
 
