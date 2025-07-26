@@ -703,7 +703,7 @@ namespace ArcBT.Tests
             // Verify structure
             Assert.IsInstanceOf<BTSequenceNode>(result.Children[0]); // InitSequence
             Assert.IsInstanceOf<BTSequenceNode>(result.Children[1]); // CombatSequence
-            Assert.IsInstanceOf<SequenceNode>(result.Children[2]); // PatrolSequence
+            Assert.IsInstanceOf<BTSequenceNode>(result.Children[2]); // PatrolSequence
         }
 
         #endregion
