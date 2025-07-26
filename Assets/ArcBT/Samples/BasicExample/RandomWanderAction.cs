@@ -1,7 +1,7 @@
 using UnityEngine;
 using ArcBT.Core;
 
-namespace ArcBT.Actions
+namespace ArcBT.Examples
 {
     /// <summary>ランダムに徘徊するアクション</summary>
     [BTScript("RandomWander")]
