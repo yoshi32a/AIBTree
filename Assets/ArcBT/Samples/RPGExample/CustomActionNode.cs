@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using ArcBT.Core;
 using UnityEngine;
 
-namespace ArcBT.Examples
+namespace ArcBT.Samples.RPG
 {
     public class CustomActionNode : BTActionNode
     {

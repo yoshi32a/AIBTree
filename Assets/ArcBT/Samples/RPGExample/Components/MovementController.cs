@@ -1,7 +1,7 @@
 using UnityEngine;
 using ArcBT.Core;
 
-namespace ArcBT.Examples
+namespace ArcBT.Samples.RPG
 {
     /// <summary>毎フレーム更新される滑らかな移動コントローラー</summary>
     public class MovementController : MonoBehaviour

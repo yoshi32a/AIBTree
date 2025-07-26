@@ -1,7 +1,7 @@
 using UnityEngine;
 using ArcBT.Core;
 
-namespace ArcBT.Examples
+namespace ArcBT.Samples.RPG
 {
     public class ExampleAI : MonoBehaviour
     {

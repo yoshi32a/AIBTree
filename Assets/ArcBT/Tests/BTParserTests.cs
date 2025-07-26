@@ -2,7 +2,7 @@
 using System.Text.RegularExpressions;
 using ArcBT.Actions;
 using ArcBT.Core;
-using ArcBT.Examples;
+using ArcBT.Samples.RPG;
 using ArcBT.Samples.RPG.Actions;
 using ArcBT.Samples.RPG.Conditions;
 using ArcBT.Parser;
