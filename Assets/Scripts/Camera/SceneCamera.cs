@@ -172,7 +172,7 @@ namespace CameraControl
         void FindAITarget()
         {
             // BehaviourTreeRunnerを持つオブジェクトを検索
-            var btRunner = FindFirstObjectByType<BehaviourTree.Core.BehaviourTreeRunner>();
+            var btRunner = FindFirstObjectByType<ArcBT.Core.BehaviourTreeRunner>();
             if (btRunner != null)
             {
                 followTarget = btRunner.transform;

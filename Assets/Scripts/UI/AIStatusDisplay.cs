@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
-using BehaviourTree.Core;
-using BehaviourTree.Components;
+using ArcBT.Core;
+using ArcBT.Samples.RPG.Components;
 
 namespace UI
 {

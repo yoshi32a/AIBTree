@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEditor;
 
-namespace BehaviourTree.Editor
+namespace ArcBT.Editor
 {
     public static class TagManager
     {

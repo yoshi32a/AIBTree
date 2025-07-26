@@ -4,7 +4,8 @@
     "references": [
         "Unity.InputSystem",
         "Unity.TextMeshPro",
-        "BehaviourTree"
+        "ArcBT",
+        "ArcBT.Samples"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

@@ -1,0 +1,43 @@
+{
+  "name": "com.aibtree.arcbt",
+  "version": "1.0.0",
+  "displayName": "ArcBT AI System",
+  "description": "ArcBT: Elegant BehaviourTree framework with BlackBoard support, .bt file format, and extensible node system. Includes RPG game examples.",
+  "unity": "6000.1",
+  "unityRelease": "10f1",
+  "documentationUrl": "https://github.com/yoshi32a/AIBTree",
+  "changelogUrl": "https://github.com/yoshi32a/AIBTree/blob/master/CHANGELOG.md",
+  "licensesUrl": "https://github.com/yoshi32a/AIBTree/blob/master/LICENSE.md",
+  "keywords": [
+    "ai",
+    "arcbt",
+    "behaviourtree",
+    "blackboard",
+    "unity",
+    "gameai"
+  ],
+  "author": {
+    "name": "yoshi32a",
+    "url": "https://github.com/yoshi32a"
+  },
+  "type": "library",
+  "hideInEditor": false,
+  "testables": [
+    "com.aibtree.arcbt"
+  ],
+  "dependencies": {
+    "com.unity.inputsystem": "1.14.0"
+  },
+  "samples": [
+    {
+      "displayName": "RPG Game Example",
+      "description": "Complete RPG game implementation with combat, magic, items, and health/mana systems",
+      "path": "Samples~/RPGExample"
+    },
+    {
+      "displayName": "Documentation", 
+      "description": "Usage documentation and implementation guides",
+      "path": "Samples~/Documentation"
+    }
+  ]
+}

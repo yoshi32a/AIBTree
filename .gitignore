@@ -77,3 +77,7 @@ Desktop.ini
 
 # AI Instructions (temporary file)
 AI_INSTRUCTIONS.md
+
+# Code Coverage
+CodeCoverage/
+CodeCoverageSettings.json

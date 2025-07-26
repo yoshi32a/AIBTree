@@ -1,9 +1,9 @@
 using UnityEngine;
 using UnityEditor;
-using BehaviourTree.Core;
-using BehaviourTree.Components;
+using ArcBT.Core;
+using ArcBT.Samples.RPG.Components;
 
-namespace BehaviourTree.Editor
+namespace ArcBT.Editor
 {
     public class AIBTreeTestEnvironmentSetup : EditorWindow
     {

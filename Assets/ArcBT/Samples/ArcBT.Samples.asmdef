@@ -1,0 +1,16 @@
+{
+    "name": "ArcBT.Samples",
+    "rootNamespace": "ArcBT.Samples",
+    "references": [
+        "ArcBT"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
