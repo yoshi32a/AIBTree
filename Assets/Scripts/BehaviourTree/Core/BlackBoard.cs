@@ -51,7 +51,7 @@ namespace BehaviourTree.Core
                 {
                     var changeType = isNewKey ? "新規" : "更新";
                     var displayValue = value?.ToString() ?? "null";
-                    Debug.Log($"🗂️ BlackBoard[{changeType}]: {key} = {displayValue}");
+                    BTLogger.LogBlackBoard($"🗂️ BlackBoard[{changeType}]: {key} = {displayValue}");
                 }
             }
         }
@@ -76,7 +76,7 @@ namespace BehaviourTree.Core
                 else
                 {
                     var valueTypeName = value?.GetType().Name ?? "null";
-                    Debug.LogWarning($"🗂️ BlackBoard: Type mismatch for key '{key}'. Expected {typeof(T).Name}, got {valueTypeName}");
+                    BTLogger.Log(LogLevel.Warning, LogCategory.BlackBoard, $"🗂️ BlackBoard: Type mismatch for key '{key}'. Expected {typeof(T).Name}, got {valueTypeName}");
                     return defaultValue;
                 }
             }
@@ -96,7 +96,7 @@ namespace BehaviourTree.Core
             if (data.Remove(key))
             {
                 dataTypes.Remove(key);
-                Debug.Log($"🗂️ BlackBoard: Removed '{key}'");
+                BTLogger.LogBlackBoard($"🗂️ BlackBoard: Removed '{key}'");
             }
         }
 
@@ -105,16 +105,16 @@ namespace BehaviourTree.Core
         {
             data.Clear();
             dataTypes.Clear();
-            Debug.Log("🗂️ BlackBoard: Cleared all data");
+            BTLogger.LogBlackBoard("🗂️ BlackBoard: Cleared all data");
         }
 
         /// <summary>デバッグ用：全てのキーと値を表示</summary>
         public void DebugLog()
         {
-            Debug.Log("🗂️ BlackBoard Contents:");
+            BTLogger.LogBlackBoard("🗂️ BlackBoard Contents:");
             foreach (var kvp in data)
             {
-                Debug.Log($"  - {kvp.Key}: {kvp.Value} ({dataTypes[kvp.Key].Name})");
+                BTLogger.LogBlackBoard($"  - {kvp.Key}: {kvp.Value} ({dataTypes[kvp.Key].Name})");
             }
         }
 

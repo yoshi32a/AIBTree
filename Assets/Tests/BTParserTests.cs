@@ -22,6 +22,7 @@ namespace BehaviourTree.Tests
         {
             parser = new BTParser();
             tempFilePath = Path.GetTempFileName();
+            BTLogger.EnableTestMode(); // テストモードでパーサーログを有効化
         }
 
         [TearDown]
@@ -31,6 +32,7 @@ namespace BehaviourTree.Tests
             {
                 File.Delete(tempFilePath);
             }
+            BTLogger.ResetToDefaults(); // テスト後は通常モードに戻す
         }
 
         #region Basic Parsing Tests
@@ -42,7 +44,7 @@ namespace BehaviourTree.Tests
             string content = "";
             
             // Expect the error log message
-            LogAssert.Expect(LogType.Error, "No tree definition found");
+            LogAssert.Expect(LogType.Error, "[ERR][PRS]: No tree definition found");
 
             // Act
             var result = parser.ParseContent(content);
@@ -58,7 +60,7 @@ namespace BehaviourTree.Tests
             string content = "# This is just a comment\n";
             
             // Expect the error log message
-            LogAssert.Expect(LogType.Error, "No tree definition found");
+            LogAssert.Expect(LogType.Error, "[ERR][PRS]: No tree definition found");
 
             // Act
             var result = parser.ParseContent(content);
@@ -179,7 +181,7 @@ namespace BehaviourTree.Tests
                 }";
 
             // Expect warning for unknown action
-            LogAssert.Expect(LogType.Warning, "Unknown action script: UnknownAction, using CustomActionNode");
+            LogAssert.Expect(LogType.Warning, "[WRN][PRS]: Unknown action script: UnknownAction, using CustomActionNode");
 
             // Act
             var result = parser.ParseContent(content);
@@ -276,7 +278,7 @@ namespace BehaviourTree.Tests
                 }";
 
             // Expect warning for unknown condition
-            LogAssert.Expect(LogType.Warning, "Unknown condition script: UnknownCondition, using CustomConditionNode");
+            LogAssert.Expect(LogType.Warning, "[WRN][PRS]: Unknown condition script: UnknownCondition, using CustomConditionNode");
 
             // Act
             var result = parser.ParseContent(content);
@@ -585,7 +587,7 @@ namespace BehaviourTree.Tests
         public void ParseFile_NonExistentFile_ReturnsNull()
         {
             // Expect error log for non-existent file
-            LogAssert.Expect(LogType.Error, new Regex(@"BT file not found: .*"));
+            LogAssert.Expect(LogType.Error, new Regex(@"\[ERR\]\[PRS\]: BT file not found: .*"));
 
             // Act
             var result = parser.ParseFile("non_existent_file.bt");
@@ -610,7 +612,7 @@ namespace BehaviourTree.Tests
                 ";
 
             // Expect multiple error messages for malformed syntax
-            LogAssert.Expect(LogType.Error, new Regex(@"Expected.*"));
+            LogAssert.Expect(LogType.Error, new Regex(@"\[ERR\]\[PRS\]: Expected.*"));
 
             // Act
             var result = parser.ParseContent(content);

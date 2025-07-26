@@ -2,6 +2,8 @@ using UnityEngine;
 using UnityEditor;
 using System.Collections.Generic;
 using System.IO;
+using BehaviourTree.Core;
+using BehaviourTree.Parser;
 
 namespace BehaviourTree.Tests
 {
@@ -15,19 +17,19 @@ namespace BehaviourTree.Tests
         [MenuItem("BehaviourTree/Run BT File Tests")]
         public static void RunBTFileTests()
         {
-            Debug.Log("🧪 Starting BT File Tests...");
+            BTLogger.LogSystem("🧪 Starting BT File Tests...");
             
             var parser = new BehaviourTree.Parser.BTParser();
             var btDirectory = Path.Combine(Application.dataPath, "BehaviourTrees");
             
             if (!Directory.Exists(btDirectory))
             {
-                Debug.LogError($"❌ BehaviourTrees directory not found: {btDirectory}");
+                BTLogger.LogError(LogCategory.System, $"❌ BehaviourTrees directory not found: {btDirectory}", "", null);
                 return;
             }
             
             var btFiles = Directory.GetFiles(btDirectory, "*.bt");
-            Debug.Log($"📁 Found {btFiles.Length} BT files to test");
+            BTLogger.LogSystem($"📁 Found {btFiles.Length} BT files to test");
             
             var successCount = 0;
             var failCount = 0;
@@ -36,7 +38,7 @@ namespace BehaviourTree.Tests
             foreach (var filePath in btFiles)
             {
                 var fileName = Path.GetFileName(filePath);
-                Debug.Log($"🔍 Testing: {fileName}");
+                BTLogger.LogSystem($"🔍 Testing: {fileName}");
                 
                 try
                 {
@@ -45,7 +47,7 @@ namespace BehaviourTree.Tests
                     if (rootNode != null)
                     {
                         successCount++;
-                        Debug.Log($"✅ {fileName} - PASSED");
+                        BTLogger.LogSystem($"✅ {fileName} - PASSED");
                         
                         // 追加情報を表示
                         LogNodeInfo(rootNode, fileName);
@@ -54,30 +56,30 @@ namespace BehaviourTree.Tests
                     {
                         failCount++;
                         failedFiles.Add(fileName);
-                        Debug.LogError($"❌ {fileName} - FAILED (returned null)");
+                        BTLogger.LogError(LogCategory.Parser, $"❌ {fileName} - FAILED (returned null)", "", null);
                     }
                 }
                 catch (System.Exception ex)
                 {
                     failCount++;
                     failedFiles.Add(fileName);
-                    Debug.LogError($"❌ {fileName} - FAILED ({ex.Message})");
+                    BTLogger.LogError(LogCategory.Parser, $"❌ {fileName} - FAILED ({ex.Message})", "", null);
                 }
             }
             
             // 結果サマリー
-            Debug.Log($"\n🎯 BT File Test Results:");
-            Debug.Log($"📊 Total: {btFiles.Length} files");
-            Debug.Log($"✅ Passed: {successCount}");
-            Debug.Log($"❌ Failed: {failCount}");
+            BTLogger.LogSystem($"\n🎯 BT File Test Results:");
+            BTLogger.LogSystem($"📊 Total: {btFiles.Length} files");
+            BTLogger.LogSystem($"✅ Passed: {successCount}");
+            BTLogger.LogSystem($"❌ Failed: {failCount}");
             
             if (failedFiles.Count > 0)
             {
-                Debug.LogError($"💥 Failed files: {string.Join(", ", failedFiles)}");
+                BTLogger.LogError(LogCategory.System, $"💥 Failed files: {string.Join(", ", failedFiles)}", "", null);
             }
             else
             {
-                Debug.Log($"🎉 All BT files parsed successfully!");
+                BTLogger.LogSystem("🎉 All BT files parsed successfully!");
             }
         }
         

@@ -34,7 +34,7 @@ namespace BehaviourTree.Parser
         {
             if (!File.Exists(filePath))
             {
-                Debug.LogError($"BT file not found: {filePath}");
+                BTLogger.LogError(LogCategory.Parser, $"BT file not found: {filePath}");
                 return null;
             }
 
@@ -58,7 +58,7 @@ namespace BehaviourTree.Parser
                 currentTokenIndex++;
             }
 
-            Debug.LogError("No tree definition found");
+            BTLogger.LogError(LogCategory.Parser, "No tree definition found");
             return null;
         }
 
@@ -188,7 +188,7 @@ namespace BehaviourTree.Parser
             // tree name
             if (currentTokenIndex >= tokens.Count || tokens[currentTokenIndex].Type != "IDENTIFIER")
             {
-                Debug.LogError("Expected tree name");
+                BTLogger.LogError(LogCategory.Parser, "Expected tree name");
                 return null;
             }
 
@@ -198,7 +198,7 @@ namespace BehaviourTree.Parser
             // opening brace
             if (currentTokenIndex >= tokens.Count || tokens[currentTokenIndex].Type != "LBRACE")
             {
-                Debug.LogError("Expected '{' after tree name");
+                BTLogger.LogError(LogCategory.Parser, "Expected '{' after tree name");
                 return null;
             }
 
@@ -220,7 +220,7 @@ namespace BehaviourTree.Parser
         {
             if (currentTokenIndex >= tokens.Count || tokens[currentTokenIndex].Type != "KEYWORD")
             {
-                Debug.LogError("Expected node type keyword");
+                BTLogger.LogError(LogCategory.Parser, "Expected node type keyword");
                 return null;
             }
 
@@ -230,7 +230,7 @@ namespace BehaviourTree.Parser
             // script name (for Action/Condition) or node name (for Sequence/Selector)
             if (currentTokenIndex >= tokens.Count || tokens[currentTokenIndex].Type != "IDENTIFIER")
             {
-                Debug.LogError($"Expected script/node name after {nodeType}");
+                BTLogger.LogError(LogCategory.Parser, $"Expected script/node name after {nodeType}");
                 return null;
             }
 
@@ -240,7 +240,7 @@ namespace BehaviourTree.Parser
             // opening brace
             if (currentTokenIndex >= tokens.Count || tokens[currentTokenIndex].Type != "LBRACE")
             {
-                Debug.LogError("Expected '{' after node name");
+                BTLogger.LogError(LogCategory.Parser, "Expected '{' after node name");
                 return null;
             }
 
@@ -272,7 +272,7 @@ namespace BehaviourTree.Parser
 
                     if (currentTokenIndex >= tokens.Count || tokens[currentTokenIndex].Type != "COLON")
                     {
-                        Debug.LogError("Expected ':' after property name");
+                        BTLogger.LogError(LogCategory.Parser, "Expected ':' after property name");
                         return null;
                     }
 
@@ -281,7 +281,7 @@ namespace BehaviourTree.Parser
                     if (currentTokenIndex >= tokens.Count ||
                         (tokens[currentTokenIndex].Type != "STRING" && tokens[currentTokenIndex].Type != "NUMBER"))
                     {
-                        Debug.LogError(
+                        BTLogger.LogError(LogCategory.Parser,
                             $"Expected property value, got: {(currentTokenIndex < tokens.Count ? tokens[currentTokenIndex].Type : "END_OF_TOKENS")}");
                         return null;
                     }
@@ -312,17 +312,17 @@ namespace BehaviourTree.Parser
 
             // 新フォーマット: Action/Condition は直接スクリプト名、Sequence/Selector は従来通り
             BTNode node = null;
-            Debug.Log($"🔍 Creating node: {nodeType} {scriptOrNodeName}");
-            Debug.Log($"🔍 Properties: {string.Join(", ", properties.Select(p => $"{p.Key}={p.Value}"))}");
+            BTLogger.Log(LogLevel.Info, LogCategory.Parser, $"🔍 Creating node: {nodeType} {scriptOrNodeName}");
+            BTLogger.Log(LogLevel.Debug, LogCategory.Parser, $"🔍 Properties: {string.Join(", ", properties.Select(p => $"{p.Key}={p.Value}"))}");
 
             if (nodeType == "Action" || nodeType == "Condition")
             {
-                Debug.Log($"🚀 Creating {nodeType} with script '{scriptOrNodeName}'");
+                BTLogger.Log(LogLevel.Info, LogCategory.Parser, $"🚀 Creating {nodeType} with script '{scriptOrNodeName}'");
                 node = CreateNodeFromScript(scriptOrNodeName, nodeType, properties);
             }
             else
             {
-                Debug.Log($"🔧 Creating composite node: {nodeType}");
+                BTLogger.Log(LogLevel.Debug, LogCategory.Parser, $"🔧 Creating composite node: {nodeType}");
                 node = CreateNode(nodeType);
                 if (node != null)
                 {
@@ -335,7 +335,7 @@ namespace BehaviourTree.Parser
 
             if (node == null)
             {
-                Debug.LogError($"Failed to create node of type: {nodeType}");
+                BTLogger.LogError(LogCategory.Parser, $"Failed to create node of type: {nodeType}");
                 return null;
             }
 
@@ -371,7 +371,7 @@ namespace BehaviourTree.Parser
             // colon
             if (currentTokenIndex >= tokens.Count || tokens[currentTokenIndex].Type != "COLON")
             {
-                Debug.LogError($"Expected ':' after property name '{propertyName}'");
+                BTLogger.LogError(LogCategory.Parser, $"Expected ':' after property name '{propertyName}'");
                 return;
             }
 
@@ -380,7 +380,7 @@ namespace BehaviourTree.Parser
             // value
             if (currentTokenIndex >= tokens.Count)
             {
-                Debug.LogError($"Expected value for property '{propertyName}'");
+                BTLogger.LogError(LogCategory.Parser, $"Expected value for property '{propertyName}'");
                 return;
             }
 
@@ -403,152 +403,152 @@ namespace BehaviourTree.Parser
                 case "Parallel":
                     return new BTParallelNode();
                 default:
-                    Debug.LogError($"Unknown composite node type: {nodeType}");
+                    BTLogger.LogError(LogCategory.Parser, $"Unknown composite node type: {nodeType}");
                     return null;
             }
         }
 
         BTNode CreateNodeFromScript(string scriptName, string nodeType, Dictionary<string, string> properties)
         {
-            Debug.Log($"🔧 CreateNodeFromScript: script='{scriptName}', type='{nodeType}'");
+            BTLogger.Log(LogLevel.Debug, LogCategory.Parser, $"🔧 CreateNodeFromScript: script='{scriptName}', type='{nodeType}'");
             BTNode node = null;
 
             if (nodeType == "Action")
             {
-                Debug.Log($"🔧 Creating ACTION node for script: {scriptName}");
+                BTLogger.Log(LogLevel.Debug, LogCategory.Parser, $"🔧 Creating ACTION node for script: {scriptName}");
                 // Actionスクリプトから実際のクラスを作成
                 switch (scriptName)
                 {
                     case "MoveToPosition":
                         node = new MoveToPositionAction();
-                        Debug.Log($"✅ Created MoveToPositionAction");
+                        BTLogger.Log(LogLevel.Info, LogCategory.Parser, $"✅ Created MoveToPositionAction");
                         break;
                     case "Wait":
                         node = new WaitAction();
-                        Debug.Log($"✅ Created WaitAction");
+                        BTLogger.Log(LogLevel.Info, LogCategory.Parser, $"✅ Created WaitAction");
                         break;
                     case "AttackEnemy":
                         node = new AttackEnemyAction();
-                        Debug.Log($"✅ Created AttackEnemyAction");
+                        BTLogger.Log(LogLevel.Info, LogCategory.Parser, $"✅ Created AttackEnemyAction");
                         break;
                     case "ScanEnvironment":
                         node = new ScanEnvironmentAction();
-                        Debug.Log($"✅ Created ScanEnvironmentAction");
+                        BTLogger.Log(LogLevel.Info, LogCategory.Parser, $"✅ Created ScanEnvironmentAction");
                         break;
                     case "MoveToEnemy":
                         node = new MoveToEnemyAction();
-                        Debug.Log($"✅ Created MoveToEnemyAction");
+                        BTLogger.Log(LogLevel.Info, LogCategory.Parser, $"✅ Created MoveToEnemyAction");
                         break;
                     case "AttackTarget":
                         node = new AttackTargetAction();
-                        Debug.Log($"✅ Created AttackTargetAction");
+                        BTLogger.Log(LogLevel.Info, LogCategory.Parser, $"✅ Created AttackTargetAction");
                         break;
                     case "RandomWander":
                         node = new RandomWanderAction();
-                        Debug.Log($"✅ Created RandomWanderAction");
+                        BTLogger.Log(LogLevel.Info, LogCategory.Parser, $"✅ Created RandomWanderAction");
                         break;
                     case "CastSpell":
                         node = new CastSpellAction();
-                        Debug.Log($"✅ Created CastSpellAction");
+                        BTLogger.Log(LogLevel.Info, LogCategory.Parser, $"✅ Created CastSpellAction");
                         break;
                     case "Attack":
                         node = new AttackAction();
-                        Debug.Log($"✅ Created AttackAction");
+                        BTLogger.Log(LogLevel.Info, LogCategory.Parser, $"✅ Created AttackAction");
                         break;
                     case "NormalAttack":
                         node = new NormalAttackAction();
-                        Debug.Log($"✅ Created NormalAttackAction");
+                        BTLogger.Log(LogLevel.Info, LogCategory.Parser, $"✅ Created NormalAttackAction");
                         break;
                     case "UseItem":
                         node = new UseItemAction();
-                        Debug.Log($"✅ Created UseItemAction");
+                        BTLogger.Log(LogLevel.Info, LogCategory.Parser, $"✅ Created UseItemAction");
                         break;
                     case "FleeToSafety":
                         node = new FleeToSafetyAction();
-                        Debug.Log($"✅ Created FleeToSafetyAction");
+                        BTLogger.Log(LogLevel.Info, LogCategory.Parser, $"✅ Created FleeToSafetyAction");
                         break;
                     case "Interact":
                         node = new InteractAction();
-                        Debug.Log($"✅ Created InteractAction");
+                        BTLogger.Log(LogLevel.Info, LogCategory.Parser, $"✅ Created InteractAction");
                         break;
                     case "MoveToTarget":
                         node = new MoveToTargetAction();
-                        Debug.Log($"✅ Created MoveToTargetAction");
+                        BTLogger.Log(LogLevel.Info, LogCategory.Parser, $"✅ Created MoveToTargetAction");
                         break;
                     case "EnvironmentScan":
                         node = new EnvironmentScanAction();
-                        Debug.Log($"✅ Created EnvironmentScanAction");
+                        BTLogger.Log(LogLevel.Info, LogCategory.Parser, $"✅ Created EnvironmentScanAction");
                         break;
                     case "InitializeResources":
                         node = new InitializeResourcesAction();
-                        Debug.Log($"✅ Created InitializeResourcesAction");
+                        BTLogger.Log(LogLevel.Info, LogCategory.Parser, $"✅ Created InitializeResourcesAction");
                         break;
                     case "RestoreSmallMana":
                         node = new RestoreSmallManaAction();
-                        Debug.Log($"✅ Created RestoreSmallManaAction");
+                        BTLogger.Log(LogLevel.Info, LogCategory.Parser, $"✅ Created RestoreSmallManaAction");
                         break;
                     case "SearchForEnemy":
                         node = new SearchForEnemyAction();
-                        Debug.Log($"✅ Created SearchForEnemyAction");
+                        BTLogger.Log(LogLevel.Info, LogCategory.Parser, $"✅ Created SearchForEnemyAction");
                         break;
                     default:
-                        Debug.LogWarning($"Unknown action script: {scriptName}, using CustomActionNode");
+                        BTLogger.Log(LogLevel.Warning, LogCategory.Parser, $"Unknown action script: {scriptName}, using CustomActionNode");
                         node = new CustomActionNode();
                         break;
                 }
             }
             else if (nodeType == "Condition")
             {
-                Debug.Log($"🔧 Creating CONDITION node for script: {scriptName}");
+                BTLogger.Log(LogLevel.Debug, LogCategory.Parser, $"🔧 Creating CONDITION node for script: {scriptName}");
                 // Conditionスクリプトから実際のクラスを作成
                 switch (scriptName)
                 {
                     case "HealthCheck":
                         node = new HealthCheckCondition();
-                        Debug.Log($"✅ Created HealthCheckCondition");
+                        BTLogger.Log(LogLevel.Info, LogCategory.Parser, $"✅ Created HealthCheckCondition");
                         break;
                     case "EnemyCheck":
                         node = new EnemyCheckCondition();
-                        Debug.Log($"✅ Created EnemyCheckCondition");
+                        BTLogger.Log(LogLevel.Info, LogCategory.Parser, $"✅ Created EnemyCheckCondition");
                         break;
                     case "HasItem":
                         node = new HasItemCondition();
-                        Debug.Log($"✅ Created HasItemCondition");
+                        BTLogger.Log(LogLevel.Info, LogCategory.Parser, $"✅ Created HasItemCondition");
                         break;
                     case "HasSharedEnemyInfo":
                         node = new HasSharedEnemyInfoCondition();
-                        Debug.Log($"✅ Created HasSharedEnemyInfoCondition");
+                        BTLogger.Log(LogLevel.Info, LogCategory.Parser, $"✅ Created HasSharedEnemyInfoCondition");
                         break;
                     case "EnemyInRange":
                         node = new EnemyInRangeCondition();
-                        Debug.Log($"✅ Created EnemyInRangeCondition");
+                        BTLogger.Log(LogLevel.Info, LogCategory.Parser, $"✅ Created EnemyInRangeCondition");
                         break;
                     case "IsInitialized":
                         node = new IsInitializedCondition();
-                        Debug.Log($"✅ Created IsInitializedCondition");
+                        BTLogger.Log(LogLevel.Info, LogCategory.Parser, $"✅ Created IsInitializedCondition");
                         break;
                     case "HasTarget":
                         node = new HasTargetCondition();
-                        Debug.Log($"✅ Created HasTargetCondition");
+                        BTLogger.Log(LogLevel.Info, LogCategory.Parser, $"✅ Created HasTargetCondition");
                         break;
                     case "HasMana":
                         node = new HasManaCondition();
-                        Debug.Log($"✅ Created HasManaCondition");
+                        BTLogger.Log(LogLevel.Info, LogCategory.Parser, $"✅ Created HasManaCondition");
                         break;
                     case "EnemyHealthCheck":
                         node = new EnemyHealthCheckCondition();
-                        Debug.Log($"✅ Created EnemyHealthCheckCondition");
+                        BTLogger.Log(LogLevel.Info, LogCategory.Parser, $"✅ Created EnemyHealthCheckCondition");
                         break;
                     case "ScanForInterest":
                         node = new ScanForInterestCondition();
-                        Debug.Log($"✅ Created ScanForInterestCondition");
+                        BTLogger.Log(LogLevel.Info, LogCategory.Parser, $"✅ Created ScanForInterestCondition");
                         break;
                     case "CheckManaResource":
                         node = new CheckManaResourceCondition();
-                        Debug.Log($"✅ Created CheckManaResourceCondition");
+                        BTLogger.Log(LogLevel.Info, LogCategory.Parser, $"✅ Created CheckManaResourceCondition");
                         break;
                     default:
-                        Debug.LogWarning($"Unknown condition script: {scriptName}, using CustomConditionNode");
+                        BTLogger.Log(LogLevel.Warning, LogCategory.Parser, $"Unknown condition script: {scriptName}, using CustomConditionNode");
                         node = new CustomConditionNode();
                         break;
                 }

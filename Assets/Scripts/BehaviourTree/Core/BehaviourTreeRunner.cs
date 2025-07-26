@@ -77,10 +77,6 @@ namespace BehaviourTree.Core
         
         void LogExecutionState(BTNodeResult result)
         {
-            var resultIcon = result == BTNodeResult.Success ? "✅" :
-                result == BTNodeResult.Failure ? "❌" :
-                result == BTNodeResult.Running ? "🔄" : "❓";
-            
             var changeInfo = result != lastResult ? " [状態変化]" : "";
             
             // 同じパターンの繰り返しをチェック
@@ -102,14 +98,18 @@ namespace BehaviourTree.Core
                 lastLogPattern = currentPattern;
             }
             
-            Debug.Log($"🌳 BT[{rootNode.Name}] → {result} {resultIcon}{changeInfo} " +
-                     $"(実行回数: {executionCount}, 時刻: {Time.time:F1}s)" +
-                     (repetitionCount > 10 ? $" [繰り返し×{repetitionCount}]" : ""));
+            // 構造化ログを使用
+            var logLevel = result == BTNodeResult.Failure ? LogLevel.Warning : LogLevel.Info;
+            BTLogger.Log(logLevel, LogCategory.System, 
+                $"BT[{rootNode.Name}] → {result}{changeInfo} " +
+                $"(実行回数: {executionCount}, 時刻: {Time.time:F1}s)" +
+                (repetitionCount > 10 ? $" [繰り返し×{repetitionCount}]" : ""),
+                rootNode.Name, this);
             
             // BlackBoard状態も表示（変化があった場合）
             if (blackBoard.HasRecentChanges())
             {
-                Debug.Log($"📋 BlackBoard更新: {blackBoard.GetRecentChangeSummary()}");
+                BTLogger.LogBlackBoard($"BlackBoard更新: {blackBoard.GetRecentChangeSummary()}", "", this);
             }
             
             lastLogTime = Time.time;
@@ -132,7 +132,7 @@ namespace BehaviourTree.Core
                     }
                     else
                     {
-                        Debug.LogError($"BT file not found: {filePath}");
+                        BTLogger.LogError(LogCategory.System, $"BT file not found: {filePath}", "", this);
                         return false;
                     }
                 }
@@ -147,20 +147,20 @@ namespace BehaviourTree.Core
                     // 動的条件チェックを設定
                     SetupDynamicConditionChecking(rootNode);
 
-                    Debug.Log($"Successfully loaded behaviour tree from: {filePath}");
-                    Debug.Log($"Root node: {rootNode.Name} ({rootNode.GetType().Name})");
+                    BTLogger.LogSystem($"Successfully loaded behaviour tree from: {filePath}", "", this);
+                    BTLogger.LogSystem($"Root node: {rootNode.Name} ({rootNode.GetType().Name})", "", this);
                     LogTreeStructure(rootNode, 0);
                     return true;
                 }
                 else
                 {
-                    Debug.LogError($"Failed to parse behaviour tree: {filePath}");
+                    BTLogger.LogError(LogCategory.Parser, $"Failed to parse behaviour tree: {filePath}", "", this);
                     return false;
                 }
             }
             catch (System.Exception e)
             {
-                Debug.LogError($"Error loading behaviour tree: {e.Message}");
+                BTLogger.LogError(LogCategory.System, $"Error loading behaviour tree: {e.Message}", "", this);
                 return false;
             }
         }
@@ -175,13 +175,13 @@ namespace BehaviourTree.Core
             // BlackBoardの確認
             if (blackBoard == null)
             {
-                Debug.LogError($"❌ InitializeNodeTree: BlackBoard is null for node {node.Name}");
+                BTLogger.LogError(LogCategory.BlackBoard, $"❌ InitializeNodeTree: BlackBoard is null for node {node.Name}", node.Name, this);
                 return;
             }
 
             // このMonoBehaviourとBlackBoardを渡してノードを初期化
             node.Initialize(this, blackBoard);
-            Debug.Log($"✅ Initialized node: {node.Name} ({node.GetType().Name})");
+            BTLogger.LogSystem($"✅ Initialized node: {node.Name} ({node.GetType().Name})", node.Name, this);
 
             // 子ノードも再帰的に初期化
             foreach (var child in node.Children)
@@ -213,19 +213,19 @@ namespace BehaviourTree.Core
 
                 if (rootNode != null)
                 {
-                    Debug.Log("Successfully loaded behaviour tree from content");
+                    BTLogger.LogSystem("Successfully loaded behaviour tree from content", "", this);
                     LogTreeStructure(rootNode, 0);
                     return true;
                 }
                 else
                 {
-                    Debug.LogError("Failed to parse behaviour tree content");
+                    BTLogger.LogError(LogCategory.Parser, "Failed to parse behaviour tree content", "", this);
                     return false;
                 }
             }
             catch (System.Exception e)
             {
-                Debug.LogError($"Error parsing behaviour tree content: {e.Message}");
+                BTLogger.LogError(LogCategory.System, $"Error parsing behaviour tree content: {e.Message}", "", this);
                 return false;
             }
         }
@@ -258,7 +258,7 @@ namespace BehaviourTree.Core
             }
 
             var indent = new string(' ', depth * 2);
-            Debug.Log($"{indent}{node.Name} ({node.GetType().Name})");
+            BTLogger.LogSystem($"{indent}{node.Name} ({node.GetType().Name})", node.Name, this);
 
             foreach (var child in node.Children)
             {
@@ -280,7 +280,7 @@ namespace BehaviourTree.Core
         void ResetTreeState()
         {
             ResetTree();
-            Debug.Log("Behaviour tree state reset");
+            BTLogger.LogSystem("Behaviour tree state reset", "", this);
         }
 
         [ContextMenu("Show BlackBoard Contents")]
@@ -292,7 +292,7 @@ namespace BehaviourTree.Core
             }
             else
             {
-                Debug.Log("BlackBoard is null");
+                BTLogger.LogError(LogCategory.BlackBoard, "BlackBoard is null", "", this);
             }
         }
 

@@ -18,6 +18,7 @@ namespace BehaviourTree.Tests
         public void SetUp()
         {
             parser = new BTParser();
+            BTLogger.EnableTestMode(); // テストモードでパーサーログを有効化
         }
 
 
@@ -25,6 +26,7 @@ namespace BehaviourTree.Tests
         public void TearDown()
         {
             parser = null;
+            BTLogger.ResetToDefaults(); // テスト後は通常モードに戻す
         }
 
         /// <summary>全ての.btファイルが正常にパースできるかテスト</summary>
@@ -180,7 +182,7 @@ namespace BehaviourTree.Tests
         public void TestParserErrorHandling()
         {
             // 存在しないファイルのテスト（エラーログを期待）
-            LogAssert.Expect(LogType.Error, "BT file not found: nonexistent_file.bt");
+            LogAssert.Expect(LogType.Error, "[ERR][PRS]: BT file not found: nonexistent_file.bt");
             var result = parser.ParseFile("nonexistent_file.bt");
             Assert.IsNull(result, "Parsing non-existent file should return null");
             
@@ -191,12 +193,12 @@ namespace BehaviourTree.Tests
             ";
             
             // 無効な構文ではエラーログが出る可能性があるため、期待
-            LogAssert.Expect(LogType.Error, "No tree definition found");
+            LogAssert.Expect(LogType.Error, "[ERR][PRS]: No tree definition found");
             var invalidResult = parser.ParseContent(invalidContent);
             Assert.IsNull(invalidResult, "Parsing invalid content should return null");
             
             // 空のコンテンツのテスト
-            LogAssert.Expect(LogType.Error, "No tree definition found");
+            LogAssert.Expect(LogType.Error, "[ERR][PRS]: No tree definition found");
             var emptyResult = parser.ParseContent("");
             Assert.IsNull(emptyResult, "Parsing empty content should return null");
             
