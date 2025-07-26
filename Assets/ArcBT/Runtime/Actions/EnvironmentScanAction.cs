@@ -7,7 +7,7 @@ namespace ArcBT.Actions
     public class EnvironmentScanAction : BTActionNode
     {
         float scanRange = 10f;
-        string[] scanTags = { "Enemy", "Item", "Interactable" };
+        string[] scanTags = new() { "Enemy", "Item", "Interactable" };
 
         public override void SetProperty(string key, string value)
         {

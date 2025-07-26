@@ -49,7 +49,7 @@ namespace ArcBT.Actions
                     var takeDamageMethod = healthComponent.GetType().GetMethod("TakeDamage");
                     if (takeDamageMethod != null)
                     {
-                        takeDamageMethod.Invoke(healthComponent, new object[] { damage });
+                        takeDamageMethod.Invoke(healthComponent, new[] { damage });
                     }
                 }
 
