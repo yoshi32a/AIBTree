@@ -83,5 +83,4 @@ CodeCoverage/
 CodeCoverageSettings.json
 
 # Claude Code settings
-.claude/
 settings.local.json
