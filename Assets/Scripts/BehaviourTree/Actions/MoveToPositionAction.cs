@@ -5,7 +5,7 @@ using BehaviourTree.Core;
 public class MoveToPositionAction : BTActionNode
 {
     [SerializeField] string target;
-    [SerializeField] float speed = 3.5f;
+    [SerializeField] float speed = 12.0f;
     [SerializeField] float tolerance = 0.5f;
 
     Vector3 targetPosition;

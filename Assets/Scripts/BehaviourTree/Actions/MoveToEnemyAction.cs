@@ -6,9 +6,13 @@ namespace BehaviourTree.Actions
     /// <summary>BlackBoardから敵位置を取得して移動するアクション</summary>
     public class MoveToEnemyAction : BTActionNode
     {
-        float speed = 3.5f;
+        float speed = 15.0f;
         float tolerance = 1.0f;
         Vector3 targetPosition;
+        
+        // ログ最適化用
+        float lastLoggedDistance = -1f;
+        float lastLogTime = 0f;
 
         public override void SetProperty(string key, string value)
         {
@@ -43,7 +47,7 @@ namespace BehaviourTree.Actions
             if (enemyTarget == null || !enemyTarget.activeInHierarchy)
             {
                 blackBoard.SetValue("has_enemy_info", false);
-                blackBoard.SetValue("enemy_target", (GameObject)null);
+                blackBoard.SetValue<GameObject>("enemy_target", null);
                 Debug.Log("MoveToEnemy: Enemy target is destroyed or inactive");
                 return BTNodeResult.Failure;
             }
@@ -71,7 +75,17 @@ namespace BehaviourTree.Actions
                 transform.rotation = Quaternion.LookRotation(direction);
             }
 
-            Debug.Log($"MoveToEnemy: Moving to '{enemyTarget.name}' - Distance: {distance:F1}");
+            // スマートログ: 距離に大きな変化があった場合か、3秒間隔でのみログ出力
+            bool shouldLog = (lastLoggedDistance < 0) ||  // 初回
+                           (Mathf.Abs(distance - lastLoggedDistance) > 0.5f) ||  // 0.5m以上の変化
+                           (Time.time - lastLogTime > 3f);  // 3秒間隔
+            
+            if (shouldLog)
+            {
+                Debug.Log($"🏃 MoveToEnemy: '{enemyTarget.name}' へ移動中 (距離: {distance:F1}m)");
+                lastLoggedDistance = distance;
+                lastLogTime = Time.time;
+            }
 
             return BTNodeResult.Running;
         }

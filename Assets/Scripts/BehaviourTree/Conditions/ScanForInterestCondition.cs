@@ -1,5 +1,6 @@
 using UnityEngine;
 using BehaviourTree.Core;
+using System.Collections.Generic;
 
 namespace BehaviourTree.Conditions
 {
@@ -25,19 +26,49 @@ namespace BehaviourTree.Conditions
                 return BTNodeResult.Failure;
             }
 
-            // 興味のあるオブジェクトを検索
-            Collider[] interestingObjects = Physics.OverlapSphere(transform.position, scanRadius, LayerMask.GetMask("Interactable", "Item", "Treasure"));
-
-            if (interestingObjects.Length > 0)
+            // 興味のあるオブジェクトを検索（タグベースに変更）
+            Collider[] allObjects = Physics.OverlapSphere(transform.position, scanRadius);
+            List<Collider> interestingObjects = new List<Collider>();
+            
+            foreach (var obj in allObjects)
             {
-                // 最も近いオブジェクトを選択
+                // デバッグ: 検出されたオブジェクトの詳細をログ出力
+                string objName = obj.gameObject.name;
+                string objTag = obj.tag;
+                float distance = Vector3.Distance(transform.position, obj.transform.position);
+                Debug.Log($"ScanForInterest: Detected '{objName}' with tag '{objTag}' at distance {distance:F1}");
+                
+                // タグベースの安全な検査
+                if (HasTag(obj, "Interactable") || HasTag(obj, "Item") || HasTag(obj, "Treasure"))
+                {
+                    interestingObjects.Add(obj);
+                    Debug.Log($"ScanForInterest: Added '{objName}' as interesting object");
+                }
+            }
+            
+            Debug.Log($"ScanForInterest: Found {allObjects.Length} total objects, {interestingObjects.Count} interesting objects in radius {scanRadius}");
+
+            if (interestingObjects.Count > 0)
+            {
+                // 最近調査したオブジェクトのリストを取得
+                var recentlyInvestigated = blackBoard.GetValue<System.Collections.Generic.HashSet<string>>("recently_investigated");
+                if (recentlyInvestigated == null)
+                {
+                    recentlyInvestigated = new System.Collections.Generic.HashSet<string>();
+                    blackBoard.SetValue("recently_investigated", recentlyInvestigated);
+                }
+
+                // 最も近い未調査オブジェクトを選択
                 GameObject nearestObject = null;
                 float nearestDistance = float.MaxValue;
 
                 foreach (var obj in interestingObjects)
                 {
                     float distance = Vector3.Distance(transform.position, obj.transform.position);
-                    if (distance < nearestDistance)
+                    string objKey = $"{obj.gameObject.name}_{obj.transform.position}";
+                    
+                    // 最近調査していないオブジェクトを優先
+                    if (!recentlyInvestigated.Contains(objKey) && distance < nearestDistance)
                     {
                         nearestDistance = distance;
                         nearestObject = obj.gameObject;
@@ -61,6 +92,30 @@ namespace BehaviourTree.Conditions
             blackBoard.RemoveValue("interest_distance");
 
             return BTNodeResult.Failure;
+        }
+
+        bool HasTag(Component component, string tagName)
+        {
+            // タグの存在チェックと安全な比較
+            if (string.IsNullOrEmpty(tagName)) return false;
+            if (component == null || component.gameObject == null) return false;
+            
+            try
+            {
+                return component.CompareTag(tagName);
+            }
+            catch (UnityEngine.UnityException)
+            {
+                // Unity固有の例外（タグ未定義など）をキャッチ
+                Debug.LogWarning($"Tag '{tagName}' is not defined in Unity Tag Manager.");
+                return false;
+            }
+            catch (System.Exception ex)
+            {
+                // その他の例外
+                Debug.LogWarning($"Unexpected error checking tag '{tagName}': {ex.Message}");
+                return false;
+            }
         }
     }
 }

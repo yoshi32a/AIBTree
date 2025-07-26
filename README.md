@@ -25,14 +25,19 @@ Assets/
 │       │   ├── BTSequenceNode.cs # Sequenceノード
 │       │   ├── BTSelectorNode.cs # Selectorノード
 │       │   └── BTParallelNode.cs # Parallelノード
-│       ├── Actions/              # アクション実装
+│       ├── Actions/              # アクション実装（18種類）
 │       │   ├── MoveToPositionAction.cs
 │       │   ├── AttackEnemyAction.cs
-│       │   └── WaitAction.cs
-│       ├── Conditions/           # 条件実装
+│       │   ├── WaitAction.cs
+│       │   ├── ScanEnvironmentAction.cs
+│       │   ├── UseItemAction.cs
+│       │   ├── FleeToSafetyAction.cs
+│       │   └── その他12種類...
+│       ├── Conditions/           # 条件実装（6種類）
 │       │   ├── HealthCheckCondition.cs
 │       │   ├── EnemyCheckCondition.cs
-│       │   └── HasItemCondition.cs
+│       │   ├── HasItemCondition.cs
+│       │   └── HasSharedEnemyInfoCondition.cs
 │       ├── Parser/               # .btファイルパーサー
 │       └── Components/           # 汎用コンポーネント
 ├── BehaviourTrees/               # .btファイルとサンプル
@@ -40,7 +45,7 @@ Assets/
 │   ├── team_coordination_sample.bt # チーム連携例
 │   ├── resource_management_sample.bt # リソース管理例
 │   └── dynamic_condition_sample.bt # 動的条件例
-vscode-bt-extension/              # VSCode拡張機能 v1.1.0
+vscode-bt-extension/              # VSCode拡張機能 v1.2.0
 ├── package.json
 ├── syntaxes/bt.tmLanguage.json   # 新形式対応
 ├── snippets/bt.json              # BlackBoard対応スニペット
@@ -321,12 +326,15 @@ MIT License
 
 ## 実装済み機能
 
-- [x] BlackBoardシステム（データ共有）
-- [x] 動的条件チェック（実行中の条件監視）
-- [x] 並列実行ノード（Parallel）の実装
-- [x] VSCode完全対応（v1.1.0）
-- [x] 複合ノード（Sequence, Selector, Parallel）
-- [x] デバッグ機能（BlackBoard表示、ツリー状態管理）
+- [x] **BlackBoardシステム**（データ共有、型安全、デバッグ対応）
+- [x] **動的条件チェック**（実行中の条件監視、即座の中断）
+- [x] **豊富なノード実装**（18種類のAction、6種類のCondition）
+- [x] **並列実行ノード**（Parallel、success/failure policy対応）
+- [x] **VSCode完全対応**（v1.2.0、シンタックスハイライト、自動補完、診断）
+- [x] **包括的テストスイート**（38テストケース、Unity Test Framework）
+- [x] **複合ノード**（Sequence, Selector, Parallel）
+- [x] **デバッグ機能**（BlackBoard表示、ツリー状態管理、右クリックメニュー）
+- [x] **エディターメニュー統合**（個別ファイルテスト、パフォーマンステスト）
 
 ## 今後の予定
 

@@ -9,8 +9,17 @@ namespace Components
     [SerializeField] int maxHealth = 100;
     [SerializeField] int currentHealth;
     
-    public int MaxHealth => maxHealth;
-    public int CurrentHealth => currentHealth;
+    public int MaxHealth 
+    { 
+        get => maxHealth; 
+        set => maxHealth = value; 
+    }
+    
+    public int CurrentHealth 
+    { 
+        get => currentHealth; 
+        set => currentHealth = value; 
+    }
     
     void Start()
     {

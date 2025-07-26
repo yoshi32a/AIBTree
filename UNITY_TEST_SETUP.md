@@ -148,7 +148,32 @@ MoveToPosition: Using BlackBoard key 'current_patrol_point' = patrol_point_1
 2. **動的条件チェック対応を実装**
 3. **Actionノードとの連携をテスト**
 
-## 6. トラブルシューティング
+## 6. テストランナーと自動テスト
+
+### Unity Test Runnerの使用
+1. **Window > General > Test Runner** でテストランナーを開く
+2. **EditModeタブ**を選択してエディターテストを実行
+3. **主要なテストクラス**:
+   - `BTParsingTests` - .btファイルパーシングテスト（26テスト）
+   - `BTFileValidationTests` - ファイル構造検証テスト（12テスト）
+
+### テストアセンブリ構成
+- `Assets/Tests/Tests.asmdef` - テスト用アセンブリ定義
+- 参照: UnityEngine.TestRunner, UnityEditor.TestRunner, App
+- エディターモード専用テスト（Editor platform）
+- NUnit framework使用
+
+### エディターメニューからのテスト実行
+- **BehaviourTree > Run BT File Tests** - 全テスト実行
+- **BehaviourTree > Test [FileName] Sample** - 個別ファイルテスト
+- **BehaviourTree > Performance Test** - パフォーマンステスト
+
+### テスト結果の確認
+- コンソールウィンドウで詳細結果を確認
+- `TestResults.xml` ファイルに実行結果が保存
+- 失敗したテストは詳細なエラーメッセージを表示
+
+## 7. トラブルシューティング
 
 ### BlackBoard関連の問題
 **問題**: "BlackBoard null reference"

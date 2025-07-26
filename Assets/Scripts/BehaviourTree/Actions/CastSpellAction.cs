@@ -29,39 +29,63 @@ namespace BehaviourTree.Actions
 
         protected override BTNodeResult ExecuteAction()
         {
-            if (ownerComponent == null || blackBoard == null)
+            if (ownerComponent == null)
             {
+                Debug.LogError("❌ CastSpell: Owner component is null");
+                return BTNodeResult.Failure;
+            }
+
+            var mana = ownerComponent.GetComponent<Mana>();
+            if (mana == null)
+            {
+                Debug.LogWarning("⚠️ CastSpell: Manaコンポーネントが見つかりません");
                 return BTNodeResult.Failure;
             }
 
             // マナチェック
-            int currentMana = blackBoard.GetValue<int>("current_mana", 0);
-            if (currentMana < manaCost)
+            if (!mana.HasEnoughMana(manaCost))
             {
-                Debug.Log($"CastSpell: Not enough mana ({currentMana} < {manaCost})");
+                Debug.Log($"🔴 CastSpell: マナ不足で '{spellName}' を使用できません ({mana.CurrentMana} < {manaCost})");
                 return BTNodeResult.Failure;
             }
 
             // ターゲット取得
-            GameObject target = blackBoard.GetValue<GameObject>("nearest_enemy");
+            GameObject target = null;
+            if (blackBoard != null)
+            {
+                target = blackBoard.GetValue<GameObject>("nearest_enemy");
+            }
+
             if (target == null)
             {
-                Debug.Log("CastSpell: No target found");
+                Debug.Log("❓ CastSpell: 魔法のターゲットが見つかりません");
                 return BTNodeResult.Failure;
             }
 
-            // 魔法詠唱
+            // マナ消費
+            mana.ConsumeMana(manaCost);
+
+            // ターゲットにダメージ
             var targetHealth = target.GetComponent<Health>();
             if (targetHealth != null)
             {
                 targetHealth.TakeDamage(damage);
-                Debug.Log($"CastSpell: Cast {spellName} for {damage} damage");
+                Debug.Log($"✨ CastSpell: '{spellName}' で '{target.name}' に {damage} ダメージ！ (マナ消費: {manaCost})");
+                
+                // BlackBoardに魔法使用履歴を記録
+                if (blackBoard != null)
+                {
+                    blackBoard.SetValue("last_spell_used", spellName);
+                    blackBoard.SetValue("last_spell_time", Time.time);
+                }
+                
+                return BTNodeResult.Success;
             }
-
-            // マナ消費
-            blackBoard.SetValue("current_mana", currentMana - manaCost);
-
-            return BTNodeResult.Success;
+            else
+            {
+                Debug.LogWarning($"⚠️ CastSpell: ターゲット '{target.name}' にHealthコンポーネントがありません");
+                return BTNodeResult.Failure;
+            }
         }
     }
 }

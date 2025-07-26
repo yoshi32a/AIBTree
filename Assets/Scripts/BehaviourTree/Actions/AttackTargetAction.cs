@@ -48,7 +48,7 @@ namespace BehaviourTree.Actions
             if (!enemyTarget.activeInHierarchy)
             {
                 blackBoard.SetValue("has_enemy_info", false);
-                blackBoard.SetValue("enemy_target", (GameObject)null);
+                blackBoard.SetValue<GameObject>("enemy_target", null);
                 Debug.Log("AttackTarget: Enemy target is destroyed");
                 return BTNodeResult.Failure;
             }
@@ -88,12 +88,17 @@ namespace BehaviourTree.Actions
 
             Debug.Log($"AttackTarget: Attacked '{enemyTarget.name}' for {damage} damage. Enemy health: {enemyHealth.CurrentHealth}");
 
-            // 敵が死んだらBlackBoardをクリア
+            // 敵が死んだらBlackBoardをクリアして実際にGameObjectを破壊
             if (enemyHealth.CurrentHealth <= 0)
             {
+                string enemyName = enemyTarget.name;
                 blackBoard.SetValue("has_enemy_info", false);
-                blackBoard.SetValue("enemy_target", (GameObject)null);
-                Debug.Log($"AttackTarget: Enemy '{enemyTarget.name}' destroyed");
+                blackBoard.SetValue<GameObject>("enemy_target", null);
+                
+                // GameObjectを実際に破壊
+                Object.DestroyImmediate(enemyTarget);
+                
+                Debug.Log($"💀 AttackTarget: 敵 '{enemyName}' を撃破しました");
                 return BTNodeResult.Success;
             }
 

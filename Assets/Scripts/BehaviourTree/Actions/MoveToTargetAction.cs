@@ -7,8 +7,10 @@ namespace BehaviourTree.Actions
     public class MoveToTargetAction : BTActionNode
     {
         string moveType = "normal";
-        float speed = 2.0f;
+        float speed = 20.0f; // 高速化（検証時間短縮）
         float tolerance = 1.0f;
+        
+        MovementController movementController;
 
         public override void SetProperty(string key, string value)
         {
@@ -26,9 +28,21 @@ namespace BehaviourTree.Actions
             }
         }
 
+        public override void Initialize(MonoBehaviour owner, BlackBoard sharedBlackBoard = null)
+        {
+            base.Initialize(owner, sharedBlackBoard);
+            
+            // MovementControllerを取得または追加
+            movementController = owner.GetComponent<MovementController>();
+            if (movementController == null)
+            {
+                movementController = owner.gameObject.AddComponent<MovementController>();
+            }
+        }
+
         protected override BTNodeResult ExecuteAction()
         {
-            if (ownerComponent == null || blackBoard == null)
+            if (ownerComponent == null || blackBoard == null || movementController == null)
             {
                 return BTNodeResult.Failure;
             }
@@ -68,31 +82,21 @@ namespace BehaviourTree.Actions
                 }
             }
 
-            // 目標位置までの距離をチェック
-            float distance = Vector3.Distance(transform.position, targetPosition);
-            if (distance <= tolerance)
+            // MovementControllerで移動中でない場合、新しい目標を設定
+            if (!movementController.IsMoving)
             {
-                // 目標に到達
-                blackBoard.SetValue("move_completed", true);
-                blackBoard.SetValue("arrived_at_target", true);
-                Debug.Log($"MoveToTarget: Reached target ({moveType})");
+                movementController.SetTarget(targetPosition, speed);
+                movementController.OnTargetReached = () => {
+                    Debug.Log($"MoveToTarget: Reached target ({moveType})");
+                };
+            }
+
+            // 移動完了チェック
+            if (blackBoard.GetValue<bool>("move_completed", false))
+            {
+                blackBoard.SetValue("move_completed", false); // リセット
                 return BTNodeResult.Success;
             }
-
-            // 移動処理
-            Vector3 direction = (targetPosition - transform.position).normalized;
-            transform.position += direction * speed * Time.deltaTime;
-
-            // 移動方向を向く
-            if (direction != Vector3.zero)
-            {
-                transform.rotation = Quaternion.LookRotation(direction);
-            }
-
-            // BlackBoardに移動状態を記録
-            blackBoard.SetValue("is_moving", true);
-            blackBoard.SetValue("move_distance_remaining", distance);
-            blackBoard.SetValue("move_direction", direction);
 
             return BTNodeResult.Running;
         }

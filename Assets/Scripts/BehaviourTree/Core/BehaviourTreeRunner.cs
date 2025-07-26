@@ -7,13 +7,21 @@ namespace BehaviourTree.Core
     public class BehaviourTreeRunner : MonoBehaviour
     {
         [SerializeField] string behaviourTreeFilePath;
-        [SerializeField] float tickInterval = 0.1f;
+        [SerializeField] float tickInterval = 0.1f; // AI判定は0.1秒間隔
         [SerializeField] bool debugMode = true;
 
         BTNode rootNode;
         float lastTickTime;
         BTParser parser;
         BlackBoard blackBoard;
+        
+        // スマートログ用の状態追跡
+        BTNodeResult lastResult = BTNodeResult.Running;
+        string lastExecutedNodeName = "";
+        float lastLogTime = 0f;
+        int executionCount = 0;
+        int repetitionCount = 0;
+        string lastLogPattern = "";
 
         public BTNode RootNode
         {
@@ -44,26 +52,67 @@ namespace BehaviourTree.Core
         {
             if (rootNode != null && Time.time - lastTickTime >= tickInterval)
             {
-                if (debugMode)
-                {
-                    Debug.Log($"🌳 === BEHAVIOUR TREE UPDATE CYCLE === (Tick: {Time.frameCount})");
-                    Debug.Log($"🌳 Executing root node: '{rootNode.Name}' ({rootNode.GetType().Name})");
-                }
-
+                executionCount++;
                 var result = rootNode.Execute();
-
-                if (debugMode)
+                
+                // スマートログ: 状態変化時または定期的にのみログ出力
+                bool shouldLog = debugMode && (
+                    result != lastResult ||  // 結果が変わった
+                    rootNode.Name != lastExecutedNodeName ||  // 実行ノードが変わった
+                    Time.time - lastLogTime > 5f ||  // 5秒間隔で生存確認
+                    executionCount <= 3  // 最初の3回は必ずログ
+                );
+                
+                if (shouldLog)
                 {
-                    var resultIcon = result == BTNodeResult.Success ? "✅" :
-                        result == BTNodeResult.Failure ? "❌" :
-                        result == BTNodeResult.Running ? "🔄" : "❓";
-
-                    Debug.Log($"🌳 Behaviour Tree '{rootNode.Name}' result: {result} {resultIcon}");
-                    Debug.Log($"🌳 === END UPDATE CYCLE ===");
+                    LogExecutionState(result);
+                    lastResult = result;
+                    lastExecutedNodeName = rootNode.Name;
+                    lastLogTime = Time.time;
                 }
 
                 lastTickTime = Time.time;
             }
+        }
+        
+        void LogExecutionState(BTNodeResult result)
+        {
+            var resultIcon = result == BTNodeResult.Success ? "✅" :
+                result == BTNodeResult.Failure ? "❌" :
+                result == BTNodeResult.Running ? "🔄" : "❓";
+            
+            var changeInfo = result != lastResult ? " [状態変化]" : "";
+            
+            // 同じパターンの繰り返しをチェック
+            string currentPattern = $"{result}-{rootNode.Name}";
+            bool isRepeating = currentPattern == lastLogPattern;
+            
+            if (isRepeating)
+            {
+                repetitionCount++;
+                // 10回以上同じパターンが続く場合は、5秒おきにのみログ出力
+                if (repetitionCount > 10 && Time.time - lastLogTime < 5.0f)
+                {
+                    return; // ログをスキップ
+                }
+            }
+            else
+            {
+                repetitionCount = 0;
+                lastLogPattern = currentPattern;
+            }
+            
+            Debug.Log($"🌳 BT[{rootNode.Name}] → {result} {resultIcon}{changeInfo} " +
+                     $"(実行回数: {executionCount}, 時刻: {Time.time:F1}s)" +
+                     (repetitionCount > 10 ? $" [繰り返し×{repetitionCount}]" : ""));
+            
+            // BlackBoard状態も表示（変化があった場合）
+            if (blackBoard.HasRecentChanges())
+            {
+                Debug.Log($"📋 BlackBoard更新: {blackBoard.GetRecentChangeSummary()}");
+            }
+            
+            lastLogTime = Time.time;
         }
 
         public bool LoadBehaviourTree(string filePath)
@@ -123,8 +172,16 @@ namespace BehaviourTree.Core
                 return;
             }
 
+            // BlackBoardの確認
+            if (blackBoard == null)
+            {
+                Debug.LogError($"❌ InitializeNodeTree: BlackBoard is null for node {node.Name}");
+                return;
+            }
+
             // このMonoBehaviourとBlackBoardを渡してノードを初期化
             node.Initialize(this, blackBoard);
+            Debug.Log($"✅ Initialized node: {node.Name} ({node.GetType().Name})");
 
             // 子ノードも再帰的に初期化
             foreach (var child in node.Children)

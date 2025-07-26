@@ -94,5 +94,19 @@ namespace Components
     {
         UseItem("health_potion", 1);
     }
+    
+    // UIシステム用のアイテム一覧取得メソッド
+    public System.Collections.Generic.Dictionary<string, int> GetAllItems()
+    {
+        var itemDict = new System.Collections.Generic.Dictionary<string, int>();
+        foreach (var item in items)
+        {
+            if (item.quantity > 0)
+            {
+                itemDict[item.itemType] = item.quantity;
+            }
+        }
+        return itemDict;
+    }
 }
 }

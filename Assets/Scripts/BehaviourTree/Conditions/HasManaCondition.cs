@@ -1,5 +1,6 @@
 using UnityEngine;
 using BehaviourTree.Core;
+using Components;
 
 namespace BehaviourTree.Conditions
 {
@@ -20,25 +21,35 @@ namespace BehaviourTree.Conditions
 
         protected override BTNodeResult CheckCondition()
         {
-            if (ownerComponent == null || blackBoard == null)
+            if (ownerComponent == null)
             {
                 return BTNodeResult.Failure;
             }
 
-            // BlackBoardから現在のマナ量を取得
-            int currentMana = blackBoard.GetValue<int>("current_mana", 0);
+            var mana = ownerComponent.GetComponent<Mana>();
+            if (mana == null)
+            {
+                Debug.LogWarning("⚠️ HasMana: Manaコンポーネントが見つかりません");
+                return BTNodeResult.Failure;
+            }
 
-            bool hasEnoughMana = currentMana >= minMana;
+            bool hasEnoughMana = mana.CurrentMana >= minMana;
+
+            if (blackBoard != null)
+            {
+                blackBoard.SetValue("current_mana", mana.CurrentMana);
+                blackBoard.SetValue("max_mana", mana.MaxMana);
+                blackBoard.SetValue("has_sufficient_mana", hasEnoughMana);
+            }
 
             if (hasEnoughMana)
             {
-                blackBoard.SetValue("mana_sufficient", true);
+                Debug.Log($"🔵 HasMana: 十分なマナあり ({mana.CurrentMana}/{mana.MaxMana} >= {minMana})");
                 return BTNodeResult.Success;
             }
             else
             {
-                blackBoard.SetValue("mana_sufficient", false);
-                Debug.Log($"HasMana: Insufficient mana ({currentMana} < {minMana})");
+                Debug.Log($"🔴 HasMana: マナ不足 ({mana.CurrentMana}/{mana.MaxMana} < {minMana})");
                 return BTNodeResult.Failure;
             }
         }

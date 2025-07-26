@@ -127,9 +127,17 @@ Sequence patrol_with_health_check {
 - `MoveToEnemy` - BlackBoardから敵位置を取得して移動
 - `AttackTarget` - BlackBoardの敵情報を使用して攻撃
 - `RandomWander` - ランダム徘徨
-- `UseItem` - アイテム使用（未実装）
-- `FleeToSafety` - 安全地帯への逃走（未実装）
-- `Interact` - オブジェクトとの相互作用（未実装）
+- `UseItem` - アイテム使用
+- `FleeToSafety` - 安全地帯への逃走
+- `Interact` - オブジェクトとの相互作用
+- `Attack` - 汎用攻撃アクション
+- `MoveToTarget` - ターゲットへの移動
+- `NormalAttack` - 通常攻撃
+- `CastSpell` - 魔法詠唱
+- `EnvironmentScan` - 環境スキャン（代替）
+- `SearchForEnemy` - 敵探索
+- `InitializeResources` - リソース初期化
+- `RestoreSmallMana` - 少量マナ回復
 
 ### Condition用スクリプト
 - `HealthCheck` - 体力チェック
@@ -140,6 +148,8 @@ Sequence patrol_with_health_check {
 - `HasMana` - マナ量確認（未実装）
 - `IsInitialized` - 初期化状態確認（未実装）
 - `EnemyHealthCheck` - 敵の体力確認（未実装）
+- `CheckManaResource` - マナリソースチェック
+- `CheckAlertFlag` - アラート状態フラグチェック
 
 ## 完全な例
 

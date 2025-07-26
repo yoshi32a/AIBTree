@@ -25,7 +25,22 @@ namespace BehaviourTree.Conditions
 
         protected override BTNodeResult CheckCondition()
         {
-            Debug.Log($"=== HealthCheckCondition '{Name}' EXECUTING ===");
+            // 安全地帯にいる間は緊急時判定をスキップ（低い閾値の場合のみ）
+            if (blackBoard != null && minHealth <= 30)
+            {
+                float safetyTimer = blackBoard.GetValue<float>("safety_timer", 0f);
+                if (Time.time < safetyTimer)
+                {
+                    Debug.Log($"HealthCheck '{Name}': In safety period - skipping emergency check");
+                    return BTNodeResult.Failure; // 緊急時チェックをスキップ
+                }
+            }
+
+            // スマートログ: 10回に1回だけ詳細ログを出力
+            if (Time.frameCount % 10 == 0)
+            {
+                Debug.Log($"=== HealthCheckCondition '{Name}' EXECUTING ===");
+            }
 
             if (healthComponent == null)
             {
@@ -49,8 +64,12 @@ namespace BehaviourTree.Conditions
                 blackBoard.SetValue("min_health_threshold", minHealth);
             }
 
-            Debug.Log($"HealthCheck '{Name}': Current health = {currentHealth}, Required = {minHealth}");
-            Debug.Log($"HealthCheck '{Name}': Result = {(healthOK ? "SUCCESS ✓" : "FAILURE ✗")}");
+            // 結果に変化があった場合のみログ出力
+            if (Time.frameCount % 10 == 0 || !healthOK)
+            {
+                Debug.Log($"HealthCheck '{Name}': Current health = {currentHealth}, Required = {minHealth}");
+                Debug.Log($"HealthCheck '{Name}': Result = {(healthOK ? "SUCCESS ✓" : "FAILURE ✗")}");
+            }
 
             return healthOK ? BTNodeResult.Success : BTNodeResult.Failure;
         }

@@ -7,11 +7,18 @@ namespace BehaviourTree.Actions
     public class RandomWanderAction : BTActionNode
     {
         float wanderRadius = 10.0f;
-        float speed = 2.0f;
+        float speed = 25.0f; // 大幅高速化（検証時間短縮）
         float tolerance = 0.5f;
         Vector3 wanderTarget;
         Vector3 initialPosition;
         bool hasTarget = false;
+        
+        MovementController movementController;
+        
+        // スマートログ用
+        float lastLoggedDistance = float.MaxValue;
+        float lastLogTime = 0f;
+        float logInterval = 2.0f; // 2秒間隔でログ出力
 
         public override void SetProperty(string key, string value)
         {
@@ -36,14 +43,29 @@ namespace BehaviourTree.Actions
             {
                 initialPosition = owner.transform.position;
             }
+            
+            // MovementControllerを取得または追加
+            movementController = owner.GetComponent<MovementController>();
+            if (movementController == null)
+            {
+                movementController = owner.gameObject.AddComponent<MovementController>();
+            }
         }
 
         protected override BTNodeResult ExecuteAction()
         {
-            if (ownerComponent == null)
+            if (ownerComponent == null || movementController == null)
             {
-                Debug.LogError("RandomWander: Owner is null");
+                Debug.LogError("RandomWander: Owner or MovementController is null");
                 return BTNodeResult.Failure;
+            }
+
+            // 現在のアクション状態をBlackBoardに記録
+            if (blackBoard != null)
+            {
+                blackBoard.SetValue("current_action", "RandomWander");
+                blackBoard.SetValue("is_patrolling", true);
+                blackBoard.SetValue("is_in_combat", false);
             }
 
             // 新しいランダムターゲットを設定
@@ -53,30 +75,45 @@ namespace BehaviourTree.Actions
                 hasTarget = true;
             }
 
-            // ターゲットに向かって移動
-            float distance = Vector3.Distance(transform.position, wanderTarget);
-
-            if (distance <= tolerance)
+            // MovementControllerで移動中でない場合、新しい目標を設定
+            if (!movementController.IsMoving)
             {
-                // ターゲットに到達したら新しいターゲットを設定
-                hasTarget = false;
+                movementController.SetTarget(wanderTarget, speed);
+                movementController.OnTargetReached = () => {
+                    // ターゲットに到達したら新しいターゲットを設定
+                    hasTarget = false;
+                    Debug.Log("RandomWander: Reached wander target, setting new target");
+                };
+            }
 
-                Debug.Log("RandomWander: Reached wander target, setting new target");
-
+            // ターゲットに到達したかチェック
+            if (blackBoard.GetValue<bool>("move_completed", false))
+            {
+                blackBoard.SetValue("move_completed", false); // リセット
                 return BTNodeResult.Success;
             }
 
-            // 移動処理
-            Vector3 direction = (wanderTarget - transform.position).normalized;
-            transform.position += direction * speed * Time.deltaTime;
-
-            // 移動方向を向く
-            if (direction != Vector3.zero)
+            // BlackBoardに移動情報を記録
+            if (blackBoard != null)
             {
-                transform.rotation = Quaternion.LookRotation(direction);
+                blackBoard.SetValue("wander_target", wanderTarget);
+                blackBoard.SetValue("wander_distance_remaining", movementController.DistanceToTarget);
             }
 
-            Debug.Log($"RandomWander: Moving to target - Distance: {distance:F1}");
+            // スマートログ: 距離変化が大きいか時間間隔でログ出力
+            float distance = movementController.DistanceToTarget;
+            bool shouldLog = false;
+            if (Mathf.Abs(distance - lastLoggedDistance) > 1.0f || Time.time - lastLogTime > logInterval)
+            {
+                shouldLog = true;
+                lastLoggedDistance = distance;
+                lastLogTime = Time.time;
+            }
+            
+            if (shouldLog)
+            {
+                Debug.Log($"RandomWander: Moving to target - Distance: {distance:F1}");
+            }
 
             return BTNodeResult.Running;
         }
@@ -87,13 +124,19 @@ namespace BehaviourTree.Actions
             Vector2 randomCircle = Random.insideUnitCircle * wanderRadius;
             wanderTarget = initialPosition + new Vector3(randomCircle.x, 0, randomCircle.y);
 
-            Debug.Log($"RandomWander: New target set at {wanderTarget}");
+            Debug.Log($"RandomWander: New target set at ({wanderTarget.x:F2}, {wanderTarget.y:F2}, {wanderTarget.z:F2})");
+            
+            // ログ状態をリセット
+            lastLoggedDistance = float.MaxValue;
+            lastLogTime = Time.time;
         }
 
         public override void Reset()
         {
             base.Reset();
             hasTarget = false;
+            lastLoggedDistance = float.MaxValue;
+            lastLogTime = 0f;
         }
 
         void OnDrawGizmosSelected()

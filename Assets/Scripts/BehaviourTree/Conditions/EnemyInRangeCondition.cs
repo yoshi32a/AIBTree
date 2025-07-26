@@ -20,18 +20,45 @@ namespace BehaviourTree.Conditions
 
         protected override BTNodeResult CheckCondition()
         {
-            // 指定範囲内の敵を検索
-            Collider[] enemies = Physics.OverlapSphere(transform.position, attackRange, LayerMask.GetMask("Enemy"));
-
-            bool hasEnemyInRange = enemies.Length > 0;
-
-            if (blackBoard != null && hasEnemyInRange)
+            if (ownerComponent == null)
             {
-                blackBoard.SetValue("nearest_enemy", enemies[0].gameObject);
-                blackBoard.SetValue("enemy_distance", Vector3.Distance(transform.position, enemies[0].transform.position));
+                return BTNodeResult.Failure;
             }
 
-            return hasEnemyInRange ? BTNodeResult.Success : BTNodeResult.Failure;
+            // 指定範囲内の敵を検索（タグベース）
+            Collider[] colliders = Physics.OverlapSphere(transform.position, attackRange);
+            GameObject nearestEnemy = null;
+            float nearestDistance = float.MaxValue;
+
+            foreach (var collider in colliders)
+            {
+                if (collider.CompareTag("Enemy"))
+                {
+                    float distance = Vector3.Distance(transform.position, collider.transform.position);
+                    if (distance < nearestDistance)
+                    {
+                        nearestDistance = distance;
+                        nearestEnemy = collider.gameObject;
+                    }
+                }
+            }
+
+            if (nearestEnemy != null && blackBoard != null)
+            {
+                blackBoard.SetValue("nearest_enemy", nearestEnemy);
+                blackBoard.SetValue("enemy_distance", nearestDistance);
+                blackBoard.SetValue("in_combat_range", true);
+                return BTNodeResult.Success;
+            }
+            else
+            {
+                if (blackBoard != null)
+                {
+                    blackBoard.SetValue<GameObject>("nearest_enemy", null);
+                    blackBoard.SetValue("in_combat_range", false);
+                }
+                return BTNodeResult.Failure;
+            }
         }
     }
 }

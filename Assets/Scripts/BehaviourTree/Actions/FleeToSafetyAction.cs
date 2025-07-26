@@ -10,6 +10,8 @@ namespace BehaviourTree.Actions
         float speedMultiplier = 1.5f;
         Vector3 fleeTarget;
         bool hasFleeTarget = false;
+        
+        MovementController movementController;
 
         public override void SetProperty(string key, string value)
         {
@@ -24,14 +26,38 @@ namespace BehaviourTree.Actions
             }
         }
 
+        public override void Initialize(MonoBehaviour owner, BlackBoard sharedBlackBoard = null)
+        {
+            base.Initialize(owner, sharedBlackBoard);
+            
+            // MovementControllerを取得または追加
+            movementController = owner.GetComponent<MovementController>();
+            if (movementController == null)
+            {
+                movementController = owner.gameObject.AddComponent<MovementController>();
+            }
+        }
+
         protected override BTNodeResult ExecuteAction()
         {
-            if (ownerComponent == null || blackBoard == null)
+            if (ownerComponent == null || blackBoard == null || movementController == null)
             {
                 return BTNodeResult.Failure;
             }
 
-            // 逃走先を決定
+            // 既存の逃走先をBlackBoardから取得
+            if (!hasFleeTarget)
+            {
+                var existingTarget = blackBoard.GetValue<Vector3>("flee_target", Vector3.zero);
+                if (existingTarget != Vector3.zero)
+                {
+                    fleeTarget = existingTarget;
+                    hasFleeTarget = true;
+                    Debug.Log($"FleeToSafety: Using existing flee target: {fleeTarget}");
+                }
+            }
+            
+            // 新しい逃走先を決定
             if (!hasFleeTarget)
             {
                 GameObject threat = blackBoard.GetValue<GameObject>("enemy_target");
@@ -80,30 +106,31 @@ namespace BehaviourTree.Actions
                 }
             }
 
-            // 逃走先に移動
-            float distance = Vector3.Distance(transform.position, fleeTarget);
-            if (distance <= 1.0f)
+            // MovementControllerで移動中でない場合、新しい目標を設定
+            if (!movementController.IsMoving)
             {
-                // 安全地点に到達
-                blackBoard.SetValue("is_safe", true);
-                blackBoard.SetValue("flee_completed", true);
-                Debug.Log("FleeToSafety: Reached safety");
+                float moveSpeed = 22.0f * speedMultiplier;
+                movementController.SetTarget(fleeTarget, moveSpeed);
+                movementController.OnTargetReached = () => {
+                    // 安全地点に到達 - 一定時間安全状態を維持
+                    blackBoard.SetValue("is_safe", true);
+                    blackBoard.SetValue("flee_completed", true);
+                    blackBoard.SetValue("safety_timer", Time.time + 10.0f); // 10秒間安全状態
+                    blackBoard.SetValue("last_flee_time", Time.time);
+                    
+                    Debug.Log("FleeToSafety: Reached safety - Safe for 10 seconds");
+                };
+            }
+
+            // 移動完了チェック
+            if (blackBoard.GetValue<bool>("flee_completed", false))
+            {
+                blackBoard.SetValue("flee_completed", false); // リセット
                 return BTNodeResult.Success;
             }
 
-            // 移動処理
-            Vector3 direction = (fleeTarget - transform.position).normalized;
-            float moveSpeed = 3.5f * speedMultiplier;
-            transform.position += direction * moveSpeed * Time.deltaTime;
-
-            // 移動中は向きを更新
-            if (direction != Vector3.zero)
-            {
-                transform.rotation = Quaternion.LookRotation(direction);
-            }
-
             blackBoard.SetValue("is_fleeing", true);
-            blackBoard.SetValue("flee_distance_remaining", distance);
+            blackBoard.SetValue("flee_distance_remaining", movementController.DistanceToTarget);
 
             return BTNodeResult.Running;
         }

@@ -2,9 +2,17 @@
 
 このファイルは、Claude Code (claude.ai/code) がこのリポジトリのコードを扱う際のガイダンスを提供します。
 
+## 言語設定
+- **すべてのやり取りは日本語で行う**
+- コメントやドキュメントも日本語で記述する
+- エラーメッセージの説明も日本語で提供する
+- コードの説明や質問への回答は必ず日本語で行う
+
 ## プロジェクト概要
 
-これは Universal Render Pipeline (URP) を使用した Unity 6000.1.10f1 プロジェクト「AIBTree」です。**BehaviourTree AI システム**の実装が主な目的で、.btファイル形式でのAI定義とVSCode統合を提供します。
+これは **Universal Render Pipeline (URP)** を使用した Unity 6000.1.10f1 プロジェクト「AIBTree」です。**BehaviourTree AI システム**の実装が主な目的で、.btファイル形式でのAI定義とVSCode統合を提供します。
+
+**重要**: このプロジェクトはURPグラフィック環境を使用しているため、すべてのシェーダーとマテリアル設定はURP用である必要があります。
 
 ### 主要機能
 - **BehaviourTree実行エンジン**: C#による階層的なノード構造の実装
@@ -13,6 +21,7 @@
 - **.btファイル形式**: 人間が読みやすい階層形式でのAI定義
 - **VSCode拡張機能**: シンタックスハイライト、自動補完、診断機能
 - **動的スクリプトローダー**: .btファイルからC#クラスへの動的マッピング
+- **視覚的フィードバックシステム**: リアルタイムAI状態表示、3Dアクションインジケーター、高度なカメラ制御
 
 ## Unity 開発ワークフロー
 
@@ -79,8 +88,14 @@ Unity プロジェクトは Unity エディタを通じてビルドされます�
   - `CustomActionNode.cs` / `CustomConditionNode.cs`
 - `Assets/Scripts/Components/` - 汎用コンポーネント
   - `Health.cs` - 体力管理コンポーネント
-  - `Inventory.cs` - インベントリ管理コンポーネント
+  - `Inventory.cs` - インベントリ管理コンポーネント（GetAllItemsメソッド対応）
   - `InventoryItem.cs` - インベントリアイテム定義
+  - `Mana.cs` - マナ管理コンポーネント
+- `Assets/Scripts/UI/` - 視覚的フィードバックシステム
+  - `AIStatusDisplay.cs` - リアルタイムAI状態表示UI（体力/マナバー、現在アクション、BlackBoard情報）
+  - `ActionIndicator.cs` - 3Dアクションインジケーター（AIの頭上に浮かぶ状態表示）
+- `Assets/Scripts/Camera/` - カメラ制御システム
+  - `SceneCamera.cs` - 高度なカメラ制御（自動追従、手動操作、Input System対応）
 - `Assets/Tests/` - テストスイート
   - `BTParsingTests.cs` - 全BTファイルパーステスト
   - `BTFileValidationTests.cs` - ファイル構造詳細検証
@@ -223,14 +238,70 @@ public class ExampleClass : BaseClass
 ### Condition Scripts  
 - `HasSharedEnemyInfoCondition` - BlackBoardに共有された敵情報があるかチェック
 
-### コンパイルエラー対応
+### 最新の修正と改善
+
+#### 視覚的フィードバックシステム（2024年最新）
+- **AIStatusDisplay.cs**: リアルタイム状態表示UI（画面左上に体力/マナバー、現在アクション、ターゲット情報、BlackBoard状況を表示）
+- **ActionIndicator.cs**: 3Dアクションインジケーター（AIの頭上に浮かぶアイコン付きアクション表示、ターゲットライン表示）
+- **SceneCamera.cs**: 高度なカメラ制御（F=フォロー切替、R=リセット、WASD移動、マウス回転、Input System対応）
+
+#### 無限ループ問題の修正
+- **FleeToSafetyAction**: 安全地帯到達後の10秒間安全期間設定
+- **HealthCheckCondition**: 安全期間中の緊急時判定スキップ機能
+- **BehaviourTreeRunner**: スマートログシステム（同パターン繰り返し抑制、5秒間隔制限）
+
+#### Unity 6対応
+- `FindObjectOfType<T>()` → `FindFirstObjectByType<T>()` に統一（非推奨警告解消）
+- Input System対応（UnityEngine.Input → UnityEngine.InputSystem）
+- LineRenderer.color → startColor/endColor に変更
+
+#### URP グラフィック環境対応
+- **重要**: このプロジェクトは **Universal Render Pipeline (URP)** を使用
+- **ActionIndicator.cs**: `Shader.Find("Standard")` → `Shader.Find("Universal Render Pipeline/Lit")` に変更
+- **透明度設定**: Built-inパイプライン用（`_Mode`, キーワード設定）→ URP用（`_Surface`, `_Blend`）に変更
+- **影響範囲**: 背景クアッド、ターゲットライン表示の正常化
+- **注意点**: 新しいマテリアル作成時は必ずURP対応シェーダーを使用すること
+
+#### コンパイルエラー対応
 - すべてのスクリプトで `SetProperty(string, string)` 形式に統一
 - `CheckCondition()` は `protected override BTNodeResult` 形式に統一
 - `owner` → `ownerComponent`, `owner.transform` → `transform` に統一
 - `debugMode` 参照を削除してログ直接出力に変更
 - `Components.Health` → `Health` に修正（namespace修正）
+- `BlackBoard.GetValueAsString()` メソッド追加（UI表示用）
+- `Inventory.GetAllItems()` メソッド追加（UI表示用）
 
 ## Memory Log
 
 ### Claude Code との対話で学んだこと
-- "to memorize" というメモを追加（この情報自体は意味がありません）
+- **視覚的フィードバック問題**: ユーザーから「ゲーム画面で現象が起きないとわからない」という要求があり、包括的な視覚的フィードバックシステムを実装
+- **ログ激しい問題**: 無限ループによる大量のログ出力問題を、安全期間機能とスマートログシステムで解決
+- **Unity 6互換性**: 非推奨API（FindObjectOfType、Input、LineRenderer.color）を最新版に更新
+
+## 視覚的フィードバックシステムの使用方法
+
+### テスト環境の作成
+```
+Unity → BehaviourTree → Quick Setup → Complex Example Test Environment
+```
+
+### 視覚的要素
+1. **左上UI**: 体力/マナバー、現在アクション、ターゲット、状態表示
+2. **AI頭上**: アイコン付きアクション表示（🚶移動、⚔️攻撃、🏃逃走、✨魔法等）
+3. **ターゲットライン**: AIから敵への青いライン
+4. **右側パネル**: BlackBoard詳細情報
+
+### カメラ操作
+- **F キー**: 自動追従 ↔ 手動操作切り替え
+- **R キー**: カメラリセット
+- **WASD**: カメラ移動（手動モード時）
+- **QE**: 上下移動
+- **右クリック+マウス**: カメラ回転
+- **マウスホイール**: ズーム
+
+## Memory Log
+
+### 2024年2月の最新の学びと記録
+- Claude Code との対話を通じて、視覚的フィードバックシステムの重要性を再認識
+- 無限ループとログの問題に対する包括的な解決策を実装
+- Unity 6との互換性を確保するための具体的な技術的アプローチを策定

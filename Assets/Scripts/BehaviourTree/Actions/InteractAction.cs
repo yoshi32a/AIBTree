@@ -79,6 +79,16 @@ namespace BehaviourTree.Actions
                 blackBoard.SetValue("last_interaction_target", target.name);
                 blackBoard.SetValue("last_interaction_time", Time.time);
 
+                // 調査済みオブジェクトとして記録（重複調査を防ぐため）
+                var recentlyInvestigated = blackBoard.GetValue<System.Collections.Generic.HashSet<string>>("recently_investigated");
+                if (recentlyInvestigated == null)
+                {
+                    recentlyInvestigated = new System.Collections.Generic.HashSet<string>();
+                    blackBoard.SetValue("recently_investigated", recentlyInvestigated);
+                }
+                string objKey = $"{target.name}_{target.transform.position}";
+                recentlyInvestigated.Add(objKey);
+
                 Debug.Log($"Interact: Successfully {interactionType}ed '{target.name}'");
                 return BTNodeResult.Success;
             }

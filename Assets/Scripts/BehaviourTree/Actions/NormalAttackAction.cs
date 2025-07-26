@@ -31,6 +31,9 @@ namespace BehaviourTree.Actions
                 return BTNodeResult.Failure;
             }
 
+            // 現在のアクション状態をBlackBoardに記録
+            blackBoard.SetValue("current_action", "NormalAttack");
+
             // ターゲットを取得
             GameObject target = blackBoard.GetValue<GameObject>("nearest_enemy");
             if (target == null)
@@ -40,13 +43,19 @@ namespace BehaviourTree.Actions
 
             if (target == null || !target.activeInHierarchy)
             {
+                blackBoard.SetValue("current_action", "Idle");
                 Debug.Log("NormalAttack: No valid target found");
                 return BTNodeResult.Failure;
             }
 
+            // ターゲット情報をBlackBoardに更新
+            blackBoard.SetValue("current_target", target);
+            blackBoard.SetValue("is_in_combat", true);
+
             // クールダウンチェック
             if (Time.time - lastAttackTime < cooldown)
             {
+                blackBoard.SetValue("attack_cooldown_remaining", cooldown - (Time.time - lastAttackTime));
                 return BTNodeResult.Running;
             }
 
@@ -60,12 +69,15 @@ namespace BehaviourTree.Actions
                 // BlackBoardに攻撃情報を記録
                 blackBoard.SetValue("last_normal_attack_time", Time.time);
                 blackBoard.SetValue("normal_attack_count", blackBoard.GetValue<int>("normal_attack_count", 0) + 1);
+                blackBoard.SetValue("last_damage_dealt", damage);
+                blackBoard.SetValue("attack_cooldown_remaining", 0f);
 
                 Debug.Log($"NormalAttack: Normal attack on '{target.name}' for {damage} damage");
                 return BTNodeResult.Success;
             }
             else
             {
+                blackBoard.SetValue("current_action", "Idle");
                 Debug.LogWarning($"NormalAttack: Target '{target.name}' has no Health component");
                 return BTNodeResult.Failure;
             }
