@@ -153,10 +153,8 @@ namespace ArcBT.Generators
                         continue;
 
                     // AssemblyName プロパティを取得（オプション）
-                    // 現在のアセンブリに基づいてデフォルト名を決定
-                    var defaultAssemblyName = currentAssemblyName == "ArcBT.Samples" ? "ArcBT.Samples" :
-                                              GetAssemblyNameFromNamespace(classSymbol.ContainingNamespace?.ToDisplayString());
-                    var assemblyName = defaultAssemblyName;
+                    // 現在のアセンブリ名をデフォルトとして使用
+                    var assemblyName = currentAssemblyName;
                     
                     foreach (var namedArg in attribute.NamedArguments)
                     {
@@ -263,21 +261,6 @@ namespace ArcBT.Generators
             return sb.ToString();
         }
 
-        private static string GetAssemblyNameFromNamespace(string namespaceName)
-        {
-            if (string.IsNullOrEmpty(namespaceName))
-                return "ArcBT";
-
-            // 名前空間のパターンに基づいてアセンブリ名を推測
-            if (namespaceName.StartsWith("ArcBT.Samples.RPG"))
-                return "ArcBT.Samples.RPG";
-            else if (namespaceName.StartsWith("ArcBT.Samples"))
-                return "ArcBT.Samples";
-            else if (namespaceName.StartsWith("ArcBT"))
-                return "ArcBT";
-            else
-                return "ArcBT"; // デフォルト
-        }
 
         /// <summary>
         /// 指定されたクラスが基底クラスを継承しているかチェック
