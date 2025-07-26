@@ -187,14 +187,16 @@ namespace ArcBT.Tests
                 "MoveToEnemy", "AttackTarget", "RandomWander", "CastSpell",
                 "Attack", "NormalAttack", "UseItem", "FleeToSafety",
                 "MoveToTarget", "EnvironmentScan", "Interact", "InitializeResources",
-                "RestoreSmallMana", "SearchForEnemy"
+                "RestoreSmallMana", "SearchForEnemy", "SimpleAttack", "MoveToNamedPosition",
+                "WaitSimple"
             };
             
             var knownConditionScripts = new HashSet<string>
             {
                 "HealthCheck", "EnemyCheck", "HasItem", "HasSharedEnemyInfo",
                 "EnemyInRange", "IsInitialized", "HasTarget", "HasMana",
-                "EnemyHealthCheck", "ScanForInterest", "CheckManaResource"
+                "EnemyHealthCheck", "ScanForInterest", "CheckManaResource",
+                "SimpleHasTarget", "EnemyDetection", "SimpleHealthCheck"
             };
             
             foreach (var filePath in btFiles)
