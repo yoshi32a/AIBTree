@@ -414,12 +414,12 @@ namespace ArcBT.Parser
             {
                 BTLogger.Log(LogLevel.Debug, LogCategory.Parser, $"🔧 Creating ACTION node for script: {scriptName}");
                 
-                // BTNodeRegistryから動的にクラスを作成
-                node = BTNodeRegistry.CreateAction(scriptName);
+                // 静的レジストリから作成（リフレクション不使用）
+                node = BTStaticNodeRegistry.CreateAction(scriptName);
                 
                 if (node != null)
                 {
-                    BTLogger.Log(LogLevel.Info, LogCategory.Parser, $"✅ Created {node.GetType().Name} for script '{scriptName}'");
+                    BTLogger.Log(LogLevel.Info, LogCategory.Parser, $"✅ Created action for script '{scriptName}'");
                 }
                 else
                 {
@@ -431,12 +431,12 @@ namespace ArcBT.Parser
             {
                 BTLogger.Log(LogLevel.Debug, LogCategory.Parser, $"🔧 Creating CONDITION node for script: {scriptName}");
                 
-                // BTNodeRegistryから動的にクラスを作成
-                node = BTNodeRegistry.CreateCondition(scriptName);
+                // 静的レジストリから作成（リフレクション不使用）
+                node = BTStaticNodeRegistry.CreateCondition(scriptName);
                 
                 if (node != null)
                 {
-                    BTLogger.Log(LogLevel.Info, LogCategory.Parser, $"✅ Created {node.GetType().Name} for script '{scriptName}'");
+                    BTLogger.Log(LogLevel.Info, LogCategory.Parser, $"✅ Created condition for script '{scriptName}'");
                 }
                 else
                 {

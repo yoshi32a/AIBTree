@@ -42,15 +42,17 @@ namespace ArcBT.Actions
             {
                 BTLogger.LogCombat($"通常攻撃実行: ダメージ{damage}", Name);
                 
-                // ダメージ処理の実装（リフレクションを使用）
-                var healthComponent = nearestEnemy.GetComponent("Health");
-                if (healthComponent != null)
+                // ダメージ処理の実装（インターフェース使用でリフレクション排除）
+                var health = nearestEnemy.GetComponent<IHealth>();
+                if (health != null)
                 {
-                    var takeDamageMethod = healthComponent.GetType().GetMethod("TakeDamage");
-                    if (takeDamageMethod != null)
-                    {
-                        takeDamageMethod.Invoke(healthComponent, new object[] { damage });
-                    }
+                    health.TakeDamage(damage);
+                }
+                else
+                {
+                    // 後方互換性のためのフォールバック（将来的に削除予定）
+                    BTLogger.LogWarning(LogCategory.Combat, 
+                        "Enemy does not implement IHealth interface. Consider updating Health component.", Name);
                 }
 
                 return BTNodeResult.Success;

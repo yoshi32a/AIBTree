@@ -139,7 +139,7 @@ namespace ArcBT.Core
                     SetupDynamicConditionChecking(RootNode);
 
                     BTLogger.LogSystem($"Successfully loaded behaviour tree from: {filePath}", "", this);
-                    BTLogger.LogSystem($"Root node: {RootNode.Name} ({RootNode.GetType().Name})", "", this);
+                    BTLogger.LogSystem($"Root node: {RootNode.Name}", "", this);
                     LogTreeStructure(RootNode, 0);
                     return true;
                 }

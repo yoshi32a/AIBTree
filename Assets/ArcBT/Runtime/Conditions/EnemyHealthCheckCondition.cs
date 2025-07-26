@@ -49,24 +49,20 @@ namespace ArcBT.Conditions
 
             if (targetEnemy != null)
             {
-                // リフレクションを使用してHealthコンポーネントを取得
-                var healthComponent = targetEnemy.GetComponent("Health");
-                if (healthComponent != null)
+                // インターフェースを使用してHealthコンポーネントを取得（リフレクション排除）
+                var health = targetEnemy.GetComponent<IHealth>();
+                if (health != null)
                 {
-                    var type = healthComponent.GetType();
-                    var currentHealthProp = type.GetProperty("CurrentHealth");
-                    var maxHealthProp = type.GetProperty("MaxHealth");
+                    var healthPercent = (health.CurrentHealth / health.MaxHealth) * 100f;
+                    var result = healthPercent >= minHealthPercent;
                     
-                    if (currentHealthProp != null && maxHealthProp != null)
-                    {
-                        var currentHealth = (float)currentHealthProp.GetValue(healthComponent);
-                        var maxHealth = (float)maxHealthProp.GetValue(healthComponent);
-                        var healthPercent = (currentHealth / maxHealth) * 100f;
-                        var result = healthPercent >= minHealthPercent;
-                        
-                        BTLogger.LogCondition($"敵の体力: {healthPercent:F1}% (最低要求: {minHealthPercent}%)", Name);
-                        return result ? BTNodeResult.Success : BTNodeResult.Failure;
-                    }
+                    BTLogger.LogCondition($"敵の体力: {healthPercent:F1}% (最低要求: {minHealthPercent}%)", Name);
+                    return result ? BTNodeResult.Success : BTNodeResult.Failure;
+                }
+                else
+                {
+                    BTLogger.LogWarning(LogCategory.Condition, 
+                        "Enemy does not implement IHealth interface.", Name);
                 }
             }
 
