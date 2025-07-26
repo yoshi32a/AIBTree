@@ -51,7 +51,7 @@ namespace ArcBT.Actions
                 else
                 {
                     // 後方互換性のためのフォールバック（将来的に削除予定）
-                    BTLogger.LogWarning(LogCategory.Combat, 
+                    BTLogger.Log(LogLevel.Warning, LogCategory.Combat, 
                         "Enemy does not implement IHealth interface. Consider updating Health component.", Name);
                 }
 

@@ -61,7 +61,7 @@ namespace ArcBT.Conditions
                 }
                 else
                 {
-                    BTLogger.LogWarning(LogCategory.Condition, 
+                    BTLogger.Log(LogLevel.Warning, LogCategory.Condition, 
                         "Enemy does not implement IHealth interface.", Name);
                 }
             }
