@@ -1,10 +1,5 @@
 using System;
 using System.Collections.Generic;
-using ArcBT.Actions;
-using ArcBT.Conditions;
-using ArcBT.Samples.RPG;
-using ArcBT.Samples.RPG.Actions;
-using ArcBT.Samples.RPG.Conditions;
 
 namespace ArcBT.Core
 {
@@ -17,7 +12,8 @@ namespace ArcBT.Core
         // アクション生成関数の静的登録
         static readonly Dictionary<string, Func<BTActionNode>> actionCreators = new()
         {
-            // コアアクション
+            // 注意: RPGサンプルのノードはBTNodeRegistryにフォールバックするように変更
+            // アセンブリ参照の問題を回避するため
             ["MoveToPosition"] = () => new Actions.MoveToPositionAction(),
             ["Wait"] = () => new Actions.WaitAction(),
             ["ScanEnvironment"] = () => new Actions.ScanEnvironmentAction(),
@@ -25,35 +21,15 @@ namespace ArcBT.Core
             ["NormalAttack"] = () => new Actions.NormalAttackAction(),
             ["Interact"] = () => new Actions.InteractAction(),
             ["EnvironmentScan"] = () => new Actions.EnvironmentScanAction(),
-            
-            // RPGサンプルアクション
-            ["RandomWander"] = () => new Samples.RPG.RandomWanderAction(),
-            ["AttackEnemy"] = () => new Samples.RPG.Actions.AttackEnemyAction(),
-            ["AttackTarget"] = () => new Samples.RPG.Actions.AttackTargetAction(),
-            ["CastSpell"] = () => new Samples.RPG.Actions.CastSpellAction(),
-            ["FleeToSafety"] = () => new Samples.RPG.Actions.FleeToSafetyAction(),
-            ["MoveToEnemy"] = () => new Samples.RPG.Actions.MoveToEnemyAction(),
-            ["UseItem"] = () => new Samples.RPG.Actions.UseItemAction(),
-            ["InitializeResources"] = () => new Samples.RPG.Actions.InitializeResourcesAction(),
         };
         
         // 条件生成関数の静的登録
         static readonly Dictionary<string, Func<BTConditionNode>> conditionCreators = new()
         {
-            // コア条件
             ["HasSharedEnemyInfo"] = () => new Conditions.HasSharedEnemyInfoCondition(),
             ["HasTarget"] = () => new Conditions.HasTargetCondition(),
             ["EnemyHealthCheck"] = () => new Conditions.EnemyHealthCheckCondition(),
             ["ScanForInterest"] = () => new Conditions.ScanForInterestCondition(),
-            
-            // RPGサンプル条件
-            ["HealthCheck"] = () => new Samples.RPG.Conditions.HealthCheckCondition(),
-            ["EnemyCheck"] = () => new Samples.RPG.Conditions.EnemyCheckCondition(),
-            ["HasMana"] = () => new Samples.RPG.Conditions.HasManaCondition(),
-            ["EnemyInRange"] = () => new Samples.RPG.Conditions.EnemyInRangeCondition(),
-            ["IsInitialized"] = () => new Samples.RPG.Conditions.IsInitializedCondition(),
-            ["CheckManaResource"] = () => new Samples.RPG.Conditions.CheckManaResourceCondition(),
-            ["HasItem"] = () => new Samples.RPG.Conditions.HasItemCondition(),
         };
         
         /// <summary>アクションを作成（リフレクション不使用）</summary>
@@ -62,6 +38,15 @@ namespace ArcBT.Core
             if (actionCreators.TryGetValue(scriptName, out var creator))
             {
                 return creator();
+            }
+            
+            // フォールバック: BTNodeRegistryを使用（RPGサンプル等のため）
+            var node = BTNodeRegistry.CreateAction(scriptName);
+            if (node != null)
+            {
+                BTLogger.Log(LogLevel.Debug, LogCategory.System, 
+                    $"Created action '{scriptName}' via BTNodeRegistry (reflection fallback)");
+                return node;
             }
             
             BTLogger.LogError(LogCategory.System, $"Unknown action script: {scriptName}");
@@ -74,6 +59,15 @@ namespace ArcBT.Core
             if (conditionCreators.TryGetValue(scriptName, out var creator))
             {
                 return creator();
+            }
+            
+            // フォールバック: BTNodeRegistryを使用（RPGサンプル等のため）
+            var node = BTNodeRegistry.CreateCondition(scriptName);
+            if (node != null)
+            {
+                BTLogger.Log(LogLevel.Debug, LogCategory.System, 
+                    $"Created condition '{scriptName}' via BTNodeRegistry (reflection fallback)");
+                return node;
             }
             
             BTLogger.LogError(LogCategory.System, $"Unknown condition script: {scriptName}");
