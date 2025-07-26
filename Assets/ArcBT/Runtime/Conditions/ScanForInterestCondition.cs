@@ -15,7 +15,7 @@ namespace ArcBT.Conditions
             {
                 case "range":
                 case "scan_range":
-                    if (float.TryParse(value, out float r)) scanRange = r;
+                    if (float.TryParse(value, out var r)) scanRange = r;
                     break;
                 case "interest":
                 case "interest_tag":
@@ -30,7 +30,7 @@ namespace ArcBT.Conditions
             
             foreach (var obj in interestObjects)
             {
-                float distance = Vector3.Distance(transform.position, obj.transform.position);
+                var distance = Vector3.Distance(transform.position, obj.transform.position);
                 if (distance <= scanRange)
                 {
                     // BlackBoardに興味のあるオブジェクト情報を記録

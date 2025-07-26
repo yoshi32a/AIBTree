@@ -69,7 +69,7 @@ namespace ArcBT.Core
         /// <summary>毎フレーム移動処理</summary>
         void ProcessMovement()
         {
-            float distance = Vector3.Distance(transform.position, targetPosition);
+            var distance = Vector3.Distance(transform.position, targetPosition);
             
             // 目標に到達チェック
             if (distance <= tolerance)
@@ -87,8 +87,8 @@ namespace ArcBT.Core
             }
             
             // 滑らかな移動処理
-            Vector3 direction = (targetPosition - transform.position).normalized;
-            Vector3 moveStep = direction * currentSpeed * Time.deltaTime;
+            var direction = (targetPosition - transform.position).normalized;
+            var moveStep = direction * currentSpeed * Time.deltaTime;
             
             // 目標地点を超えないように制限
             if (moveStep.magnitude > distance)
@@ -103,7 +103,7 @@ namespace ArcBT.Core
             // 滑らかな回転
             if (direction != Vector3.zero)
             {
-                Quaternion targetRotation = Quaternion.LookRotation(direction);
+                var targetRotation = Quaternion.LookRotation(direction);
                 transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
             }
             

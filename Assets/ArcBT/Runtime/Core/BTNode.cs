@@ -1,9 +1,10 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace ArcBT.Core
 {
-    [System.Serializable]
+    [Serializable]
     public abstract class BTNode
     {
         public string Name { get; set; }
@@ -29,8 +30,8 @@ namespace ArcBT.Core
             blackBoard = sharedBlackBoard;
             if (owner != null)
             {
-                this.transform = owner.transform;
-                this.gameObject = owner.gameObject;
+                transform = owner.transform;
+                gameObject = owner.gameObject;
             }
         }
 

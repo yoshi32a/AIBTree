@@ -14,10 +14,10 @@ namespace ArcBT.Actions
             switch (key.ToLower())
             {
                 case "damage":
-                    if (float.TryParse(value, out float d)) damage = d;
+                    if (float.TryParse(value, out var d)) damage = d;
                     break;
                 case "range":
-                    if (float.TryParse(value, out float r)) range = r;
+                    if (float.TryParse(value, out var r)) range = r;
                     break;
             }
         }
@@ -26,11 +26,11 @@ namespace ArcBT.Actions
         {
             var enemies = GameObject.FindGameObjectsWithTag("Enemy");
             GameObject nearestEnemy = null;
-            float nearestDistance = float.MaxValue;
+            var nearestDistance = float.MaxValue;
 
             foreach (var enemy in enemies)
             {
-                float distance = Vector3.Distance(transform.position, enemy.transform.position);
+                var distance = Vector3.Distance(transform.position, enemy.transform.position);
                 if (distance <= range && distance < nearestDistance)
                 {
                     nearestEnemy = enemy;

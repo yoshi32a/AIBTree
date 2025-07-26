@@ -6,7 +6,7 @@ namespace ArcBT.Core
     {
         public override BTNodeResult Execute()
         {
-            for (int i = currentChildIndex; i < Children.Count; i++)
+            for (var i = currentChildIndex; i < Children.Count; i++)
             {
                 var result = Children[i].Execute();
 

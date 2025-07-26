@@ -50,8 +50,8 @@ namespace ArcBT.Tests
             // Assert: Warning以上のログのみが記録されているか確認
             var logs = BTLogger.GetRecentLogs(10);
             Assert.AreEqual(2, logs.Length, "Warning以上のログが2件記録されているべき");
-            Assert.AreEqual(LogLevel.Error, logs[0].level, "最初に記録されたログはErrorレベル");
-            Assert.AreEqual(LogLevel.Warning, logs[1].level, "2番目に記録されたログはWarningレベル");
+            Assert.AreEqual(LogLevel.Error, logs[0].Level, "最初に記録されたログはErrorレベル");
+            Assert.AreEqual(LogLevel.Warning, logs[1].Level, "2番目に記録されたログはWarningレベル");
         }
 
         /// <summary>カテゴリフィルタリングのテスト</summary>
@@ -71,8 +71,8 @@ namespace ArcBT.Tests
             // Assert: Combatカテゴリのログのみが記録されているか確認
             var logs = BTLogger.GetRecentLogs(10);
             Assert.AreEqual(1, logs.Length, "Combatカテゴリのログのみが記録されているべき");
-            Assert.AreEqual(LogCategory.Combat, logs[0].category, "記録されたログはCombatカテゴリ");
-            Assert.AreEqual("Combat message", logs[0].message, "メッセージが正しく記録されている");
+            Assert.AreEqual(LogCategory.Combat, logs[0].Category, "記録されたログはCombatカテゴリ");
+            Assert.AreEqual("Combat message", logs[0].Message, "メッセージが正しく記録されている");
         }
 
         /// <summary>ログ履歴管理のテスト</summary>
@@ -93,8 +93,8 @@ namespace ArcBT.Tests
             Assert.AreEqual(10, recentLogs10.Length, "最新10件が取得できる");
             
             // 最新のログが配列の最後に来ているか確認（TakeLastの結果）
-            Assert.IsTrue(recentLogs5[4].message.Contains("14"), "最新のログが配列の最後に取得される");
-            Assert.IsTrue(recentLogs5[0].message.Contains("10"), "5件前のログが配列の最初に取得される");
+            Assert.IsTrue(recentLogs5[4].Message.Contains("14"), "最新のログが配列の最後に取得される");
+            Assert.IsTrue(recentLogs5[0].Message.Contains("10"), "5件前のログが配列の最初に取得される");
         }
 
         /// <summary>カテゴリ別ログ取得のテスト</summary>
@@ -114,8 +114,8 @@ namespace ArcBT.Tests
             
             foreach (var log in combatLogs)
             {
-                Assert.AreEqual(LogCategory.Combat, log.category, "すべてCombatカテゴリ");
-                Assert.IsTrue(log.message.Contains("Attack"), "メッセージにAttackが含まれる");
+                Assert.AreEqual(LogCategory.Combat, log.Category, "すべてCombatカテゴリ");
+                Assert.IsTrue(log.Message.Contains("Attack"), "メッセージにAttackが含まれる");
             }
         }
 
@@ -137,11 +137,11 @@ namespace ArcBT.Tests
             var logs = BTLogger.GetRecentLogs(10);
             Assert.AreEqual(5, logs.Length, "5件のログが記録されている");
             
-            var combatLog = logs.FirstOrDefault(l => l.category == LogCategory.Combat);
-            var movementLog = logs.FirstOrDefault(l => l.category == LogCategory.Movement);
-            var conditionLog = logs.FirstOrDefault(l => l.category == LogCategory.Condition);
-            var blackBoardLog = logs.FirstOrDefault(l => l.category == LogCategory.BlackBoard);
-            var systemLog = logs.FirstOrDefault(l => l.category == LogCategory.System);
+            var combatLog = logs.FirstOrDefault(l => l.Category == LogCategory.Combat);
+            var movementLog = logs.FirstOrDefault(l => l.Category == LogCategory.Movement);
+            var conditionLog = logs.FirstOrDefault(l => l.Category == LogCategory.Condition);
+            var blackBoardLog = logs.FirstOrDefault(l => l.Category == LogCategory.BlackBoard);
+            var systemLog = logs.FirstOrDefault(l => l.Category == LogCategory.System);
             
             Assert.IsNotNull(combatLog, "Combatログが記録されている");
             Assert.IsNotNull(movementLog, "Movementログが記録されている");
@@ -149,7 +149,7 @@ namespace ArcBT.Tests
             Assert.IsNotNull(blackBoardLog, "BlackBoardログが記録されている");
             Assert.IsNotNull(systemLog, "Systemログが記録されている");
             
-            Assert.AreEqual("TestNode", combatLog.nodeName, "ノード名が正しく記録されている");
+            Assert.AreEqual("TestNode", combatLog.NodeName, "ノード名が正しく記録されている");
         }
 
         /// <summary>ログクリア機能のテスト</summary>
@@ -210,10 +210,10 @@ namespace ArcBT.Tests
             // Assert: エラーレベルで記録されているか確認
             var logs = BTLogger.GetRecentLogs(1);
             Assert.AreEqual(1, logs.Length, "エラーログが記録されている");
-            Assert.AreEqual(LogLevel.Error, logs[0].level, "エラーレベルで記録されている");
-            Assert.AreEqual(LogCategory.Combat, logs[0].category, "指定したカテゴリで記録されている");
-            Assert.AreEqual("Critical error occurred", logs[0].message, "メッセージが正しく記録されている");
-            Assert.AreEqual("ErrorNode", logs[0].nodeName, "ノード名が正しく記録されている");
+            Assert.AreEqual(LogLevel.Error, logs[0].Level, "エラーレベルで記録されている");
+            Assert.AreEqual(LogCategory.Combat, logs[0].Category, "指定したカテゴリで記録されている");
+            Assert.AreEqual("Critical error occurred", logs[0].Message, "メッセージが正しく記録されている");
+            Assert.AreEqual("ErrorNode", logs[0].NodeName, "ノード名が正しく記録されている");
         }
 
         /// <summary>タイムスタンプ機能のテスト</summary>
@@ -233,7 +233,7 @@ namespace ArcBT.Tests
             var logs = BTLogger.GetRecentLogs(1);
             Assert.AreEqual(1, logs.Length, "ログが記録されている");
             
-            var logTime = logs[0].timestamp;
+            var logTime = logs[0].Timestamp;
             Assert.IsTrue(logTime >= beforeTime && logTime <= afterTime, 
                 "タイムスタンプが適切な時間範囲内に記録されている");
         }

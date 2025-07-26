@@ -125,11 +125,11 @@ public class BTLoggerEditor : Editor
     
     void DrawLogEntry(LogEntry log)
     {
-        var style = GetLogStyle(log.level);
-        var categoryTag = GetCategoryTag(log.category);
-        var levelTag = GetLevelTag(log.level);
-        var timeStr = log.timestamp.ToString("HH:mm:ss.fff");
-        var nodeInfo = !string.IsNullOrEmpty(log.nodeName) ? $"[{log.nodeName}]" : "";
+        var style = GetLogStyle(log.Level);
+        var categoryTag = GetCategoryTag(log.Category);
+        var levelTag = GetLevelTag(log.Level);
+        var timeStr = log.Timestamp.ToString("HH:mm:ss.fff");
+        var nodeInfo = !string.IsNullOrEmpty(log.NodeName) ? $"[{log.NodeName}]" : "";
         
         EditorGUILayout.BeginVertical(EditorStyles.helpBox);
         
@@ -145,7 +145,7 @@ public class BTLoggerEditor : Editor
         EditorGUILayout.EndHorizontal();
         
         // ログメッセージ
-        EditorGUILayout.LabelField(log.message, style);
+        EditorGUILayout.LabelField(log.Message, style);
         
         EditorGUILayout.EndVertical();
     }

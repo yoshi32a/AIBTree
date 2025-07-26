@@ -28,17 +28,17 @@ namespace ArcBT.Conditions
             }
 
             // BlackBoardから敵情報の有無をチェック
-            bool hasEnemyInfo = blackBoard.GetValue<bool>(blackBoardKey, false);
-            GameObject enemyTarget = blackBoard.GetValue<GameObject>("enemy_target");
+            var hasEnemyInfo = blackBoard.GetValue<bool>(blackBoardKey, false);
+            var enemyTarget = blackBoard.GetValue<GameObject>("enemy_target");
 
             // 敵ターゲットが有効かチェック
-            bool isValidTarget = enemyTarget != null && enemyTarget.activeInHierarchy;
+            var isValidTarget = enemyTarget != null && enemyTarget.activeInHierarchy;
 
-            bool result = hasEnemyInfo && isValidTarget;
+            var result = hasEnemyInfo && isValidTarget;
 
             if (result)
             {
-                string enemyName = enemyTarget != null ? enemyTarget.name : "null";
+                var enemyName = enemyTarget != null ? enemyTarget.name : "null";
                 Debug.Log($"HasSharedEnemyInfo: Enemy info available - Target: '{enemyName}'");
             }
             else

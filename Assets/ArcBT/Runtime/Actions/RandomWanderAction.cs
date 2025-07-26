@@ -102,8 +102,8 @@ namespace ArcBT.Actions
             }
 
             // スマートログ: 距離変化が大きいか時間間隔でログ出力
-            float distance = movementController.DistanceToTarget;
-            bool shouldLog = false;
+            var distance = movementController.DistanceToTarget;
+            var shouldLog = false;
             if (Mathf.Abs(distance - lastLoggedDistance) > 1.0f || Time.time - lastLogTime > logInterval)
             {
                 shouldLog = true;
@@ -122,7 +122,7 @@ namespace ArcBT.Actions
         void SetNewWanderTarget()
         {
             // 初期位置を中心とした円内でランダムな点を選択
-            Vector2 randomCircle = Random.insideUnitCircle * wanderRadius;
+            var randomCircle = Random.insideUnitCircle * wanderRadius;
             wanderTarget = initialPosition + new Vector3(randomCircle.x, 0, randomCircle.y);
 
             Debug.Log($"RandomWander: New target set at ({wanderTarget.x:F2}, {wanderTarget.y:F2}, {wanderTarget.z:F2})");

@@ -15,9 +15,9 @@ namespace ArcBT.Core
 
         public override BTNodeResult Execute()
         {
-            int successCount = 0;
-            int failureCount = 0;
-            int runningCount = 0;
+            var successCount = 0;
+            var failureCount = 0;
+            var runningCount = 0;
 
             foreach (var child in Children)
             {

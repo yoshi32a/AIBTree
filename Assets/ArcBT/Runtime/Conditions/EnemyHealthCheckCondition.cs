@@ -15,7 +15,7 @@ namespace ArcBT.Conditions
             {
                 case "min_health":
                 case "min_health_percent":
-                    if (float.TryParse(value, out float h)) minHealthPercent = h;
+                    if (float.TryParse(value, out var h)) minHealthPercent = h;
                     break;
                 case "target_tag":
                     targetTag = value;
@@ -59,10 +59,10 @@ namespace ArcBT.Conditions
                     
                     if (currentHealthProp != null && maxHealthProp != null)
                     {
-                        float currentHealth = (float)currentHealthProp.GetValue(healthComponent);
-                        float maxHealth = (float)maxHealthProp.GetValue(healthComponent);
-                        float healthPercent = (currentHealth / maxHealth) * 100f;
-                        bool result = healthPercent >= minHealthPercent;
+                        var currentHealth = (float)currentHealthProp.GetValue(healthComponent);
+                        var maxHealth = (float)maxHealthProp.GetValue(healthComponent);
+                        var healthPercent = (currentHealth / maxHealth) * 100f;
+                        var result = healthPercent >= minHealthPercent;
                         
                         BTLogger.LogCondition($"敵の体力: {healthPercent:F1}% (最低要求: {minHealthPercent}%)", Name);
                         return result ? BTNodeResult.Success : BTNodeResult.Failure;

@@ -6,18 +6,18 @@ namespace ArcBT.Core
     /// <summary>AI間でデータを共有するためのBlackBoardシステム</summary>
     public class BlackBoard
     {
-        readonly Dictionary<string, object> data = new Dictionary<string, object>();
-        readonly Dictionary<string, System.Type> dataTypes = new Dictionary<string, System.Type>();
+        readonly Dictionary<string, object> data = new();
+        readonly Dictionary<string, System.Type> dataTypes = new();
         
         // 変更追跡用
-        readonly List<string> recentChanges = new List<string>();
+        readonly List<string> recentChanges = new();
         float lastChangeTime = 0f;
 
         /// <summary>値を設定する</summary>
         public void SetValue<T>(string key, T value)
         {
-            bool isNewKey = !data.ContainsKey(key);
-            bool isValueChanged = false;
+            var isNewKey = !data.ContainsKey(key);
+            var isValueChanged = false;
             
             if (!isNewKey)
             {
@@ -65,7 +65,7 @@ namespace ArcBT.Core
         }
 
         /// <summary>値を取得する</summary>
-        public T GetValue<T>(string key, T defaultValue = default(T))
+        public T GetValue<T>(string key, T defaultValue = default)
         {
             if (data.TryGetValue(key, out var value))
             {
@@ -73,12 +73,9 @@ namespace ArcBT.Core
                 {
                     return typedValue;
                 }
-                else
-                {
-                    var valueTypeName = value?.GetType().Name ?? "null";
-                    BTLogger.Log(LogLevel.Warning, LogCategory.BlackBoard, $"🗂️ BlackBoard: Type mismatch for key '{key}'. Expected {typeof(T).Name}, got {valueTypeName}");
-                    return defaultValue;
-                }
+
+                var valueTypeName = value?.GetType().Name ?? "null";
+                BTLogger.Log(LogLevel.Warning, LogCategory.BlackBoard, $"🗂️ BlackBoard: Type mismatch for key '{key}'. Expected {typeof(T).Name}, got {valueTypeName}");
             }
 
             return defaultValue;
@@ -129,7 +126,7 @@ namespace ArcBT.Core
         /// <summary>値の型を取得</summary>
         public System.Type GetValueType(string key)
         {
-            return dataTypes.TryGetValue(key, out var type) ? type : null;
+            return dataTypes.GetValueOrDefault(key);
         }
         
         /// <summary>値を文字列として取得（UI表示用）</summary>

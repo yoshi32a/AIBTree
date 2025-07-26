@@ -40,23 +40,23 @@ namespace ArcBT.Actions
             lastScanTime = Time.time;
 
             // 環境をスキャン
-            int enemyCount = 0;
-            int itemCount = 0;
-            int interactableCount = 0;
+            var enemyCount = 0;
+            var itemCount = 0;
+            var interactableCount = 0;
 
             // 敵を検索
-            Collider[] enemies = Physics.OverlapSphere(transform.position, scanRadius, LayerMask.GetMask("Enemy"));
+            var enemies = Physics.OverlapSphere(transform.position, scanRadius, LayerMask.GetMask("Enemy"));
             enemyCount = enemies.Length;
 
             if (enemyCount > 0)
             {
                 // 最も近い敵を記録
                 GameObject nearestEnemy = null;
-                float nearestDistance = float.MaxValue;
+                var nearestDistance = float.MaxValue;
 
                 foreach (var enemy in enemies)
                 {
-                    float distance = Vector3.Distance(transform.position, enemy.transform.position);
+                    var distance = Vector3.Distance(transform.position, enemy.transform.position);
                     if (distance < nearestDistance)
                     {
                         nearestDistance = distance;
@@ -72,7 +72,7 @@ namespace ArcBT.Actions
             }
 
             // アイテムを検索
-            Collider[] items = Physics.OverlapSphere(transform.position, scanRadius, LayerMask.GetMask("Item"));
+            var items = Physics.OverlapSphere(transform.position, scanRadius, LayerMask.GetMask("Item"));
             itemCount = items.Length;
 
             if (itemCount > 0)
@@ -82,7 +82,7 @@ namespace ArcBT.Actions
             }
 
             // インタラクト可能オブジェクトを検索
-            Collider[] interactables = Physics.OverlapSphere(transform.position, scanRadius, LayerMask.GetMask("Interactable"));
+            var interactables = Physics.OverlapSphere(transform.position, scanRadius, LayerMask.GetMask("Interactable"));
             interactableCount = interactables.Length;
 
             // スキャン結果をBlackBoardに記録
@@ -93,7 +93,7 @@ namespace ArcBT.Actions
             blackBoard.SetValue("scan_radius_used", scanRadius);
 
             // 環境の脅威レベルを計算
-            string threatLevel = "safe";
+            var threatLevel = "safe";
             if (enemyCount > 3)
                 threatLevel = "high";
             else if (enemyCount > 1)

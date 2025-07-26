@@ -19,7 +19,7 @@ namespace ArcBT.Actions
                     break;
                 case "range":
                 case "interaction_range":
-                    if (float.TryParse(value, out float r)) interactionRange = r;
+                    if (float.TryParse(value, out var r)) interactionRange = r;
                     break;
             }
         }
@@ -28,11 +28,11 @@ namespace ArcBT.Actions
         {
             var interactables = GameObject.FindGameObjectsWithTag(targetTag);
             GameObject nearestInteractable = null;
-            float nearestDistance = float.MaxValue;
+            var nearestDistance = float.MaxValue;
 
             foreach (var interactable in interactables)
             {
-                float distance = Vector3.Distance(transform.position, interactable.transform.position);
+                var distance = Vector3.Distance(transform.position, interactable.transform.position);
                 if (distance <= interactionRange && distance < nearestDistance)
                 {
                     nearestInteractable = interactable;

@@ -1,13 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace ArcBT.Core
 {
     // Action用ベースクラス
-    [System.Serializable]
+    [Serializable]
     public abstract class BTActionNode : BTNode
     {
         // このActionが依存する条件ノード（動的チェック用）
-        protected List<BTConditionNode> watchedConditions = new List<BTConditionNode>();
+        protected List<BTConditionNode> watchedConditions = new();
 
         // Action実行中かどうか
         protected bool isExecuting = false;

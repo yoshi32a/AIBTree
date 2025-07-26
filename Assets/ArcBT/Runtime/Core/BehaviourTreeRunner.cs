@@ -10,11 +10,9 @@ namespace ArcBT.Core
         [SerializeField] float tickInterval = 0.1f; // AI判定は0.1秒間隔
         [SerializeField] bool debugMode = true;
 
-        BTNode rootNode;
         float lastTickTime;
         BTParser parser;
-        BlackBoard blackBoard;
-        
+
         // スマートログ用の状態追跡
         BTNodeResult lastResult = BTNodeResult.Running;
         string lastExecutedNodeName = "";
@@ -23,21 +21,14 @@ namespace ArcBT.Core
         int repetitionCount = 0;
         string lastLogPattern = "";
 
-        public BTNode RootNode
-        {
-            get => rootNode;
-            set => rootNode = value;
-        }
+        public BTNode RootNode { get; set; }
 
-        public BlackBoard BlackBoard
-        {
-            get => blackBoard;
-        }
+        public BlackBoard BlackBoard { get; private set; }
 
         void Awake()
         {
             parser = new BTParser();
-            blackBoard = new BlackBoard();
+            BlackBoard = new BlackBoard();
         }
 
         void Start()
@@ -50,39 +41,39 @@ namespace ArcBT.Core
 
         void Update()
         {
-            if (rootNode != null && Time.time - lastTickTime >= tickInterval)
+            if (RootNode != null && Time.time - lastTickTime >= tickInterval)
             {
                 executionCount++;
-                var result = rootNode.Execute();
-                
+                var result = RootNode.Execute();
+
                 // スマートログ: 状態変化時または定期的にのみログ出力
-                bool shouldLog = debugMode && (
+                var shouldLog = debugMode && (
                     result != lastResult ||  // 結果が変わった
-                    rootNode.Name != lastExecutedNodeName ||  // 実行ノードが変わった
+                    RootNode.Name != lastExecutedNodeName ||  // 実行ノードが変わった
                     Time.time - lastLogTime > 5f ||  // 5秒間隔で生存確認
                     executionCount <= 3  // 最初の3回は必ずログ
                 );
-                
+
                 if (shouldLog)
                 {
                     LogExecutionState(result);
                     lastResult = result;
-                    lastExecutedNodeName = rootNode.Name;
+                    lastExecutedNodeName = RootNode.Name;
                     lastLogTime = Time.time;
                 }
 
                 lastTickTime = Time.time;
             }
         }
-        
+
         void LogExecutionState(BTNodeResult result)
         {
             var changeInfo = result != lastResult ? " [状態変化]" : "";
-            
+
             // 同じパターンの繰り返しをチェック
-            string currentPattern = $"{result}-{rootNode.Name}";
-            bool isRepeating = currentPattern == lastLogPattern;
-            
+            var currentPattern = $"{result}-{RootNode.Name}";
+            var isRepeating = currentPattern == lastLogPattern;
+
             if (isRepeating)
             {
                 repetitionCount++;
@@ -97,21 +88,21 @@ namespace ArcBT.Core
                 repetitionCount = 0;
                 lastLogPattern = currentPattern;
             }
-            
+
             // 構造化ログを使用
             var logLevel = result == BTNodeResult.Failure ? LogLevel.Warning : LogLevel.Info;
-            BTLogger.Log(logLevel, LogCategory.System, 
-                $"BT[{rootNode.Name}] → {result}{changeInfo} " +
+            BTLogger.Log(logLevel, LogCategory.System,
+                $"BT[{RootNode.Name}] → {result}{changeInfo} " +
                 $"(実行回数: {executionCount}, 時刻: {Time.time:F1}s)" +
                 (repetitionCount > 10 ? $" [繰り返し×{repetitionCount}]" : ""),
-                rootNode.Name, this);
-            
+                RootNode.Name, this);
+
             // BlackBoard状態も表示（変化があった場合）
-            if (blackBoard.HasRecentChanges())
+            if (BlackBoard.HasRecentChanges())
             {
-                BTLogger.LogBlackBoard($"BlackBoard更新: {blackBoard.GetRecentChangeSummary()}", "", this);
+                BTLogger.LogBlackBoard($"BlackBoard更新: {BlackBoard.GetRecentChangeSummary()}", "", this);
             }
-            
+
             lastLogTime = Time.time;
         }
 
@@ -137,26 +128,24 @@ namespace ArcBT.Core
                     }
                 }
 
-                rootNode = parser.ParseFile(fullPath);
+                RootNode = parser.ParseFile(fullPath);
 
-                if (rootNode != null)
+                if (RootNode != null)
                 {
                     // ルートノードとすべての子ノードを初期化
-                    InitializeNodeTree(rootNode);
+                    InitializeNodeTree(RootNode);
 
                     // 動的条件チェックを設定
-                    SetupDynamicConditionChecking(rootNode);
+                    SetupDynamicConditionChecking(RootNode);
 
                     BTLogger.LogSystem($"Successfully loaded behaviour tree from: {filePath}", "", this);
-                    BTLogger.LogSystem($"Root node: {rootNode.Name} ({rootNode.GetType().Name})", "", this);
-                    LogTreeStructure(rootNode, 0);
+                    BTLogger.LogSystem($"Root node: {RootNode.Name} ({RootNode.GetType().Name})", "", this);
+                    LogTreeStructure(RootNode, 0);
                     return true;
                 }
-                else
-                {
-                    BTLogger.LogError(LogCategory.Parser, $"Failed to parse behaviour tree: {filePath}", "", this);
-                    return false;
-                }
+
+                BTLogger.LogError(LogCategory.Parser, $"Failed to parse behaviour tree: {filePath}", "", this);
+                return false;
             }
             catch (System.Exception e)
             {
@@ -173,14 +162,14 @@ namespace ArcBT.Core
             }
 
             // BlackBoardの確認
-            if (blackBoard == null)
+            if (BlackBoard == null)
             {
                 BTLogger.LogError(LogCategory.BlackBoard, $"❌ InitializeNodeTree: BlackBoard is null for node {node.Name}", node.Name, this);
                 return;
             }
 
             // このMonoBehaviourとBlackBoardを渡してノードを初期化
-            node.Initialize(this, blackBoard);
+            node.Initialize(this, BlackBoard);
             BTLogger.LogSystem($"✅ Initialized node: {node.Name} ({node.GetType().Name})", node.Name, this);
 
             // 子ノードも再帰的に初期化
@@ -209,19 +198,17 @@ namespace ArcBT.Core
         {
             try
             {
-                rootNode = parser.ParseContent(content);
+                RootNode = parser.ParseContent(content);
 
-                if (rootNode != null)
+                if (RootNode != null)
                 {
                     BTLogger.LogSystem("Successfully loaded behaviour tree from content", "", this);
-                    LogTreeStructure(rootNode, 0);
+                    LogTreeStructure(RootNode, 0);
                     return true;
                 }
-                else
-                {
-                    BTLogger.LogError(LogCategory.Parser, "Failed to parse behaviour tree content", "", this);
-                    return false;
-                }
+
+                BTLogger.LogError(LogCategory.Parser, "Failed to parse behaviour tree content", "", this);
+                return false;
             }
             catch (System.Exception e)
             {
@@ -233,14 +220,14 @@ namespace ArcBT.Core
         /// <summary>ルートノード設定（テスト用）</summary>
         internal void SetRootNode(BTNode node)
         {
-            rootNode = node;
+            RootNode = node;
         }
 
         /// <summary>ツリー状態リセット（内部用）</summary>
         internal void ResetTree()
         {
-            rootNode?.Reset();
-            blackBoard?.Clear();
+            RootNode?.Reset();
+            BlackBoard?.Clear();
         }
 
         void LogTreeStructure(BTNode node, int depth)
@@ -279,9 +266,9 @@ namespace ArcBT.Core
         [ContextMenu("Show BlackBoard Contents")]
         void ShowBlackBoardContents()
         {
-            if (blackBoard != null)
+            if (BlackBoard != null)
             {
-                blackBoard.DebugLog();
+                BlackBoard.DebugLog();
             }
             else
             {
@@ -292,9 +279,9 @@ namespace ArcBT.Core
         [ContextMenu("Clear BlackBoard")]
         void ClearBlackBoard()
         {
-            if (blackBoard != null)
+            if (BlackBoard != null)
             {
-                blackBoard.Clear();
+                BlackBoard.Clear();
             }
         }
 
@@ -302,23 +289,23 @@ namespace ArcBT.Core
         /// <summary>ワンショット実行（テスト用）</summary>
         internal BTNodeResult ExecuteOnce()
         {
-            return rootNode?.Execute() ?? BTNodeResult.Failure;
+            return RootNode?.Execute() ?? BTNodeResult.Failure;
         }
 
         /// <summary>BlackBoard内容の文字列取得（テスト用）</summary>
         internal string GetBlackBoardContents()
         {
-            if (blackBoard == null) return "BlackBoard is null";
-            
-            var keys = blackBoard.GetAllKeys();
+            if (BlackBoard == null) return "BlackBoard is null";
+
+            var keys = BlackBoard.GetAllKeys();
             if (keys.Length == 0) return "BlackBoard is empty";
-            
+
             var contents = new System.Text.StringBuilder();
             contents.AppendLine("BlackBoard Contents:");
             foreach (var key in keys)
             {
-                var value = blackBoard.GetValueAsString(key);
-                var type = blackBoard.GetValueType(key)?.Name ?? "unknown";
+                var value = BlackBoard.GetValueAsString(key);
+                var type = BlackBoard.GetValueType(key)?.Name ?? "unknown";
                 contents.AppendLine($"  {key}: {value} ({type})");
             }
             return contents.ToString();
@@ -331,15 +318,15 @@ namespace ArcBT.Core
         }
 
         /// <summary>デバッグモード設定（テスト用）</summary>
-        internal void SetDebugMode(bool enabled)
+        internal void SetDebugMode(bool isEnabled)
         {
-            debugMode = enabled;
+            debugMode = isEnabled;
         }
 
         // デバッグ用
         void OnDrawGizmos()
         {
-            if (debugMode && rootNode != null)
+            if (debugMode && RootNode != null)
             {
                 // 将来的にツリー構造をGizmosで表示
             }

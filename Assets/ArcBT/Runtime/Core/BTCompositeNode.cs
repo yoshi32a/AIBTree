@@ -15,7 +15,7 @@ namespace ArcBT.Core
         /// <summary>動的条件チェックを設定（ConditionとActionを関連付け）</summary>
         public void SetupDynamicConditionChecking()
         {
-            for (int i = 0; i < Children.Count - 1; i++)
+            for (var i = 0; i < Children.Count - 1; i++)
             {
                 if (Children[i] is BTConditionNode condition && Children[i + 1] is BTActionNode action)
                 {

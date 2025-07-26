@@ -15,7 +15,7 @@ namespace ArcBT.Actions
             {
                 case "range":
                 case "search_range":
-                    if (float.TryParse(value, out float r)) searchRange = r;
+                    if (float.TryParse(value, out var r)) searchRange = r;
                     break;
                 case "tag":
                 case "enemy_tag":
@@ -28,11 +28,11 @@ namespace ArcBT.Actions
         {
             var enemies = GameObject.FindGameObjectsWithTag(enemyTag);
             GameObject nearestEnemy = null;
-            float nearestDistance = float.MaxValue;
+            var nearestDistance = float.MaxValue;
 
             foreach (var enemy in enemies)
             {
-                float distance = Vector3.Distance(transform.position, enemy.transform.position);
+                var distance = Vector3.Distance(transform.position, enemy.transform.position);
                 if (distance <= searchRange && distance < nearestDistance)
                 {
                     nearestEnemy = enemy;
@@ -53,11 +53,9 @@ namespace ArcBT.Actions
                 BTLogger.LogCombat($"敵を発見: {nearestEnemy.name} (距離: {nearestDistance:F1})", Name);
                 return BTNodeResult.Success;
             }
-            else
-            {
-                BTLogger.LogCombat($"敵が見つかりません (検索範囲: {searchRange})", Name);
-                return BTNodeResult.Failure;
-            }
+
+            BTLogger.LogCombat($"敵が見つかりません (検索範囲: {searchRange})", Name);
+            return BTNodeResult.Failure;
         }
     }
 }
