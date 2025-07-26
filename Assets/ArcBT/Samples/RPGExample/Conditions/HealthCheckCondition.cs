@@ -1,13 +1,14 @@
-using UnityEngine;
+using System;
 using ArcBT.Core;
 using ArcBT.Samples.RPG.Components;
+using UnityEngine;
 
 namespace ArcBT.Samples.RPG.Conditions
 {
     /// <summary>体力チェック条件</summary>
-    [System.Serializable]
+    [Serializable]
     [BTScript("HealthCheck")]
-    [BTNode("HealthCheck", NodeType.Condition, AssemblyName = "ArcBT.Samples.RPG")]
+    [BTNode("HealthCheck", NodeType.Condition)]
     public class HealthCheckCondition : BTConditionNode
     {
         [SerializeField] int minHealth = 50;

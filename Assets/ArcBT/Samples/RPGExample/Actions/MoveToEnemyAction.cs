@@ -1,12 +1,12 @@
-using UnityEngine;
+using System;
 using ArcBT.Core;
+using UnityEngine;
 
 namespace ArcBT.Samples.RPG.Actions
 {
     /// <summary>BlackBoardから敵位置を取得して移動するアクション</summary>
-    [BTScript("MoveToEnemy")]
-    public class MoveToEnemyAction : BTActionNode
-    {
+    [BTNode("MoveToEnemy", NodeType.Action)]
+    public class MoveToEnemyAction : BTActionNode    {
         float speed = 15.0f;
         float tolerance = 1.0f;
         Vector3 targetPosition;
@@ -20,10 +20,10 @@ namespace ArcBT.Samples.RPG.Actions
             switch (key)
             {
                 case "speed":
-                    speed = System.Convert.ToSingle(value);
+                    speed = Convert.ToSingle(value);
                     break;
                 case "tolerance":
-                    tolerance = System.Convert.ToSingle(value);
+                    tolerance = Convert.ToSingle(value);
                     break;
             }
         }

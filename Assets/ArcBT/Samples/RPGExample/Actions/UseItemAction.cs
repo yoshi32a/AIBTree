@@ -1,13 +1,12 @@
-using UnityEngine;
 using ArcBT.Core;
 using ArcBT.Samples.RPG.Components;
+using UnityEngine;
 
 namespace ArcBT.Samples.RPG.Actions
 {
     /// <summary>アイテムを使用するアクション</summary>
-    [BTScript("UseItem")]
-    public class UseItemAction : BTActionNode
-    {
+    [BTNode("UseItem", NodeType.Action)]
+    public class UseItemAction : BTActionNode    {
         string itemType = "healing_potion";
 
         public override void SetProperty(string key, string value)

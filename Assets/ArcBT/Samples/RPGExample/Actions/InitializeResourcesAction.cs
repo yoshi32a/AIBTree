@@ -1,13 +1,12 @@
-using UnityEngine;
 using ArcBT.Core;
 using ArcBT.Samples.RPG.Components;
+using UnityEngine;
 
 namespace ArcBT.Samples.RPG.Actions
 {
     /// <summary>リソースを初期化するアクション</summary>
-    [BTScript("InitializeResources")]
-    public class InitializeResourcesAction : BTActionNode
-    {
+    [BTNode("InitializeResources", NodeType.Action)]
+    public class InitializeResourcesAction : BTActionNode    {
         protected override BTNodeResult ExecuteAction()
         {
             if (ownerComponent == null || blackBoard == null)

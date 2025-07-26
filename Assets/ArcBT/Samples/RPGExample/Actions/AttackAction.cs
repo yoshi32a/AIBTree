@@ -1,13 +1,13 @@
-using UnityEngine;
+using System;
 using ArcBT.Core;
 using ArcBT.Samples.RPG.Components;
+using UnityEngine;
 
 namespace ArcBT.Samples.RPG.Actions
 {
     /// <summary>汎用攻撃アクション</summary>
-    [BTScript("Attack")]
-    public class AttackAction : BTActionNode
-    {
+    [BTNode("Attack", NodeType.Action)]
+    public class AttackAction : BTActionNode    {
         int damage = 25;
         float attackRange = 2.0f;
         float cooldown = 1.0f;
@@ -18,13 +18,13 @@ namespace ArcBT.Samples.RPG.Actions
             switch (key)
             {
                 case "damage":
-                    damage = System.Convert.ToInt32(value);
+                    damage = Convert.ToInt32(value);
                     break;
                 case "attack_range":
-                    attackRange = System.Convert.ToSingle(value);
+                    attackRange = Convert.ToSingle(value);
                     break;
                 case "cooldown":
-                    cooldown = System.Convert.ToSingle(value);
+                    cooldown = Convert.ToSingle(value);
                     break;
             }
         }
@@ -96,7 +96,7 @@ namespace ArcBT.Samples.RPG.Actions
             }
             else
             {
-                BTLogger.Log(ArcBT.Core.LogLevel.Warning, ArcBT.Core.LogCategory.Combat, $"Target '{target.name}' has no Health component", "Attack");
+                BTLogger.Log(LogLevel.Warning, LogCategory.Combat, $"Target '{target.name}' has no Health component", "Attack");
                 return BTNodeResult.Failure;
             }
         }

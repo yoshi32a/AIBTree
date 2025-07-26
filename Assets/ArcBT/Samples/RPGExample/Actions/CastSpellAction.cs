@@ -1,13 +1,13 @@
-using UnityEngine;
+using System;
 using ArcBT.Core;
 using ArcBT.Samples.RPG.Components;
+using UnityEngine;
 
 namespace ArcBT.Samples.RPG.Actions
 {
     /// <summary>魔法を詠唱するアクション</summary>
-    [BTScript("CastSpell")]
-    public class CastSpellAction : BTActionNode
-    {
+    [BTNode("CastSpell", NodeType.Action)]
+    public class CastSpellAction : BTActionNode    {
         string spellName = "fireball";
         int damage = 40;
         int manaCost = 50;
@@ -20,10 +20,10 @@ namespace ArcBT.Samples.RPG.Actions
                     spellName = value;
                     break;
                 case "damage":
-                    damage = System.Convert.ToInt32(value);
+                    damage = Convert.ToInt32(value);
                     break;
                 case "mana_cost":
-                    manaCost = System.Convert.ToInt32(value);
+                    manaCost = Convert.ToInt32(value);
                     break;
             }
         }

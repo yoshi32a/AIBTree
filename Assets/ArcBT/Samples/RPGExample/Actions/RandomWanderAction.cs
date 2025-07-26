@@ -1,12 +1,13 @@
-using UnityEngine;
+using System;
 using ArcBT.Core;
+using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace ArcBT.Samples.RPG
 {
     /// <summary>ランダムに徘徊するアクション</summary>
-    [BTScript("RandomWander")]
-    public class RandomWanderAction : BTActionNode
-    {
+    [BTNode("RandomWander", NodeType.Action)]
+    public class RandomWanderAction : BTActionNode    {
         float wanderRadius = 10.0f;
         float speed = 25.0f; // 大幅高速化（検証時間短縮）
         float tolerance = 0.5f;
@@ -26,13 +27,13 @@ namespace ArcBT.Samples.RPG
             switch (key)
             {
                 case "wander_radius":
-                    wanderRadius = System.Convert.ToSingle(value);
+                    wanderRadius = Convert.ToSingle(value);
                     break;
                 case "speed":
-                    speed = System.Convert.ToSingle(value);
+                    speed = Convert.ToSingle(value);
                     break;
                 case "tolerance":
-                    tolerance = System.Convert.ToSingle(value);
+                    tolerance = Convert.ToSingle(value);
                     break;
             }
         }

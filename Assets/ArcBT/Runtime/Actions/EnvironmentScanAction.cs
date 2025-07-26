@@ -1,11 +1,10 @@
-using UnityEngine;
 using ArcBT.Core;
+using UnityEngine;
 
 namespace ArcBT.Actions
 {
-    [BTScript("EnvironmentScan")]
-    public class EnvironmentScanAction : BTActionNode
-    {
+    [BTNode("EnvironmentScan", NodeType.Action)]
+    public class EnvironmentScanAction : BTActionNode    {
         float scanRange = 10f;
         string[] scanTags = { "Enemy", "Item", "Interactable" };
 

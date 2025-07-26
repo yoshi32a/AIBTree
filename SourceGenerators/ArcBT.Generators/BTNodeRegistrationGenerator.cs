@@ -68,7 +68,10 @@ namespace ArcBT.Generators
                             continue;
 
                         // AssemblyName プロパティを取得（オプション）
-                        var assemblyName = "ArcBT";
+                        // デフォルトは名前空間から推測
+                        var defaultAssemblyName = GetAssemblyNameFromNamespace(classSymbol.ContainingNamespace?.ToDisplayString());
+                        var assemblyName = defaultAssemblyName;
+                        
                         foreach (var namedArg in attribute.NamedArguments)
                         {
                             if (namedArg.Key == "AssemblyName" && namedArg.Value.Value is string asmName)
@@ -168,6 +171,22 @@ namespace ArcBT.Generators
             sb.AppendLine("}");
             
             return sb.ToString();
+        }
+
+        private static string GetAssemblyNameFromNamespace(string namespaceName)
+        {
+            if (string.IsNullOrEmpty(namespaceName))
+                return "ArcBT";
+
+            // 名前空間のパターンに基づいてアセンブリ名を推測
+            if (namespaceName.StartsWith("ArcBT.Samples.RPG"))
+                return "ArcBT.Samples.RPG";
+            else if (namespaceName.StartsWith("ArcBT.Samples"))
+                return "ArcBT.Samples";
+            else if (namespaceName.StartsWith("ArcBT"))
+                return "ArcBT";
+            else
+                return "ArcBT"; // デフォルト
         }
 
         private class NodeInfo

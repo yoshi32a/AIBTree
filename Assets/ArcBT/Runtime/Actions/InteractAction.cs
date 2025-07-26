@@ -1,11 +1,10 @@
-using UnityEngine;
 using ArcBT.Core;
+using UnityEngine;
 
 namespace ArcBT.Actions
 {
-    [BTScript("Interact")]
-    public class InteractAction : BTActionNode
-    {
+    [BTNode("Interact", NodeType.Action)]
+    public class InteractAction : BTActionNode    {
         string targetTag = "Interactable";
         float interactionRange = 2f;
 

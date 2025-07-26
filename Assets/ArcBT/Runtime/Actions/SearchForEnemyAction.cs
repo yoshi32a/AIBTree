@@ -1,11 +1,10 @@
-using UnityEngine;
 using ArcBT.Core;
+using UnityEngine;
 
 namespace ArcBT.Actions
 {
-    [BTScript("SearchForEnemy")]
-    public class SearchForEnemyAction : BTActionNode
-    {
+    [BTNode("SearchForEnemy", NodeType.Action)]
+    public class SearchForEnemyAction : BTActionNode    {
         float searchRange = 10f;
         string enemyTag = "Enemy";
 

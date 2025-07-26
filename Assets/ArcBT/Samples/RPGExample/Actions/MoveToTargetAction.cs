@@ -1,12 +1,12 @@
-using UnityEngine;
+using System;
 using ArcBT.Core;
+using UnityEngine;
 
 namespace ArcBT.Samples.RPG.Actions
 {
     /// <summary>ターゲットに移動するアクション</summary>
-    [BTScript("MoveToTarget")]
-    public class MoveToTargetAction : BTActionNode
-    {
+    [BTNode("MoveToTarget", NodeType.Action)]
+    public class MoveToTargetAction : BTActionNode    {
         string moveType = "normal";
         float speed = 20.0f; // 高速化（検証時間短縮）
         float tolerance = 1.0f;
@@ -21,10 +21,10 @@ namespace ArcBT.Samples.RPG.Actions
                     moveType = value;
                     break;
                 case "speed":
-                    speed = System.Convert.ToSingle(value);
+                    speed = Convert.ToSingle(value);
                     break;
                 case "tolerance":
-                    tolerance = System.Convert.ToSingle(value);
+                    tolerance = Convert.ToSingle(value);
                     break;
             }
         }

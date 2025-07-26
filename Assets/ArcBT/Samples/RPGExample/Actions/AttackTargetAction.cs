@@ -1,13 +1,14 @@
-using UnityEngine;
+using System;
 using ArcBT.Core;
 using ArcBT.Samples.RPG.Components;
+using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace ArcBT.Samples.RPG.Actions
 {
     /// <summary>BlackBoardの敵情報を使用して攻撃するアクション</summary>
-    [BTScript("AttackTarget")]
-    public class AttackTargetAction : BTActionNode
-    {
+    [BTNode("AttackTarget", NodeType.Action)]
+    public class AttackTargetAction : BTActionNode    {
         int damage = 25;
         float attackRange = 2.0f;
         float attackCooldown = 1.0f;
@@ -18,13 +19,13 @@ namespace ArcBT.Samples.RPG.Actions
             switch (key)
             {
                 case "damage":
-                    damage = System.Convert.ToInt32(value);
+                    damage = Convert.ToInt32(value);
                     break;
                 case "attack_range":
-                    attackRange = System.Convert.ToSingle(value);
+                    attackRange = Convert.ToSingle(value);
                     break;
                 case "cooldown":
-                    attackCooldown = System.Convert.ToSingle(value);
+                    attackCooldown = Convert.ToSingle(value);
                     break;
             }
         }

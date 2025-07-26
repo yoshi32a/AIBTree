@@ -1,12 +1,12 @@
-using UnityEngine;
+using System;
 using ArcBT.Core;
+using UnityEngine;
 
 namespace ArcBT.Samples.RPG.Actions
 {
     /// <summary>少量のマナを回復するアクション</summary>
-    [BTScript("RestoreSmallMana")]
-    public class RestoreSmallManaAction : BTActionNode
-    {
+    [BTNode("RestoreSmallMana", NodeType.Action)]
+    public class RestoreSmallManaAction : BTActionNode    {
         int manaGain = 10;
 
         public override void SetProperty(string key, string value)
@@ -14,7 +14,7 @@ namespace ArcBT.Samples.RPG.Actions
             switch (key)
             {
                 case "mana_gain":
-                    manaGain = System.Convert.ToInt32(value);
+                    manaGain = Convert.ToInt32(value);
                     break;
             }
         }

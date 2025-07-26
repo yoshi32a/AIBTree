@@ -1,12 +1,12 @@
-using UnityEngine;
+using System;
 using ArcBT.Core;
+using UnityEngine;
 
 namespace ArcBT.Actions
 {
     /// <summary>環境をスキャンするアクション</summary>
-    [BTScript("ScanEnvironment")]
-    public class ScanEnvironmentAction : BTActionNode
-    {
+    [BTNode("ScanEnvironment", NodeType.Action)]
+    public class ScanEnvironmentAction : BTActionNode    {
         float scanInterval = 2.0f;
         float scanRadius = 15.0f;
         float lastScanTime = 0f;
@@ -16,10 +16,10 @@ namespace ArcBT.Actions
             switch (key)
             {
                 case "scan_interval":
-                    scanInterval = System.Convert.ToSingle(value);
+                    scanInterval = Convert.ToSingle(value);
                     break;
                 case "scan_radius":
-                    scanRadius = System.Convert.ToSingle(value);
+                    scanRadius = Convert.ToSingle(value);
                     break;
             }
         }

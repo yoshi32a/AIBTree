@@ -1,11 +1,10 @@
-using UnityEngine;
 using ArcBT.Core;
+using UnityEngine;
 
 namespace ArcBT.Actions
 {
-    [BTScript("NormalAttack")]
-    public class NormalAttackAction : BTActionNode
-    {
+    [BTNode("NormalAttack", NodeType.Action)]
+    public class NormalAttackAction : BTActionNode    {
         float damage = 10f;
         float range = 2f;
 

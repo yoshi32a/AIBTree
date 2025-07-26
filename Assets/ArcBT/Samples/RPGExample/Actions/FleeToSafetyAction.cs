@@ -1,12 +1,12 @@
-using UnityEngine;
+using System;
 using ArcBT.Core;
+using UnityEngine;
 
 namespace ArcBT.Samples.RPG.Actions
 {
     /// <summary>安全な場所に逃走するアクション</summary>
-    [BTScript("FleeToSafety")]
-    public class FleeToSafetyAction : BTActionNode
-    {
+    [BTNode("FleeToSafety", NodeType.Action)]
+    public class FleeToSafetyAction : BTActionNode    {
         float minDistance = 20.0f;
         float speedMultiplier = 1.5f;
         Vector3 fleeTarget;
@@ -19,10 +19,10 @@ namespace ArcBT.Samples.RPG.Actions
             switch (key)
             {
                 case "min_distance":
-                    minDistance = System.Convert.ToSingle(value);
+                    minDistance = Convert.ToSingle(value);
                     break;
                 case "speed_multiplier":
-                    speedMultiplier = System.Convert.ToSingle(value);
+                    speedMultiplier = Convert.ToSingle(value);
                     break;
             }
         }
