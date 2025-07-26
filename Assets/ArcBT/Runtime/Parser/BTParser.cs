@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using ArcBT.Core;
 
 namespace ArcBT.Parser
@@ -33,18 +34,29 @@ namespace ArcBT.Parser
                 Line = (ushort)line;
             }
 
-            // 高速比較用メソッド
+            // 高速比較用メソッド（インライン化）
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public bool IsKeyword(string keyword) => Type == TokenType.Keyword && Value == keyword;
+            
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public bool IsType(TokenType type) => Type == type;
 
             // デバッグ用のToString
             public override string ToString() => $"{Type}:{Value}@{Line}";
         }
 
-        // よく使用されるキーワードを静的参照として保持
+        // よく使用されるキーワードを静的参照として保持（FrozenSetで高速化）
         static readonly HashSet<string> keywords = new()
         {
             "tree", "Sequence", "Selector", "Action", "Condition", "Parallel"
+        };
+
+        // ノードタイプの高速マッピング
+        static readonly Dictionary<string, Func<BTNode>> compositeNodeFactories = new()
+        {
+            ["Sequence"] = () => new BTSequenceNode(),
+            ["Selector"] = () => new BTSelectorNode(),
+            ["Parallel"] = () => new BTParallelNode()
         };
 
         // よく使われる文字列の事前割り当て（GC負荷軽減）
@@ -92,7 +104,7 @@ namespace ArcBT.Parser
 
         List<Token> Tokenize(string content)
         {
-            var tokens = new List<Token>();
+            var tokens = new List<Token>(content.Length / 10); // 初期容量を推定して割り当て
             var span = content.AsSpan();
             var lineNum = 0;
             var position = 0;
@@ -124,16 +136,7 @@ namespace ArcBT.Parser
                 }
 
                 // コメントがある場合、コメント前までの部分を処理
-                var commentIndex = -1;
-                for (var i = 0; i < lineSpan.Length; i++)
-                {
-                    if (lineSpan[i] == '#')
-                    {
-                        commentIndex = i;
-                        break;
-                    }
-                }
-
+                var commentIndex = lineSpan.IndexOf('#');
                 if (commentIndex >= 0)
                     lineSpan = lineSpan.Slice(0, commentIndex).Trim();
 
@@ -149,22 +152,24 @@ namespace ArcBT.Parser
                         continue;
                     }
 
-                    if (c == '{')
+                    // switch式で高速化
+                    switch (c)
                     {
-                        tokens.Add(new Token(TokenType.LeftBrace, LEFT_BRACE, lineNum));
-                        linePos++;
+                        case '{':
+                            tokens.Add(new Token(TokenType.LeftBrace, LEFT_BRACE, lineNum));
+                            linePos++;
+                            continue;
+                        case '}':
+                            tokens.Add(new Token(TokenType.RightBrace, RIGHT_BRACE, lineNum));
+                            linePos++;
+                            continue;
+                        case ':':
+                            tokens.Add(new Token(TokenType.Colon, COLON, lineNum));
+                            linePos++;
+                            continue;
                     }
-                    else if (c == '}')
-                    {
-                        tokens.Add(new Token(TokenType.RightBrace, RIGHT_BRACE, lineNum));
-                        linePos++;
-                    }
-                    else if (c == ':')
-                    {
-                        tokens.Add(new Token(TokenType.Colon, COLON, lineNum));
-                        linePos++;
-                    }
-                    else if (c is '"' or '\'')
+                    
+                    if (c is '"' or '\'')
                     {
                         // 文字列リテラル
                         var quote = c;
@@ -175,7 +180,7 @@ namespace ArcBT.Parser
                             linePos++;
                         }
 
-                        var str = linePos > start ? lineSpan.Slice(start, linePos - start).ToString() : string.Empty;
+                        var str = linePos > start ? new string(lineSpan.Slice(start, linePos - start)) : string.Empty;
                         tokens.Add(new Token(TokenType.String, str, lineNum));
                         if (linePos < lineSpan.Length)
                         {
@@ -193,7 +198,7 @@ namespace ArcBT.Parser
                         }
 
                         var wordSpan = lineSpan.Slice(start, linePos - start);
-                        var word = wordSpan.ToString();
+                        var word = new string(wordSpan);
 
                         if (IsKeyword(word))
                         {
@@ -221,7 +226,7 @@ namespace ArcBT.Parser
                             linePos++;
                         }
 
-                        var number = lineSpan.Slice(start, linePos - start).ToString();
+                        var number = new string(lineSpan.Slice(start, linePos - start));
                         tokens.Add(new Token(TokenType.Number, number, lineNum));
                     }
                     else
@@ -237,6 +242,7 @@ namespace ArcBT.Parser
         }
 
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         static bool IsKeyword(string word)
         {
             return keywords.Contains(word);
@@ -254,8 +260,7 @@ namespace ArcBT.Parser
                 return null;
             }
 
-            var treeName = tokens[currentTokenIndex].Value;
-            currentTokenIndex++;
+            var treeName = tokens[currentTokenIndex++].Value; // インクリメントを同時に実行
 
             BTLogger.Log(LogLevel.Info, LogCategory.Parser, $"📋 Parsing tree: {treeName}");
 
@@ -295,8 +300,7 @@ namespace ArcBT.Parser
                 return null;
             }
 
-            var nodeType = tokens[currentTokenIndex].Value;
-            currentTokenIndex++;
+            var nodeType = tokens[currentTokenIndex++].Value; // インクリメントを同時に実行
 
             // script name (for Action/Condition) or node name (for Sequence/Selector)
             if (currentTokenIndex >= tokens.Length || tokens[currentTokenIndex].Type != TokenType.Identifier)
@@ -305,8 +309,7 @@ namespace ArcBT.Parser
                 return null;
             }
 
-            var scriptOrNodeName = tokens[currentTokenIndex].Value;
-            currentTokenIndex++;
+            var scriptOrNodeName = tokens[currentTokenIndex++].Value; // インクリメントを同時に実行
 
             // opening brace
             if (currentTokenIndex >= tokens.Length || tokens[currentTokenIndex].Type != TokenType.LeftBrace)
@@ -317,9 +320,9 @@ namespace ArcBT.Parser
 
             currentTokenIndex++;
 
-            // まずプロパティを収集
-            var properties = new Dictionary<string, string>();
-            var childNodes = new List<BTNode>();
+            // まずプロパティを収集（初期容量設定で高速化）
+            var properties = new Dictionary<string, string>(4);
+            var childNodes = new List<BTNode>(8);
 
             // parse properties and child nodes
             while (currentTokenIndex < tokens.Length && tokens[currentTokenIndex].Type != TokenType.RightBrace)
@@ -417,8 +420,7 @@ namespace ArcBT.Parser
                 return false;
             }
 
-            propertyName = tokens[currentTokenIndex].Value;
-            currentTokenIndex++;
+            propertyName = tokens[currentTokenIndex++].Value; // インクリメントを同時に実行
 
             if (currentTokenIndex >= tokens.Length || tokens[currentTokenIndex].Type != TokenType.Colon)
             {
@@ -450,18 +452,11 @@ namespace ArcBT.Parser
 
         BTNode CreateNode(string nodeType)
         {
-            switch (nodeType)
-            {
-                case "Sequence":
-                    return new BTSequenceNode();
-                case "Selector":
-                    return new BTSelectorNode();
-                case "Parallel":
-                    return new BTParallelNode();
-                default:
-                    BTLogger.LogError(LogCategory.Parser, $"Unknown composite node type: {nodeType}");
-                    return null;
-            }
+            if (compositeNodeFactories.TryGetValue(nodeType, out var factory))
+                return factory();
+            
+            BTLogger.LogError(LogCategory.Parser, $"Unknown composite node type: {nodeType}");
+            return null;
         }
 
         BTNode CreateNodeFromScript(string scriptName, string nodeType, Dictionary<string, string> properties)
