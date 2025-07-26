@@ -1,10 +1,9 @@
 using UnityEngine;
+using ArcBT.Core;
 
-namespace ArcBT.Core
+/// <summary>毎フレーム更新される滑らかな移動コントローラー</summary>
+public class MovementController : MonoBehaviour
 {
-    /// <summary>毎フレーム更新される滑らかな移動コントローラー</summary>
-    public class MovementController : MonoBehaviour
-    {
         [Header("Movement Settings")]
         public float defaultSpeed = 12.0f;
         public float rotationSpeed = 15.0f;
@@ -120,5 +119,4 @@ namespace ArcBT.Core
         
         /// <summary>目標までの距離</summary>
         public float DistanceToTarget => hasTarget ? Vector3.Distance(transform.position, targetPosition) : 0f;
-    }
 }
