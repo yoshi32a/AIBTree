@@ -5,6 +5,7 @@ using ArcBT.Core;
 using ArcBT.Actions;
 using System.Collections;
 using System.IO;
+using ArcBT.Samples.RPG;
 
 namespace ArcBT.Tests
 {
@@ -201,7 +202,7 @@ namespace ArcBT.Tests
             var result = runner.ExecuteOnce();
 
             // Assert
-            Assert.IsTrue(result == BTNodeResult.Running || result == BTNodeResult.Success);
+            Assert.IsTrue(result is BTNodeResult.Running or BTNodeResult.Success);
         }
 
         [Test]
@@ -386,7 +387,7 @@ namespace ArcBT.Tests
             var result = runner.ExecuteOnce();
 
             // Assert
-            Assert.IsTrue(result == BTNodeResult.Success || result == BTNodeResult.Running || result == BTNodeResult.Failure);
+            Assert.IsTrue(result is BTNodeResult.Success or BTNodeResult.Running or BTNodeResult.Failure);
             Assert.AreEqual("RootSelector", runner.RootNode.Name);
             Assert.AreEqual(1, runner.RootNode.Children.Count);
         }
@@ -415,7 +416,7 @@ namespace ArcBT.Tests
             var result = runner.ExecuteOnce();
 
             // Assert
-            Assert.IsTrue(result == BTNodeResult.Running || result == BTNodeResult.Success);
+            Assert.IsTrue(result is BTNodeResult.Running or BTNodeResult.Success);
         }
 
         #endregion
