@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using ArcBT.Core;
+using System.Linq.Expressions;
 
 namespace ArcBT.Core
 {
@@ -33,8 +33,8 @@ namespace ArcBT.Core
                     var constructor = type.GetConstructor(Type.EmptyTypes);
                     if (constructor != null)
                     {
-                        var newExpr = System.Linq.Expressions.Expression.New(constructor);
-                        var lambda = System.Linq.Expressions.Expression.Lambda<Func<BTActionNode>>(newExpr);
+                        var newExpr = Expression.New(constructor);
+                        var lambda = Expression.Lambda<Func<BTActionNode>>(newExpr);
                         var factory = lambda.Compile();
                         actionFactories[actionName] = factory;
                     }
@@ -49,8 +49,8 @@ namespace ArcBT.Core
                     var constructor = type.GetConstructor(Type.EmptyTypes);
                     if (constructor != null)
                     {
-                        var newExpr = System.Linq.Expressions.Expression.New(constructor);
-                        var lambda = System.Linq.Expressions.Expression.Lambda<Func<BTConditionNode>>(newExpr);
+                        var newExpr = Expression.New(constructor);
+                        var lambda = Expression.Lambda<Func<BTConditionNode>>(newExpr);
                         var factory = lambda.Compile();
                         conditionFactories[conditionName] = factory;
                     }
