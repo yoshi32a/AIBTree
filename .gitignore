@@ -84,3 +84,9 @@ CodeCoverageSettings.json
 
 # Claude Code settings
 settings.local.json
+
+# Source Generator build artifacts
+SourceGenerators/**/bin/
+SourceGenerators/**/obj/
+SourceGenerators/**/*.nupkg
+SourceGenerators/**/.vs/

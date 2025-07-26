@@ -14,21 +14,32 @@ ArcBT Source Generatorは、BTNodeの登録コードを自動生成すること�
 
 ### 1. Source Generator のビルド
 
+Source Generator は Unity プロジェクト外で管理されています：
+
 ```bash
-cd Assets/ArcBT/SourceGenerators
-dotnet build -c Release
-# または
-./build-generator.sh  # Mac/Linux
-./build-generator.bat # Windows
+# プロジェクトルートから
+cd SourceGenerators
+./build.sh  # Mac/Linux
+build.bat   # Windows
 ```
 
 ### 2. Unity への統合
 
-1. ビルドされた `ArcBT.Generators.dll` を `Assets/ArcBT/RoslynAnalyzers/` にコピー
+1. ビルドされた DLL をコピー：
+   ```
+   SourceGenerators/ArcBT.Generators/bin/Release/netstandard2.0/ArcBT.Generators.dll
+   → Assets/ArcBT/RoslynAnalyzers/ArcBT.Generators.dll
+   ```
 2. Unity で DLL を選択し、Inspector で設定:
    - Platform settings → Any Platform
    - Asset Labels → `RoslynAnalyzer` を追加
 3. Unity を再起動
+
+### 3. 自動ビルド (CI/CD)
+
+GitHub Actions でプッシュ時に自動ビルド：
+- Source Generator の変更時に自動でビルドとアーティファクト生成
+- タグ付きリリース時に DLL と NuGet パッケージを配布
 
 ## 使用方法
 
