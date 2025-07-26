@@ -58,8 +58,8 @@ Unity プロジェクトは Unity エディタを通じてビルドされます�
 - `ProjectSettings/` - Unity プロジェクト設定ファイル
 - `Library/` - Unity のコンパイル済みアセットとキャッシュ（自動生成、バージョン管理対象外）
 
-### BehaviourTree システム構造
-- `Assets/Scripts/BehaviourTree/Core/` - コアシステム
+### ArcBT パッケージ構造（Assets/ArcBT/）
+- `Runtime/Core/` - コアシステム
   - `BTNode.cs` - ベースノードクラス（BlackBoard対応）
   - `BTNodeResult.cs` - 実行結果の列挙型
   - `BTActionNode.cs` / `BTConditionNode.cs` - 抽象ベースクラス（動的条件チェック対応）
@@ -70,42 +70,52 @@ Unity プロジェクトは Unity エディタを通じてビルドされます�
   - `BlackBoard.cs` - データ共有システム
   - `BehaviourTreeRunner.cs` - .btファイル実行エンジン（BlackBoard管理）
   - `BTLogger.cs` - 統合ログシステム（条件付きコンパイル対応）
-- `Assets/Scripts/BehaviourTree/Parser/` - .btファイルパーサー
+  - `BTNodeRegistry.cs` - ノード動的登録システム
+  - `BTScriptAttribute.cs` - スクリプト属性定義
+  - `MovementController.cs` - 移動制御システム
+- `Runtime/Parser/` - .btファイルパーサー
   - `BTParser.cs` - トークンベースパーサー
-- `Assets/Scripts/BehaviourTree/Actions/` - アクションノード実装
+- `Runtime/Actions/` - 基本アクションノード実装
   - `MoveToPositionAction.cs` - 移動アクション（BlackBoard対応）
-  - `AttackEnemyAction.cs` - 攻撃アクション
   - `WaitAction.cs` - 待機アクション
   - `ScanEnvironmentAction.cs` - 環境スキャン（BlackBoard連携）
-  - `MoveToEnemyAction.cs` - 敵への移動（BlackBoard参照）
-  - `AttackTargetAction.cs` - ターゲット攻撃（BlackBoard連携）
   - `RandomWanderAction.cs` - ランダム徘徊
-- `Assets/Scripts/BehaviourTree/Conditions/` - 条件ノード実装
-  - `HealthCheckCondition.cs` - 体力チェック条件（BlackBoard対応）
-  - `EnemyCheckCondition.cs` - 敵検出条件
-  - `HasItemCondition.cs` - アイテム所持チェック
+- `Runtime/Conditions/` - 基本条件ノード実装
   - `HasSharedEnemyInfoCondition.cs` - BlackBoard敵情報チェック
-- `Assets/Scripts/BehaviourTree/Nodes/` - レガシーノード（後方互換性）
+- `Runtime/Nodes/` - レガシーノード（後方互換性）
   - `CustomActionNode.cs` / `CustomConditionNode.cs`
-- `Assets/Scripts/Components/` - 汎用コンポーネント
-  - `Health.cs` - 体力管理コンポーネント
-  - `Inventory.cs` - インベントリ管理コンポーネント（GetAllItemsメソッド対応）
-  - `InventoryItem.cs` - インベントリアイテム定義
-  - `Mana.cs` - マナ管理コンポーネント
-- `Assets/Scripts/UI/` - 視覚的フィードバックシステム
-  - `AIStatusDisplay.cs` - リアルタイムAI状態表示UI（体力/マナバー、現在アクション、BlackBoard情報）
-  - `ActionIndicator.cs` - 3Dアクションインジケーター（AIの頭上に浮かぶ状態表示）
-- `Assets/Scripts/Camera/` - カメラ制御システム
-  - `SceneCamera.cs` - 高度なカメラ制御（自動追従、手動操作、Input System対応）
-- `Assets/Editor/` - Unity エディター拡張
+  - `ActionNode.cs` / `ConditionNode.cs` / `CompositeNode.cs`
+  - `SelectorNode.cs` / `SequenceNode.cs`
+- `Runtime/Examples/` - 使用例・サンプル
+  - `ExampleAI.cs` - 基本AIサンプル実装
+- `Samples/RPGExample/` - RPGサンプル実装（独立パッケージ）
+  - `Actions/` - RPG用アクションノード（攻撃、回復、魔法等）
+  - `Conditions/` - RPG用条件ノード（体力、マナ、敵検出等）
+  - `Components/` - RPG用コンポーネント（Health、Mana、Inventory）
+- `Editor/` - Unity エディター拡張
   - `BTLoggerEditor.cs` - ログシステム管理UI（カテゴリフィルター、ログレベル制御）
-- `Assets/Tests/` - テストスイート
+- `Tests/` - テストスイート（コードカバレッジ70.00%）
+  - `BlackBoardTests.cs` - BlackBoardシステム（90テスト）
+  - `ActionNodeTests.cs` - アクションノード（25テスト）
+  - `ConditionNodeTests.cs` - 条件ノード（20テスト）
+  - `BehaviourTreeRunnerTests.cs` - 実行エンジン（15テスト）
   - `BTParsingTests.cs` - 全BTファイルパーステスト
   - `BTFileValidationTests.cs` - ファイル構造詳細検証
   - `BTTestRunner.cs` - エディターメニュー統合
   - `BTLoggerTests.cs` - ログシステム基本機能テスト
   - `BTLoggerPerformanceTests.cs` - ログシステムパフォーマンステスト
-  - `Tests.asmdef` - テスト用アセンブリ定義
+  - `ArcBT.Tests.asmdef` - テスト用アセンブリ定義
+
+### その他のプロジェクトファイル
+- `Assets/Scripts/` - アプリケーション固有スクリプト
+  - `UI/` - 視覚的フィードバックシステム
+    - `AIStatusDisplay.cs` - リアルタイムAI状態表示UI
+    - `ActionIndicator.cs` - 3Dアクションインジケーター
+  - `Camera/` - カメラ制御システム
+    - `SceneCamera.cs` - 高度なカメラ制御（Input System対応）
+- `Assets/Editor/` - プロジェクト用エディター拡張
+  - `AIBTreeTestEnvironmentSetup.cs` - テスト環境自動セットアップ
+  - `TagManager.cs` - タグ管理ツール
 - `Assets/BehaviourTrees/` - .btファイルとサンプル
   - `blackboard_sample.bt` - BlackBoard基本使用例
   - `team_coordination_sample.bt` - チーム連携例
@@ -137,9 +147,9 @@ Unity プロジェクトは Unity エディタを通じてビルドされます�
 - **正しい形式**: 大文字始まり、script属性不要
 - **リファレンス**: `BT_REFERENCE.md` を参照
 
-### 新しいActionノード作成（BlackBoard対応）
-1. `Assets/Scripts/BehaviourTree/Actions/` に `[ActionName]Action.cs` を作成（1ファイル1クラス）
-2. `BTActionNode` を継承
+### 新しいActionノード作成（ArcBT対応）
+1. `Assets/ArcBT/Runtime/Actions/` または `Assets/ArcBT/Samples/RPGExample/Actions/` に `[ActionName]Action.cs` を作成（1ファイル1クラス）
+2. `ArcBT.Core.BTActionNode` を継承
 3. `ExecuteAction()` メソッドをオーバーライド
 4. `SetProperty(string key, string value)` メソッドをオーバーライド（パラメータは`string`型）
 5. `Initialize(MonoBehaviour, BlackBoard)` メソッドをオーバーライド
@@ -148,9 +158,9 @@ Unity プロジェクトは Unity エディタを通じてビルドされます�
 8. .btファイルで `Action ActionName { ... }` として使用（script属性不要）
 9. `BTParser.cs` の `CreateNodeFromScript()` にケースを追加
 
-### 新しいConditionノード作成（BlackBoard対応）
-1. `Assets/Scripts/BehaviourTree/Conditions/` に `[ConditionName]Condition.cs` を作成（1ファイル1クラス）
-2. `BTConditionNode` を継承
+### 新しいConditionノード作成（ArcBT対応）
+1. `Assets/ArcBT/Runtime/Conditions/` または `Assets/ArcBT/Samples/RPGExample/Conditions/` に `[ConditionName]Condition.cs` を作成（1ファイル1クラス）
+2. `ArcBT.Core.BTConditionNode` を継承
 3. `protected override BTNodeResult CheckCondition()` メソッドをオーバーライド（`protected`必須、戻り値は`BTNodeResult`）
 4. `SetProperty(string key, string value)` メソッドをオーバーライド（パラメータは`string`型）
 5. `Initialize(MonoBehaviour, BlackBoard)` メソッドをオーバーライド
@@ -376,3 +386,11 @@ Unity → BehaviourTree → Quick Setup → Complex Example Test Environment
 - **パフォーマンス大幅改善**: 条件付きコンパイルによる本番環境での完全最適化
 - **テスト完全通過**: 54/54テスト（100%成功率）を達成
 - **構造化ログ導入**: カテゴリベースフィルタリングとレベル制御システム
+- **ArcBTパッケージ化**: BehaviourTreeからArcBTへの構造改善とSamples分離
+- **包括的ユニットテスト実装**: コードカバレッジを8.82%から70.00%に大幅改善
+  - BlackBoardTests.cs: 90テスト（データ共有システム完全検証）
+  - ActionNodeTests.cs: 25テスト（行動ノード詳細テスト）
+  - ConditionNodeTests.cs: 20テスト（条件ノード完全検証）
+  - BehaviourTreeRunnerTests.cs: 15テスト（実行エンジン統合テスト）
+- **InternalsVisibleTo活用**: 適切なテストアクセス制御とカプセル化の両立
+- **統合テスト・性能テスト・エラーハンドリングテスト**: 150の包括的テストで品質保証
