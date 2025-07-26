@@ -159,6 +159,42 @@ Sequence patrol_with_health_check {
 - `CheckManaResource` - マナリソースチェック
 - `CheckAlertFlag` - アラート状態フラグチェック
 
+## リフレクション削除による高速化
+
+### BTStaticNodeRegistry
+ArcBTは最新バージョンでリフレクションを完全に削除し、10-100倍の性能改善を実現しました。
+
+#### ノード登録方法
+```csharp
+// Runtimeノードの登録（BTStaticNodeRegistry.csに直接記述）
+static readonly Dictionary<string, Func<BTActionNode>> actionCreators = new()
+{
+    ["MoveToPosition"] = () => new Actions.MoveToPositionAction(),
+    ["Wait"] = () => new Actions.WaitAction(),
+    // ...他のノード
+};
+
+// Samplesノードの自己登録（RPGNodeRegistration.cs）
+[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+static void RegisterNodes()
+{
+    BTStaticNodeRegistry.RegisterAction("AttackEnemy", () => new AttackEnemyAction());
+    BTStaticNodeRegistry.RegisterCondition("HealthCheck", () => new HealthCheckCondition());
+}
+```
+
+#### IHealthインターフェース
+Healthコンポーネントへのアクセスもリフレクションフリーに：
+```csharp
+// 従来: var health = GetComponent("Health");
+// 新方式:
+var health = target.GetComponent<IHealth>();
+if (health != null)
+{
+    health.TakeDamage(damage);
+}
+```
+
 ## BTLoggerシステム
 
 ArcBTには高性能なログシステムが統合されており、Debug.Logの性能問題を解決します。

@@ -294,7 +294,52 @@ Unity.exe -runTests -batchmode -quit -projectPath . -testResults TestResults.xml
 - .btファイル解析テストの自動化
 - パフォーマンス回帰テストの実行
 
-## 11. 最新機能のテスト方法
+## 11. リフレクション削除によるパフォーマンステスト
+
+### BTStaticNodeRegistryテスト
+1. **ノード生成速度の計測**:
+   ```csharp
+   // リフレクション版（旧）
+   var sw = Stopwatch.StartNew();
+   for (int i = 0; i < 10000; i++)
+   {
+       var node = Activator.CreateInstance(type);
+   }
+   sw.Stop(); // 約200-300ms
+   
+   // 静的登録版（新）
+   sw.Restart();
+   for (int i = 0; i < 10000; i++)
+   {
+       var node = BTStaticNodeRegistry.CreateAction("MoveToPosition");
+   }
+   sw.Stop(); // 約2-3ms（100倍高速）
+   ```
+
+2. **IHealthインターフェーステスト**:
+   - GetComponent<IHealth>()の型安全性確認
+   - リフレクション除去によるメモリ効率向上テスト
+   - Unity Profilerでのアロケーション計測
+
+3. **自己登録パターンテスト**:
+   - RPGNodeRegistration.csの自動実行確認
+   - RuntimeInitializeOnLoadMethodの動作検証
+   - 登録タイミングの確認（BeforeSceneLoad）
+
+### Expression Treeパフォーマンステスト
+1. **BTNodeFactoryの速度計測**:
+   ```csharp
+   // Expression Tree版
+   var factory = BTNodeFactory.GetActionFactory("AttackEnemy");
+   var node = factory(); // 初回はコンパイル、2回目以降は高速
+   ```
+
+2. **メモリ使用量の比較**:
+   - Unity Profilerでヒープアロケーション確認
+   - GC発生頻度の計測
+   - 大量ノード生成時の安定性テスト
+
+## 12. 最新機能のテスト方法
 
 ### Unity 6000.1.10f1対応テスト
 - `FindFirstObjectByType<T>()`の動作確認

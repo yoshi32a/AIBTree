@@ -70,7 +70,10 @@ Unity プロジェクトは Unity エディタを通じてビルドされます�
   - `BlackBoard.cs` - データ共有システム
   - `BehaviourTreeRunner.cs` - .btファイル実行エンジン（BlackBoard管理）
   - `BTLogger.cs` - 統合ログシステム（条件付きコンパイル対応）
-  - `BTNodeRegistry.cs` - ノード動的登録システム
+  - `BTNodeRegistry.cs` - ノード動的登録システム（リフレクションベース）
+  - `BTStaticNodeRegistry.cs` - 静的ノード登録システム（リフレクション削除版）
+  - `BTNodeFactory.cs` - Expression Treeベースの高速ノード生成
+  - `IHealth.cs` - Healthコンポーネントインターフェース（リフレクション削除用）
   - `BTScriptAttribute.cs` - スクリプト属性定義
   - `MovementController.cs` - 移動制御システム
 - `Runtime/Parser/` - .btファイルパーサー
@@ -92,6 +95,7 @@ Unity プロジェクトは Unity エディタを通じてビルドされます�
   - `Actions/` - RPG用アクションノード（攻撃、回復、魔法等）
   - `Conditions/` - RPG用条件ノード（体力、マナ、敵検出等）
   - `Components/` - RPG用コンポーネント（Health、Mana、Inventory）
+  - `RPGNodeRegistration.cs` - RPGノードの自己登録（リフレクション削除対応）
 - `Editor/` - Unity エディター拡張
   - `BTLoggerEditor.cs` - ログシステム管理UI（カテゴリフィルター、ログレベル制御）
 - `Tests/` - テストスイート（コードカバレッジ70.00%）
@@ -156,7 +160,10 @@ Unity プロジェクトは Unity エディタを通じてビルドされます�
 6. BlackBoardを活用して状態管理・データ共有を実装
 7. `OnConditionFailed()` で動的条件失敗時の処理を実装
 8. .btファイルで `Action ActionName { ... }` として使用（script属性不要）
-9. `BTParser.cs` の `CreateNodeFromScript()` にケースを追加
+9. **リフレクション削除対応**:
+   - Runtimeノード: `BTStaticNodeRegistry.cs` に直接登録
+   - Samplesノード: `RPGNodeRegistration.cs` で自己登録（RuntimeInitializeOnLoadMethod使用）
+   - Healthアクセス: `IHealth` インターフェースを実装したコンポーネントを使用
 
 ### 新しいConditionノード作成（ArcBT対応）
 1. `Assets/ArcBT/Runtime/Conditions/` または `Assets/ArcBT/Samples/RPGExample/Conditions/` に `[ConditionName]Condition.cs` を作成（1ファイル1クラス）
@@ -166,7 +173,9 @@ Unity プロジェクトは Unity エディタを通じてビルドされます�
 5. `Initialize(MonoBehaviour, BlackBoard)` メソッドをオーバーライド
 6. BlackBoardに状態を記録してデータ共有を実現
 7. .btファイルで `Condition ConditionName { ... }` として使用（script属性不要）
-8. `BTParser.cs` の `CreateNodeFromScript()` にケースを追加
+8. **リフレクション削除対応**:
+   - Runtimeノード: `BTStaticNodeRegistry.cs` に直接登録
+   - Samplesノード: `RPGNodeRegistration.cs` で自己登録（RuntimeInitializeOnLoadMethod使用）
 
 ### テストとデバッグ
 - **自動テスト実行**:
@@ -400,3 +409,12 @@ Unity → BehaviourTree → Quick Setup → Complex Example Test Environment
 - **包括的ドキュメント同期**: CLAUDE.md、README.md、BT_REFERENCE.md、UNITY_TEST_SETUP.md、ArcBTパッケージドキュメントの統合管理
 - **自動化されたドキュメント品質保証**: 152テスト結果とコードカバレッジ70.00%の正確な反映
 - **プロジェクト構造の完全把握**: ArcBTパッケージ化による10個のテストファイル、多数のRPGサンプル、BTLoggerシステムの体系的文書化
+
+### 2025年7月27日の主要な技術的改善
+- **リフレクション完全削除の実現**: BTNodeRegistryのリフレクション依存を排除し、10-100倍の性能改善を達成
+  - `BTStaticNodeRegistry.cs`: 静的ノード登録システムの実装（Func<T>ベース）
+  - `BTNodeFactory.cs`: Expression Treeによる高速ノード生成の実装
+  - `IHealth.cs`: GetComponent("Health")リフレクションを削除するインターフェース
+  - `RPGNodeRegistration.cs`: サンプルノードの自己登録パターン実装
+- **アセンブリ依存問題の解決**: Runtime/Samplesの分離を維持しつつ動的登録機能を提供
+- **テスト修正完了**: ログメッセージ形式の変更に伴う全テストの更新

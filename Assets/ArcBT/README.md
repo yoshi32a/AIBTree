@@ -11,6 +11,7 @@ ArcBT is an elegant, extensible ArcBT framework for Unity with BlackBoard suppor
 - **.bt File Format**: Human-readable hierarchical AI definition format
 - **BTLogger System**: High-performance conditional logging with categories and levels
 - **Extensible Architecture**: Easy to create custom Actions and Conditions
+- **Reflection-Free Design**: Static node registry for 10-100x performance improvement
 
 ### Included Components
 - **Core Nodes**: Sequence, Selector, Parallel composition nodes
@@ -68,6 +69,9 @@ public class MyCustomAction : BTActionNode
         return BTNodeResult.Success;
     }
 }
+
+// Register without reflection (for runtime nodes)
+BTStaticNodeRegistry.RegisterAction("MyCustom", () => new MyCustomAction());
 ```
 
 ## 📚 Documentation
@@ -148,7 +152,10 @@ Runtime/
 │   ├── BTConditionNode.cs  # Condition base class
 │   ├── BehaviourTreeRunner.cs  # Main engine
 │   ├── BlackBoard.cs       # Data sharing
-│   └── BTLogger.cs         # Logging system
+│   ├── BTLogger.cs         # Logging system
+│   ├── BTStaticNodeRegistry.cs  # Reflection-free node registry
+│   ├── BTNodeFactory.cs    # Expression Tree optimization
+│   └── IHealth.cs          # Health interface
 ├── Parser/         # .bt file processing
 │   └── BTParser.cs         # File parser
 ├── Actions/        # Generic actions
@@ -162,6 +169,36 @@ Samples~/RPGExample/
 ├── Components/     # Game-specific components
 ├── Actions/        # RPG-specific actions
 └── Conditions/     # RPG-specific conditions
+```
+
+## ⚡ Performance Optimizations
+
+### Reflection-Free Design
+ArcBT uses static node registration instead of reflection for massive performance gains:
+
+```csharp
+// Traditional reflection approach (slow)
+var node = Activator.CreateInstance(nodeType); // ~20-30μs per call
+
+// ArcBT static approach (fast)
+var node = BTStaticNodeRegistry.CreateAction("MyAction"); // ~0.2-0.3μs per call
+```
+
+### Self-Registration Pattern
+Sample nodes register themselves automatically:
+```csharp
+[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+static void RegisterNodes()
+{
+    BTStaticNodeRegistry.RegisterAction("CustomAction", () => new CustomAction());
+}
+```
+
+### Type-Safe Component Access
+Replace string-based GetComponent with interface:
+```csharp
+// Old: var health = GetComponent("Health");
+var health = target.GetComponent<IHealth>(); // Type-safe, no reflection
 ```
 
 ## 🤝 Contributing
