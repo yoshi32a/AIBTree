@@ -410,7 +410,7 @@ namespace ArcBT.Tests
             // 期待されるログメッセージ
             LogAssert.Expect(LogType.Log, new Regex(@"🔍 Creating node: Action CastSpell"));
             LogAssert.Expect(LogType.Log, new Regex(@"🚀 Creating Action with script 'CastSpell'"));
-            LogAssert.Expect(LogType.Log, new Regex(@"✅ Created CastSpellAction"));
+            LogAssert.Expect(LogType.Log, new Regex(@"✅ Created action for script 'CastSpell'"));
 
             // Act
             var result = parser.ParseContent(content);
@@ -436,7 +436,7 @@ namespace ArcBT.Tests
             // 期待されるログメッセージ
             LogAssert.Expect(LogType.Log, new Regex(@"🔍 Creating node: Action AttackEnemy"));
             LogAssert.Expect(LogType.Log, new Regex(@"🚀 Creating Action with script 'AttackEnemy'"));
-            LogAssert.Expect(LogType.Log, new Regex(@"✅ Created AttackEnemyAction"));
+            LogAssert.Expect(LogType.Log, new Regex(@"✅ Created action for script 'AttackEnemy'"));
 
             // Act
             var result = parser.ParseContent(content);
@@ -463,7 +463,7 @@ namespace ArcBT.Tests
             // 期待されるログメッセージ
             LogAssert.Expect(LogType.Log, new Regex(@"🔍 Creating node: Action UseItem"));
             LogAssert.Expect(LogType.Log, new Regex(@"🚀 Creating Action with script 'UseItem'"));
-            LogAssert.Expect(LogType.Log, new Regex(@"✅ Created UseItemAction"));
+            LogAssert.Expect(LogType.Log, new Regex(@"✅ Created action for script 'UseItem'"));
 
             // Act
             var result = parser.ParseContent(content);
