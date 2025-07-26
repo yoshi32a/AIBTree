@@ -1,14 +1,12 @@
 {
-    "name": "Tests",
-    "rootNamespace": "",
+    "name": "BehaviourTree.Tests",
+    "rootNamespace": "BehaviourTree.Tests",
     "references": [
+        "BehaviourTree",
         "UnityEngine.TestRunner",
-        "UnityEditor.TestRunner",
-        "App"
+        "UnityEditor.TestRunner"
     ],
-    "includePlatforms": [
-        "Editor"
-    ],
+    "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": true,

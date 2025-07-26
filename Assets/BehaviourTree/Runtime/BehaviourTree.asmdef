@@ -1,10 +1,8 @@
 {
-    "name": "App",
-    "rootNamespace": "",
+    "name": "BehaviourTree",
+    "rootNamespace": "BehaviourTree",
     "references": [
-        "Unity.InputSystem",
-        "Unity.TextMeshPro",
-        "BehaviourTree"
+        "Unity.InputSystem"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

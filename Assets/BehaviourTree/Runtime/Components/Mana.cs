@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Components
+namespace BehaviourTree.Components
 {
     /// <summary>マナシステムを管理するコンポーネント</summary>
     [System.Serializable]

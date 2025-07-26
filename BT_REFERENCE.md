@@ -120,22 +120,30 @@ Sequence patrol_with_health_check {
 ## 利用可能スクリプト
 
 ### Action用スクリプト
+
+#### 移動系アクション（MovementController統一済み）
+- `MoveToTarget` - ターゲットへの移動（MovementController対応）
+- `FleeToSafety` - 安全地帯への逃走（MovementController対応）
+- `RandomWander` - ランダム徘徊（MovementController対応）
 - `MoveToPosition` - 指定位置への移動
-- `Wait` - 指定時間待機
-- `AttackEnemy` - 敵への攻撃
-- `ScanEnvironment` - 環境スキャンして敵情報をBlackBoardに保存
 - `MoveToEnemy` - BlackBoardから敵位置を取得して移動
+
+#### 戦闘系アクション
 - `AttackTarget` - BlackBoardの敵情報を使用して攻撃
-- `RandomWander` - ランダム徘徨
-- `UseItem` - アイテム使用
-- `FleeToSafety` - 安全地帯への逃走
-- `Interact` - オブジェクトとの相互作用
-- `Attack` - 汎用攻撃アクション
-- `MoveToTarget` - ターゲットへの移動
 - `NormalAttack` - 通常攻撃
+- `AttackEnemy` - 敵への攻撃
 - `CastSpell` - 魔法詠唱
+
+#### 環境・相互作用系アクション
+- `ScanEnvironment` - 環境スキャンして敵情報をBlackBoardに保存
 - `EnvironmentScan` - 環境スキャン（代替）
+- `Interact` - オブジェクトとの相互作用
 - `SearchForEnemy` - 敵探索
+
+#### その他のアクション
+- `Wait` - 指定時間待機
+- `UseItem` - アイテム使用
+- `Attack` - 汎用攻撃アクション
 - `InitializeResources` - リソース初期化
 - `RestoreSmallMana` - 少量マナ回復
 
@@ -711,3 +719,52 @@ public class DebugBlackBoardAction : BTActionNode
     }
 }
 ```
+
+## MovementController統一システム
+
+### 概要
+Unity 6 + URPプロジェクトでは、AI行動判定（0.1秒間隔）と移動描画（毎フレーム）を分離したMovementControllerシステムを採用しています。
+
+### 対応済み移動アクション
+- **MoveToTarget** - investigate/enemy/currentタイプに対応
+- **FleeToSafety** - 安全地帯（SafeZoneタグ）への逃走
+- **RandomWander** - 初期位置中心のランダム徘徊
+
+### 技術仕様
+```csharp
+// MovementControllerを使用した滑らかな移動
+movementController.SetTarget(targetPosition, speed);
+movementController.OnTargetReached = () => {
+    // 到達時のコールバック処理
+};
+
+// 移動状態の確認
+bool isMoving = movementController.IsMoving;
+float distanceToTarget = movementController.DistanceToTarget;
+```
+
+### .btファイルでの使用例
+```bt
+Action MoveToTarget {
+    move_type: "investigate"
+    speed: 20.0
+    tolerance: 1.0
+}
+
+Action FleeToSafety {
+    min_distance: 20.0
+    speed_multiplier: 2.0
+}
+
+Action RandomWander {
+    wander_radius: 10.0
+    speed: 25.0
+    tolerance: 0.5
+}
+```
+
+### 利点
+- **滑らかな移動**: 毎フレーム更新によるガクガク感の解消
+- **統一された制御**: 全移動アクションで一貫したMovementController使用
+- **パフォーマンス最適化**: AI判定とレンダリングの分離
+- **回転の滑らかさ**: Quaternion.Slerpによる自然な向き変更

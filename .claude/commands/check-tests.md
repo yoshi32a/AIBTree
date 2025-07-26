@@ -8,8 +8,7 @@ AIBTreeプロジェクトのUnity Test結果を包括的に分析してくださ
 以下のファイルを確認して、テスト状況を報告してください：
 
 1. **TestResults.xml** - メインのテスト結果
-2. **AI_INSTRUCTIONS.md** - 最新のエラー情報
-3. **Assets/Tests/*.cs** - テストコード（必要に応じて）
+2. **Assets/Tests/*.cs** - テストコード（必要に応じて）
 
 ## 分析してほしい内容：
 

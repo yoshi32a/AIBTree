@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEditor;
 using BehaviourTree.Core;
-using Components;
+using BehaviourTree.Components;
 
 namespace BehaviourTree.Editor
 {

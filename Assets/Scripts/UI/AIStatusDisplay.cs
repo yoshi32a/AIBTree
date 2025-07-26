@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using BehaviourTree.Core;
-using Components;
+using BehaviourTree.Components;
 
 namespace UI
 {

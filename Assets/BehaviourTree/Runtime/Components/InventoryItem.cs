@@ -1,4 +1,4 @@
-namespace Components
+namespace BehaviourTree.Components
 {
     /// <summary>インベントリアイテムを表すクラス</summary>
     [System.Serializable]

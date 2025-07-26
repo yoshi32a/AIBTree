@@ -1,6 +1,6 @@
 using System;
 using BehaviourTree.Core;
-using Components;
+using BehaviourTree.Components;
 using UnityEngine;
 
 namespace BehaviourTree.Actions

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Components
+namespace BehaviourTree.Components
 {
     /// <summary>インベントリシステムを管理するコンポーネント</summary>
     [System.Serializable]

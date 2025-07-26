@@ -1,12 +1,12 @@
 {
-    "name": "App",
-    "rootNamespace": "",
+    "name": "BehaviourTree.Editor",
+    "rootNamespace": "BehaviourTree.Editor",
     "references": [
-        "Unity.InputSystem",
-        "Unity.TextMeshPro",
         "BehaviourTree"
     ],
-    "includePlatforms": [],
+    "includePlatforms": [
+        "Editor"
+    ],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,

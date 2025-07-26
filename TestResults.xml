@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<test-run id="2" testcasecount="54" result="Passed" total="54" passed="54" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2025-07-26 13:06:38Z" end-time="2025-07-26 13:06:39Z" duration="1.1748078">
-  <test-suite type="TestSuite" id="1067" name="AIBTree" fullname="AIBTree" runstate="Runnable" testcasecount="54" result="Passed" start-time="2025-07-26 13:06:38Z" end-time="2025-07-26 13:06:39Z" duration="1.174808" total="54" passed="54" failed="0" inconclusive="0" skipped="0" asserts="0">
+<test-run id="2" testcasecount="54" result="Passed" total="54" passed="54" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2025-07-26 13:33:56Z" end-time="2025-07-26 13:33:58Z" duration="1.6260297">
+  <test-suite type="TestSuite" id="1066" name="AIBTree" fullname="AIBTree" runstate="Runnable" testcasecount="54" result="Passed" start-time="2025-07-26 13:33:56Z" end-time="2025-07-26 13:33:58Z" duration="1.626030" total="54" passed="54" failed="0" inconclusive="0" skipped="0" asserts="0">
     <properties>
-      <property name="platform" value="EditMode" />
+      <property name="platform" value="PlayMode" />
     </properties>
-    <test-suite type="Assembly" id="1060" name="Tests.dll" fullname="C:/Users/myunp/workspace/MagicMcp/src/AIBTree/Library/ScriptAssemblies/Tests.dll" runstate="Runnable" testcasecount="54" result="Passed" start-time="2025-07-26 13:06:38Z" end-time="2025-07-26 13:06:39Z" duration="1.140699" total="54" passed="54" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <test-suite type="Assembly" id="1060" name="BehaviourTree.Tests.dll" fullname="C:/Users/myunp/workspace/MagicMcp/src/AIBTree/Library/ScriptAssemblies/BehaviourTree.Tests.dll" runstate="Runnable" testcasecount="54" result="Passed" start-time="2025-07-26 13:33:56Z" end-time="2025-07-26 13:33:58Z" duration="1.591515" total="54" passed="54" failed="0" inconclusive="0" skipped="0" asserts="0">
       <properties>
         <property name="_PID" value="54240" />
         <property name="_APPDOMAIN" value="Unity Child Domain" />
-        <property name="platform" value="EditMode" />
-        <property name="EditorOnly" value="True" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
       </properties>
-      <test-suite type="TestSuite" id="1061" name="BehaviourTree" fullname="BehaviourTree" runstate="Runnable" testcasecount="54" result="Passed" start-time="2025-07-26 13:06:38Z" end-time="2025-07-26 13:06:39Z" duration="1.136903" total="54" passed="54" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <test-suite type="TestSuite" id="1061" name="BehaviourTree" fullname="BehaviourTree" runstate="Runnable" testcasecount="54" result="Passed" start-time="2025-07-26 13:33:56Z" end-time="2025-07-26 13:33:58Z" duration="1.584031" total="54" passed="54" failed="0" inconclusive="0" skipped="0" asserts="0">
         <properties />
-        <test-suite type="TestSuite" id="1062" name="Tests" fullname="BehaviourTree.Tests" runstate="Runnable" testcasecount="54" result="Passed" start-time="2025-07-26 13:06:38Z" end-time="2025-07-26 13:06:39Z" duration="1.133308" total="54" passed="54" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <test-suite type="TestSuite" id="1062" name="Tests" fullname="BehaviourTree.Tests" runstate="Runnable" testcasecount="54" result="Passed" start-time="2025-07-26 13:33:56Z" end-time="2025-07-26 13:33:58Z" duration="1.576621" total="54" passed="54" failed="0" inconclusive="0" skipped="0" asserts="0">
           <properties />
-          <test-suite type="TestFixture" id="1001" name="BTFileValidationTests" fullname="BehaviourTree.Tests.BTFileValidationTests" classname="BehaviourTree.Tests.BTFileValidationTests" runstate="Runnable" testcasecount="6" result="Passed" start-time="2025-07-26 13:06:38Z" end-time="2025-07-26 13:06:38Z" duration="0.065970" total="6" passed="6" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <test-suite type="TestFixture" id="1001" name="BTFileValidationTests" fullname="BehaviourTree.Tests.BTFileValidationTests" classname="BehaviourTree.Tests.BTFileValidationTests" runstate="Runnable" testcasecount="6" result="Passed" start-time="2025-07-26 13:33:56Z" end-time="2025-07-26 13:33:56Z" duration="0.069925" total="6" passed="6" failed="0" inconclusive="0" skipped="0" asserts="0">
             <properties />
-            <test-case id="1005" name="ValidateAllScriptReferences" fullname="BehaviourTree.Tests.BTFileValidationTests.ValidateAllScriptReferences" methodname="ValidateAllScriptReferences" classname="BehaviourTree.Tests.BTFileValidationTests" runstate="Runnable" seed="2141424311" result="Passed" start-time="2025-07-26 13:06:38Z" end-time="2025-07-26 13:06:38Z" duration="0.026350" asserts="0">
+            <test-case id="1005" name="ValidateAllScriptReferences" fullname="BehaviourTree.Tests.BTFileValidationTests.ValidateAllScriptReferences" methodname="ValidateAllScriptReferences" classname="BehaviourTree.Tests.BTFileValidationTests" runstate="Runnable" seed="1288706690" result="Passed" start-time="2025-07-26 13:33:56Z" end-time="2025-07-26 13:33:56Z" duration="0.026738" asserts="0">
               <properties>
                 <property name="Description" value="全BTファイルで使用されているスクリプト名の検証" />
                 <property name="retryIteration" value="0" />
@@ -36,7 +36,7 @@
 ✅ All script references are valid
 ]]></output>
             </test-case>
-            <test-case id="1002" name="ValidateBlackBoardSample" fullname="BehaviourTree.Tests.BTFileValidationTests.ValidateBlackBoardSample" methodname="ValidateBlackBoardSample" classname="BehaviourTree.Tests.BTFileValidationTests" runstate="Runnable" seed="1267779262" result="Passed" start-time="2025-07-26 13:06:38Z" end-time="2025-07-26 13:06:38Z" duration="0.013826" asserts="0">
+            <test-case id="1002" name="ValidateBlackBoardSample" fullname="BehaviourTree.Tests.BTFileValidationTests.ValidateBlackBoardSample" methodname="ValidateBlackBoardSample" classname="BehaviourTree.Tests.BTFileValidationTests" runstate="Runnable" seed="328304000" result="Passed" start-time="2025-07-26 13:33:56Z" end-time="2025-07-26 13:33:56Z" duration="0.014329" asserts="0">
               <properties>
                 <property name="Description" value="blackboard_sample.btの詳細検証" />
                 <property name="retryIteration" value="0" />
@@ -45,7 +45,7 @@
               <output><![CDATA[✅ blackboard_sample.bt validation passed
 ]]></output>
             </test-case>
-            <test-case id="1006" name="ValidateBTFileSyntax" fullname="BehaviourTree.Tests.BTFileValidationTests.ValidateBTFileSyntax" methodname="ValidateBTFileSyntax" classname="BehaviourTree.Tests.BTFileValidationTests" runstate="Runnable" seed="1739463654" result="Passed" start-time="2025-07-26 13:06:38Z" end-time="2025-07-26 13:06:38Z" duration="0.006155" asserts="0">
+            <test-case id="1006" name="ValidateBTFileSyntax" fullname="BehaviourTree.Tests.BTFileValidationTests.ValidateBTFileSyntax" methodname="ValidateBTFileSyntax" classname="BehaviourTree.Tests.BTFileValidationTests" runstate="Runnable" seed="631918625" result="Passed" start-time="2025-07-26 13:33:56Z" end-time="2025-07-26 13:33:56Z" duration="0.006981" asserts="0">
               <properties>
                 <property name="retryIteration" value="0" />
                 <property name="repeatIteration" value="0" />
@@ -53,7 +53,7 @@
               <output><![CDATA[✅ All BT files have valid syntax
 ]]></output>
             </test-case>
-            <test-case id="1004" name="ValidateDynamicConditionSample" fullname="BehaviourTree.Tests.BTFileValidationTests.ValidateDynamicConditionSample" methodname="ValidateDynamicConditionSample" classname="BehaviourTree.Tests.BTFileValidationTests" runstate="Runnable" seed="705645835" result="Passed" start-time="2025-07-26 13:06:38Z" end-time="2025-07-26 13:06:38Z" duration="0.001401" asserts="0">
+            <test-case id="1004" name="ValidateDynamicConditionSample" fullname="BehaviourTree.Tests.BTFileValidationTests.ValidateDynamicConditionSample" methodname="ValidateDynamicConditionSample" classname="BehaviourTree.Tests.BTFileValidationTests" runstate="Runnable" seed="1816873788" result="Passed" start-time="2025-07-26 13:33:56Z" end-time="2025-07-26 13:33:56Z" duration="0.001301" asserts="0">
               <properties>
                 <property name="Description" value="dynamic_condition_sample.btの詳細検証" />
                 <property name="retryIteration" value="0" />
@@ -66,7 +66,7 @@ Child 2: Action:MoveToPosition
 ✅ dynamic_condition_sample.bt validation passed
 ]]></output>
             </test-case>
-            <test-case id="1007" name="ValidateRequiredFilesExist" fullname="BehaviourTree.Tests.BTFileValidationTests.ValidateRequiredFilesExist" methodname="ValidateRequiredFilesExist" classname="BehaviourTree.Tests.BTFileValidationTests" runstate="Runnable" seed="1169018437" result="Passed" start-time="2025-07-26 13:06:38Z" end-time="2025-07-26 13:06:38Z" duration="0.000398" asserts="0">
+            <test-case id="1007" name="ValidateRequiredFilesExist" fullname="BehaviourTree.Tests.BTFileValidationTests.ValidateRequiredFilesExist" methodname="ValidateRequiredFilesExist" classname="BehaviourTree.Tests.BTFileValidationTests" runstate="Runnable" seed="1467511350" result="Passed" start-time="2025-07-26 13:33:56Z" end-time="2025-07-26 13:33:56Z" duration="0.000413" asserts="0">
               <properties>
                 <property name="retryIteration" value="0" />
                 <property name="repeatIteration" value="0" />
@@ -74,7 +74,7 @@ Child 2: Action:MoveToPosition
               <output><![CDATA[✅ All required BT files exist
 ]]></output>
             </test-case>
-            <test-case id="1003" name="ValidateTeamCoordinationSample" fullname="BehaviourTree.Tests.BTFileValidationTests.ValidateTeamCoordinationSample" methodname="ValidateTeamCoordinationSample" classname="BehaviourTree.Tests.BTFileValidationTests" runstate="Runnable" seed="1527695445" result="Passed" start-time="2025-07-26 13:06:38Z" end-time="2025-07-26 13:06:38Z" duration="0.000825" asserts="0">
+            <test-case id="1003" name="ValidateTeamCoordinationSample" fullname="BehaviourTree.Tests.BTFileValidationTests.ValidateTeamCoordinationSample" methodname="ValidateTeamCoordinationSample" classname="BehaviourTree.Tests.BTFileValidationTests" runstate="Runnable" seed="1847496463" result="Passed" start-time="2025-07-26 13:33:56Z" end-time="2025-07-26 13:33:56Z" duration="0.000832" asserts="0">
               <properties>
                 <property name="Description" value="team_coordination_sample.btの詳細検証" />
                 <property name="retryIteration" value="0" />
@@ -84,9 +84,9 @@ Child 2: Action:MoveToPosition
 ]]></output>
             </test-case>
           </test-suite>
-          <test-suite type="TestFixture" id="1008" name="BTLoggerPerformanceTests" fullname="BehaviourTree.Tests.BTLoggerPerformanceTests" classname="BehaviourTree.Tests.BTLoggerPerformanceTests" runstate="Runnable" testcasecount="7" result="Passed" start-time="2025-07-26 13:06:38Z" end-time="2025-07-26 13:06:39Z" duration="0.959295" total="7" passed="7" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <test-suite type="TestFixture" id="1008" name="BTLoggerPerformanceTests" fullname="BehaviourTree.Tests.BTLoggerPerformanceTests" classname="BehaviourTree.Tests.BTLoggerPerformanceTests" runstate="Runnable" testcasecount="7" result="Passed" start-time="2025-07-26 13:33:56Z" end-time="2025-07-26 13:33:58Z" duration="1.381133" total="7" passed="7" failed="0" inconclusive="0" skipped="0" asserts="0">
             <properties />
-            <test-case id="1012" name="TestConcurrentAccess" fullname="BehaviourTree.Tests.BTLoggerPerformanceTests.TestConcurrentAccess" methodname="TestConcurrentAccess" classname="BehaviourTree.Tests.BTLoggerPerformanceTests" runstate="Runnable" seed="934587958" result="Passed" start-time="2025-07-26 13:06:38Z" end-time="2025-07-26 13:06:38Z" duration="0.223580" asserts="0">
+            <test-case id="1012" name="TestConcurrentAccess" fullname="BehaviourTree.Tests.BTLoggerPerformanceTests.TestConcurrentAccess" methodname="TestConcurrentAccess" classname="BehaviourTree.Tests.BTLoggerPerformanceTests" runstate="Runnable" seed="1280230982" result="Passed" start-time="2025-07-26 13:33:57Z" end-time="2025-07-26 13:33:57Z" duration="0.479447" asserts="0">
               <properties>
                 <property name="_JOINTYPE" value="UnityCombinatorial" />
                 <property name="retryIteration" value="0" />
@@ -594,13 +594,13 @@ Child 2: Action:MoveToPosition
 [INF][SYS]: Task 4 - Message 99
 ]]></output>
             </test-case>
-            <test-case id="1010" name="TestFilteringPerformance" fullname="BehaviourTree.Tests.BTLoggerPerformanceTests.TestFilteringPerformance" methodname="TestFilteringPerformance" classname="BehaviourTree.Tests.BTLoggerPerformanceTests" runstate="Runnable" seed="1389151192" result="Passed" start-time="2025-07-26 13:06:38Z" end-time="2025-07-26 13:06:38Z" duration="0.002135" asserts="0">
+            <test-case id="1010" name="TestFilteringPerformance" fullname="BehaviourTree.Tests.BTLoggerPerformanceTests.TestFilteringPerformance" methodname="TestFilteringPerformance" classname="BehaviourTree.Tests.BTLoggerPerformanceTests" runstate="Runnable" seed="1713342864" result="Passed" start-time="2025-07-26 13:33:57Z" end-time="2025-07-26 13:33:57Z" duration="0.002023" asserts="0">
               <properties>
                 <property name="retryIteration" value="0" />
                 <property name="repeatIteration" value="0" />
               </properties>
             </test-case>
-            <test-case id="1009" name="TestHighVolumeLoggingPerformance" fullname="BehaviourTree.Tests.BTLoggerPerformanceTests.TestHighVolumeLoggingPerformance" methodname="TestHighVolumeLoggingPerformance" classname="BehaviourTree.Tests.BTLoggerPerformanceTests" runstate="Runnable" seed="870871478" result="Passed" start-time="2025-07-26 13:06:38Z" end-time="2025-07-26 13:06:38Z" duration="0.025028" asserts="0">
+            <test-case id="1009" name="TestHighVolumeLoggingPerformance" fullname="BehaviourTree.Tests.BTLoggerPerformanceTests.TestHighVolumeLoggingPerformance" methodname="TestHighVolumeLoggingPerformance" classname="BehaviourTree.Tests.BTLoggerPerformanceTests" runstate="Runnable" seed="782470240" result="Passed" start-time="2025-07-26 13:33:57Z" end-time="2025-07-26 13:33:57Z" duration="0.024768" asserts="0">
               <properties>
                 <property name="retryIteration" value="0" />
                 <property name="repeatIteration" value="0" />
@@ -1607,7 +1607,7 @@ Child 2: Action:MoveToPosition
 [INF][SYS]: Performance test message 999
 ]]></output>
             </test-case>
-            <test-case id="1013" name="TestLogRetrievalPerformance" fullname="BehaviourTree.Tests.BTLoggerPerformanceTests.TestLogRetrievalPerformance" methodname="TestLogRetrievalPerformance" classname="BehaviourTree.Tests.BTLoggerPerformanceTests" runstate="Runnable" seed="211694675" result="Passed" start-time="2025-07-26 13:06:38Z" end-time="2025-07-26 13:06:38Z" duration="0.011446" asserts="0">
+            <test-case id="1013" name="TestLogRetrievalPerformance" fullname="BehaviourTree.Tests.BTLoggerPerformanceTests.TestLogRetrievalPerformance" methodname="TestLogRetrievalPerformance" classname="BehaviourTree.Tests.BTLoggerPerformanceTests" runstate="Runnable" seed="390421764" result="Passed" start-time="2025-07-26 13:33:57Z" end-time="2025-07-26 13:33:57Z" duration="0.011722" asserts="0">
               <properties>
                 <property name="retryIteration" value="0" />
                 <property name="repeatIteration" value="0" />
@@ -1914,7 +1914,7 @@ Child 2: Action:MoveToPosition
 [INF][SYS]: System log 99
 ]]></output>
             </test-case>
-            <test-case id="1015" name="TestLongRunningStability" fullname="BehaviourTree.Tests.BTLoggerPerformanceTests.TestLongRunningStability" methodname="TestLongRunningStability" classname="BehaviourTree.Tests.BTLoggerPerformanceTests" runstate="Runnable" seed="848502980" result="Passed" start-time="2025-07-26 13:06:38Z" end-time="2025-07-26 13:06:39Z" duration="0.195975" asserts="0">
+            <test-case id="1015" name="TestLongRunningStability" fullname="BehaviourTree.Tests.BTLoggerPerformanceTests.TestLongRunningStability" methodname="TestLongRunningStability" classname="BehaviourTree.Tests.BTLoggerPerformanceTests" runstate="Runnable" seed="459168739" result="Passed" start-time="2025-07-26 13:33:57Z" end-time="2025-07-26 13:33:57Z" duration="0.247109" asserts="0">
               <properties>
                 <property name="_JOINTYPE" value="UnityCombinatorial" />
                 <property name="retryIteration" value="0" />
@@ -6922,7 +6922,7 @@ Child 2: Action:MoveToPosition
 [INF][SYS]: Stability test - Iteration 99, Log 49
 ]]></output>
             </test-case>
-            <test-case id="1011" name="TestMemoryUsage" fullname="BehaviourTree.Tests.BTLoggerPerformanceTests.TestMemoryUsage" methodname="TestMemoryUsage" classname="BehaviourTree.Tests.BTLoggerPerformanceTests" runstate="Runnable" seed="1335029109" result="Passed" start-time="2025-07-26 13:06:39Z" end-time="2025-07-26 13:06:39Z" duration="0.483993" asserts="0">
+            <test-case id="1011" name="TestMemoryUsage" fullname="BehaviourTree.Tests.BTLoggerPerformanceTests.TestMemoryUsage" methodname="TestMemoryUsage" classname="BehaviourTree.Tests.BTLoggerPerformanceTests" runstate="Runnable" seed="1153618155" result="Passed" start-time="2025-07-26 13:33:57Z" end-time="2025-07-26 13:33:58Z" duration="0.584789" asserts="0">
               <properties>
                 <property name="_JOINTYPE" value="UnityCombinatorial" />
                 <property name="retryIteration" value="0" />
@@ -8930,16 +8930,16 @@ Child 2: Action:MoveToPosition
 [INF][SYS]: Memory test message with longer content to test memory usage 1999
 ]]></output>
             </test-case>
-            <test-case id="1014" name="TestSettingsChangePerformance" fullname="BehaviourTree.Tests.BTLoggerPerformanceTests.TestSettingsChangePerformance" methodname="TestSettingsChangePerformance" classname="BehaviourTree.Tests.BTLoggerPerformanceTests" runstate="Runnable" seed="370485551" result="Passed" start-time="2025-07-26 13:06:39Z" end-time="2025-07-26 13:06:39Z" duration="0.000462" asserts="0">
+            <test-case id="1014" name="TestSettingsChangePerformance" fullname="BehaviourTree.Tests.BTLoggerPerformanceTests.TestSettingsChangePerformance" methodname="TestSettingsChangePerformance" classname="BehaviourTree.Tests.BTLoggerPerformanceTests" runstate="Runnable" seed="481826617" result="Passed" start-time="2025-07-26 13:33:58Z" end-time="2025-07-26 13:33:58Z" duration="0.000344" asserts="0">
               <properties>
                 <property name="retryIteration" value="0" />
                 <property name="repeatIteration" value="0" />
               </properties>
             </test-case>
           </test-suite>
-          <test-suite type="TestFixture" id="1016" name="BTLoggerTests" fullname="BehaviourTree.Tests.BTLoggerTests" classname="BehaviourTree.Tests.BTLoggerTests" runstate="Runnable" testcasecount="9" result="Passed" start-time="2025-07-26 13:06:39Z" end-time="2025-07-26 13:06:39Z" duration="0.014314" total="9" passed="9" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <test-suite type="TestFixture" id="1016" name="BTLoggerTests" fullname="BehaviourTree.Tests.BTLoggerTests" classname="BehaviourTree.Tests.BTLoggerTests" runstate="Runnable" testcasecount="9" result="Passed" start-time="2025-07-26 13:33:58Z" end-time="2025-07-26 13:33:58Z" duration="0.022755" total="9" passed="9" failed="0" inconclusive="0" skipped="0" asserts="0">
             <properties />
-            <test-case id="1018" name="TestCategoryFiltering" fullname="BehaviourTree.Tests.BTLoggerTests.TestCategoryFiltering" methodname="TestCategoryFiltering" classname="BehaviourTree.Tests.BTLoggerTests" runstate="Runnable" seed="812455607" result="Passed" start-time="2025-07-26 13:06:39Z" end-time="2025-07-26 13:06:39Z" duration="0.001383" asserts="0">
+            <test-case id="1018" name="TestCategoryFiltering" fullname="BehaviourTree.Tests.BTLoggerTests.TestCategoryFiltering" methodname="TestCategoryFiltering" classname="BehaviourTree.Tests.BTLoggerTests" runstate="Runnable" seed="69748056" result="Passed" start-time="2025-07-26 13:33:58Z" end-time="2025-07-26 13:33:58Z" duration="0.001386" asserts="0">
               <properties>
                 <property name="retryIteration" value="0" />
                 <property name="repeatIteration" value="0" />
@@ -8947,7 +8947,7 @@ Child 2: Action:MoveToPosition
               <output><![CDATA[[INF][ATK]: Combat message
 ]]></output>
             </test-case>
-            <test-case id="1020" name="TestCategorySpecificLogRetrieval" fullname="BehaviourTree.Tests.BTLoggerTests.TestCategorySpecificLogRetrieval" methodname="TestCategorySpecificLogRetrieval" classname="BehaviourTree.Tests.BTLoggerTests" runstate="Runnable" seed="1311965657" result="Passed" start-time="2025-07-26 13:06:39Z" end-time="2025-07-26 13:06:39Z" duration="0.000493" asserts="0">
+            <test-case id="1020" name="TestCategorySpecificLogRetrieval" fullname="BehaviourTree.Tests.BTLoggerTests.TestCategorySpecificLogRetrieval" methodname="TestCategorySpecificLogRetrieval" classname="BehaviourTree.Tests.BTLoggerTests" runstate="Runnable" seed="1333417089" result="Passed" start-time="2025-07-26 13:33:58Z" end-time="2025-07-26 13:33:58Z" duration="0.000458" asserts="0">
               <properties>
                 <property name="retryIteration" value="0" />
                 <property name="repeatIteration" value="0" />
@@ -8959,7 +8959,7 @@ Child 2: Action:MoveToPosition
 [INF][ATK]: Attack message 3
 ]]></output>
             </test-case>
-            <test-case id="1021" name="TestConvenienceMethods" fullname="BehaviourTree.Tests.BTLoggerTests.TestConvenienceMethods" methodname="TestConvenienceMethods" classname="BehaviourTree.Tests.BTLoggerTests" runstate="Runnable" seed="434710507" result="Passed" start-time="2025-07-26 13:06:39Z" end-time="2025-07-26 13:06:39Z" duration="0.001720" asserts="0">
+            <test-case id="1021" name="TestConvenienceMethods" fullname="BehaviourTree.Tests.BTLoggerTests.TestConvenienceMethods" methodname="TestConvenienceMethods" classname="BehaviourTree.Tests.BTLoggerTests" runstate="Runnable" seed="651444791" result="Passed" start-time="2025-07-26 13:33:58Z" end-time="2025-07-26 13:33:58Z" duration="0.001626" asserts="0">
               <properties>
                 <property name="retryIteration" value="0" />
                 <property name="repeatIteration" value="0" />
@@ -8971,13 +8971,13 @@ Child 2: Action:MoveToPosition
 [INF][SYS]: System test
 ]]></output>
             </test-case>
-            <test-case id="1023" name="TestDefaultSettingsReset" fullname="BehaviourTree.Tests.BTLoggerTests.TestDefaultSettingsReset" methodname="TestDefaultSettingsReset" classname="BehaviourTree.Tests.BTLoggerTests" runstate="Runnable" seed="1534263593" result="Passed" start-time="2025-07-26 13:06:39Z" end-time="2025-07-26 13:06:39Z" duration="0.000609" asserts="0">
+            <test-case id="1023" name="TestDefaultSettingsReset" fullname="BehaviourTree.Tests.BTLoggerTests.TestDefaultSettingsReset" methodname="TestDefaultSettingsReset" classname="BehaviourTree.Tests.BTLoggerTests" runstate="Runnable" seed="1817945601" result="Passed" start-time="2025-07-26 13:33:58Z" end-time="2025-07-26 13:33:58Z" duration="0.000477" asserts="0">
               <properties>
                 <property name="retryIteration" value="0" />
                 <property name="repeatIteration" value="0" />
               </properties>
             </test-case>
-            <test-case id="1024" name="TestErrorLogging" fullname="BehaviourTree.Tests.BTLoggerTests.TestErrorLogging" methodname="TestErrorLogging" classname="BehaviourTree.Tests.BTLoggerTests" runstate="Runnable" seed="1831926476" result="Passed" start-time="2025-07-26 13:06:39Z" end-time="2025-07-26 13:06:39Z" duration="0.002161" asserts="0">
+            <test-case id="1024" name="TestErrorLogging" fullname="BehaviourTree.Tests.BTLoggerTests.TestErrorLogging" methodname="TestErrorLogging" classname="BehaviourTree.Tests.BTLoggerTests" runstate="Runnable" seed="654758696" result="Passed" start-time="2025-07-26 13:33:58Z" end-time="2025-07-26 13:33:58Z" duration="0.002106" asserts="0">
               <properties>
                 <property name="retryIteration" value="0" />
                 <property name="repeatIteration" value="0" />
@@ -8985,7 +8985,7 @@ Child 2: Action:MoveToPosition
               <output><![CDATA[[ERR][ATK][ErrorNode]: Critical error occurred
 ]]></output>
             </test-case>
-            <test-case id="1022" name="TestLogClearFunctionality" fullname="BehaviourTree.Tests.BTLoggerTests.TestLogClearFunctionality" methodname="TestLogClearFunctionality" classname="BehaviourTree.Tests.BTLoggerTests" runstate="Runnable" seed="428279932" result="Passed" start-time="2025-07-26 13:06:39Z" end-time="2025-07-26 13:06:39Z" duration="0.000321" asserts="0">
+            <test-case id="1022" name="TestLogClearFunctionality" fullname="BehaviourTree.Tests.BTLoggerTests.TestLogClearFunctionality" methodname="TestLogClearFunctionality" classname="BehaviourTree.Tests.BTLoggerTests" runstate="Runnable" seed="94466060" result="Passed" start-time="2025-07-26 13:33:58Z" end-time="2025-07-26 13:33:58Z" duration="0.000305" asserts="0">
               <properties>
                 <property name="retryIteration" value="0" />
                 <property name="repeatIteration" value="0" />
@@ -8995,7 +8995,7 @@ Child 2: Action:MoveToPosition
 [INF][SYS]: Test message 3
 ]]></output>
             </test-case>
-            <test-case id="1019" name="TestLogHistoryManagement" fullname="BehaviourTree.Tests.BTLoggerTests.TestLogHistoryManagement" methodname="TestLogHistoryManagement" classname="BehaviourTree.Tests.BTLoggerTests" runstate="Runnable" seed="1491650954" result="Passed" start-time="2025-07-26 13:06:39Z" end-time="2025-07-26 13:06:39Z" duration="0.000716" asserts="0">
+            <test-case id="1019" name="TestLogHistoryManagement" fullname="BehaviourTree.Tests.BTLoggerTests.TestLogHistoryManagement" methodname="TestLogHistoryManagement" classname="BehaviourTree.Tests.BTLoggerTests" runstate="Runnable" seed="1647006591" result="Passed" start-time="2025-07-26 13:33:58Z" end-time="2025-07-26 13:33:58Z" duration="0.000634" asserts="0">
               <properties>
                 <property name="retryIteration" value="0" />
                 <property name="repeatIteration" value="0" />
@@ -9017,7 +9017,7 @@ Child 2: Action:MoveToPosition
 [INF][SYS]: Test message 14
 ]]></output>
             </test-case>
-            <test-case id="1017" name="TestLogLevelFiltering" fullname="BehaviourTree.Tests.BTLoggerTests.TestLogLevelFiltering" methodname="TestLogLevelFiltering" classname="BehaviourTree.Tests.BTLoggerTests" runstate="Runnable" seed="87535165" result="Passed" start-time="2025-07-26 13:06:39Z" end-time="2025-07-26 13:06:39Z" duration="0.000782" asserts="0">
+            <test-case id="1017" name="TestLogLevelFiltering" fullname="BehaviourTree.Tests.BTLoggerTests.TestLogLevelFiltering" methodname="TestLogLevelFiltering" classname="BehaviourTree.Tests.BTLoggerTests" runstate="Runnable" seed="385312918" result="Passed" start-time="2025-07-26 13:33:58Z" end-time="2025-07-26 13:33:58Z" duration="0.000672" asserts="0">
               <properties>
                 <property name="retryIteration" value="0" />
                 <property name="repeatIteration" value="0" />
@@ -9026,7 +9026,7 @@ Child 2: Action:MoveToPosition
 [WRN][SYS]: Warning message
 ]]></output>
             </test-case>
-            <test-case id="1025" name="TestTimestampFunctionality" fullname="BehaviourTree.Tests.BTLoggerTests.TestTimestampFunctionality" methodname="TestTimestampFunctionality" classname="BehaviourTree.Tests.BTLoggerTests" runstate="Runnable" seed="1532579201" result="Passed" start-time="2025-07-26 13:06:39Z" end-time="2025-07-26 13:06:39Z" duration="0.000365" asserts="0">
+            <test-case id="1025" name="TestTimestampFunctionality" fullname="BehaviourTree.Tests.BTLoggerTests.TestTimestampFunctionality" methodname="TestTimestampFunctionality" classname="BehaviourTree.Tests.BTLoggerTests" runstate="Runnable" seed="1747488153" result="Passed" start-time="2025-07-26 13:33:58Z" end-time="2025-07-26 13:33:58Z" duration="0.000330" asserts="0">
               <properties>
                 <property name="retryIteration" value="0" />
                 <property name="repeatIteration" value="0" />
@@ -9035,9 +9035,9 @@ Child 2: Action:MoveToPosition
 ]]></output>
             </test-case>
           </test-suite>
-          <test-suite type="TestFixture" id="1026" name="BTParserTests" fullname="BehaviourTree.Tests.BTParserTests" classname="BehaviourTree.Tests.BTParserTests" runstate="Runnable" testcasecount="26" result="Passed" start-time="2025-07-26 13:06:39Z" end-time="2025-07-26 13:06:39Z" duration="0.050219" total="26" passed="26" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <test-suite type="TestFixture" id="1026" name="BTParserTests" fullname="BehaviourTree.Tests.BTParserTests" classname="BehaviourTree.Tests.BTParserTests" runstate="Runnable" testcasecount="26" result="Passed" start-time="2025-07-26 13:33:58Z" end-time="2025-07-26 13:33:58Z" duration="0.052303" total="26" passed="26" failed="0" inconclusive="0" skipped="0" asserts="0">
             <properties />
-            <test-case id="1052" name="ParseContent_ActionCreation_LogsCorrectDebugMessages" fullname="BehaviourTree.Tests.BTParserTests.ParseContent_ActionCreation_LogsCorrectDebugMessages" methodname="ParseContent_ActionCreation_LogsCorrectDebugMessages" classname="BehaviourTree.Tests.BTParserTests" runstate="Runnable" seed="1536824987" result="Passed" start-time="2025-07-26 13:06:39Z" end-time="2025-07-26 13:06:39Z" duration="0.011668" asserts="0">
+            <test-case id="1052" name="ParseContent_ActionCreation_LogsCorrectDebugMessages" fullname="BehaviourTree.Tests.BTParserTests.ParseContent_ActionCreation_LogsCorrectDebugMessages" methodname="ParseContent_ActionCreation_LogsCorrectDebugMessages" classname="BehaviourTree.Tests.BTParserTests" runstate="Runnable" seed="328467865" result="Passed" start-time="2025-07-26 13:33:58Z" end-time="2025-07-26 13:33:58Z" duration="0.012184" asserts="0">
               <properties>
                 <property name="retryIteration" value="0" />
                 <property name="repeatIteration" value="0" />
@@ -9047,7 +9047,7 @@ Child 2: Action:MoveToPosition
 [INF][PRS]: ✅ Created AttackEnemyAction
 ]]></output>
             </test-case>
-            <test-case id="1032" name="ParseContent_ActionNodeWithoutProperties_CreatesCorrectAction" fullname="BehaviourTree.Tests.BTParserTests.ParseContent_ActionNodeWithoutProperties_CreatesCorrectAction" methodname="ParseContent_ActionNodeWithoutProperties_CreatesCorrectAction" classname="BehaviourTree.Tests.BTParserTests" runstate="Runnable" seed="1882960058" result="Passed" start-time="2025-07-26 13:06:39Z" end-time="2025-07-26 13:06:39Z" duration="0.001280" asserts="0">
+            <test-case id="1032" name="ParseContent_ActionNodeWithoutProperties_CreatesCorrectAction" fullname="BehaviourTree.Tests.BTParserTests.ParseContent_ActionNodeWithoutProperties_CreatesCorrectAction" methodname="ParseContent_ActionNodeWithoutProperties_CreatesCorrectAction" classname="BehaviourTree.Tests.BTParserTests" runstate="Runnable" seed="4390787" result="Passed" start-time="2025-07-26 13:33:58Z" end-time="2025-07-26 13:33:58Z" duration="0.001264" asserts="0">
               <properties>
                 <property name="retryIteration" value="0" />
                 <property name="repeatIteration" value="0" />
@@ -9057,7 +9057,7 @@ Child 2: Action:MoveToPosition
 [INF][PRS]: ✅ Created MoveToPositionAction
 ]]></output>
             </test-case>
-            <test-case id="1033" name="ParseContent_ActionNodeWithProperties_SetsPropertiesCorrectly" fullname="BehaviourTree.Tests.BTParserTests.ParseContent_ActionNodeWithProperties_SetsPropertiesCorrectly" methodname="ParseContent_ActionNodeWithProperties_SetsPropertiesCorrectly" classname="BehaviourTree.Tests.BTParserTests" runstate="Runnable" seed="564140699" result="Passed" start-time="2025-07-26 13:06:39Z" end-time="2025-07-26 13:06:39Z" duration="0.000976" asserts="0">
+            <test-case id="1033" name="ParseContent_ActionNodeWithProperties_SetsPropertiesCorrectly" fullname="BehaviourTree.Tests.BTParserTests.ParseContent_ActionNodeWithProperties_SetsPropertiesCorrectly" methodname="ParseContent_ActionNodeWithProperties_SetsPropertiesCorrectly" classname="BehaviourTree.Tests.BTParserTests" runstate="Runnable" seed="1662866039" result="Passed" start-time="2025-07-26 13:33:58Z" end-time="2025-07-26 13:33:58Z" duration="0.000942" asserts="0">
               <properties>
                 <property name="retryIteration" value="0" />
                 <property name="repeatIteration" value="0" />
@@ -9067,7 +9067,7 @@ Child 2: Action:MoveToPosition
 [INF][PRS]: ✅ Created WaitAction
 ]]></output>
             </test-case>
-            <test-case id="1036" name="ParseContent_ConditionNodeWithoutProperties_CreatesCorrectCondition" fullname="BehaviourTree.Tests.BTParserTests.ParseContent_ConditionNodeWithoutProperties_CreatesCorrectCondition" methodname="ParseContent_ConditionNodeWithoutProperties_CreatesCorrectCondition" classname="BehaviourTree.Tests.BTParserTests" runstate="Runnable" seed="1610165558" result="Passed" start-time="2025-07-26 13:06:39Z" end-time="2025-07-26 13:06:39Z" duration="0.000917" asserts="0">
+            <test-case id="1036" name="ParseContent_ConditionNodeWithoutProperties_CreatesCorrectCondition" fullname="BehaviourTree.Tests.BTParserTests.ParseContent_ConditionNodeWithoutProperties_CreatesCorrectCondition" methodname="ParseContent_ConditionNodeWithoutProperties_CreatesCorrectCondition" classname="BehaviourTree.Tests.BTParserTests" runstate="Runnable" seed="1009952085" result="Passed" start-time="2025-07-26 13:33:58Z" end-time="2025-07-26 13:33:58Z" duration="0.000844" asserts="0">
               <properties>
                 <property name="retryIteration" value="0" />
                 <property name="repeatIteration" value="0" />
@@ -9077,7 +9077,7 @@ Child 2: Action:MoveToPosition
 [INF][PRS]: ✅ Created HealthCheckCondition
 ]]></output>
             </test-case>
-            <test-case id="1037" name="ParseContent_ConditionNodeWithProperties_SetsPropertiesCorrectly" fullname="BehaviourTree.Tests.BTParserTests.ParseContent_ConditionNodeWithProperties_SetsPropertiesCorrectly" methodname="ParseContent_ConditionNodeWithProperties_SetsPropertiesCorrectly" classname="BehaviourTree.Tests.BTParserTests" runstate="Runnable" seed="804539318" result="Passed" start-time="2025-07-26 13:06:39Z" end-time="2025-07-26 13:06:39Z" duration="0.000862" asserts="0">
+            <test-case id="1037" name="ParseContent_ConditionNodeWithProperties_SetsPropertiesCorrectly" fullname="BehaviourTree.Tests.BTParserTests.ParseContent_ConditionNodeWithProperties_SetsPropertiesCorrectly" methodname="ParseContent_ConditionNodeWithProperties_SetsPropertiesCorrectly" classname="BehaviourTree.Tests.BTParserTests" runstate="Runnable" seed="456432411" result="Passed" start-time="2025-07-26 13:33:58Z" end-time="2025-07-26 13:33:58Z" duration="0.000813" asserts="0">
               <properties>
                 <property name="retryIteration" value="0" />
                 <property name="repeatIteration" value="0" />
@@ -9087,7 +9087,7 @@ Child 2: Action:MoveToPosition
 [INF][PRS]: ✅ Created EnemyCheckCondition
 ]]></output>
             </test-case>
-            <test-case id="1027" name="ParseContent_EmptyContent_ReturnsNull" fullname="BehaviourTree.Tests.BTParserTests.ParseContent_EmptyContent_ReturnsNull" methodname="ParseContent_EmptyContent_ReturnsNull" classname="BehaviourTree.Tests.BTParserTests" runstate="Runnable" seed="529106618" result="Passed" start-time="2025-07-26 13:06:39Z" end-time="2025-07-26 13:06:39Z" duration="0.001368" asserts="0">
+            <test-case id="1027" name="ParseContent_EmptyContent_ReturnsNull" fullname="BehaviourTree.Tests.BTParserTests.ParseContent_EmptyContent_ReturnsNull" methodname="ParseContent_EmptyContent_ReturnsNull" classname="BehaviourTree.Tests.BTParserTests" runstate="Runnable" seed="607080957" result="Passed" start-time="2025-07-26 13:33:58Z" end-time="2025-07-26 13:33:58Z" duration="0.001179" asserts="0">
               <properties>
                 <property name="retryIteration" value="0" />
                 <property name="repeatIteration" value="0" />
@@ -9095,7 +9095,7 @@ Child 2: Action:MoveToPosition
               <output><![CDATA[[ERR][PRS]: No tree definition found
 ]]></output>
             </test-case>
-            <test-case id="1050" name="ParseContent_EmptyNodeBody_CreatesNodeWithoutChildren" fullname="BehaviourTree.Tests.BTParserTests.ParseContent_EmptyNodeBody_CreatesNodeWithoutChildren" methodname="ParseContent_EmptyNodeBody_CreatesNodeWithoutChildren" classname="BehaviourTree.Tests.BTParserTests" runstate="Runnable" seed="1661526799" result="Passed" start-time="2025-07-26 13:06:39Z" end-time="2025-07-26 13:06:39Z" duration="0.000873" asserts="0">
+            <test-case id="1050" name="ParseContent_EmptyNodeBody_CreatesNodeWithoutChildren" fullname="BehaviourTree.Tests.BTParserTests.ParseContent_EmptyNodeBody_CreatesNodeWithoutChildren" methodname="ParseContent_EmptyNodeBody_CreatesNodeWithoutChildren" classname="BehaviourTree.Tests.BTParserTests" runstate="Runnable" seed="262388528" result="Passed" start-time="2025-07-26 13:33:58Z" end-time="2025-07-26 13:33:58Z" duration="0.000783" asserts="0">
               <properties>
                 <property name="retryIteration" value="0" />
                 <property name="repeatIteration" value="0" />
@@ -9103,7 +9103,7 @@ Child 2: Action:MoveToPosition
               <output><![CDATA[[INF][PRS]: 🔍 Creating node: Sequence EmptySequence
 ]]></output>
             </test-case>
-            <test-case id="1049" name="ParseContent_MalformedTree_HandlesGracefully" fullname="BehaviourTree.Tests.BTParserTests.ParseContent_MalformedTree_HandlesGracefully" methodname="ParseContent_MalformedTree_HandlesGracefully" classname="BehaviourTree.Tests.BTParserTests" runstate="Runnable" seed="1058937735" result="Passed" start-time="2025-07-26 13:06:39Z" end-time="2025-07-26 13:06:39Z" duration="0.001339" asserts="0">
+            <test-case id="1049" name="ParseContent_MalformedTree_HandlesGracefully" fullname="BehaviourTree.Tests.BTParserTests.ParseContent_MalformedTree_HandlesGracefully" methodname="ParseContent_MalformedTree_HandlesGracefully" classname="BehaviourTree.Tests.BTParserTests" runstate="Runnable" seed="1242331518" result="Passed" start-time="2025-07-26 13:33:58Z" end-time="2025-07-26 13:33:58Z" duration="0.001312" asserts="0">
               <properties>
                 <property name="retryIteration" value="0" />
                 <property name="repeatIteration" value="0" />
@@ -9111,7 +9111,7 @@ Child 2: Action:MoveToPosition
               <output><![CDATA[[ERR][PRS]: Expected '{' after tree name
 ]]></output>
             </test-case>
-            <test-case id="1044" name="ParseContent_MixedProperties_ParsedCorrectly" fullname="BehaviourTree.Tests.BTParserTests.ParseContent_MixedProperties_ParsedCorrectly" methodname="ParseContent_MixedProperties_ParsedCorrectly" classname="BehaviourTree.Tests.BTParserTests" runstate="Runnable" seed="1948471713" result="Passed" start-time="2025-07-26 13:06:39Z" end-time="2025-07-26 13:06:39Z" duration="0.001069" asserts="0">
+            <test-case id="1044" name="ParseContent_MixedProperties_ParsedCorrectly" fullname="BehaviourTree.Tests.BTParserTests.ParseContent_MixedProperties_ParsedCorrectly" methodname="ParseContent_MixedProperties_ParsedCorrectly" classname="BehaviourTree.Tests.BTParserTests" runstate="Runnable" seed="141892899" result="Passed" start-time="2025-07-26 13:33:58Z" end-time="2025-07-26 13:33:58Z" duration="0.001140" asserts="0">
               <properties>
                 <property name="retryIteration" value="0" />
                 <property name="repeatIteration" value="0" />
@@ -9121,7 +9121,7 @@ Child 2: Action:MoveToPosition
 [INF][PRS]: ✅ Created UseItemAction
 ]]></output>
             </test-case>
-            <test-case id="1035" name="ParseContent_MultipleKnownActions_CreatesCorrectActionTypes" fullname="BehaviourTree.Tests.BTParserTests.ParseContent_MultipleKnownActions_CreatesCorrectActionTypes" methodname="ParseContent_MultipleKnownActions_CreatesCorrectActionTypes" classname="BehaviourTree.Tests.BTParserTests" runstate="Runnable" seed="294198975" result="Passed" start-time="2025-07-26 13:06:39Z" end-time="2025-07-26 13:06:39Z" duration="0.001189" asserts="0">
+            <test-case id="1035" name="ParseContent_MultipleKnownActions_CreatesCorrectActionTypes" fullname="BehaviourTree.Tests.BTParserTests.ParseContent_MultipleKnownActions_CreatesCorrectActionTypes" methodname="ParseContent_MultipleKnownActions_CreatesCorrectActionTypes" classname="BehaviourTree.Tests.BTParserTests" runstate="Runnable" seed="44865185" result="Passed" start-time="2025-07-26 13:33:58Z" end-time="2025-07-26 13:33:58Z" duration="0.001151" asserts="0">
               <properties>
                 <property name="retryIteration" value="0" />
                 <property name="repeatIteration" value="0" />
@@ -9138,7 +9138,7 @@ Child 2: Action:MoveToPosition
 [INF][PRS]: 🔍 Creating node: Sequence Root
 ]]></output>
             </test-case>
-            <test-case id="1039" name="ParseContent_MultipleKnownConditions_CreatesCorrectConditionTypes" fullname="BehaviourTree.Tests.BTParserTests.ParseContent_MultipleKnownConditions_CreatesCorrectConditionTypes" methodname="ParseContent_MultipleKnownConditions_CreatesCorrectConditionTypes" classname="BehaviourTree.Tests.BTParserTests" runstate="Runnable" seed="2089449423" result="Passed" start-time="2025-07-26 13:06:39Z" end-time="2025-07-26 13:06:39Z" duration="0.001119" asserts="0">
+            <test-case id="1039" name="ParseContent_MultipleKnownConditions_CreatesCorrectConditionTypes" fullname="BehaviourTree.Tests.BTParserTests.ParseContent_MultipleKnownConditions_CreatesCorrectConditionTypes" methodname="ParseContent_MultipleKnownConditions_CreatesCorrectConditionTypes" classname="BehaviourTree.Tests.BTParserTests" runstate="Runnable" seed="1165377708" result="Passed" start-time="2025-07-26 13:33:58Z" end-time="2025-07-26 13:33:58Z" duration="0.001156" asserts="0">
               <properties>
                 <property name="retryIteration" value="0" />
                 <property name="repeatIteration" value="0" />
@@ -9155,7 +9155,7 @@ Child 2: Action:MoveToPosition
 [INF][PRS]: 🔍 Creating node: Selector Root
 ]]></output>
             </test-case>
-            <test-case id="1040" name="ParseContent_NestedCompositeNodes_CreatesCorrectHierarchy" fullname="BehaviourTree.Tests.BTParserTests.ParseContent_NestedCompositeNodes_CreatesCorrectHierarchy" methodname="ParseContent_NestedCompositeNodes_CreatesCorrectHierarchy" classname="BehaviourTree.Tests.BTParserTests" runstate="Runnable" seed="38545886" result="Passed" start-time="2025-07-26 13:06:39Z" end-time="2025-07-26 13:06:39Z" duration="0.001465" asserts="0">
+            <test-case id="1040" name="ParseContent_NestedCompositeNodes_CreatesCorrectHierarchy" fullname="BehaviourTree.Tests.BTParserTests.ParseContent_NestedCompositeNodes_CreatesCorrectHierarchy" methodname="ParseContent_NestedCompositeNodes_CreatesCorrectHierarchy" classname="BehaviourTree.Tests.BTParserTests" runstate="Runnable" seed="2051964214" result="Passed" start-time="2025-07-26 13:33:58Z" end-time="2025-07-26 13:33:58Z" duration="0.001431" asserts="0">
               <properties>
                 <property name="retryIteration" value="0" />
                 <property name="repeatIteration" value="0" />
@@ -9177,7 +9177,7 @@ Child 2: Action:MoveToPosition
 [INF][PRS]: 🔍 Creating node: Selector RootSelector
 ]]></output>
             </test-case>
-            <test-case id="1028" name="ParseContent_NoTreeDefinition_ReturnsNull" fullname="BehaviourTree.Tests.BTParserTests.ParseContent_NoTreeDefinition_ReturnsNull" methodname="ParseContent_NoTreeDefinition_ReturnsNull" classname="BehaviourTree.Tests.BTParserTests" runstate="Runnable" seed="1212867169" result="Passed" start-time="2025-07-26 13:06:39Z" end-time="2025-07-26 13:06:39Z" duration="0.001217" asserts="0">
+            <test-case id="1028" name="ParseContent_NoTreeDefinition_ReturnsNull" fullname="BehaviourTree.Tests.BTParserTests.ParseContent_NoTreeDefinition_ReturnsNull" methodname="ParseContent_NoTreeDefinition_ReturnsNull" classname="BehaviourTree.Tests.BTParserTests" runstate="Runnable" seed="190141540" result="Passed" start-time="2025-07-26 13:33:58Z" end-time="2025-07-26 13:33:58Z" duration="0.001116" asserts="0">
               <properties>
                 <property name="retryIteration" value="0" />
                 <property name="repeatIteration" value="0" />
@@ -9185,7 +9185,7 @@ Child 2: Action:MoveToPosition
               <output><![CDATA[[ERR][PRS]: No tree definition found
 ]]></output>
             </test-case>
-            <test-case id="1043" name="ParseContent_NumberProperties_ParsedCorrectly" fullname="BehaviourTree.Tests.BTParserTests.ParseContent_NumberProperties_ParsedCorrectly" methodname="ParseContent_NumberProperties_ParsedCorrectly" classname="BehaviourTree.Tests.BTParserTests" runstate="Runnable" seed="2128930952" result="Passed" start-time="2025-07-26 13:06:39Z" end-time="2025-07-26 13:06:39Z" duration="0.001105" asserts="0">
+            <test-case id="1043" name="ParseContent_NumberProperties_ParsedCorrectly" fullname="BehaviourTree.Tests.BTParserTests.ParseContent_NumberProperties_ParsedCorrectly" methodname="ParseContent_NumberProperties_ParsedCorrectly" classname="BehaviourTree.Tests.BTParserTests" runstate="Runnable" seed="1935854490" result="Passed" start-time="2025-07-26 13:33:58Z" end-time="2025-07-26 13:33:58Z" duration="0.001005" asserts="0">
               <properties>
                 <property name="retryIteration" value="0" />
                 <property name="repeatIteration" value="0" />
@@ -9195,7 +9195,7 @@ Child 2: Action:MoveToPosition
 [INF][PRS]: ✅ Created AttackEnemyAction
 ]]></output>
             </test-case>
-            <test-case id="1041" name="ParseContent_ParallelWithMultipleChildren_CreatesCorrectStructure" fullname="BehaviourTree.Tests.BTParserTests.ParseContent_ParallelWithMultipleChildren_CreatesCorrectStructure" methodname="ParseContent_ParallelWithMultipleChildren_CreatesCorrectStructure" classname="BehaviourTree.Tests.BTParserTests" runstate="Runnable" seed="2077042693" result="Passed" start-time="2025-07-26 13:06:39Z" end-time="2025-07-26 13:06:39Z" duration="0.001242" asserts="0">
+            <test-case id="1041" name="ParseContent_ParallelWithMultipleChildren_CreatesCorrectStructure" fullname="BehaviourTree.Tests.BTParserTests.ParseContent_ParallelWithMultipleChildren_CreatesCorrectStructure" methodname="ParseContent_ParallelWithMultipleChildren_CreatesCorrectStructure" classname="BehaviourTree.Tests.BTParserTests" runstate="Runnable" seed="844877577" result="Passed" start-time="2025-07-26 13:33:58Z" end-time="2025-07-26 13:33:58Z" duration="0.001194" asserts="0">
               <properties>
                 <property name="retryIteration" value="0" />
                 <property name="repeatIteration" value="0" />
@@ -9213,7 +9213,7 @@ Child 2: Action:MoveToPosition
 [INF][PRS]: 🔍 Creating node: Parallel RootParallel
 ]]></output>
             </test-case>
-            <test-case id="1051" name="ParseContent_RealWorldExample_CreatesCompleteTree" fullname="BehaviourTree.Tests.BTParserTests.ParseContent_RealWorldExample_CreatesCompleteTree" methodname="ParseContent_RealWorldExample_CreatesCompleteTree" classname="BehaviourTree.Tests.BTParserTests" runstate="Runnable" seed="1936988871" result="Passed" start-time="2025-07-26 13:06:39Z" end-time="2025-07-26 13:06:39Z" duration="0.002043" asserts="0">
+            <test-case id="1051" name="ParseContent_RealWorldExample_CreatesCompleteTree" fullname="BehaviourTree.Tests.BTParserTests.ParseContent_RealWorldExample_CreatesCompleteTree" methodname="ParseContent_RealWorldExample_CreatesCompleteTree" classname="BehaviourTree.Tests.BTParserTests" runstate="Runnable" seed="1066935724" result="Passed" start-time="2025-07-26 13:33:58Z" end-time="2025-07-26 13:33:58Z" duration="0.001842" asserts="0">
               <properties>
                 <property name="retryIteration" value="0" />
                 <property name="repeatIteration" value="0" />
@@ -9250,7 +9250,7 @@ Child 2: Action:MoveToPosition
 [INF][PRS]: 🔍 Creating node: Selector MainSelector
 ]]></output>
             </test-case>
-            <test-case id="1031" name="ParseContent_SimpleParallelTree_ReturnsParallelNode" fullname="BehaviourTree.Tests.BTParserTests.ParseContent_SimpleParallelTree_ReturnsParallelNode" methodname="ParseContent_SimpleParallelTree_ReturnsParallelNode" classname="BehaviourTree.Tests.BTParserTests" runstate="Runnable" seed="713405371" result="Passed" start-time="2025-07-26 13:06:39Z" end-time="2025-07-26 13:06:39Z" duration="0.000969" asserts="0">
+            <test-case id="1031" name="ParseContent_SimpleParallelTree_ReturnsParallelNode" fullname="BehaviourTree.Tests.BTParserTests.ParseContent_SimpleParallelTree_ReturnsParallelNode" methodname="ParseContent_SimpleParallelTree_ReturnsParallelNode" classname="BehaviourTree.Tests.BTParserTests" runstate="Runnable" seed="408353809" result="Passed" start-time="2025-07-26 13:33:58Z" end-time="2025-07-26 13:33:58Z" duration="0.000718" asserts="0">
               <properties>
                 <property name="retryIteration" value="0" />
                 <property name="repeatIteration" value="0" />
@@ -9258,7 +9258,7 @@ Child 2: Action:MoveToPosition
               <output><![CDATA[[INF][PRS]: 🔍 Creating node: Parallel RootParallel
 ]]></output>
             </test-case>
-            <test-case id="1030" name="ParseContent_SimpleSelectorTree_ReturnsSelectorNode" fullname="BehaviourTree.Tests.BTParserTests.ParseContent_SimpleSelectorTree_ReturnsSelectorNode" methodname="ParseContent_SimpleSelectorTree_ReturnsSelectorNode" classname="BehaviourTree.Tests.BTParserTests" runstate="Runnable" seed="1259771403" result="Passed" start-time="2025-07-26 13:06:39Z" end-time="2025-07-26 13:06:39Z" duration="0.000828" asserts="0">
+            <test-case id="1030" name="ParseContent_SimpleSelectorTree_ReturnsSelectorNode" fullname="BehaviourTree.Tests.BTParserTests.ParseContent_SimpleSelectorTree_ReturnsSelectorNode" methodname="ParseContent_SimpleSelectorTree_ReturnsSelectorNode" classname="BehaviourTree.Tests.BTParserTests" runstate="Runnable" seed="594189166" result="Passed" start-time="2025-07-26 13:33:58Z" end-time="2025-07-26 13:33:58Z" duration="0.000739" asserts="0">
               <properties>
                 <property name="retryIteration" value="0" />
                 <property name="repeatIteration" value="0" />
@@ -9266,7 +9266,7 @@ Child 2: Action:MoveToPosition
               <output><![CDATA[[INF][PRS]: 🔍 Creating node: Selector RootSelector
 ]]></output>
             </test-case>
-            <test-case id="1029" name="ParseContent_SimpleSequenceTree_ReturnsSequenceNode" fullname="BehaviourTree.Tests.BTParserTests.ParseContent_SimpleSequenceTree_ReturnsSequenceNode" methodname="ParseContent_SimpleSequenceTree_ReturnsSequenceNode" classname="BehaviourTree.Tests.BTParserTests" runstate="Runnable" seed="1125930583" result="Passed" start-time="2025-07-26 13:06:39Z" end-time="2025-07-26 13:06:39Z" duration="0.000772" asserts="0">
+            <test-case id="1029" name="ParseContent_SimpleSequenceTree_ReturnsSequenceNode" fullname="BehaviourTree.Tests.BTParserTests.ParseContent_SimpleSequenceTree_ReturnsSequenceNode" methodname="ParseContent_SimpleSequenceTree_ReturnsSequenceNode" classname="BehaviourTree.Tests.BTParserTests" runstate="Runnable" seed="707987732" result="Passed" start-time="2025-07-26 13:33:58Z" end-time="2025-07-26 13:33:58Z" duration="0.000730" asserts="0">
               <properties>
                 <property name="retryIteration" value="0" />
                 <property name="repeatIteration" value="0" />
@@ -9274,7 +9274,7 @@ Child 2: Action:MoveToPosition
               <output><![CDATA[[INF][PRS]: 🔍 Creating node: Sequence RootSequence
 ]]></output>
             </test-case>
-            <test-case id="1042" name="ParseContent_StringProperties_ParsedCorrectly" fullname="BehaviourTree.Tests.BTParserTests.ParseContent_StringProperties_ParsedCorrectly" methodname="ParseContent_StringProperties_ParsedCorrectly" classname="BehaviourTree.Tests.BTParserTests" runstate="Runnable" seed="1889039740" result="Passed" start-time="2025-07-26 13:06:39Z" end-time="2025-07-26 13:06:39Z" duration="0.001021" asserts="0">
+            <test-case id="1042" name="ParseContent_StringProperties_ParsedCorrectly" fullname="BehaviourTree.Tests.BTParserTests.ParseContent_StringProperties_ParsedCorrectly" methodname="ParseContent_StringProperties_ParsedCorrectly" classname="BehaviourTree.Tests.BTParserTests" runstate="Runnable" seed="1368242483" result="Passed" start-time="2025-07-26 13:33:58Z" end-time="2025-07-26 13:33:58Z" duration="0.000996" asserts="0">
               <properties>
                 <property name="retryIteration" value="0" />
                 <property name="repeatIteration" value="0" />
@@ -9284,7 +9284,7 @@ Child 2: Action:MoveToPosition
 [INF][PRS]: ✅ Created CastSpellAction
 ]]></output>
             </test-case>
-            <test-case id="1034" name="ParseContent_UnknownAction_CreatesCustomActionNode" fullname="BehaviourTree.Tests.BTParserTests.ParseContent_UnknownAction_CreatesCustomActionNode" methodname="ParseContent_UnknownAction_CreatesCustomActionNode" classname="BehaviourTree.Tests.BTParserTests" runstate="Runnable" seed="1214213023" result="Passed" start-time="2025-07-26 13:06:39Z" end-time="2025-07-26 13:06:39Z" duration="0.001009" asserts="0">
+            <test-case id="1034" name="ParseContent_UnknownAction_CreatesCustomActionNode" fullname="BehaviourTree.Tests.BTParserTests.ParseContent_UnknownAction_CreatesCustomActionNode" methodname="ParseContent_UnknownAction_CreatesCustomActionNode" classname="BehaviourTree.Tests.BTParserTests" runstate="Runnable" seed="490248479" result="Passed" start-time="2025-07-26 13:33:58Z" end-time="2025-07-26 13:33:58Z" duration="0.000986" asserts="0">
               <properties>
                 <property name="retryIteration" value="0" />
                 <property name="repeatIteration" value="0" />
@@ -9294,7 +9294,7 @@ Child 2: Action:MoveToPosition
 [WRN][PRS]: Unknown action script: UnknownAction, using CustomActionNode
 ]]></output>
             </test-case>
-            <test-case id="1038" name="ParseContent_UnknownCondition_CreatesCustomConditionNode" fullname="BehaviourTree.Tests.BTParserTests.ParseContent_UnknownCondition_CreatesCustomConditionNode" methodname="ParseContent_UnknownCondition_CreatesCustomConditionNode" classname="BehaviourTree.Tests.BTParserTests" runstate="Runnable" seed="1051835220" result="Passed" start-time="2025-07-26 13:06:39Z" end-time="2025-07-26 13:06:39Z" duration="0.000960" asserts="0">
+            <test-case id="1038" name="ParseContent_UnknownCondition_CreatesCustomConditionNode" fullname="BehaviourTree.Tests.BTParserTests.ParseContent_UnknownCondition_CreatesCustomConditionNode" methodname="ParseContent_UnknownCondition_CreatesCustomConditionNode" classname="BehaviourTree.Tests.BTParserTests" runstate="Runnable" seed="837786783" result="Passed" start-time="2025-07-26 13:33:58Z" end-time="2025-07-26 13:33:58Z" duration="0.000906" asserts="0">
               <properties>
                 <property name="retryIteration" value="0" />
                 <property name="repeatIteration" value="0" />
@@ -9304,7 +9304,7 @@ Child 2: Action:MoveToPosition
 [WRN][PRS]: Unknown condition script: UnknownCondition, using CustomConditionNode
 ]]></output>
             </test-case>
-            <test-case id="1045" name="ParseContent_WithComments_IgnoresComments" fullname="BehaviourTree.Tests.BTParserTests.ParseContent_WithComments_IgnoresComments" methodname="ParseContent_WithComments_IgnoresComments" classname="BehaviourTree.Tests.BTParserTests" runstate="Runnable" seed="1209752727" result="Passed" start-time="2025-07-26 13:06:39Z" end-time="2025-07-26 13:06:39Z" duration="0.001006" asserts="0">
+            <test-case id="1045" name="ParseContent_WithComments_IgnoresComments" fullname="BehaviourTree.Tests.BTParserTests.ParseContent_WithComments_IgnoresComments" methodname="ParseContent_WithComments_IgnoresComments" classname="BehaviourTree.Tests.BTParserTests" runstate="Runnable" seed="43901746" result="Passed" start-time="2025-07-26 13:33:58Z" end-time="2025-07-26 13:33:58Z" duration="0.000896" asserts="0">
               <properties>
                 <property name="retryIteration" value="0" />
                 <property name="repeatIteration" value="0" />
@@ -9315,7 +9315,7 @@ Child 2: Action:MoveToPosition
 [INF][PRS]: 🔍 Creating node: Sequence RootSequence
 ]]></output>
             </test-case>
-            <test-case id="1046" name="ParseContent_WithExtraWhitespace_ParsesCorrectly" fullname="BehaviourTree.Tests.BTParserTests.ParseContent_WithExtraWhitespace_ParsesCorrectly" methodname="ParseContent_WithExtraWhitespace_ParsesCorrectly" classname="BehaviourTree.Tests.BTParserTests" runstate="Runnable" seed="1982989691" result="Passed" start-time="2025-07-26 13:06:39Z" end-time="2025-07-26 13:06:39Z" duration="0.000932" asserts="0">
+            <test-case id="1046" name="ParseContent_WithExtraWhitespace_ParsesCorrectly" fullname="BehaviourTree.Tests.BTParserTests.ParseContent_WithExtraWhitespace_ParsesCorrectly" methodname="ParseContent_WithExtraWhitespace_ParsesCorrectly" classname="BehaviourTree.Tests.BTParserTests" runstate="Runnable" seed="326376157" result="Passed" start-time="2025-07-26 13:33:58Z" end-time="2025-07-26 13:33:58Z" duration="0.000887" asserts="0">
               <properties>
                 <property name="retryIteration" value="0" />
                 <property name="repeatIteration" value="0" />
@@ -9326,7 +9326,7 @@ Child 2: Action:MoveToPosition
 [INF][PRS]: 🔍 Creating node: Sequence RootSequence
 ]]></output>
             </test-case>
-            <test-case id="1048" name="ParseFile_NonExistentFile_ReturnsNull" fullname="BehaviourTree.Tests.BTParserTests.ParseFile_NonExistentFile_ReturnsNull" methodname="ParseFile_NonExistentFile_ReturnsNull" classname="BehaviourTree.Tests.BTParserTests" runstate="Runnable" seed="1001868540" result="Passed" start-time="2025-07-26 13:06:39Z" end-time="2025-07-26 13:06:39Z" duration="0.001458" asserts="0">
+            <test-case id="1048" name="ParseFile_NonExistentFile_ReturnsNull" fullname="BehaviourTree.Tests.BTParserTests.ParseFile_NonExistentFile_ReturnsNull" methodname="ParseFile_NonExistentFile_ReturnsNull" classname="BehaviourTree.Tests.BTParserTests" runstate="Runnable" seed="219848963" result="Passed" start-time="2025-07-26 13:33:58Z" end-time="2025-07-26 13:33:58Z" duration="0.001294" asserts="0">
               <properties>
                 <property name="retryIteration" value="0" />
                 <property name="repeatIteration" value="0" />
@@ -9334,7 +9334,7 @@ Child 2: Action:MoveToPosition
               <output><![CDATA[[ERR][PRS]: BT file not found: non_existent_file.bt
 ]]></output>
             </test-case>
-            <test-case id="1047" name="ParseFile_ValidFile_ReturnsCorrectTree" fullname="BehaviourTree.Tests.BTParserTests.ParseFile_ValidFile_ReturnsCorrectTree" methodname="ParseFile_ValidFile_ReturnsCorrectTree" classname="BehaviourTree.Tests.BTParserTests" runstate="Runnable" seed="1457465846" result="Passed" start-time="2025-07-26 13:06:39Z" end-time="2025-07-26 13:06:39Z" duration="0.002229" asserts="0">
+            <test-case id="1047" name="ParseFile_ValidFile_ReturnsCorrectTree" fullname="BehaviourTree.Tests.BTParserTests.ParseFile_ValidFile_ReturnsCorrectTree" methodname="ParseFile_ValidFile_ReturnsCorrectTree" classname="BehaviourTree.Tests.BTParserTests" runstate="Runnable" seed="2129772425" result="Passed" start-time="2025-07-26 13:33:58Z" end-time="2025-07-26 13:33:58Z" duration="0.002260" asserts="0">
               <properties>
                 <property name="retryIteration" value="0" />
                 <property name="repeatIteration" value="0" />
@@ -9346,9 +9346,9 @@ Child 2: Action:MoveToPosition
 ]]></output>
             </test-case>
           </test-suite>
-          <test-suite type="TestFixture" id="1053" name="BTParsingTests" fullname="BehaviourTree.Tests.BTParsingTests" classname="BehaviourTree.Tests.BTParsingTests" runstate="Runnable" testcasecount="6" result="Passed" start-time="2025-07-26 13:06:39Z" end-time="2025-07-26 13:06:39Z" duration="0.038590" total="6" passed="6" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <test-suite type="TestFixture" id="1053" name="BTParsingTests" fullname="BehaviourTree.Tests.BTParsingTests" classname="BehaviourTree.Tests.BTParsingTests" runstate="Runnable" testcasecount="6" result="Passed" start-time="2025-07-26 13:33:58Z" end-time="2025-07-26 13:33:58Z" duration="0.041489" total="6" passed="6" failed="0" inconclusive="0" skipped="0" asserts="0">
             <properties />
-            <test-case id="1054" name="TestAllBTFilesParseSuccessfully" fullname="BehaviourTree.Tests.BTParsingTests.TestAllBTFilesParseSuccessfully" methodname="TestAllBTFilesParseSuccessfully" classname="BehaviourTree.Tests.BTParsingTests" runstate="Runnable" seed="407293833" result="Passed" start-time="2025-07-26 13:06:39Z" end-time="2025-07-26 13:06:39Z" duration="0.009702" asserts="0">
+            <test-case id="1054" name="TestAllBTFilesParseSuccessfully" fullname="BehaviourTree.Tests.BTParsingTests.TestAllBTFilesParseSuccessfully" methodname="TestAllBTFilesParseSuccessfully" classname="BehaviourTree.Tests.BTParsingTests" runstate="Runnable" seed="1022704728" result="Passed" start-time="2025-07-26 13:33:58Z" end-time="2025-07-26 13:33:58Z" duration="0.009462" asserts="0">
               <properties>
                 <property name="retryIteration" value="0" />
                 <property name="repeatIteration" value="0" />
@@ -9468,7 +9468,7 @@ Testing BT file: resource_management_sample.bt
   - resource_management_sample.bt
 ]]></output>
             </test-case>
-            <test-case id="1058" name="TestBlackBoardNodes" fullname="BehaviourTree.Tests.BTParsingTests.TestBlackBoardNodes" methodname="TestBlackBoardNodes" classname="BehaviourTree.Tests.BTParsingTests" runstate="Runnable" seed="1077317751" result="Passed" start-time="2025-07-26 13:06:39Z" end-time="2025-07-26 13:06:39Z" duration="0.000768" asserts="0">
+            <test-case id="1058" name="TestBlackBoardNodes" fullname="BehaviourTree.Tests.BTParsingTests.TestBlackBoardNodes" methodname="TestBlackBoardNodes" classname="BehaviourTree.Tests.BTParsingTests" runstate="Runnable" seed="591578805" result="Passed" start-time="2025-07-26 13:33:58Z" end-time="2025-07-26 13:33:58Z" duration="0.000732" asserts="0">
               <properties>
                 <property name="retryIteration" value="0" />
                 <property name="repeatIteration" value="0" />
@@ -9486,7 +9486,7 @@ Testing BT file: resource_management_sample.bt
 ✅ BlackBoard node tests passed
 ]]></output>
             </test-case>
-            <test-case id="1057" name="TestNodeCreation" fullname="BehaviourTree.Tests.BTParsingTests.TestNodeCreation" methodname="TestNodeCreation" classname="BehaviourTree.Tests.BTParsingTests" runstate="Runnable" seed="1786680928" result="Passed" start-time="2025-07-26 13:06:39Z" end-time="2025-07-26 13:06:39Z" duration="0.000654" asserts="0">
+            <test-case id="1057" name="TestNodeCreation" fullname="BehaviourTree.Tests.BTParsingTests.TestNodeCreation" methodname="TestNodeCreation" classname="BehaviourTree.Tests.BTParsingTests" runstate="Runnable" seed="644426398" result="Passed" start-time="2025-07-26 13:33:58Z" end-time="2025-07-26 13:33:58Z" duration="0.000549" asserts="0">
               <properties>
                 <property name="retryIteration" value="0" />
                 <property name="repeatIteration" value="0" />
@@ -9501,7 +9501,7 @@ Testing BT file: resource_management_sample.bt
 ✅ Node creation tests passed
 ]]></output>
             </test-case>
-            <test-case id="1056" name="TestParserErrorHandling" fullname="BehaviourTree.Tests.BTParsingTests.TestParserErrorHandling" methodname="TestParserErrorHandling" classname="BehaviourTree.Tests.BTParsingTests" runstate="Runnable" seed="1902393980" result="Passed" start-time="2025-07-26 13:06:39Z" end-time="2025-07-26 13:06:39Z" duration="0.001728" asserts="0">
+            <test-case id="1056" name="TestParserErrorHandling" fullname="BehaviourTree.Tests.BTParsingTests.TestParserErrorHandling" methodname="TestParserErrorHandling" classname="BehaviourTree.Tests.BTParsingTests" runstate="Runnable" seed="1737784396" result="Passed" start-time="2025-07-26 13:33:58Z" end-time="2025-07-26 13:33:58Z" duration="0.001497" asserts="0">
               <properties>
                 <property name="Description" value="パーサーエラーハンドリングをテスト" />
                 <property name="retryIteration" value="0" />
@@ -9513,7 +9513,7 @@ Testing BT file: resource_management_sample.bt
 ✅ Error handling tests passed
 ]]></output>
             </test-case>
-            <test-case id="1059" name="TestParsingPerformance" fullname="BehaviourTree.Tests.BTParsingTests.TestParsingPerformance" methodname="TestParsingPerformance" classname="BehaviourTree.Tests.BTParsingTests" runstate="Runnable" seed="1994291159" result="Passed" start-time="2025-07-26 13:06:39Z" end-time="2025-07-26 13:06:39Z" duration="0.015062" asserts="0">
+            <test-case id="1059" name="TestParsingPerformance" fullname="BehaviourTree.Tests.BTParsingTests.TestParsingPerformance" methodname="TestParsingPerformance" classname="BehaviourTree.Tests.BTParsingTests" runstate="Runnable" seed="862381359" result="Passed" start-time="2025-07-26 13:33:58Z" end-time="2025-07-26 13:33:58Z" duration="0.014623" asserts="0">
               <properties>
                 <property name="retryIteration" value="0" />
                 <property name="repeatIteration" value="0" />
@@ -9863,7 +9863,7 @@ IgnoreFailingMessages:false
 ✅ Performance tests completed
 ]]></output>
             </test-case>
-            <test-case id="1055" name="TestSpecificBTFileStructures" fullname="BehaviourTree.Tests.BTParsingTests.TestSpecificBTFileStructures" methodname="TestSpecificBTFileStructures" classname="BehaviourTree.Tests.BTParsingTests" runstate="Runnable" seed="951568400" result="Passed" start-time="2025-07-26 13:06:39Z" end-time="2025-07-26 13:06:39Z" duration="0.004679" asserts="0">
+            <test-case id="1055" name="TestSpecificBTFileStructures" fullname="BehaviourTree.Tests.BTParsingTests.TestSpecificBTFileStructures" methodname="TestSpecificBTFileStructures" classname="BehaviourTree.Tests.BTParsingTests" runstate="Runnable" seed="701111382" result="Passed" start-time="2025-07-26 13:33:58Z" end-time="2025-07-26 13:33:58Z" duration="0.005110" asserts="0">
               <properties>
                 <property name="retryIteration" value="0" />
                 <property name="repeatIteration" value="0" />

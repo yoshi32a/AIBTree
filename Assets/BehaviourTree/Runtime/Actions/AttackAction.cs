@@ -1,6 +1,6 @@
 using UnityEngine;
 using BehaviourTree.Core;
-using Components;
+using BehaviourTree.Components;
 
 namespace BehaviourTree.Actions
 {
@@ -44,7 +44,7 @@ namespace BehaviourTree.Actions
 
             if (target == null || !target.activeInHierarchy)
             {
-                Debug.Log("Attack: No valid target found");
+                BTLogger.LogCombat("No valid target found");
                 return BTNodeResult.Failure;
             }
 
@@ -52,7 +52,7 @@ namespace BehaviourTree.Actions
             float distance = Vector3.Distance(transform.position, target.transform.position);
             if (distance > attackRange)
             {
-                Debug.Log($"Attack: Target out of range ({distance:F1} > {attackRange})");
+                BTLogger.LogCombat($"Target out of range ({distance:F1} > {attackRange})");
                 return BTNodeResult.Failure;
             }
 
@@ -81,21 +81,21 @@ namespace BehaviourTree.Actions
                 blackBoard.SetValue("last_attack_damage", damage);
                 blackBoard.SetValue("target_remaining_health", targetHealth.CurrentHealth);
 
-                Debug.Log($"Attack: Attacked '{target.name}' for {damage} damage. Target health: {targetHealth.CurrentHealth}");
+                BTLogger.LogCombat($"Attacked '{target.name}' for {damage} damage. Target health: {targetHealth.CurrentHealth}");
 
                 // ターゲットが死んだ場合
                 if (targetHealth.CurrentHealth <= 0)
                 {
                     blackBoard.SetValue("target_defeated", true);
                     blackBoard.SetValue("current_target", (GameObject)null);
-                    Debug.Log($"Attack: Target '{target.name}' defeated");
+                    BTLogger.LogCombat($"Target '{target.name}' defeated");
                 }
 
                 return BTNodeResult.Success;
             }
             else
             {
-                Debug.LogWarning($"Attack: Target '{target.name}' has no Health component");
+                BTLogger.Log(BehaviourTree.Core.LogLevel.Warning, BehaviourTree.Core.LogCategory.Combat, $"Target '{target.name}' has no Health component", "Attack");
                 return BTNodeResult.Failure;
             }
         }
