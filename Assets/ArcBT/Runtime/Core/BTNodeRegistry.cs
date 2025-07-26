@@ -95,6 +95,20 @@ namespace ArcBT.Core
             return null;
         }
 
+        /// <summary>指定されたスクリプト名のAction型を取得</summary>
+        public static Type GetActionType(string scriptName)
+        {
+            if (!isInitialized) Initialize();
+            return actionTypes.TryGetValue(scriptName, out var type) ? type : null;
+        }
+        
+        /// <summary>指定されたスクリプト名のCondition型を取得</summary>
+        public static Type GetConditionType(string scriptName)
+        {
+            if (!isInitialized) Initialize();
+            return conditionTypes.TryGetValue(scriptName, out var type) ? type : null;
+        }
+        
         /// <summary>登録されているActionスクリプト名の一覧を取得</summary>
         public static IEnumerable<string> GetRegisteredActionNames()
         {
