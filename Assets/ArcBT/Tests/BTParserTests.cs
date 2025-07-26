@@ -2,6 +2,7 @@
 using System.Text.RegularExpressions;
 using ArcBT.Actions;
 using ArcBT.Core;
+using ArcBT.Examples;
 using ArcBT.Nodes;
 using ArcBT.Samples.RPG.Actions;
 using ArcBT.Samples.RPG.Conditions;
@@ -181,16 +182,15 @@ namespace ArcBT.Tests
                     }
                 }";
 
-            // Expect warning for unknown action
-            LogAssert.Expect(LogType.Warning, "[WRN][PRS]: Unknown action script: UnknownAction, using CustomActionNode");
+            // Expect error for unknown action
+            LogAssert.Expect(LogType.Error, "[ERR][PRS]: Unknown action script: UnknownAction. Please register the action in BTNodeRegistry.");
+            LogAssert.Expect(LogType.Error, "[ERR][PRS]: Failed to create node of type: Action");
 
             // Act
             var result = parser.ParseContent(content);
 
             // Assert
-            Assert.IsNotNull(result);
-            Assert.IsInstanceOf<CustomActionNode>(result);
-            Assert.AreEqual("Action:UnknownAction", result.Name);
+            Assert.IsNull(result); // 未知のアクションの場合はnullが返される
         }
 
         [Test]
@@ -278,16 +278,15 @@ namespace ArcBT.Tests
                     }
                 }";
 
-            // Expect warning for unknown condition
-            LogAssert.Expect(LogType.Warning, "[WRN][PRS]: Unknown condition script: UnknownCondition, using CustomConditionNode");
+            // Expect error for unknown condition
+            LogAssert.Expect(LogType.Error, "[ERR][PRS]: Unknown condition script: UnknownCondition. Please register the condition in BTNodeRegistry.");
+            LogAssert.Expect(LogType.Error, "[ERR][PRS]: Failed to create node of type: Condition");
 
             // Act
             var result = parser.ParseContent(content);
 
             // Assert
-            Assert.IsNotNull(result);
-            Assert.IsInstanceOf<CustomConditionNode>(result);
-            Assert.AreEqual("Condition:UnknownCondition", result.Name);
+            Assert.IsNull(result); // 未知の条件の場合はnullが返される
         }
 
         [Test]

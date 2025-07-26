@@ -1,88 +1,47 @@
-using UnityEngine;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Diagnostics;
 
 namespace ArcBT.Core
 {
-    public enum LogCategory
-    {
-        Combat,      // 戦闘関連
-        Movement,    // 移動関連
-        Condition,   // 条件チェック
-        BlackBoard,  // BlackBoard操作
-        Parser,      // BTファイル解析
-        System,      // システム全般
-        Debug        // デバッグ用
-    }
-
-    public enum LogLevel
-    {
-        Error = 0,   // エラー（常に表示）
-        Warning = 1, // 警告
-        Info = 2,    // 情報
-        Debug = 3,   // デバッグ
-        Trace = 4    // 詳細トレース
-    }
-
-    public struct LogEntry
-    {
-        public DateTime timestamp;
-        public LogLevel level;
-        public LogCategory category;
-        public string message;
-        public string nodeName;
-        public UnityEngine.Object context;
-
-        public LogEntry(LogLevel level, LogCategory category, string message, string nodeName = "", UnityEngine.Object context = null)
-        {
-            this.timestamp = DateTime.Now;
-            this.level = level;
-            this.category = category;
-            this.message = message;
-            this.nodeName = nodeName;
-            this.context = context;
-        }
-    }
-
     public static class BTLogger
     {
         static LogLevel currentLogLevel = LogLevel.Info;
-        static readonly Dictionary<LogCategory, bool> categoryFilters = new Dictionary<LogCategory, bool>
+
+        static readonly Dictionary<LogCategory, bool> categoryFilters = new()
         {
             { LogCategory.Combat, true },
             { LogCategory.Movement, true },
             { LogCategory.Condition, true },
             { LogCategory.BlackBoard, true },
-            { LogCategory.Parser, false },  // パーサーログはデフォルト無効
+            { LogCategory.Parser, false }, // パーサーログはデフォルト無効
             { LogCategory.System, true },
-            { LogCategory.Debug, false }    // デバッグログはデフォルト無効
+            { LogCategory.Debug, false } // デバッグログはデフォルト無効
         };
 
-        static readonly Queue<LogEntry> logHistory = new Queue<LogEntry>();
+        static readonly Queue<LogEntry> logHistory = new();
         const int MAX_LOG_HISTORY = 100;
 
         // カテゴリ別タグ（3文字）
-        static readonly Dictionary<LogCategory, string> categoryTags = new Dictionary<LogCategory, string>
+        static readonly Dictionary<LogCategory, string> categoryTags = new()
         {
-            { LogCategory.Combat, "[ATK]" },     // Attack
-            { LogCategory.Movement, "[MOV]" },   // Move
-            { LogCategory.Condition, "[CHK]" },  // Check
+            { LogCategory.Combat, "[ATK]" }, // Attack
+            { LogCategory.Movement, "[MOV]" }, // Move
+            { LogCategory.Condition, "[CHK]" }, // Check
             { LogCategory.BlackBoard, "[BBD]" }, // BlackBoard
-            { LogCategory.Parser, "[PRS]" },     // Parse
-            { LogCategory.System, "[SYS]" },     // System
-            { LogCategory.Debug, "[DBG]" }       // Debug
+            { LogCategory.Parser, "[PRS]" }, // Parse
+            { LogCategory.System, "[SYS]" }, // System
+            { LogCategory.Debug, "[DBG]" } // Debug
         };
 
         // レベル別タグ（3文字）
-        static readonly Dictionary<LogLevel, string> levelTags = new Dictionary<LogLevel, string>
+        static readonly Dictionary<LogLevel, string> levelTags = new()
         {
-            { LogLevel.Error, "[ERR]" },   // Error
+            { LogLevel.Error, "[ERR]" }, // Error
             { LogLevel.Warning, "[WRN]" }, // Warning
-            { LogLevel.Info, "[INF]" },    // Info
-            { LogLevel.Debug, "[DBG]" },   // Debug
-            { LogLevel.Trace, "[TRC]" }    // Trace
+            { LogLevel.Info, "[INF]" }, // Info
+            { LogLevel.Debug, "[DBG]" }, // Debug
+            { LogLevel.Trace, "[TRC]" } // Trace
         };
 
         public static void SetLogLevel(LogLevel level)
@@ -120,8 +79,8 @@ namespace ArcBT.Core
         public static void EnableTestMode()
         {
             currentLogLevel = LogLevel.Info;
-            categoryFilters[LogCategory.Parser] = true;  // テスト時はParserログを有効化
-            categoryFilters[LogCategory.Debug] = true;   // テスト時はDebugログも有効化
+            categoryFilters[LogCategory.Parser] = true; // テスト時はParserログを有効化
+            categoryFilters[LogCategory.Debug] = true; // テスト時はDebugログも有効化
         }
 
         public static void ClearHistory()
@@ -134,12 +93,12 @@ namespace ArcBT.Core
         {
             // レベルフィルター
             if (level > currentLogLevel) return;
-            
+
             // カテゴリフィルター
             if (!categoryFilters.GetValueOrDefault(category, true)) return;
 
             var entry = new LogEntry(level, category, message, nodeName, context);
-            
+
             // 履歴に追加
             logHistory.Enqueue(entry);
             if (logHistory.Count > MAX_LOG_HISTORY)
@@ -149,7 +108,7 @@ namespace ArcBT.Core
 
             // フォーマットしてUnityコンソールに出力
             var formattedMessage = FormatLogMessage(entry);
-            
+
             switch (level)
             {
                 case LogLevel.Error:
@@ -166,11 +125,11 @@ namespace ArcBT.Core
 
         static string FormatLogMessage(LogEntry entry)
         {
-            var categoryTag = categoryTags.GetValueOrDefault(entry.category, "[UNKNOWN]");
-            var levelTag = levelTags.GetValueOrDefault(entry.level, "[UNKNOWN]");
-            var nodeInfo = !string.IsNullOrEmpty(entry.nodeName) ? $"[{entry.nodeName}]" : "";
-            
-            return $"{levelTag}{categoryTag}{nodeInfo}: {entry.message}";
+            var categoryTag = categoryTags.GetValueOrDefault(entry.Category, "[UNKNOWN]");
+            var levelTag = levelTags.GetValueOrDefault(entry.Level, "[UNKNOWN]");
+            var nodeInfo = !string.IsNullOrEmpty(entry.NodeName) ? $"[{entry.NodeName}]" : "";
+
+            return $"{levelTag}{categoryTag}{nodeInfo}: {entry.Message}";
         }
 
         // 便利メソッド
@@ -262,7 +221,7 @@ namespace ArcBT.Core
 
         public static LogEntry[] GetLogsByCategory(LogCategory category, int count = 10)
         {
-            return logHistory.Where(log => log.category == category).TakeLast(count).ToArray();
+            return logHistory.Where(log => log.Category == category).TakeLast(count).ToArray();
         }
     }
 }

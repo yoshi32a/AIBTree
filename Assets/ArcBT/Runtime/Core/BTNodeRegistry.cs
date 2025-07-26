@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using UnityEngine;
 
 namespace ArcBT.Core
 {
@@ -12,8 +11,8 @@ namespace ArcBT.Core
     /// </summary>
     public static class BTNodeRegistry
     {
-        static readonly Dictionary<string, Type> actionTypes = new Dictionary<string, Type>();
-        static readonly Dictionary<string, Type> conditionTypes = new Dictionary<string, Type>();
+        static readonly Dictionary<string, Type> actionTypes = new();
+        static readonly Dictionary<string, Type> conditionTypes = new();
         static bool isInitialized = false;
 
         /// <summary>レジストリを初期化し、BTScript属性を持つクラスを検索・登録</summary>

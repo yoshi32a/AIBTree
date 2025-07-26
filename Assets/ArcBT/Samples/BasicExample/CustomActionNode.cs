@@ -1,11 +1,10 @@
 using System.Collections.Generic;
 using ArcBT.Core;
-using ArcBT.Examples;
 using UnityEngine;
 
-namespace ArcBT.Nodes
+namespace ArcBT.Examples
 {
-    public class CustomActionNode : ActionNode
+    public class CustomActionNode : BTActionNode
     {
         Dictionary<string, string> properties = new Dictionary<string, string>();
         ExampleAI aiController;
@@ -20,7 +19,7 @@ namespace ArcBT.Nodes
             return properties.GetValueOrDefault(key, "");
         }
 
-        protected override BTNodeResult OnExecute()
+        protected override BTNodeResult ExecuteAction()
         {
             // AIコントローラーを取得
             if (aiController == null)

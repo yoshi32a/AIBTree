@@ -424,8 +424,8 @@ namespace ArcBT.Parser
                 }
                 else
                 {
-                    BTLogger.Log(LogLevel.Warning, LogCategory.Parser, $"Unknown action script: {scriptName}, using CustomActionNode");
-                    node = new CustomActionNode();
+                    BTLogger.Log(LogLevel.Error, LogCategory.Parser, $"Unknown action script: {scriptName}. Please register the action in BTNodeRegistry.");
+                    return null;
                 }
             }
             else if (nodeType == "Condition")
@@ -441,8 +441,8 @@ namespace ArcBT.Parser
                 }
                 else
                 {
-                    BTLogger.Log(LogLevel.Warning, LogCategory.Parser, $"Unknown condition script: {scriptName}, using CustomConditionNode");
-                    node = new CustomConditionNode();
+                    BTLogger.Log(LogLevel.Error, LogCategory.Parser, $"Unknown condition script: {scriptName}. Please register the condition in BTNodeRegistry.");
+                    return null;
                 }
             }
 

@@ -1,11 +1,10 @@
 using System.Collections.Generic;
 using ArcBT.Core;
-using ArcBT.Examples;
 using UnityEngine;
 
-namespace ArcBT.Nodes
+namespace ArcBT.Examples
 {
-    public class CustomConditionNode : ConditionNode
+    public class CustomConditionNode : BTConditionNode
     {
         Dictionary<string, string> properties = new Dictionary<string, string>();
         ExampleAI aiController;
@@ -20,7 +19,7 @@ namespace ArcBT.Nodes
             return properties.GetValueOrDefault(key, "");
         }
 
-        protected override bool CheckCondition()
+        protected override BTNodeResult CheckCondition()
         {
             // AIコントローラーを取得
             if (aiController == null)
@@ -37,10 +36,11 @@ namespace ArcBT.Nodes
             if (string.IsNullOrEmpty(script))
             {
                 Debug.LogWarning($"No script specified for condition node: {Name}");
-                return false;
+                return BTNodeResult.Failure;
             }
 
-            return ExecuteConditionScript(script);
+            bool result = ExecuteConditionScript(script);
+            return result ? BTNodeResult.Success : BTNodeResult.Failure;
         }
 
         bool ExecuteConditionScript(string scriptName)
