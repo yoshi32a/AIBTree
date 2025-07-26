@@ -7,6 +7,7 @@ namespace ArcBT.Samples.RPG.Conditions
     /// <summary>体力チェック条件</summary>
     [System.Serializable]
     [BTScript("HealthCheck")]
+    [BTNode("HealthCheck", NodeType.Condition, AssemblyName = "ArcBT.Samples.RPG")]
     public class HealthCheckCondition : BTConditionNode
     {
         [SerializeField] int minHealth = 50;

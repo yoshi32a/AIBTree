@@ -8,6 +8,7 @@ namespace ArcBT.Samples.RPG.Actions
     /// <summary>敵を攻撃するアクション</summary>
     [Serializable]
     [BTScript("AttackEnemy")]
+    [BTNode("AttackEnemy", NodeType.Action, AssemblyName = "ArcBT.Samples.RPG")]
     public class AttackEnemyAction : BTActionNode
     {
         [SerializeField] int damage = 25;

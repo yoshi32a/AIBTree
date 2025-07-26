@@ -6,6 +6,7 @@ namespace ArcBT.Actions
 {
     [Serializable]
     [BTScript("MoveToPosition")]
+    [BTNode("MoveToPosition", NodeType.Action)]
     public class MoveToPositionAction : BTActionNode
     {
         [SerializeField] string target;
