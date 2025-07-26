@@ -170,7 +170,7 @@ namespace ArcBT.Core
 
             // このMonoBehaviourとBlackBoardを渡してノードを初期化
             node.Initialize(this, BlackBoard);
-            BTLogger.LogSystem($"✅ Initialized node: {node.Name} ({node.GetType().Name})", node.Name, this);
+            BTLogger.LogSystem($"✅ Initialized node: {node.Name}", node.Name, this);
 
             // 子ノードも再帰的に初期化
             foreach (var child in node.Children)
@@ -238,7 +238,7 @@ namespace ArcBT.Core
             }
 
             var indent = new string(' ', depth * 2);
-            BTLogger.LogSystem($"{indent}{node.Name} ({node.GetType().Name})", node.Name, this);
+            BTLogger.LogSystem($"{indent}{node.Name}", node.Name, this);
 
             foreach (var child in node.Children)
             {
