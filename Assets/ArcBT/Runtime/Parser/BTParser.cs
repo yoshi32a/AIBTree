@@ -60,76 +60,107 @@ namespace ArcBT.Parser
         List<Token> Tokenize(string content)
         {
             var tokens = new List<Token>();
-            var lines = content.Split('\n');
+            var span = content.AsSpan();
+            var lineNum = 0;
+            var position = 0;
 
-            for (var lineNum = 0; lineNum < lines.Length; lineNum++)
+            while (position < span.Length)
             {
-                var line = lines[lineNum].Trim();
+                // 現在の行を取得
+                var lineStart = position;
+                while (position < span.Length && span[position] != '\n' && span[position] != '\r')
+                    position++;
 
-                if (string.IsNullOrEmpty(line) || line.StartsWith("#"))
+                var lineSpan = span.Slice(lineStart, position - lineStart);
+
+                // 改行文字をスキップ
+                if (position < span.Length)
                 {
+                    if (span[position] == '\r' && position + 1 < span.Length && span[position + 1] == '\n')
+                        position += 2; // Windows形式の改行 (\r\n)
+                    else
+                        position++; // Unix形式の改行 (\n) または Mac形式の改行 (\r)
+                }
+
+                // 空行やコメント行をスキップ
+                lineSpan = lineSpan.Trim();
+                if (lineSpan.IsEmpty || lineSpan[0] == '#')
+                {
+                    lineNum++;
                     continue;
                 }
 
-                if (line.Contains("#"))
+                // コメントがある場合、コメント前までの部分を処理
+                var commentIndex = -1;
+                for (var i = 0; i < lineSpan.Length; i++)
                 {
-                    line = line[..line.IndexOf("#", StringComparison.Ordinal)];
+                    if (lineSpan[i] == '#')
+                    {
+                        commentIndex = i;
+                        break;
+                    }
                 }
 
-                var position = 0;
-                while (position < line.Length)
+                if (commentIndex >= 0)
+                    lineSpan = lineSpan.Slice(0, commentIndex).Trim();
+
+                // 行内の各トークンを処理
+                var linePos = 0;
+                while (linePos < lineSpan.Length)
                 {
-                    var c = line[position];
+                    var c = lineSpan[linePos];
 
                     if (char.IsWhiteSpace(c))
                     {
-                        position++;
+                        linePos++;
                         continue;
                     }
 
                     if (c == '{')
                     {
                         tokens.Add(new Token("LBRACE", "{", lineNum));
-                        position++;
+                        linePos++;
                     }
                     else if (c == '}')
                     {
                         tokens.Add(new Token("RBRACE", "}", lineNum));
-                        position++;
+                        linePos++;
                     }
                     else if (c == ':')
                     {
                         tokens.Add(new Token("COLON", ":", lineNum));
-                        position++;
+                        linePos++;
                     }
-                    else if (c == '"' || c == '\'')
+                    else if (c is '"' or '\'')
                     {
                         // 文字列リテラル
                         var quote = c;
-                        position++;
-                        var start = position;
-                        while (position < line.Length && line[position] != quote)
+                        linePos++;
+                        var start = linePos;
+                        while (linePos < lineSpan.Length && lineSpan[linePos] != quote)
                         {
-                            position++;
+                            linePos++;
                         }
 
-                        var str = line.Substring(start, position - start);
+                        var str = linePos > start ? lineSpan.Slice(start, linePos - start).ToString() : string.Empty;
                         tokens.Add(new Token("STRING", str, lineNum));
-                        if (position < line.Length)
+                        if (linePos < lineSpan.Length)
                         {
-                            position++; // 終端のクォートをスキップ
+                            linePos++; // 終端のクォートをスキップ
                         }
                     }
                     else if (char.IsLetter(c) || c == '_')
                     {
                         // 識別子またはキーワード
-                        var start = position;
-                        while (position < line.Length && (char.IsLetterOrDigit(line[position]) || line[position] == '_'))
+                        var start = linePos;
+                        while (linePos < lineSpan.Length && 
+                               (char.IsLetterOrDigit(lineSpan[linePos]) || lineSpan[linePos] == '_'))
                         {
-                            position++;
+                            linePos++;
                         }
 
-                        var word = line.Substring(start, position - start);
+                        var wordSpan = lineSpan.Slice(start, linePos - start);
+                        var word = wordSpan.ToString();
 
                         if (IsKeyword(word))
                         {
@@ -143,36 +174,44 @@ namespace ArcBT.Parser
                     else if (char.IsDigit(c) || c == '.')
                     {
                         // 数値
-                        var start = position;
+                        var start = linePos;
                         var hasDot = false;
-                        while (position < line.Length && (char.IsDigit(line[position]) ||
-                                                          (line[position] == '.' && !hasDot)))
+                        while (linePos < lineSpan.Length && 
+                               (char.IsDigit(lineSpan[linePos]) ||
+                                (lineSpan[linePos] == '.' && !hasDot)))
                         {
-                            if (line[position] == '.')
+                            if (lineSpan[linePos] == '.')
                             {
                                 hasDot = true;
                             }
 
-                            position++;
+                            linePos++;
                         }
 
-                        var number = line.Substring(start, position - start);
+                        var number = lineSpan.Slice(start, linePos - start).ToString();
                         tokens.Add(new Token("NUMBER", number, lineNum));
                     }
                     else
                     {
-                        position++;
+                        linePos++;
                     }
                 }
+
+                lineNum++;
             }
 
             return tokens;
         }
 
+        // よく使用されるキーワードを静的参照として保持
+        static readonly HashSet<string> Keywords = new HashSet<string>
+        {
+            "tree", "Sequence", "Selector", "Action", "Condition", "Parallel"
+        };
+
         bool IsKeyword(string word)
         {
-            return word == "tree" || word == "Sequence" || word == "Selector" ||
-                   word == "Action" || word == "Condition" || word == "Parallel";
+            return Keywords.Contains(word);
         }
 
         BTNode ParseTree()
@@ -310,7 +349,7 @@ namespace ArcBT.Parser
             BTLogger.Log(LogLevel.Info, LogCategory.Parser, $"🔍 Creating node: {nodeType} {scriptOrNodeName}");
             BTLogger.Log(LogLevel.Debug, LogCategory.Parser, $"🔍 Properties: {string.Join(", ", properties.Select(p => $"{p.Key}={p.Value}"))}");
 
-            if (nodeType == "Action" || nodeType == "Condition")
+            if (nodeType is "Action" or "Condition")
             {
                 BTLogger.Log(LogLevel.Info, LogCategory.Parser, $"🚀 Creating {nodeType} with script '{scriptOrNodeName}'");
                 node = CreateNodeFromScript(scriptOrNodeName, nodeType, properties);
@@ -335,7 +374,7 @@ namespace ArcBT.Parser
             }
 
             // Set name: for Action/Condition use script name, for others use node name
-            if (nodeType == "Action" || nodeType == "Condition")
+            if (nodeType is "Action" or "Condition")
             {
                 node.Name = $"{nodeType}:{scriptOrNodeName}";
             }
