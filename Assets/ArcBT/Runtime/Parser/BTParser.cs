@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using ArcBT.Core;
-using ArcBT.Nodes;
 using UnityEngine;
 
 namespace ArcBT.Parser
