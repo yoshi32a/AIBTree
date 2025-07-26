@@ -86,7 +86,7 @@ namespace ArcBT.Tests
 
             // Assert
             Assert.IsNotNull(result);
-            Assert.IsInstanceOf<SequenceNode>(result);
+            Assert.IsInstanceOf<BTSequenceNode>(result);
             Assert.AreEqual("RootSequence", result.Name);
         }
 
@@ -105,7 +105,7 @@ namespace ArcBT.Tests
 
             // Assert
             Assert.IsNotNull(result);
-            Assert.IsInstanceOf<SelectorNode>(result);
+            Assert.IsInstanceOf<BTSelectorNode>(result);
             Assert.AreEqual("RootSelector", result.Name);
         }
 
@@ -217,7 +217,7 @@ namespace ArcBT.Tests
 
             // Assert
             Assert.IsNotNull(result);
-            Assert.IsInstanceOf<SequenceNode>(result);
+            Assert.IsInstanceOf<BTSequenceNode>(result);
             Assert.AreEqual(3, result.Children.Count);
             Assert.IsInstanceOf<AttackEnemyAction>(result.Children[0]);
             Assert.IsInstanceOf<CastSpellAction>(result.Children[1]);
@@ -312,7 +312,7 @@ namespace ArcBT.Tests
 
             // Assert
             Assert.IsNotNull(result);
-            Assert.IsInstanceOf<SelectorNode>(result);
+            Assert.IsInstanceOf<BTSelectorNode>(result);
             Assert.AreEqual(3, result.Children.Count);
             Assert.IsInstanceOf<HasManaCondition>(result.Children[0]);
             Assert.IsInstanceOf<EnemyInRangeCondition>(result.Children[1]);
@@ -354,13 +354,13 @@ namespace ArcBT.Tests
 
             // Assert
             Assert.IsNotNull(result);
-            Assert.IsInstanceOf<SelectorNode>(result);
+            Assert.IsInstanceOf<BTSelectorNode>(result);
             Assert.AreEqual("RootSelector", result.Name);
             Assert.AreEqual(2, result.Children.Count);
 
             // First child: AttackSequence
             var attackSequence = result.Children[0];
-            Assert.IsInstanceOf<SequenceNode>(attackSequence);
+            Assert.IsInstanceOf<BTSequenceNode>(attackSequence);
             Assert.AreEqual("AttackSequence", attackSequence.Name);
             Assert.AreEqual(2, attackSequence.Children.Count);
             Assert.IsInstanceOf<EnemyCheckCondition>(attackSequence.Children[0]);
@@ -368,7 +368,7 @@ namespace ArcBT.Tests
 
             // Second child: PatrolSequence
             var patrolSequence = result.Children[1];
-            Assert.IsInstanceOf<SequenceNode>(patrolSequence);
+            Assert.IsInstanceOf<BTSequenceNode>(patrolSequence);
             Assert.AreEqual("PatrolSequence", patrolSequence.Name);
             Assert.AreEqual(2, patrolSequence.Children.Count);
             Assert.IsInstanceOf<RandomWanderAction>(patrolSequence.Children[0]);
@@ -405,7 +405,7 @@ namespace ArcBT.Tests
             Assert.AreEqual("RootParallel", result.Name);
             Assert.AreEqual(3, result.Children.Count);
             Assert.IsInstanceOf<ScanEnvironmentAction>(result.Children[0]);
-            Assert.IsInstanceOf<SequenceNode>(result.Children[1]);
+            Assert.IsInstanceOf<BTSequenceNode>(result.Children[1]);
             Assert.IsInstanceOf<HealthCheckCondition>(result.Children[2]);
         }
 
@@ -517,7 +517,7 @@ namespace ArcBT.Tests
 
             // Assert
             Assert.IsNotNull(result);
-            Assert.IsInstanceOf<SequenceNode>(result);
+            Assert.IsInstanceOf<BTSequenceNode>(result);
             Assert.AreEqual(1, result.Children.Count);
             Assert.IsInstanceOf<WaitAction>(result.Children[0]);
         }
@@ -551,7 +551,7 @@ namespace ArcBT.Tests
 
             // Assert
             Assert.IsNotNull(result);
-            Assert.IsInstanceOf<SequenceNode>(result);
+            Assert.IsInstanceOf<BTSequenceNode>(result);
             Assert.AreEqual(1, result.Children.Count);
             Assert.IsInstanceOf<WaitAction>(result.Children[0]);
         }
@@ -579,7 +579,7 @@ namespace ArcBT.Tests
 
             // Assert
             Assert.IsNotNull(result);
-            Assert.IsInstanceOf<SelectorNode>(result);
+            Assert.IsInstanceOf<BTSelectorNode>(result);
             Assert.AreEqual(1, result.Children.Count);
         }
 
@@ -637,7 +637,7 @@ namespace ArcBT.Tests
 
             // Assert
             Assert.IsNotNull(result);
-            Assert.IsInstanceOf<SequenceNode>(result);
+            Assert.IsInstanceOf<BTSequenceNode>(result);
             Assert.AreEqual(0, result.Children.Count);
         }
 
@@ -697,13 +697,13 @@ namespace ArcBT.Tests
 
             // Assert
             Assert.IsNotNull(result);
-            Assert.IsInstanceOf<SelectorNode>(result);
+            Assert.IsInstanceOf<BTSelectorNode>(result);
             Assert.AreEqual("MainSelector", result.Name);
             Assert.AreEqual(3, result.Children.Count);
 
             // Verify structure
-            Assert.IsInstanceOf<SequenceNode>(result.Children[0]); // InitSequence
-            Assert.IsInstanceOf<SequenceNode>(result.Children[1]); // CombatSequence
+            Assert.IsInstanceOf<BTSequenceNode>(result.Children[0]); // InitSequence
+            Assert.IsInstanceOf<BTSequenceNode>(result.Children[1]); // CombatSequence
             Assert.IsInstanceOf<SequenceNode>(result.Children[2]); // PatrolSequence
         }
 

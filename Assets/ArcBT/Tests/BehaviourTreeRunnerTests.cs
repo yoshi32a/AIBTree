@@ -77,7 +77,7 @@ namespace ArcBT.Tests
 
             // Assert
             Assert.IsNotNull(runner.RootNode);
-            Assert.IsInstanceOf<SequenceNode>(runner.RootNode);
+            Assert.IsInstanceOf<BTSequenceNode>(runner.RootNode);
         }
 
         #endregion
@@ -103,7 +103,7 @@ namespace ArcBT.Tests
 
             // Assert
             Assert.IsNotNull(runner.RootNode);
-            Assert.IsInstanceOf<SelectorNode>(runner.RootNode);
+            Assert.IsInstanceOf<BTSelectorNode>(runner.RootNode);
             Assert.AreEqual("Root", runner.RootNode.Name);
             Assert.AreEqual(1, runner.RootNode.Children.Count);
         }
@@ -458,7 +458,7 @@ namespace ArcBT.Tests
 
             // Assert
             Assert.IsNotNull(runner.RootNode);
-            Assert.IsInstanceOf<SelectorNode>(runner.RootNode);
+            Assert.IsInstanceOf<BTSelectorNode>(runner.RootNode);
             
             // BlackBoardにスキャン結果が記録されていることを確認
             Assert.IsTrue(runner.BlackBoard.GetAllKeys().Length > 0);
