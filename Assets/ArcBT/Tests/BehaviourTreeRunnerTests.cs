@@ -42,8 +42,6 @@ namespace ArcBT.Tests
             BTLogger.ResetToDefaults();
         }
 
-        #region 初期化テスト
-
         [Test]
         public void BehaviourTreeRunner_Awake_InitializesComponents()
         {
@@ -79,10 +77,6 @@ namespace ArcBT.Tests
             Assert.IsNotNull(runner.RootNode);
             Assert.IsInstanceOf<BTSequenceNode>(runner.RootNode);
         }
-
-        #endregion
-
-        #region ファイル読み込みテスト
 
         [Test]
         public void LoadBehaviourTree_ValidFile_LoadsCorrectly()
@@ -138,10 +132,6 @@ namespace ArcBT.Tests
             // Assert
             Assert.IsNull(runner.RootNode);
         }
-
-        #endregion
-
-        #region 実行テスト
 
         [Test]
         public void SetRootNode_ValidNode_SetsCorrectly()
@@ -215,10 +205,6 @@ namespace ArcBT.Tests
             Assert.AreEqual(BTNodeResult.Failure, result);
         }
 
-        #endregion
-
-        #region BlackBoard統合テスト
-
         [Test]
         public void BlackBoard_Integration_SharesDataBetweenNodes()
         {
@@ -288,10 +274,6 @@ namespace ArcBT.Tests
             Assert.IsFalse(runner.BlackBoard.HasKey("temp_data"));
         }
 
-        #endregion
-
-        #region 設定テスト
-
         [Test]
         public void SetTickInterval_UpdatesCorrectly()
         {
@@ -313,10 +295,6 @@ namespace ArcBT.Tests
             // Assert (デバッグモードの動作確認は実行ログで判断)
             Assert.IsNotNull(runner);
         }
-
-        #endregion
-
-        #region エラーハンドリングテスト
 
         [Test]
         public void LoadBehaviourTree_EmptyFilePath_HandlesGracefully()
@@ -353,10 +331,6 @@ namespace ArcBT.Tests
             // Assert
             Assert.IsNull(runner.RootNode);
         }
-
-        #endregion
-
-        #region 複雑なツリーテスト
 
         [Test]
         public void ComplexTree_NestedStructure_ExecutesCorrectly()
@@ -418,10 +392,6 @@ namespace ArcBT.Tests
             // Assert
             Assert.IsTrue(result is BTNodeResult.Running or BTNodeResult.Success);
         }
-
-        #endregion
-
-        #region 統合テスト
 
         [UnityTest]
         public IEnumerator Integration_FullBehaviourTreeExecution_WorksCorrectly()
@@ -488,7 +458,5 @@ namespace ArcBT.Tests
             Assert.Less(stopwatch.ElapsedMilliseconds, 100, 
                 $"性能テスト失敗: {executionCount}回実行に{stopwatch.ElapsedMilliseconds}ms掛かりました");
         }
-
-        #endregion
     }
 }

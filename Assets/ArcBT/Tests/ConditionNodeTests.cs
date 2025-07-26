@@ -33,8 +33,6 @@ namespace ArcBT.Tests
             BTLogger.ResetToDefaults();
         }
 
-        #region HasSharedEnemyInfoCondition Tests
-
         [Test]
         public void HasSharedEnemyInfoCondition_SetProperty_SetsCorrectKey()
         {
@@ -139,10 +137,6 @@ namespace ArcBT.Tests
             Object.DestroyImmediate(enemyObject);
         }
 
-        #endregion
-
-        #region HealthCheckCondition Tests
-
         [Test]
         public void HealthCheckCondition_WithSufficientHealth_ReturnsSuccess()
         {
@@ -223,10 +217,6 @@ namespace ArcBT.Tests
             Assert.AreEqual(BTNodeResult.Failure, result); // 緊急時チェックをスキップ
         }
 
-        #endregion
-
-        #region EnemyCheckCondition Tests
-
         [Test]
         public void EnemyCheckCondition_SetProperty_SetsCorrectRange()
         {
@@ -260,15 +250,11 @@ namespace ArcBT.Tests
             var result = condition.Execute();
 
             // Assert (実際の検出結果は環境に依存するため、実行されることを確認)
-            Assert.IsTrue(result == BTNodeResult.Success || result == BTNodeResult.Failure);
+            Assert.IsTrue(result is BTNodeResult.Success or BTNodeResult.Failure);
 
             // Cleanup
             Object.DestroyImmediate(enemyObject);
         }
-
-        #endregion
-
-        #region HasManaCondition Tests
 
         [Test]
         public void HasManaCondition_WithSufficientMana_ReturnsSuccess()
@@ -322,10 +308,6 @@ namespace ArcBT.Tests
             Assert.AreEqual(BTNodeResult.Failure, result);
         }
 
-        #endregion
-
-        #region EnemyInRangeCondition Tests
-
         [Test]
         public void EnemyInRangeCondition_SetProperty_SetsCorrectRange()
         {
@@ -340,12 +322,8 @@ namespace ArcBT.Tests
             var result = condition.Execute();
             
             // Assert (実行されることを確認)
-            Assert.IsTrue(result == BTNodeResult.Success || result == BTNodeResult.Failure);
+            Assert.IsTrue(result is BTNodeResult.Success or BTNodeResult.Failure);
         }
-
-        #endregion
-
-        #region IsInitializedCondition Tests
 
         [Test]
         public void IsInitializedCondition_WithInitializedFlag_ReturnsSuccess()
@@ -381,10 +359,6 @@ namespace ArcBT.Tests
             Assert.AreEqual(BTNodeResult.Success, result);
             Assert.AreEqual(true, blackBoard.GetValue<bool>("is_initialized"));
         }
-
-        #endregion
-
-        #region HasItemCondition Tests
 
         [Test]
         public void HasItemCondition_WithRequiredItem_ReturnsSuccess()
@@ -424,10 +398,6 @@ namespace ArcBT.Tests
             // Assert
             Assert.AreEqual(BTNodeResult.Failure, result);
         }
-
-        #endregion
-
-        #region 統合テスト
 
         [Test]
         public void ConditionNodes_ChainEvaluation_WorksCorrectly()
@@ -484,7 +454,7 @@ namespace ArcBT.Tests
 
             // Assert
             Assert.AreEqual(BTNodeResult.Success, hasEnemyResult);
-            Assert.IsTrue(inRangeResult == BTNodeResult.Success || inRangeResult == BTNodeResult.Failure);
+            Assert.IsTrue(inRangeResult is BTNodeResult.Success or BTNodeResult.Failure);
 
             // BlackBoardが両方の条件で共有されていることを確認
             Assert.AreEqual(enemyObject, blackBoard.GetValue<GameObject>("enemy_target"));
@@ -516,8 +486,6 @@ namespace ArcBT.Tests
             Assert.Less(stopwatch.ElapsedMilliseconds, 50, 
                 $"性能テスト失敗: {evaluationCount}回評価に{stopwatch.ElapsedMilliseconds}ms掛かりました");
         }
-
-        #endregion
     }
 
     /// <summary>テスト用のConditionコンポーネント</summary>

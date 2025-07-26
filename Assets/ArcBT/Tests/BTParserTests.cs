@@ -36,8 +36,6 @@ namespace ArcBT.Tests
             BTLogger.ResetToDefaults(); // テスト後は通常モードに戻す
         }
 
-        #region Basic Parsing Tests
-
         [Test]
         public void ParseContent_EmptyContent_ReturnsNull()
         {
@@ -126,10 +124,6 @@ namespace ArcBT.Tests
             Assert.IsInstanceOf<BTParallelNode>(result);
             Assert.AreEqual("RootParallel", result.Name);
         }
-
-        #endregion
-
-        #region Action Node Tests
 
         [Test]
         public void ParseContent_ActionNodeWithoutProperties_CreatesCorrectAction()
@@ -223,10 +217,6 @@ namespace ArcBT.Tests
             Assert.IsInstanceOf<FleeToSafetyAction>(result.Children[2]);
         }
 
-        #endregion
-
-        #region Condition Node Tests
-
         [Test]
         public void ParseContent_ConditionNodeWithoutProperties_CreatesCorrectCondition()
         {
@@ -318,10 +308,6 @@ namespace ArcBT.Tests
             Assert.IsInstanceOf<IsInitializedCondition>(result.Children[2]);
         }
 
-        #endregion
-
-        #region Complex Tree Tests
-
         [Test]
         public void ParseContent_NestedCompositeNodes_CreatesCorrectHierarchy()
         {
@@ -408,10 +394,6 @@ namespace ArcBT.Tests
             Assert.IsInstanceOf<HealthCheckCondition>(result.Children[2]);
         }
 
-        #endregion
-
-        #region Property Parsing Tests
-
         [Test]
         public void ParseContent_StringProperties_ParsedCorrectly()
         {
@@ -491,10 +473,6 @@ namespace ArcBT.Tests
             Assert.IsInstanceOf<UseItemAction>(result);
         }
 
-        #endregion
-
-        #region Comment and Whitespace Tests
-
         [Test]
         public void ParseContent_WithComments_IgnoresComments()
         {
@@ -555,10 +533,6 @@ namespace ArcBT.Tests
             Assert.IsInstanceOf<WaitAction>(result.Children[0]);
         }
 
-        #endregion
-
-        #region File Parsing Tests
-
         [Test]
         public void ParseFile_ValidFile_ReturnsCorrectTree()
         {
@@ -594,10 +568,6 @@ namespace ArcBT.Tests
             // Assert
             Assert.IsNull(result);
         }
-
-        #endregion
-
-        #region Error Handling Tests
 
         [Test]
         public void ParseContent_MalformedTree_HandlesGracefully()
@@ -639,10 +609,6 @@ namespace ArcBT.Tests
             Assert.IsInstanceOf<BTSequenceNode>(result);
             Assert.AreEqual(0, result.Children.Count);
         }
-
-        #endregion
-
-        #region Integration Tests
 
         [Test]
         public void ParseContent_RealWorldExample_CreatesCompleteTree()
@@ -706,10 +672,6 @@ namespace ArcBT.Tests
             Assert.IsInstanceOf<BTSequenceNode>(result.Children[2]); // PatrolSequence
         }
 
-        #endregion
-
-        #region Debug Log Tests
-
         [Test]
         public void ParseContent_ActionCreation_LogsCorrectDebugMessages()
         {
@@ -733,7 +695,5 @@ namespace ArcBT.Tests
             Assert.IsNotNull(result);
             Assert.IsInstanceOf<AttackEnemyAction>(result);
         }
-
-        #endregion
     }
 }
