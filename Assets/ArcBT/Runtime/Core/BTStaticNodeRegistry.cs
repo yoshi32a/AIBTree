@@ -9,11 +9,11 @@ namespace ArcBT.Core
     /// </summary>
     public static class BTStaticNodeRegistry
     {
-        // アクション生成関数の静的登録
+        // アクション生成関数の登録（実行時に追加可能）
         static readonly Dictionary<string, Func<BTActionNode>> actionCreators = new()
         {
-            // 注意: RPGサンプルのノードはBTNodeRegistryにフォールバックするように変更
-            // アセンブリ参照の問題を回避するため
+            // コアノードのみここで登録
+            // RPGサンプルは RPGNodeRegistration.cs で動的に登録される
             ["MoveToPosition"] = () => new Actions.MoveToPositionAction(),
             ["Wait"] = () => new Actions.WaitAction(),
             ["ScanEnvironment"] = () => new Actions.ScanEnvironmentAction(),
@@ -23,7 +23,7 @@ namespace ArcBT.Core
             ["EnvironmentScan"] = () => new Actions.EnvironmentScanAction(),
         };
         
-        // 条件生成関数の静的登録
+        // 条件生成関数の登録（実行時に追加可能）
         static readonly Dictionary<string, Func<BTConditionNode>> conditionCreators = new()
         {
             ["HasSharedEnemyInfo"] = () => new Conditions.HasSharedEnemyInfoCondition(),
@@ -72,6 +72,28 @@ namespace ArcBT.Core
             
             BTLogger.LogError(LogCategory.System, $"Unknown condition script: {scriptName}");
             return null;
+        }
+        
+        /// <summary>アクションを動的に登録</summary>
+        public static void RegisterAction(string scriptName, Func<BTActionNode> creator)
+        {
+            if (actionCreators.ContainsKey(scriptName))
+            {
+                BTLogger.Log(LogLevel.Warning, LogCategory.System, 
+                    $"Action '{scriptName}' is already registered. Overwriting.");
+            }
+            actionCreators[scriptName] = creator;
+        }
+        
+        /// <summary>条件を動的に登録</summary>
+        public static void RegisterCondition(string scriptName, Func<BTConditionNode> creator)
+        {
+            if (conditionCreators.ContainsKey(scriptName))
+            {
+                BTLogger.Log(LogLevel.Warning, LogCategory.System, 
+                    $"Condition '{scriptName}' is already registered. Overwriting.");
+            }
+            conditionCreators[scriptName] = creator;
         }
         
         /// <summary>登録されているアクション名</summary>
