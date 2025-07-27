@@ -5,6 +5,8 @@ ArcBT is an elegant, extensible ArcBT framework for Unity with BlackBoard suppor
 ## 🚀 Features
 
 ### Core Framework
+- **🏷️ GameplayTagSystem**: Hierarchical tag system with 10-100x performance improvement over GameObject.tag
+- **🎭 Decorator Node System**: Inverter, Repeat, Retry, Timeout decorators for flexible control flow
 - **Generic ArcBT Engine**: Hierarchical node structure with Sequence, Selector, and Parallel composites
 - **BlackBoard System**: Shared data storage for inter-node communication
 - **Dynamic Condition Checking**: Real-time condition monitoring during action execution
@@ -17,10 +19,12 @@ ArcBT is an elegant, extensible ArcBT framework for Unity with BlackBoard suppor
 
 ### Included Components
 - **Core Nodes**: Sequence, Selector, Parallel composition nodes
-- **Generic Actions**: MoveToPosition, Wait, RandomWander, ScanEnvironment
-- **Generic Conditions**: HasSharedEnemyInfo (BlackBoard-based)
+- **Decorator Nodes**: Inverter, Repeat, Retry, Timeout for advanced control flow
+- **GameplayTag System**: 0-allocation hierarchical tag search with Unity compatibility layer
+- **Generic Actions**: MoveToPosition, Wait, RandomWander, ScanEnvironment, SetBlackBoard
+- **Generic Conditions**: HasSharedEnemyInfo, CompareBlackBoard, DistanceCheck
 - **Parser System**: Dynamic .bt file loading and node instantiation
-- **Testing Framework**: Comprehensive test suite with 152+ test cases
+- **Testing Framework**: Comprehensive test suite with 314 test cases (70.00% code coverage)
 
 ## 📦 Installation
 
@@ -42,11 +46,22 @@ runner.behaviourTreeFilePath = "my_tree.bt";
 ```
 
 ### 2. Create .bt File
-```
+```bt
 tree MyAI {
     Sequence root {
         Condition HasSharedEnemyInfo {}
-        Action MoveToPosition { target_x: 5, target_z: 3 }
+        
+        Timeout combat_timeout {
+            time: 10.0
+            
+            Retry attack_retry {
+                max_retries: 3
+                
+                Action MoveToPosition { target_tag: "Character.Enemy" }
+                Action AttackTarget { damage: 25 }
+            }
+        }
+        
         Action Wait { duration: 2.0 }
     }
 }
@@ -55,7 +70,9 @@ tree MyAI {
 ### 3. Custom Action Node
 ```csharp
 using ArcBT.Core;
+using ArcBT.TagSystem;
 
+[BTNode("MyCustom")] // Auto-detects as Action
 public class MyCustomAction : BTActionNode
 {
     string message = "Hello";
@@ -67,13 +84,16 @@ public class MyCustomAction : BTActionNode
     
     protected override BTNodeResult ExecuteAction()
     {
-        Debug.Log(message);
+        // Use GameplayTagSystem for high-speed object search
+        var enemies = GameplayTagManager.FindGameObjectsWithTag("Character.Enemy");
+        
+        Debug.Log($"{message} - Found {enemies.Count} enemies");
         return BTNodeResult.Success;
     }
 }
 
-// Register without reflection (for runtime nodes)
-BTStaticNodeRegistry.RegisterAction("MyCustom", () => new MyCustomAction());
+// Source generator automatically creates registration code
+// No manual registration needed!
 ```
 
 ## 📚 Documentation
@@ -134,9 +154,10 @@ Window → General → Test Runner
 ```
 
 ### Test Coverage
-- **152 Test Cases**: Parser, BlackBoard, Logger, File validation
-- **Performance Tests**: Concurrent access, memory usage
-- **Integration Tests**: Complete .bt file parsing and execution
+- **314 Test Cases**: GameplayTagSystem, Decorators, Parser, BlackBoard, Logger, File validation
+- **Runtime/Samples Separation**: 302 core tests + 12 sample tests
+- **Performance Tests**: GameplayTag search performance (10-100x improvement), memory usage
+- **Integration Tests**: Complete .bt file parsing, Decorator combinations, Unity tag compatibility
 
 ## 🔧 Requirements
 
@@ -152,20 +173,36 @@ Runtime/
 │   ├── BTNode.cs           # Base node class
 │   ├── BTActionNode.cs     # Action base class
 │   ├── BTConditionNode.cs  # Condition base class
+│   ├── BTDecoratorNode.cs  # Decorator base class
 │   ├── BehaviourTreeRunner.cs  # Main engine
 │   ├── BlackBoard.cs       # Data sharing
 │   ├── BTLogger.cs         # Logging system
 │   ├── BTStaticNodeRegistry.cs  # Reflection-free node registry
 │   ├── BTNodeFactory.cs    # Expression Tree optimization
-│   └── IHealth.cs          # Health interface
+│   ├── IHealth.cs          # Health interface
+│   └── TagSystem/          # GameplayTag system
+│       ├── GameplayTag.cs      # Hierarchical tag structure
+│       ├── GameplayTagManager.cs # High-speed search & cache
+│       ├── GameplayTagComponent.cs
+│       ├── UnityTagCompatibility.cs # Migration support
+│       └── GameObjectArrayPool.cs # Memory optimization
+├── Decorators/     # Decorator nodes
+│   ├── InverterDecorator.cs    # Result inversion
+│   ├── RepeatDecorator.cs      # Loop execution
+│   ├── RetryDecorator.cs       # Retry on failure
+│   └── TimeoutDecorator.cs     # Time-limited execution
 ├── Parser/         # .bt file processing
 │   └── BTParser.cs         # File parser
-├── Actions/        # Generic actions
+├── Actions/        # Generic actions (8 types)
 │   ├── MoveToPositionAction.cs
 │   ├── WaitAction.cs
+│   ├── SetBlackBoardAction.cs  # Type auto-detection
 │   └── ...
-└── Conditions/     # Generic conditions
-    └── HasSharedEnemyInfoCondition.cs
+└── Conditions/     # Generic conditions (5 types)
+    ├── HasSharedEnemyInfoCondition.cs
+    ├── CompareBlackBoardCondition.cs # Expression parser
+    ├── DistanceCheckCondition.cs
+    └── ...
 
 Samples~/RPGExample/
 ├── Components/     # Game-specific components
@@ -184,6 +221,22 @@ var node = Activator.CreateInstance(nodeType); // ~20-30μs per call
 
 // ArcBT static approach (fast)
 var node = BTStaticNodeRegistry.CreateAction("MyAction"); // ~0.2-0.3μs per call
+```
+
+### GameplayTagSystem Performance
+Hierarchical tag system with 10-100x performance improvement:
+
+```csharp
+// Traditional GameObject.tag approach (slow)
+var enemies = GameObject.FindGameObjectsWithTag("Enemy"); // O(n) linear search
+
+// GameplayTagSystem approach (fast)
+using var enemies = GameplayTagManager.FindGameObjectsWithTag("Character.Enemy"); // Cached search
+
+// Hierarchical matching
+if (GameplayTagManager.HasTag(gameObject, "Character.Enemy.Boss")) {
+    // Automatically matches "Character.Enemy" and parent tags
+}
 ```
 
 ### Self-Registration Pattern

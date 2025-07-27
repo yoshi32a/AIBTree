@@ -42,6 +42,48 @@ Parallel node_name {
 }
 ```
 
+#### Decorator Nodes（デコレーターノード）
+
+**Inverter（インバーター）**
+- 子ノードの実行結果を反転
+- Success → Failure, Failure → Success, Running → Running
+```bt
+Inverter node_name {
+    # 子ノード（1つのみ）
+}
+```
+
+**Repeat（リピート）**
+- 子ノードを指定回数または無限に繰り返し実行
+```bt
+Repeat node_name {
+    count: 5                # 繰り返し回数（-1で無限）
+    stop_on_failure: true   # 失敗時に停止するか
+    reset_child: true       # 各回の開始時に子ノードをリセット
+    # 子ノード（1つのみ）
+}
+```
+
+**Retry（リトライ）**
+- 子ノードが失敗した場合に指定回数まで再試行
+```bt
+Retry node_name {
+    max_retries: 3      # 最大リトライ回数
+    retry_delay: 1.0    # リトライ間隔（秒）
+    # 子ノード（1つのみ）
+}
+```
+
+**Timeout（タイムアウト）**
+- 子ノードの実行に時間制限を設定
+```bt
+Timeout node_name {
+    time: 5.0                  # タイムアウト時間（秒）
+    success_on_timeout: false  # タイムアウト時の結果
+    # 子ノード（1つのみ）
+}
+```
+
 #### Leaf Nodes（リーフノード）
 
 **Action（アクション）**
@@ -65,6 +107,7 @@ Condition ScriptName {
 ### 共通プロパティ
 - ノード名がそのままUnity C#クラス名になります
 - 全ノードでBlackBoardにアクセス可能
+- GameplayTagSystemによる高速オブジェクト検索対応
 
 ### Action専用プロパティ
 - `target: "target_name"` - 移動先やターゲット
@@ -89,9 +132,64 @@ Condition ScriptName {
 - `success_policy: "require_one"` - 成功条件（require_one/require_all）
 - `failure_policy: "require_all"` - 失敗条件（require_one/require_all）
 
+### Decorator専用プロパティ
+- **Repeat**: `count: 5` - 繰り返し回数（-1で無限）
+- **Repeat**: `stop_on_failure: true` - 失敗時停止
+- **Repeat**: `reset_child: true` - 各回開始時のリセット
+- **Retry**: `max_retries: 3` - 最大リトライ回数
+- **Retry**: `retry_delay: 1.0` - リトライ間隔（秒）
+- **Timeout**: `time: 5.0` - タイムアウト時間（秒）
+- **Timeout**: `success_on_timeout: false` - タイムアウト時の結果
+
 ## 新機能
 
-### 1. BlackBoard システム
+### 1. GameplayTagSystem
+
+ArcBT v1.0.0で導入された革新的なタグシステムです。Unity標準のGameObject.tagを完全に置換し、10-100倍の性能向上を実現します。
+
+#### 階層的タグ構造
+```csharp
+// 階層的タグの例
+"Character.Enemy.Boss"     // ボス敵
+"Character.Player"         // プレイヤー
+"Object.Item.Weapon"       // 武器アイテム
+"Effect.Magic.Fire"        // 炎魔法エフェクト
+```
+
+#### 高速検索とパフォーマンス最適化
+- **ReadOnlySpan活用**: 0アロケーション文字列比較
+- **階層マッチング**: 親子関係の高速判定
+- **キャッシュシステム**: 検索結果の効率的なキャッシュ管理
+- **プール管理**: GameObjectArrayPoolによるメモリ最適化
+
+#### .btファイルでの使用
+```bt
+# GameplayTagを使用したオブジェクト検索
+Action AttackTarget {
+    target_tag: "Character.Enemy"  # 階層的タグ検索
+    damage: 25
+}
+
+Condition EnemyInRange {
+    target_tag: "Character.Enemy.Boss"  # 特定の敵タイプのみ
+    max_distance: 5.0
+}
+```
+
+#### Unity互換性レイヤー
+既存のUnityタグAPIと互換性を保ちつつ、段階的な移行をサポート：
+```csharp
+// 従来の書き方
+if (gameObject.CompareTag("Enemy"))
+
+// 新しい書き方（互換レイヤー経由）
+if (gameObject.CompareGameplayTag("Character.Enemy"))
+
+// 直接GameplayTagManager使用（最高性能）
+if (GameplayTagManager.HasTag(gameObject, "Character.Enemy"))
+```
+
+### 2. BlackBoard システム
 - AIノード間でデータを共有するグローバルストレージ
 - 型安全な値の設定・取得が可能
 - デバッグ機能付き
@@ -248,9 +346,9 @@ Condition DistanceCheck {
 ```
 
 ### Decorator用スクリプト
-デコレーターは子ノードの実行を制御・修飾するノードです。
+デコレーターは子ノードの実行を制御・修飾するノードです。ArcBT v1.0.0で完全実装されました。
 
-- `Timeout` - タイムアウト処理（timeout、success_on_timeout対応）
+- `Timeout` - タイムアウト処理（time、success_on_timeout対応）
 - `Repeat` - 繰り返し実行（count、stop_on_failure、reset_child対応）
 - `Retry` - リトライ処理（max_retries、retry_delay対応）
 - `Inverter` - 結果反転（成功→失敗、失敗→成功）

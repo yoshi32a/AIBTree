@@ -284,21 +284,39 @@ namespace ArcBT.Samples.RPG.Conditions
 
 ## 📊 Debugging and Testing
 
-### Visual Debugging
+### Visual Debugging with Enhanced Logging
 ```csharp
-// Enable detailed logging
+// Enable detailed logging with categories
 BTLogger.SetLogLevel(LogLevel.Debug);
 BTLogger.SetCategoryFilter(LogCategory.Combat, true);
+BTLogger.SetCategoryFilter(LogCategory.Movement, true);
 
 // Monitor BlackBoard contents
 Debug.Log(blackBoard.GetValueAsString("current_target"));
+
+// GameplayTagSystem debugging
+BTLogger.LogSystem($"Found {enemies.Count} enemies with tag Character.Enemy");
+BTLogger.LogCombat($"Attacking {target.name} with {damage} damage", "PowerAttack", this);
+```
+
+### Performance Profiling
+```csharp
+// Profile GameplayTagSystem performance
+var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+using var enemies = GameplayTagManager.FindGameObjectsWithTag("Character.Enemy");
+stopwatch.Stop();
+BTLogger.LogSystem($"Tag search took {stopwatch.ElapsedTicks} ticks for {enemies.Count} objects");
 ```
 
 ### Test Scenarios
-1. **Resource Depletion**: Test behavior when health/mana is low
-2. **Combat Situations**: Verify attack sequences and damage calculation
-3. **Item Usage**: Ensure proper inventory management
+1. **Resource Depletion**: Test behavior when health/mana/stamina is low
+2. **Combat Situations**: Verify attack sequences, combos, and damage calculation
+3. **Item Usage**: Ensure proper inventory management and item effects
 4. **Team Coordination**: Test information sharing between multiple AI agents
+5. **GameplayTag Performance**: Benchmark search speed vs traditional methods
+6. **Decorator Combinations**: Verify complex Timeout+Retry+Repeat patterns
+7. **Hierarchical Tag Matching**: Test parent/child tag relationships
+8. **Memory Allocation**: Ensure 0-allocation with pooled arrays
 
 ## 🔗 Integration with Main Project
 

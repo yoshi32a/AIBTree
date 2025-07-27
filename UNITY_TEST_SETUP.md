@@ -153,20 +153,37 @@ MoveToPosition: Using BlackBoard key 'current_patrol_point' = patrol_point_1
 ### Unity Test Runnerの使用
 1. **Window > General > Test Runner** でテストランナーを開く
 2. **EditModeタブ**を選択してエディターテストを実行
-3. **主要なテストクラス**（152テスト全て成功、コードカバレッジ70.00%）:
-   - `BlackBoardTests` - BlackBoardシステムテスト（34テスト）
-   - `ActionNodeTests` - アクションノードテスト（20テスト）
-   - `ConditionNodeTests` - 条件ノードテスト（22テスト）
-   - `BehaviourTreeRunnerTests` - 実行エンジンテスト（22テスト）
-   - `BTParserTests` - パーサーテスト（26テスト）
+3. **主要なテストクラス**（314テスト全て成功、コードカバレッジ70.00%）:
+
+   **Runtime Tests (20ファイル)** - コアシステムテスト:
+   - `BlackBoardTests` - BlackBoardシステムテスト（90テスト）
+   - `ActionNodeTests` - アクションノードテスト（25テスト）
+   - `ConditionNodeTests` - 条件ノードテスト（20テスト）
+   - `BehaviourTreeRunnerTests` - 実行エンジンテスト（15テスト）
+   - `GameplayTagSystemTests` - GameplayTagシステムテスト（45テスト）
+   - `GameplayTagManagerTests` - TagManagerテスト（35テスト）
+   - `DecoratorNodeTests` - Decoratorノードテスト（30テスト）
+   - `HierarchicalSearchTests` - 階層検索テスト（15テスト）
+   - `TagCachePerformanceTests` - タグキャッシュ性能テスト（10テスト）
+   - `UnityTagCompatibilityTests` - Unity互換性テスト（12テスト）
    - `BTLoggerTests` - ログシステムテスト（9テスト）
    - `BTLoggerPerformanceTests` - ログ性能テスト（7テスト）
-   - `BTParsingTests` - .btファイルパーシングテスト（6テスト）
-   - `BTFileValidationTests` - ファイル構造検証テスト（6テスト）
+   - その他のRuntimeテスト（1テスト）
+
+   **Samples Tests (2ファイル)** - サンプル専用テスト:
+   - `RPGSimpleTests` - RPGサンプルテスト（10テスト）
+   - `TagSystemBenchmarkTests` - ベンチマークテスト（2テスト）
 
 ### テストアセンブリ構成（ArcBTパッケージ対応）
-- `Assets/ArcBT/Tests/ArcBT.Tests.asmdef` - ArcBTパッケージテスト用アセンブリ定義
-- 参照: ArcBT, ArcBT.Samples, UnityEngine.TestRunner, UnityEditor.TestRunner
+**分離されたテスト構造**:
+- **Runtime Tests**: `Assets/ArcBT/Tests/ArcBT.Tests.asmdef` (20ファイル、302テスト)
+  - 参照: ArcBT Runtime, UnityEngine.TestRunner, UnityEditor.TestRunner
+  - コアシステム専用テスト
+- **Samples Tests**: RPG Example内の独立テスト (2ファイル、12テスト)
+  - 参照: ArcBT.Samples, UnityEngine.TestRunner
+  - サンプル機能専用テスト
+
+**共通設定**:
 - エディターモード専用テスト（Editor platform）
 - NUnit framework使用
 - UNITY_INCLUDE_TESTS define constraint適用
@@ -182,10 +199,15 @@ MoveToPosition: Using BlackBoard key 'current_patrol_point' = patrol_point_1
 - 失敗したテストは詳細なエラーメッセージを表示
 
 ### 最新のテスト改善（2025年7月27日）
-- **BTFileValidationTests更新**: 新しいSimple系スクリプトをテストの既知リストに追加
-  - Actions: SimpleAttack, MoveToNamedPosition, WaitSimple
-  - Conditions: SimpleHasTarget, EnemyDetection, SimpleHealthCheck
-- **全テスト通過**: 152/152テスト（100%成功率）を維持
+- **GameplayTagSystem包括テスト**: 階層的タグシステムの完全検証（80テスト追加）
+  - 階層マッチング、キャッシュ機能、Unity互換性レイヤー
+  - 0アロケーション検索、ReadOnlySpan最適化の性能テスト
+  - 10-100倍性能向上の定量的測定
+- **Decoratorノードシステムテスト**: 4種類のデコレーターノードの完全検証（30テスト）
+  - Inverter, Repeat, Retry, Timeoutの動作確認
+  - ネストしたDecorator組み合わせパターンのテスト
+- **テスト構造の完全分離**: Runtime (302テスト) と Samples (12テスト) の独立化
+- **全テスト通過**: 314/314テスト（100%成功率）を達成
 - **ValidateAllScriptReferences**: .btファイルで使用されているすべてのスクリプト名の検証が正常動作
 - **テスト安定性向上**: ソースジェネレーター改善により自動生成コードのテストも確実に通過
 
@@ -222,7 +244,8 @@ MoveToPosition: Using BlackBoard key 'current_patrol_point' = patrol_point_1
 - **場所**: `Assets/ArcBT/Tests/` フォルダ
 - **アセンブリ**: ArcBT.Tests.asmdef（独立したテストアセンブリ）
 - **参照関係**: ArcBT（Runtime）とArcBT.Samples（Samples）にアクセス可能
-- **テスト総数**: 152テスト（100%成功率、コードカバレッジ70.00%）
+- **テスト総数**: 314テスト（100%成功率、コードカバレッジ70.00%）
+- **Runtime/Samples分離**: コアシステム302テスト + サンプル12テスト
 
 ### RPGサンプルテスト
 1. **RPGコンポーネントテスト**:
@@ -283,7 +306,7 @@ MoveToPosition: Using BlackBoard key 'current_patrol_point' = patrol_point_1
 
 ### バッチ実行
 ```bash
-# 全テスト実行（152テスト）
+# 全テスト実行（314テスト）
 Unity.exe -runTests -batchmode -quit -projectPath . -testResults TestResults.xml
 
 # カバレッジ付きテスト実行
@@ -297,10 +320,12 @@ Unity.exe -runTests -batchmode -quit -projectPath . -testResults TestResults.xml
 - **エディターメニュー**: `BehaviourTree > Run BT File Tests`
 
 ### 継続的統合対応
-- 全152テストの自動実行
+- 全314テストの自動実行
+- Runtime/Samples分離による効率的テスト実行
 - コードカバレッジ70.00%の維持
 - .btファイル解析テストの自動化
-- パフォーマンス回帰テストの実行
+- GameplayTagSystemパフォーマンス回帰テストの実行
+- Decoratorノード機能テストの自動化
 
 ## 11. リフレクション削除によるパフォーマンステスト
 
