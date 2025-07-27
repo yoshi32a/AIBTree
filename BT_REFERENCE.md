@@ -147,6 +147,11 @@ Sequence patrol_with_health_check {
 - `InitializeResources` - リソース初期化
 - `RestoreSmallMana` - 少量マナ回復
 
+#### ExampleAI用Simple系アクション
+- `SimpleAttack` - ExampleAI用のシンプルな攻撃アクション
+- `MoveToNamedPosition` - 名前付き位置への移動アクション
+- `WaitSimple` - ExampleAI用のシンプルな待機アクション
+
 ### Condition用スクリプト
 - `HealthCheck` - 体力チェック
 - `EnemyCheck` - 敵検出
@@ -158,6 +163,11 @@ Sequence patrol_with_health_check {
 - `EnemyHealthCheck` - 敵の体力確認（RPGサンプルで実装済み）
 - `CheckManaResource` - マナリソースチェック
 - `CheckAlertFlag` - アラート状態フラグチェック
+
+#### ExampleAI用Simple系条件
+- `SimpleHasTarget` - ExampleAI用のシンプルなターゲット確認条件
+- `EnemyDetection` - ExampleAI用の敵検出条件
+- `SimpleHealthCheck` - ExampleAI用のシンプルな体力チェック条件
 
 ## リフレクション削除による高速化
 
@@ -507,15 +517,32 @@ Vector3 pos = blackBoard.GetValue<Vector3>("player_position");
   - "Reset Tree State" - ツリー状態をリセット
   - "Reload Behaviour Tree" - .btファイルを再読み込み
 
-## 新しいスクリプトの追加手順
-1. `Assets/Scripts/BehaviourTree/Actions/`または`Conditions/`フォルダにC#スクリプトを作成（1ファイル1クラス）
-2. `BTActionNode`または`BTConditionNode`を継承
-3. `SetProperty(string key, string value)` メソッドをオーバーライド（パラメータは`string`型）
-4. `ExecuteAction()` または `protected override BTNodeResult CheckCondition()` をオーバーライド
-5. BlackBoard機能を使用する場合は`blackBoard.SetValue()`/`GetValue()`を活用
-6. 動的条件チェックに対応する場合は`OnConditionFailed()`をオーバーライド
-7. `BTParser.cs` の `CreateNodeFromScript()` メソッドにケースを追加
-8. .btファイルで`Action NewScript { ... }`または`Condition NewScript { ... }`として使用（script属性不要）
+## 新しいスクリプトの追加手順（最新版）
+1. `Assets/ArcBT/Runtime/Actions/`、`Assets/ArcBT/Runtime/Conditions/`、または`Assets/ArcBT/Samples/RPGExample/`配下にC#スクリプトを作成（1ファイル1クラス）
+2. `ArcBT.Core.BTActionNode`または`ArcBT.Core.BTConditionNode`を継承
+3. **BTNode属性を追加**: `[BTNode("ScriptName")]` （NodeTypeは基底クラスから自動判定）
+4. `SetProperty(string key, string value)` メソッドをオーバーライド（パラメータは`string`型）
+5. `ExecuteAction()` または `protected override BTNodeResult CheckCondition()` をオーバーライド
+6. `Initialize(MonoBehaviour owner, BlackBoard blackBoard)` メソッドをオーバーライド
+7. BlackBoard機能を使用する場合は`blackBoard.SetValue()`/`GetValue()`を活用
+8. 動的条件チェックに対応する場合は`OnConditionFailed()`をオーバーライド
+9. **自動登録**: ソースジェネレーターが自動的に `{AssemblyName}.NodeRegistration.g.cs` を生成
+10. .btファイルで`Action ScriptName { ... }`または`Condition ScriptName { ... }`として使用（script属性不要）
+
+### BTNode属性の使用例
+```csharp
+[BTNode("SimpleAttack")]
+public class SimpleAttackAction : BTActionNode
+{
+    // NodeTypeは自動的にActionと判定される
+}
+
+[BTNode("EnemyDetection")]  
+public class EnemyDetectionCondition : BTConditionNode
+{
+    // NodeTypeは自動的にConditionと判定される
+}
+```
 
 ## 新機能の活用例
 

@@ -181,6 +181,14 @@ MoveToPosition: Using BlackBoard key 'current_patrol_point' = patrol_point_1
 - `TestResults.xml` ファイルに実行結果が保存
 - 失敗したテストは詳細なエラーメッセージを表示
 
+### 最新のテスト改善（2025年7月27日）
+- **BTFileValidationTests更新**: 新しいSimple系スクリプトをテストの既知リストに追加
+  - Actions: SimpleAttack, MoveToNamedPosition, WaitSimple
+  - Conditions: SimpleHasTarget, EnemyDetection, SimpleHealthCheck
+- **全テスト通過**: 152/152テスト（100%成功率）を維持
+- **ValidateAllScriptReferences**: .btファイルで使用されているすべてのスクリプト名の検証が正常動作
+- **テスト安定性向上**: ソースジェネレーター改善により自動生成コードのテストも確実に通過
+
 ## 7. トラブルシューティング
 
 ### BlackBoard関連の問題

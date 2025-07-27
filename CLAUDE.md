@@ -154,28 +154,30 @@ Unity プロジェクトは Unity エディタを通じてビルドされます�
 ### 新しいActionノード作成（ArcBT対応）
 1. `Assets/ArcBT/Runtime/Actions/` または `Assets/ArcBT/Samples/RPGExample/Actions/` に `[ActionName]Action.cs` を作成（1ファイル1クラス）
 2. `ArcBT.Core.BTActionNode` を継承
-3. `ExecuteAction()` メソッドをオーバーライド
-4. `SetProperty(string key, string value)` メソッドをオーバーライド（パラメータは`string`型）
-5. `Initialize(MonoBehaviour, BlackBoard)` メソッドをオーバーライド
-6. BlackBoardを活用して状態管理・データ共有を実装
-7. `OnConditionFailed()` で動的条件失敗時の処理を実装
-8. .btファイルで `Action ActionName { ... }` として使用（script属性不要）
-9. **リフレクション削除対応**:
-   - Runtimeノード: `BTStaticNodeRegistry.cs` に直接登録
-   - Samplesノード: `RPGNodeRegistration.cs` で自己登録（RuntimeInitializeOnLoadMethod使用）
-   - Healthアクセス: `IHealth` インターフェースを実装したコンポーネントを使用
+3. **BTNode属性を追加**: `[BTNode("ScriptName")]` （NodeTypeは基底クラスから自動判定）
+4. `ExecuteAction()` メソッドをオーバーライド
+5. `SetProperty(string key, string value)` メソッドをオーバーライド（パラメータは`string`型）
+6. `Initialize(MonoBehaviour, BlackBoard)` メソッドをオーバーライド
+7. BlackBoardを活用して状態管理・データ共有を実装
+8. `OnConditionFailed()` で動的条件失敗時の処理を実装
+9. .btファイルで `Action ActionName { ... }` として使用（script属性不要）
+10. **ソースジェネレーター自動対応**:
+    - BTNode属性により自動的に登録コードが生成される
+    - 各アセンブリで `{AssemblyName}.NodeRegistration.g.cs` が自動生成
+    - Healthアクセス: `IHealth` インターフェースを実装したコンポーネントを使用
 
 ### 新しいConditionノード作成（ArcBT対応）
 1. `Assets/ArcBT/Runtime/Conditions/` または `Assets/ArcBT/Samples/RPGExample/Conditions/` に `[ConditionName]Condition.cs` を作成（1ファイル1クラス）
 2. `ArcBT.Core.BTConditionNode` を継承
-3. `protected override BTNodeResult CheckCondition()` メソッドをオーバーライド（`protected`必須、戻り値は`BTNodeResult`）
-4. `SetProperty(string key, string value)` メソッドをオーバーライド（パラメータは`string`型）
-5. `Initialize(MonoBehaviour, BlackBoard)` メソッドをオーバーライド
-6. BlackBoardに状態を記録してデータ共有を実現
-7. .btファイルで `Condition ConditionName { ... }` として使用（script属性不要）
-8. **リフレクション削除対応**:
-   - Runtimeノード: `BTStaticNodeRegistry.cs` に直接登録
-   - Samplesノード: `RPGNodeRegistration.cs` で自己登録（RuntimeInitializeOnLoadMethod使用）
+3. **BTNode属性を追加**: `[BTNode("ScriptName")]` （NodeTypeは基底クラスから自動判定）
+4. `protected override BTNodeResult CheckCondition()` メソッドをオーバーライド（`protected`必須、戻り値は`BTNodeResult`）
+5. `SetProperty(string key, string value)` メソッドをオーバーライド（パラメータは`string`型）
+6. `Initialize(MonoBehaviour, BlackBoard)` メソッドをオーバーライド
+7. BlackBoardに状態を記録してデータ共有を実現
+8. .btファイルで `Condition ConditionName { ... }` として使用（script属性不要）
+9. **ソースジェネレーター自動対応**:
+   - BTNode属性により自動的に登録コードが生成される
+   - 各アセンブリで `{AssemblyName}.NodeRegistration.g.cs` が自動生成
 
 ### テストとデバッグ
 - **自動テスト実行**:
@@ -317,9 +319,15 @@ public class ExampleClass : BaseClass
 - `MoveToEnemyAction` - BlackBoardから敵位置を取得して移動
 - `AttackTargetAction` - BlackBoardの敵情報を使用して攻撃
 - `RandomWanderAction` - ランダムに徘徊するアクション
+- `SimpleAttackAction` - ExampleAI用のシンプルな攻撃アクション
+- `MoveToNamedPositionAction` - 名前付き位置への移動アクション
+- `WaitSimpleAction` - ExampleAI用のシンプルな待機アクション
 
 ### Condition Scripts  
 - `HasSharedEnemyInfoCondition` - BlackBoardに共有された敵情報があるかチェック
+- `SimpleHasTargetCondition` - ExampleAI用のシンプルなターゲット確認条件
+- `EnemyDetectionCondition` - ExampleAI用の敵検出条件
+- `SimpleHealthCheckCondition` - ExampleAI用のシンプルな体力チェック条件
 
 ### 最新の修正と改善
 
@@ -418,3 +426,16 @@ Unity → BehaviourTree → Quick Setup → Complex Example Test Environment
   - `RPGNodeRegistration.cs`: サンプルノードの自己登録パターン実装
 - **アセンブリ依存問題の解決**: Runtime/Samplesの分離を維持しつつ動的登録機能を提供
 - **テスト修正完了**: ログメッセージ形式の変更に伴う全テストの更新
+- **ソースジェネレーターの別アセンブリ完全対応**: ArcBT.Samples等の独立アセンブリでも自動動作を実現
+  - `compilation.AssemblyName`による実際のアセンブリ名自動認識
+  - `App.NodeRegistration.g.cs`等の適切なファイル名生成
+  - 無効な名前空間・アセンブリ名のサニタイズ機能追加
+  - 生成コードの構文エラー完全解消
+- **BTNode属性の大幅簡素化**: `[BTNode("ScriptName")]`のみで基底クラスから自動判定
+  - NodeType引数を削除し、BTActionNode/BTConditionNodeから自動判定
+  - 全BTNodeクラスの属性記述を統一形式に更新
+  - レガシーCustomActionNode/CustomConditionNodeクラスを削除
+- **新スクリプト追加とテスト対応**: ExampleAI用Simple系スクリプトの実装と検証
+  - Actions: SimpleAttack, MoveToNamedPosition, WaitSimple
+  - Conditions: SimpleHasTarget, EnemyDetection, SimpleHealthCheck
+  - BTFileValidationTestsの既知スクリプトリスト更新で全テスト通過

@@ -12,6 +12,8 @@ ArcBT is an elegant, extensible ArcBT framework for Unity with BlackBoard suppor
 - **BTLogger System**: High-performance conditional logging with categories and levels
 - **Extensible Architecture**: Easy to create custom Actions and Conditions
 - **Reflection-Free Design**: Static node registry for 10-100x performance improvement
+- **Source Generator**: Multi-assembly support with automatic node registration
+- **Simplified BTNode Attribute**: `[BTNode("ScriptName")]` with automatic type detection
 
 ### Included Components
 - **Core Nodes**: Sequence, Selector, Parallel composition nodes

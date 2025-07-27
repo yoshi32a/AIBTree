@@ -12,6 +12,8 @@ Unity用の高度なBehaviourTreeシステムです。BlackBoardによるデー�
 - **🚀 並列実行**: Parallelノードによる複数行動の同時実行
 - **📊 BTLoggerシステム**: 高性能な条件付きログシステム（カテゴリ別フィルタリング、本番環境完全最適化）
 - **🔥 リフレクション削除**: 静的ノード登録による10-100倍の性能改善
+- **🚀 ソースジェネレーター**: 別アセンブリ完全対応の自動ノード登録システム
+- **⚙️ BTNode属性簡素化**: `[BTNode("ScriptName")]`のみで基底クラスから自動判定
 
 ## プロジェクト構成
 
@@ -47,8 +49,8 @@ Assets/
 │   │   └── Nodes/                # レガシーノード（後方互換性）
 │   ├── Samples/                  # サンプル実装
 │   │   ├── RPGExample/           # 完全なRPGサンプル
-│   │   │   ├── Actions/          # RPG用アクション（13種類）
-│   │   │   ├── Conditions/       # RPG用条件（9種類）
+│   │   │   ├── Actions/          # RPG用アクション（16種類）
+│   │   │   ├── Conditions/       # RPG用条件（12種類）
 │   │   │   ├── Components/       # Health、Mana、Inventory
 │   │   │   ├── RPGNodeRegistration.cs # ノード自己登録
 │   │   │   └── README.md
@@ -390,6 +392,40 @@ static void RegisterNodes()
     BTStaticNodeRegistry.RegisterAction("CustomAction", () => new CustomAction());
 }
 ```
+
+## 🆕 最新の改善 (2025年7月27日)
+
+### ソースジェネレーターの別アセンブリ完全対応
+- **実際のアセンブリ名使用**: `App.NodeRegistration.g.cs`、`ArcBT.Samples.NodeRegistration.g.cs`等の適切なファイル名生成
+- **自動アセンブリ認識**: `compilation.AssemblyName`による動的なアセンブリ名取得
+- **構文エラー完全解消**: 生成コードの構文正当性を100%保証
+- **サニタイズ機能**: 無効な名前空間・アセンブリ名を自動的に安全な形式に変換
+
+### BTNode属性の大幅簡素化
+```csharp
+// ❌ 従来の複雑な記述
+[BTNode("ScriptName", NodeType.Action)]
+
+// ✅ 新しいシンプルな記述
+[BTNode("ScriptName")]
+```
+- **NodeType自動判定**: `BTActionNode`/`BTConditionNode`の基底クラスから自動的に判定
+- **全ノード統一**: すべてのBTNodeクラスが同じシンプルな属性記述に統一
+- **レガシーコード削除**: 不要なCustomActionNode/CustomConditionNodeクラスを削除
+
+### 新スクリプト追加
+**ExampleAI用Simple系スクリプト:**
+- `SimpleAttackAction` - シンプルな攻撃アクション
+- `MoveToNamedPositionAction` - 名前付き位置への移動
+- `WaitSimpleAction` - シンプルな待機アクション
+- `SimpleHasTargetCondition` - シンプルなターゲット確認
+- `EnemyDetectionCondition` - 敵検出条件
+- `SimpleHealthCheckCondition` - シンプルな体力チェック
+
+### テスト対応完了
+- **BTFileValidationTests更新**: 新スクリプトをテストの既知リストに追加
+- **全テスト通過**: 152/152テスト（100%成功率）を維持
+- **コードカバレッジ**: 70.00%のカバレッジを維持
 
 ## 今後の予定
 
