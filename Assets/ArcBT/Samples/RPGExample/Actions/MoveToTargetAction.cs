@@ -5,7 +5,7 @@ using UnityEngine;
 namespace ArcBT.Samples.RPG.Actions
 {
     /// <summary>ターゲットに移動するアクション</summary>
-    [BTNode("MoveToTarget", NodeType.Action)]
+    [BTNode("MoveToTarget")]
     public class MoveToTargetAction : BTActionNode    {
         string moveType = "normal";
         float speed = 20.0f; // 高速化（検証時間短縮）

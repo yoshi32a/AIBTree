@@ -5,7 +5,7 @@ using UnityEngine;
 namespace ArcBT.Samples.RPG.Actions
 {
     /// <summary>アイテムを使用するアクション</summary>
-    [BTNode("UseItem", NodeType.Action)]
+    [BTNode("UseItem")]
     public class UseItemAction : BTActionNode    {
         string itemType = "healing_potion";
 

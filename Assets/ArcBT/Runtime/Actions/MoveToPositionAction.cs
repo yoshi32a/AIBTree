@@ -5,8 +5,7 @@ using UnityEngine;
 namespace ArcBT.Actions
 {
     [Serializable]
-    [BTScript("MoveToPosition")]
-    [BTNode("MoveToPosition", NodeType.Action)]
+    [BTNode("MoveToPosition")]
     public class MoveToPositionAction : BTActionNode
     {
         [SerializeField] string target;

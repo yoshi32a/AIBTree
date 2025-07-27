@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace ArcBT.Actions
 {
-    [BTNode("EnvironmentScan", NodeType.Action)]
+    [BTNode("EnvironmentScan")]
     public class EnvironmentScanAction : BTActionNode    {
         float scanRange = 10f;
         string[] scanTags = { "Enemy", "Item", "Interactable" };

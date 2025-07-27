@@ -5,7 +5,7 @@ using UnityEngine;
 namespace ArcBT.Samples.RPG.Actions
 {
     /// <summary>BlackBoardから敵位置を取得して移動するアクション</summary>
-    [BTNode("MoveToEnemy", NodeType.Action)]
+    [BTNode("MoveToEnemy")]
     public class MoveToEnemyAction : BTActionNode    {
         float speed = 15.0f;
         float tolerance = 1.0f;

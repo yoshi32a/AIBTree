@@ -14,19 +14,17 @@ namespace ArcBT.Core
         public string ScriptName { get; }
         
         /// <summary>
-        /// ノードタイプ（Action/Condition）
-        /// </summary>
-        public NodeType NodeType { get; }
-        
-        /// <summary>
         /// アセンブリ名（どのアセンブリの登録コードに含めるか）
         /// </summary>
         public string AssemblyName { get; set; }
         
-        public BTNodeAttribute(string scriptName, NodeType nodeType)
+        /// <summary>
+        /// BTNodeAttribute コンストラクタ（NodeTypeは基底クラスから自動判定）
+        /// </summary>
+        /// <param name="scriptName">.btファイルで使用するスクリプト名</param>
+        public BTNodeAttribute(string scriptName)
         {
             ScriptName = scriptName;
-            NodeType = nodeType;
         }
     }
     

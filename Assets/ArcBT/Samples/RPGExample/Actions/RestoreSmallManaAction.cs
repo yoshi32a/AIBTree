@@ -5,7 +5,7 @@ using UnityEngine;
 namespace ArcBT.Samples.RPG.Actions
 {
     /// <summary>少量のマナを回復するアクション</summary>
-    [BTNode("RestoreSmallMana", NodeType.Action)]
+    [BTNode("RestoreSmallMana")]
     public class RestoreSmallManaAction : BTActionNode    {
         int manaGain = 10;
 

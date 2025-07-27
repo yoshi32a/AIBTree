@@ -1,9 +1,9 @@
-using UnityEngine;
 using ArcBT.Core;
+using UnityEngine;
 
 namespace ArcBT.Conditions
 {
-    [BTScript("EnemyHealthCheck")]
+    [BTNode("EnemyHealthCheck")]
     public class EnemyHealthCheckCondition : BTConditionNode
     {
         float minHealthPercent = 50f;

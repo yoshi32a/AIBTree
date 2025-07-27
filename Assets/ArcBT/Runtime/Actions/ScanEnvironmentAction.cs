@@ -5,7 +5,7 @@ using UnityEngine;
 namespace ArcBT.Actions
 {
     /// <summary>環境をスキャンするアクション</summary>
-    [BTNode("ScanEnvironment", NodeType.Action)]
+    [BTNode("ScanEnvironment")]
     public class ScanEnvironmentAction : BTActionNode    {
         float scanInterval = 2.0f;
         float scanRadius = 15.0f;

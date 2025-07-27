@@ -1,12 +1,13 @@
-using UnityEngine;
+using System;
 using ArcBT.Core;
 using ArcBT.Samples.RPG.Components;
+using UnityEngine;
 
 namespace ArcBT.Samples.RPG.Conditions
 {
     /// <summary>アイテム所持状態をチェックする条件</summary>
-    [System.Serializable]
-    [BTScript("HasItem")]
+    [Serializable]
+    [BTNode("HasItem")]
     public class HasItemCondition : BTConditionNode
     {
         [SerializeField] string itemType;

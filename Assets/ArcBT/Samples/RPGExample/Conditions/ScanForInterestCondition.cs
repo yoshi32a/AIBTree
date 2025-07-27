@@ -1,10 +1,12 @@
-using UnityEngine;
-using ArcBT.Core;
+using System;
 using System.Collections.Generic;
+using ArcBT.Core;
+using UnityEngine;
 
 namespace ArcBT.Samples.RPG.Conditions
 {
     /// <summary>興味のあるオブジェクトをスキャンする条件</summary>
+    [BTNode("ScanForInterest")]
     public class ScanForInterestCondition : BTConditionNode
     {
         float scanRadius = 12.0f;
@@ -14,7 +16,7 @@ namespace ArcBT.Samples.RPG.Conditions
             switch (key)
             {
                 case "scan_radius":
-                    scanRadius = System.Convert.ToSingle(value);
+                    scanRadius = Convert.ToSingle(value);
                     break;
             }
         }
@@ -51,10 +53,10 @@ namespace ArcBT.Samples.RPG.Conditions
             if (interestingObjects.Count > 0)
             {
                 // 最近調査したオブジェクトのリストを取得
-                var recentlyInvestigated = blackBoard.GetValue<System.Collections.Generic.HashSet<string>>("recently_investigated");
+                var recentlyInvestigated = blackBoard.GetValue<HashSet<string>>("recently_investigated");
                 if (recentlyInvestigated == null)
                 {
-                    recentlyInvestigated = new System.Collections.Generic.HashSet<string>();
+                    recentlyInvestigated = new HashSet<string>();
                     blackBoard.SetValue("recently_investigated", recentlyInvestigated);
                 }
 
@@ -104,13 +106,13 @@ namespace ArcBT.Samples.RPG.Conditions
             {
                 return component.CompareTag(tagName);
             }
-            catch (UnityEngine.UnityException)
+            catch (UnityException)
             {
                 // Unity固有の例外（タグ未定義など）をキャッチ
                 Debug.LogWarning($"Tag '{tagName}' is not defined in Unity Tag Manager.");
                 return false;
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 // その他の例外
                 Debug.LogWarning($"Unexpected error checking tag '{tagName}': {ex.Message}");

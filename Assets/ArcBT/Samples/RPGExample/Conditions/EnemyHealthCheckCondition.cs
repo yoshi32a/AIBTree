@@ -1,10 +1,12 @@
-using UnityEngine;
+using System;
 using ArcBT.Core;
 using ArcBT.Samples.RPG.Components;
+using UnityEngine;
 
 namespace ArcBT.Samples.RPG.Conditions
 {
     /// <summary>敵の体力をチェックする条件</summary>
+    [BTNode("EnemyHealthCheck")]
     public class EnemyHealthCheckCondition : BTConditionNode
     {
         int minHealth = 80;
@@ -14,7 +16,7 @@ namespace ArcBT.Samples.RPG.Conditions
             switch (key)
             {
                 case "min_health":
-                    minHealth = System.Convert.ToInt32(value);
+                    minHealth = Convert.ToInt32(value);
                     break;
             }
         }

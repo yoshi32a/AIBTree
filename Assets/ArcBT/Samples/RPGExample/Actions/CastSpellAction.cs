@@ -6,7 +6,7 @@ using UnityEngine;
 namespace ArcBT.Samples.RPG.Actions
 {
     /// <summary>魔法を詠唱するアクション</summary>
-    [BTNode("CastSpell", NodeType.Action)]
+    [BTNode("CastSpell")]
     public class CastSpellAction : BTActionNode    {
         string spellName = "fireball";
         int damage = 40;

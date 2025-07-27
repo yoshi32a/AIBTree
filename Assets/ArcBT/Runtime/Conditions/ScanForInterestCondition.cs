@@ -1,9 +1,9 @@
-using UnityEngine;
 using ArcBT.Core;
+using UnityEngine;
 
 namespace ArcBT.Conditions
 {
-    [BTScript("ScanForInterest")]
+    [BTNode("ScanForInterest")]
     public class ScanForInterestCondition : BTConditionNode
     {
         float scanRange = 5f;

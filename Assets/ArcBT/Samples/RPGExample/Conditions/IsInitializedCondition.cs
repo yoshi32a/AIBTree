@@ -1,10 +1,10 @@
-using UnityEngine;
 using ArcBT.Core;
+using UnityEngine;
 
 namespace ArcBT.Samples.RPG.Conditions
 {
     /// <summary>初期化状態をチェックする条件</summary>
-    [BTScript("IsInitialized")]
+    [BTNode("IsInitialized")]
     public class IsInitializedCondition : BTConditionNode
     {
         protected override BTNodeResult CheckCondition()

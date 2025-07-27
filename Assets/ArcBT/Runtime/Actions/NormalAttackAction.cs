@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace ArcBT.Actions
 {
-    [BTNode("NormalAttack", NodeType.Action)]
+    [BTNode("NormalAttack")]
     public class NormalAttackAction : BTActionNode    {
         float damage = 10f;
         float range = 2f;

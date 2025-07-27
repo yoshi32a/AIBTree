@@ -1,8 +1,9 @@
 #if UNITY_EDITOR
-using UnityEngine;
-using UnityEditor;
+using System;
 using System.Linq;
 using ArcBT.Core;
+using UnityEditor;
+using UnityEngine;
 
 namespace ArcBT.Editor
 {
@@ -74,7 +75,7 @@ namespace ArcBT.Editor
         {
             Debug.Log("=== Classes with BTNode Attribute ===");
             
-            var assemblies = System.AppDomain.CurrentDomain.GetAssemblies();
+            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
             int count = 0;
             
             foreach (var assembly in assemblies)
@@ -93,11 +94,23 @@ namespace ArcBT.Editor
                         if (btNodeAttr != null)
                         {
                             count++;
-                            Debug.Log($"[{btNodeAttr.AssemblyName ?? "ArcBT"}] {type.FullName} -> Script: '{btNodeAttr.ScriptName}', Type: {btNodeAttr.NodeType}");
+                            
+                            // 基底クラスからNodeTypeを自動判定
+                            string nodeType = "Unknown";
+                            if (typeof(BTActionNode).IsAssignableFrom(type))
+                            {
+                                nodeType = "Action";
+                            }
+                            else if (typeof(BTConditionNode).IsAssignableFrom(type))
+                            {
+                                nodeType = "Condition";
+                            }
+                            
+                            Debug.Log($"[{btNodeAttr.AssemblyName ?? "ArcBT"}] {type.FullName} -> Script: '{btNodeAttr.ScriptName}', Type: {nodeType} (auto-detected)");
                         }
                     }
                 }
-                catch (System.Exception e)
+                catch (Exception e)
                 {
                     Debug.LogWarning($"Error reading assembly {assembly.FullName}: {e.Message}");
                 }

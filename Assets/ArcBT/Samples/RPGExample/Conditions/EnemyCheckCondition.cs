@@ -1,11 +1,12 @@
-using UnityEngine;
+using System;
 using ArcBT.Core;
+using UnityEngine;
 
 namespace ArcBT.Samples.RPG.Conditions
 {
     /// <summary>敵検出条件</summary>
-    [System.Serializable]
-    [BTScript("EnemyCheck")]
+    [Serializable]
+    [BTNode("EnemyCheck")]
     public class EnemyCheckCondition : BTConditionNode
     {
         [SerializeField] float detectionRange = 5.0f;

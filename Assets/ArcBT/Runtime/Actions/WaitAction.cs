@@ -1,12 +1,12 @@
-using UnityEngine;
+using System;
 using ArcBT.Core;
+using UnityEngine;
 
 namespace ArcBT.Actions
 {
     /// <summary>指定時間待機するアクション</summary>
-    [System.Serializable]
-    [BTScript("Wait")]
-    [BTNode("Wait", NodeType.Action)]
+    [Serializable]
+    [BTNode("Wait")]
     public class WaitAction : BTActionNode
     {
         [SerializeField] float duration = 1.0f;

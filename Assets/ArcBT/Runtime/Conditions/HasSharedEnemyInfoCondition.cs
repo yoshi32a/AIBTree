@@ -1,11 +1,10 @@
-using UnityEngine;
 using ArcBT.Core;
+using UnityEngine;
 
 namespace ArcBT.Conditions
 {
     /// <summary>BlackBoardに共有された敵情報があるかチェックする条件</summary>
-    [BTScript("HasSharedEnemyInfo")]
-    [BTNode("HasSharedEnemyInfo", NodeType.Condition)]
+    [BTNode("HasSharedEnemyInfo")]
     public class HasSharedEnemyInfoCondition : BTConditionNode
     {
         string blackBoardKey = "has_enemy_info";

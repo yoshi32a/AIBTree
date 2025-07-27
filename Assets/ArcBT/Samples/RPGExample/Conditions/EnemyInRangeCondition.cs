@@ -1,10 +1,11 @@
-using UnityEngine;
+using System;
 using ArcBT.Core;
+using UnityEngine;
 
 namespace ArcBT.Samples.RPG.Conditions
 {
     /// <summary>攻撃範囲内に敵がいるかチェックする条件</summary>
-    [BTScript("EnemyInRange")]
+    [BTNode("EnemyInRange")]
     public class EnemyInRangeCondition : BTConditionNode
     {
         float attackRange = 5.0f;
@@ -14,7 +15,7 @@ namespace ArcBT.Samples.RPG.Conditions
             switch (key)
             {
                 case "attack_range":
-                    attackRange = System.Convert.ToSingle(value);
+                    attackRange = Convert.ToSingle(value);
                     break;
             }
         }

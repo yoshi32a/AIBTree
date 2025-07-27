@@ -1,0 +1,30 @@
+tree ExampleAI {
+    Selector root {
+        Sequence combat {
+            Condition SimpleHasTarget {}
+            Condition EnemyDetection {
+                detection_range: 5.0
+            }
+            Action SimpleAttack {
+                damage: 25
+                attack_range: 2.0
+            }
+        }
+        Sequence patrol {
+            Condition SimpleHealthCheck {
+                min_health: 30
+            }
+            Action MoveToNamedPosition {
+                target: "PatrolPoint1"
+                speed: 3.5
+                tolerance: 0.5
+            }
+            Action WaitSimple {
+                duration: 2.0
+            }
+        }
+        Action WaitSimple {
+            duration: 1.0
+        }
+    }
+}

@@ -1,9 +1,9 @@
-using UnityEngine;
 using ArcBT.Core;
+using UnityEngine;
 
 namespace ArcBT.Conditions
 {
-    [BTScript("HasTarget")]
+    [BTNode("HasTarget")]
     public class HasTargetCondition : BTConditionNode
     {
         string targetTag = "Enemy";

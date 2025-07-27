@@ -1,10 +1,14 @@
-using UnityEngine;
+using System;
+using System.Collections.Generic;
 using ArcBT.Core;
 using ArcBT.Samples.RPG.Components;
+using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace ArcBT.Samples.RPG.Actions
 {
     /// <summary>オブジェクトとの相互作用アクション</summary>
+    [BTNode("Interact")]
     public class InteractAction : BTActionNode
     {
         string interactionType = "examine";
@@ -18,7 +22,7 @@ namespace ArcBT.Samples.RPG.Actions
                     interactionType = value;
                     break;
                 case "interaction_range":
-                    interactionRange = System.Convert.ToSingle(value);
+                    interactionRange = Convert.ToSingle(value);
                     break;
             }
         }
@@ -80,10 +84,10 @@ namespace ArcBT.Samples.RPG.Actions
                 blackBoard.SetValue("last_interaction_time", Time.time);
 
                 // 調査済みオブジェクトとして記録（重複調査を防ぐため）
-                var recentlyInvestigated = blackBoard.GetValue<System.Collections.Generic.HashSet<string>>("recently_investigated");
+                var recentlyInvestigated = blackBoard.GetValue<HashSet<string>>("recently_investigated");
                 if (recentlyInvestigated == null)
                 {
-                    recentlyInvestigated = new System.Collections.Generic.HashSet<string>();
+                    recentlyInvestigated = new HashSet<string>();
                     blackBoard.SetValue("recently_investigated", recentlyInvestigated);
                 }
                 string objKey = $"{target.name}_{target.transform.position}";

@@ -5,7 +5,7 @@ using UnityEngine;
 namespace ArcBT.Samples.RPG.Actions
 {
     /// <summary>リソースを初期化するアクション</summary>
-    [BTNode("InitializeResources", NodeType.Action)]
+    [BTNode("InitializeResources")]
     public class InitializeResourcesAction : BTActionNode    {
         protected override BTNodeResult ExecuteAction()
         {

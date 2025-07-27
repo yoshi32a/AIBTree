@@ -1,10 +1,11 @@
-using UnityEngine;
+using System;
 using ArcBT.Core;
+using UnityEngine;
 
 namespace ArcBT.Samples.RPG.Conditions
 {
     /// <summary>マナリソースをチェックする条件</summary>
-    [BTScript("CheckManaResource")]
+    [BTNode("CheckManaResource")]
     public class CheckManaResourceCondition : BTConditionNode
     {
         int minMana = 50;
@@ -14,7 +15,7 @@ namespace ArcBT.Samples.RPG.Conditions
             switch (key)
             {
                 case "min_mana":
-                    minMana = System.Convert.ToInt32(value);
+                    minMana = Convert.ToInt32(value);
                     break;
             }
         }

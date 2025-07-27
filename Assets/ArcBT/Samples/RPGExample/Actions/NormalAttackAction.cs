@@ -1,10 +1,12 @@
-using UnityEngine;
+using System;
 using ArcBT.Core;
 using ArcBT.Samples.RPG.Components;
+using UnityEngine;
 
 namespace ArcBT.Samples.RPG.Actions
 {
     /// <summary>通常攻撃アクション</summary>
+    [BTNode("NormalAttack")]
     public class NormalAttackAction : BTActionNode
     {
         int damage = 15;
@@ -16,10 +18,10 @@ namespace ArcBT.Samples.RPG.Actions
             switch (key)
             {
                 case "damage":
-                    damage = System.Convert.ToInt32(value);
+                    damage = Convert.ToInt32(value);
                     break;
                 case "cooldown":
-                    cooldown = System.Convert.ToSingle(value);
+                    cooldown = Convert.ToSingle(value);
                     break;
             }
         }

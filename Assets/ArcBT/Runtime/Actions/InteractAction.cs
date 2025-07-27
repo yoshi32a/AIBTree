@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace ArcBT.Actions
 {
-    [BTNode("Interact", NodeType.Action)]
+    [BTNode("Interact")]
     public class InteractAction : BTActionNode    {
         string targetTag = "Interactable";
         float interactionRange = 2f;

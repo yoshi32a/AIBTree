@@ -5,7 +5,7 @@ using UnityEngine;
 namespace ArcBT.Samples.RPG.Actions
 {
     /// <summary>安全な場所に逃走するアクション</summary>
-    [BTNode("FleeToSafety", NodeType.Action)]
+    [BTNode("FleeToSafety")]
     public class FleeToSafetyAction : BTActionNode    {
         float minDistance = 20.0f;
         float speedMultiplier = 1.5f;

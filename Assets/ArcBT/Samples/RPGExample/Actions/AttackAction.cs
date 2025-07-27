@@ -6,7 +6,7 @@ using UnityEngine;
 namespace ArcBT.Samples.RPG.Actions
 {
     /// <summary>汎用攻撃アクション</summary>
-    [BTNode("Attack", NodeType.Action)]
+    [BTNode("Attack")]
     public class AttackAction : BTActionNode    {
         int damage = 25;
         float attackRange = 2.0f;

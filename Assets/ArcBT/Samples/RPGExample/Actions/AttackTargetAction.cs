@@ -7,7 +7,7 @@ using Object = UnityEngine.Object;
 namespace ArcBT.Samples.RPG.Actions
 {
     /// <summary>BlackBoardの敵情報を使用して攻撃するアクション</summary>
-    [BTNode("AttackTarget", NodeType.Action)]
+    [BTNode("AttackTarget")]
     public class AttackTargetAction : BTActionNode    {
         int damage = 25;
         float attackRange = 2.0f;

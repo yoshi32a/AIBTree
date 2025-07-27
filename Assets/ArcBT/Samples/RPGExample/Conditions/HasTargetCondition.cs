@@ -1,9 +1,10 @@
-using UnityEngine;
 using ArcBT.Core;
+using UnityEngine;
 
 namespace ArcBT.Samples.RPG.Conditions
 {
     /// <summary>ターゲットの存在をチェックする条件</summary>
+    [BTNode("HasTarget")]
     public class HasTargetCondition : BTConditionNode
     {
         protected override BTNodeResult CheckCondition()

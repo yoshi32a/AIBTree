@@ -6,7 +6,7 @@ using Random = UnityEngine.Random;
 namespace ArcBT.Samples.RPG
 {
     /// <summary>ランダムに徘徊するアクション</summary>
-    [BTNode("RandomWander", NodeType.Action)]
+    [BTNode("RandomWander")]
     public class RandomWanderAction : BTActionNode    {
         float wanderRadius = 10.0f;
         float speed = 25.0f; // 大幅高速化（検証時間短縮）

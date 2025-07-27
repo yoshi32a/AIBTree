@@ -1,10 +1,12 @@
-using UnityEngine;
+using System;
 using ArcBT.Core;
 using ArcBT.Samples.RPG.Components;
+using UnityEngine;
 
 namespace ArcBT.Samples.RPG.Actions
 {
     /// <summary>敵を検索するアクション</summary>
+    [BTNode("SearchForEnemy")]
     public class SearchForEnemyAction : BTActionNode
     {
         float searchRadius = 15.0f;
@@ -17,10 +19,10 @@ namespace ArcBT.Samples.RPG.Actions
             switch (key)
             {
                 case "search_radius":
-                    searchRadius = System.Convert.ToSingle(value);
+                    searchRadius = Convert.ToSingle(value);
                     break;
                 case "search_duration":
-                    searchDuration = System.Convert.ToSingle(value);
+                    searchDuration = Convert.ToSingle(value);
                     break;
             }
         }

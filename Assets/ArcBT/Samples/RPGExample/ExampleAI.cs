@@ -1,5 +1,5 @@
-using UnityEngine;
 using ArcBT.Core;
+using UnityEngine;
 
 namespace ArcBT.Samples.RPG
 {
@@ -33,8 +33,8 @@ namespace ArcBT.Samples.RPG
 
             if (treeRunner != null)
             {
-                // example.btファイルを読み込み
-                treeRunner.LoadBehaviourTree("example.bt");
+                // example_ai.btファイルを読み込み
+                treeRunner.LoadBehaviourTree("example_ai.bt");
             }
         }
 
