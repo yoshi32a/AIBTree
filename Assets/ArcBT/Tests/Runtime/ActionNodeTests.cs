@@ -6,6 +6,7 @@ using ArcBT.Actions;
 using ArcBT.Logger;
 using ArcBT.Samples.RPG;
 using ArcBT.Samples.RPG.Actions;
+using ArcBT.TagSystem;
 
 namespace ArcBT.Tests
 {
@@ -309,7 +310,8 @@ namespace ArcBT.Tests
         {
             // Arrange
             var enemyObj = new GameObject("Enemy");
-            enemyObj.tag = "Enemy"; // タグを設定（AttackEnemyActionがFindGameObjectsWithTagを使用）
+            var enemyTagComponent = enemyObj.AddComponent<GameplayTagComponent>();
+            enemyTagComponent.AddTag(new GameplayTag("Character.Enemy")); // GameplayTagを設定
             var action = new AttackEnemyAction();
 
             action.SetProperty("cooldown", "0.0"); // クールダウンを0に設定

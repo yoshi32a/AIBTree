@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using ArcBT.Core;
 using ArcBT.Logger;
 using ArcBT.Samples.RPG.Components;
+using ArcBT.TagSystem;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -108,7 +109,7 @@ namespace ArcBT.Samples.RPG.Actions
         {
             // オブジェクトを調査
             blackBoard.SetValue("examined_object", target.name);
-            blackBoard.SetValue("object_type", target.tag);
+            blackBoard.SetValue("object_type", GetGameplayTagsString(target));
             blackBoard.SetValue("object_position", target.transform.position);
             return true;
         }
@@ -159,6 +160,19 @@ namespace ArcBT.Samples.RPG.Actions
             // デフォルトインタラクション
             blackBoard.SetValue("interacted_with", target.name);
             return true;
+        }
+
+        /// <summary>
+        /// GameObjectのGameplayTagを文字列として取得
+        /// </summary>
+        string GetGameplayTagsString(GameObject gameObject)
+        {
+            var tagComponent = gameObject.GetComponent<GameplayTagComponent>();
+            if (tagComponent != null && tagComponent.OwnedTags.Tags.Count > 0)
+            {
+                return string.Join(", ", tagComponent.OwnedTags.Tags);
+            }
+            return "None";
         }
     }
 

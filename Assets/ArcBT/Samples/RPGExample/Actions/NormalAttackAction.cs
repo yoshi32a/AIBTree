@@ -1,6 +1,7 @@
 using ArcBT.Core;
 using ArcBT.Logger;
 using ArcBT.Samples.RPG.Interfaces;
+using ArcBT.TagSystem;
 using UnityEngine;
 
 namespace ArcBT.Samples.RPG.Actions
@@ -26,7 +27,7 @@ namespace ArcBT.Samples.RPG.Actions
 
         protected override BTNodeResult ExecuteAction()
         {
-            var enemies = GameObject.FindGameObjectsWithTag("Enemy");
+            var enemies = GameplayTagManager.FindGameObjectsWithTag("Character.Enemy");
             GameObject nearestEnemy = null;
             var nearestDistance = float.MaxValue;
 

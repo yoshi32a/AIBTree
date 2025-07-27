@@ -76,12 +76,14 @@ Condition ScriptName {
 - `scan_radius: 15.0` - スキャンの範囲（ScanEnvironment用）
 - `attack_range: 2.0` - 攻撃範囲（AttackTarget用）
 - `wander_radius: 10.0` - 徘徨範囲（RandomWander用）
+- `tolerance: 0.5` - 目標地点への到達判定距離
 
 ### Condition専用プロパティ
 - `min_health: 50` - 最小体力しきい値
 - `detection_range: 10.0` - 検出範囲
 - `bb_key: "key_name"` - BlackBoardのキー名（HasSharedEnemyInfo用）
 - `min_mana: 30` - 最小マナ量（未実装）
+- `condition: "key1 >= value"` - BlackBoard値の比較式（CompareBlackBoard用）
 
 ### Parallel専用プロパティ
 - `success_policy: "require_one"` - 成功条件（require_one/require_all）
@@ -100,6 +102,18 @@ blackBoard.SetValue("player_health", 75);
 int health = blackBoard.GetValue<int>("player_health", 100);
 ```
 
+```bt
+# .btファイルでのBlackBoard操作
+Action SetBlackBoard {
+    # 自動型判定される
+    health: 100          # int
+    speed: 5.5          # float
+    is_active: true     # bool
+    position: "(10,0,5)" # Vector3
+    name: "Player1"     # string
+}
+```
+
 ### 2. 動的条件チェック
 - Action実行中に条件が変化した場合、即座に停止
 - SequenceノードでConditionとActionを並べると自動的に監視関係が設定される
@@ -114,6 +128,39 @@ Sequence patrol_with_health_check {
         target: "patrol_point"
         speed: 3.0
     }
+}
+```
+
+### 3. CompareBlackBoard条件ノード
+BlackBoard内の値を比較する条件ノード。柔軟な比較演算子をサポート。
+
+```bt
+# 基本的な使い方
+Condition CompareBlackBoard {
+    condition: "current_health <= 20"
+}
+
+# 使用可能な演算子
+# - == : 等しい
+# - != : 等しくない
+# - > : より大きい
+# - < : より小さい
+# - >= : 以上
+# - <= : 以下
+
+# BlackBoardのキー同士の比較
+Condition CompareBlackBoard {
+    condition: "player_health < enemy_health"
+}
+
+# 数値との比較
+Condition CompareBlackBoard {
+    condition: "mana_points >= 50"
+}
+
+# 文字列との比較（引用符付き）
+Condition CompareBlackBoard {
+    condition: "ai_state == \"attacking\""
 }
 ```
 
@@ -146,6 +193,8 @@ Sequence patrol_with_health_check {
 - `Attack` - 汎用攻撃アクション
 - `InitializeResources` - リソース初期化
 - `RestoreSmallMana` - 少量マナ回復
+- `SetBlackBoard` - BlackBoardに値を設定（自動型判定：int、float、bool、Vector3、string）
+- `Log` - ログ出力（level、message、include_blackboard、blackboard_key対応）
 
 #### ExampleAI用Simple系アクション
 - `SimpleAttack` - ExampleAI用のシンプルな攻撃アクション
@@ -157,17 +206,96 @@ Sequence patrol_with_health_check {
 - `EnemyCheck` - 敵検出
 - `HasItem` - アイテム所持確認
 - `HasSharedEnemyInfo` - BlackBoardに共有された敵情報の有無をチェック
-- `HasTarget` - ターゲット所持確認（未実装）
+- `CompareBlackBoard` - BlackBoard内の値を比較（condition式で指定）
+- `HasTarget` - ターゲット所持確認
 - `HasMana` - マナ量確認（RPGサンプルで実装済み）
 - `IsInitialized` - 初期化状態確認（RPGサンプルで実装済み）
 - `EnemyHealthCheck` - 敵の体力確認（RPGサンプルで実装済み）
+- `EnemyInRange` - 攻撃範囲内に敵がいるかチェック（RPGサンプルで実装済み）
 - `CheckManaResource` - マナリソースチェック
 - `CheckAlertFlag` - アラート状態フラグチェック
+- `DistanceCheck` - 3D距離チェック（target/target_tag、distance式（"<= 5.0"等）、use_blackboard対応）
+- `Distance2DCheck` - 2D距離チェック（Y軸無視、target/target_tag、distance式、use_blackboard対応）
+- `Random` - 確率判定（probability: 0.0～1.0）
+- `ScanForInterest` - 興味のあるオブジェクトをスキャン
 
 #### ExampleAI用Simple系条件
 - `SimpleHasTarget` - ExampleAI用のシンプルなターゲット確認条件
 - `EnemyDetection` - ExampleAI用の敵検出条件
 - `SimpleHealthCheck` - ExampleAI用のシンプルな体力チェック条件
+
+### 距離チェック条件の使用例
+
+```bt
+# ターゲットが5メートル以内にいるか
+Condition DistanceCheck {
+    target: "Player"
+    distance: "<= 5.0"
+}
+
+# タグで検索し、10メートルより遠いか（2D距離）
+Condition Distance2DCheck {
+    target_tag: "Enemy"
+    distance: "> 10.0"
+}
+
+# BlackBoardの位置を使用
+Condition DistanceCheck {
+    use_blackboard: true
+    blackboard_position_key: "enemy_position"
+    distance: "<= 3.0"
+}
+```
+
+### Decorator用スクリプト
+デコレーターは子ノードの実行を制御・修飾するノードです。
+
+- `Timeout` - タイムアウト処理（timeout、success_on_timeout対応）
+- `Repeat` - 繰り返し実行（count、stop_on_failure、reset_child対応）
+- `Retry` - リトライ処理（max_retries、retry_delay対応）
+- `Inverter` - 結果反転（成功→失敗、失敗→成功）
+
+#### 使用例
+```bt
+# タイムアウト付きアクション
+Timeout escape_with_timeout {
+    timeout: 8.0
+    success_on_timeout: false
+    
+    Action MoveToPosition {
+        target: "SafeZone"
+        speed: 8.0
+    }
+}
+
+# 5回繰り返し（失敗で中断）
+Repeat combat_loop {
+    count: 5
+    stop_on_failure: true
+    reset_child: true
+    
+    Action AttackEnemy {
+        damage: 30
+    }
+}
+
+# 3回までリトライ
+Retry escape_attempt {
+    max_retries: 3
+    retry_delay: 1.5
+    
+    Action FleeToSafety {
+        target: "SafeZone"
+    }
+}
+
+# 条件を反転
+Inverter no_enemies {
+    Condition HasTarget {
+        target_tag: "Enemy"
+    }
+}
+```
 
 ## リフレクション削除による高速化
 

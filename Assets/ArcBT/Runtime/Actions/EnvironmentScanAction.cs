@@ -1,5 +1,6 @@
 using ArcBT.Core;
 using ArcBT.Logger;
+using ArcBT.TagSystem;
 using UnityEngine;
 
 namespace ArcBT.Actions
@@ -8,7 +9,7 @@ namespace ArcBT.Actions
     public class EnvironmentScanAction : BTActionNode
     {
         float scanRange = 10f;
-        string[] scanTags = { "Enemy", "Item", "Interactable" };
+        GameplayTag[] scanTags = { "Character.Enemy", "Object.Item", "Object.Interactable" };
 
         public override void SetProperty(string key, string value)
         {
@@ -20,12 +21,12 @@ namespace ArcBT.Actions
                     break;
                 case "tags":
                 case "scan_tags":
-                    scanTags = value.Split(',');
-                    for (var i = 0; i < scanTags.Length; i++)
+                    var tagStrings = value.Split(',');
+                    scanTags = new GameplayTag[tagStrings.Length];
+                    for (var i = 0; i < tagStrings.Length; i++)
                     {
-                        scanTags[i] = scanTags[i].Trim();
+                        scanTags[i] = new GameplayTag(tagStrings[i].Trim());
                     }
-
                     break;
             }
         }
@@ -36,7 +37,7 @@ namespace ArcBT.Actions
 
             foreach (var tag in scanTags)
             {
-                var objects = GameObject.FindGameObjectsWithTag(tag);
+                var objects = GameplayTagManager.FindGameObjectsWithTag(tag);
 
                 foreach (var obj in objects)
                 {
@@ -48,7 +49,7 @@ namespace ArcBT.Actions
                         // BlackBoardに情報を記録
                         if (blackBoard != null)
                         {
-                            var key = $"scanned_{tag.ToLower()}";
+                            var key = $"scanned_{tag.TagName.ToLower().Replace(".", "_")}";
                             blackBoard.SetValue(key, obj);
                             BTLogger.LogSystem($"環境スキャン: {tag} を発見 - {obj.name} (距離: {distance:F1})", Name);
                         }

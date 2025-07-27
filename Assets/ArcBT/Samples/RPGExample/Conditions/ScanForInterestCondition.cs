@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using ArcBT.Core;
 using ArcBT.Logger;
+using ArcBT.TagSystem;
 using UnityEngine;
 
 namespace ArcBT.Samples.RPG.Conditions
@@ -37,9 +38,9 @@ namespace ArcBT.Samples.RPG.Conditions
             {
                 // デバッグ: 検出されたオブジェクトの詳細をログ出力
                 string objName = obj.gameObject.name;
-                string objTag = obj.tag;
+                string objTag = GetGameplayTagsString(obj.gameObject);
                 float distance = Vector3.Distance(transform.position, obj.transform.position);
-                BTLogger.LogCondition($"ScanForInterest: Detected '{objName}' with tag '{objTag}' at distance {distance:F1}", Name, ownerComponent);
+                BTLogger.LogCondition($"ScanForInterest: Detected '{objName}' with tags '{objTag}' at distance {distance:F1}", Name, ownerComponent);
                 
                 // タグベースの安全な検査
                 if (HasTag(obj, "Interactable") || HasTag(obj, "Item") || HasTag(obj, "Treasure"))
@@ -83,7 +84,7 @@ namespace ArcBT.Samples.RPG.Conditions
                     // BlackBoardに興味のあるオブジェクト情報を保存
                     blackBoard.SetValue("interest_target", nearestObject);
                     blackBoard.SetValue("interest_distance", nearestDistance);
-                    blackBoard.SetValue("interest_type", nearestObject.tag);
+                    blackBoard.SetValue("interest_type", GetGameplayTagsString(nearestObject));
 
                     BTLogger.LogCondition($"ScanForInterest: Found {nearestObject.name} at distance {nearestDistance:F1}", Name, ownerComponent);
                     return BTNodeResult.Success;
@@ -105,7 +106,7 @@ namespace ArcBT.Samples.RPG.Conditions
             
             try
             {
-                return component.CompareTag(tagName);
+                return component.CompareGameplayTag(tagName);
             }
             catch (UnityException)
             {
@@ -119,6 +120,19 @@ namespace ArcBT.Samples.RPG.Conditions
                 BTLogger.LogError(LogCategory.System, $"Unexpected error checking tag '{tagName}': {ex.Message}", Name, ownerComponent);
                 return false;
             }
+        }
+
+        /// <summary>
+        /// GameObjectのGameplayTagを文字列として取得
+        /// </summary>
+        string GetGameplayTagsString(GameObject gameObject)
+        {
+            var tagComponent = gameObject.GetComponent<GameplayTagComponent>();
+            if (tagComponent != null && tagComponent.OwnedTags.Tags.Count > 0)
+            {
+                return string.Join(", ", tagComponent.OwnedTags.Tags);
+            }
+            return "None";
         }
     }
 }

@@ -2,6 +2,7 @@ using System;
 using ArcBT.Core;
 using ArcBT.Logger;
 using ArcBT.Samples.RPG.Components;
+using ArcBT.TagSystem;
 using UnityEngine;
 
 namespace ArcBT.Samples.RPG.Actions
@@ -36,7 +37,7 @@ namespace ArcBT.Samples.RPG.Actions
             }
 
             // 攻撃範囲内の敵を検索
-            var enemies = GameObject.FindGameObjectsWithTag("Enemy");
+            var enemies = GameplayTagManager.FindGameObjectsWithTag("Character.Enemy");
             GameObject targetEnemy = null;
             var closestDistance = float.MaxValue;
 

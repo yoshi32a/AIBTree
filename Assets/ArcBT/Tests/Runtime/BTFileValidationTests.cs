@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using NUnit.Framework;
 using UnityEngine;
 using ArcBT.Parser;
@@ -188,7 +189,7 @@ namespace ArcBT.Tests
                 "Attack", "NormalAttack", "UseItem", "FleeToSafety",
                 "MoveToTarget", "EnvironmentScan", "Interact", "InitializeResources",
                 "RestoreSmallMana", "SearchForEnemy", "SimpleAttack", "MoveToNamedPosition",
-                "WaitSimple"
+                "WaitSimple", "Log", "SetBlackBoard"
             };
             
             var knownConditionScripts = new HashSet<string>
@@ -196,7 +197,8 @@ namespace ArcBT.Tests
                 "HealthCheck", "EnemyCheck", "HasItem", "HasSharedEnemyInfo",
                 "EnemyInRange", "IsInitialized", "HasTarget", "HasMana",
                 "EnemyHealthCheck", "ScanForInterest", "CheckManaResource",
-                "SimpleHasTarget", "EnemyDetection", "SimpleHealthCheck"
+                "SimpleHasTarget", "EnemyDetection", "SimpleHealthCheck",
+                "CompareBlackBoard", "Random"
             };
             
             foreach (var filePath in btFiles)
@@ -279,6 +281,15 @@ namespace ArcBT.Tests
             foreach (var filePath in btFiles)
             {
                 var fileName = Path.GetFileName(filePath);
+                
+                // 構文エラーのあるファイルをスキップ（現在はなし）
+                var knownBrokenFiles = new string[] { };
+                if (knownBrokenFiles.Contains(fileName))
+                {
+                    BTLogger.Warning($"⚠️ Skipping known broken file: {fileName}");
+                    continue;
+                }
+                
                 var content = File.ReadAllText(filePath);
                 
                 // 基本的な構文チェック

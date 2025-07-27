@@ -1,5 +1,6 @@
 using ArcBT.Core;
 using ArcBT.Logger;
+using ArcBT.TagSystem;
 using UnityEngine;
 
 namespace ArcBT.Conditions
@@ -8,7 +9,7 @@ namespace ArcBT.Conditions
     public class ScanForInterestCondition : BTConditionNode
     {
         float scanRange = 5f;
-        string interestTag = "Item";
+        GameplayTag interestTag = "Object.Item";
 
         public override void SetProperty(string key, string value)
         {
@@ -20,14 +21,14 @@ namespace ArcBT.Conditions
                     break;
                 case "interest":
                 case "interest_tag":
-                    interestTag = value;
+                    interestTag = new GameplayTag(value);
                     break;
             }
         }
 
         protected override BTNodeResult CheckCondition()
         {
-            var interestObjects = GameObject.FindGameObjectsWithTag(interestTag);
+            var interestObjects = GameplayTagManager.FindGameObjectsWithTag(interestTag);
 
             foreach (var obj in interestObjects)
             {

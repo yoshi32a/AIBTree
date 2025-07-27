@@ -40,12 +40,12 @@ namespace ArcBT.Samples.RPG
         }
 
         // スクリプトから呼び出されるメソッド群
-        public bool CheckHealth(float minHealth)
+        public virtual bool CheckHealth(float minHealth)
         {
             return health >= minHealth;
         }
 
-        public bool DetectEnemy(float range)
+        public virtual bool DetectEnemy(float range)
         {
             if (target == null)
             {
@@ -56,7 +56,7 @@ namespace ArcBT.Samples.RPG
             return distance <= range;
         }
 
-        public void MoveToPosition(string targetName, float speed, float tolerance = 0.5f)
+        public virtual bool MoveToPosition(string targetName, float speed, float tolerance = 0.5f)
         {
             // 実際の移動ロジック（簡略化）
             var targetTransform = FindTargetByName(targetName);
@@ -66,10 +66,12 @@ namespace ArcBT.Samples.RPG
                 transform.position += direction * speed * Time.deltaTime;
 
                 BTLogger.LogMovement($"Moving to {targetName} at speed {speed}", gameObject.name, this);
+                return true;
             }
+            return false;
         }
 
-        public void AttackEnemy(int damage, float attackRange)
+        public virtual bool AttackEnemy(int damage, float attackRange)
         {
             if (target != null)
             {
@@ -78,11 +80,13 @@ namespace ArcBT.Samples.RPG
                 {
                     BTLogger.LogCombat($"Attacking enemy for {damage} damage!", gameObject.name, this);
                     // 実際の攻撃ロジック
+                    return true;
                 }
             }
+            return false;
         }
 
-        public void Wait(float duration)
+        public virtual void Wait(float duration)
         {
             BTLogger.LogSystem($"Waiting for {duration} seconds", gameObject.name, this);
             // 実際の待機ロジック（コルーチンなどで実装）

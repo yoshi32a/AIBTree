@@ -1,6 +1,7 @@
 using System;
 using ArcBT.Core;
 using ArcBT.Logger;
+using ArcBT.TagSystem;
 using UnityEngine;
 
 namespace ArcBT.Samples.RPG.Actions
@@ -75,8 +76,8 @@ namespace ArcBT.Samples.RPG.Actions
                     fleeTarget = transform.position + fleeDirection * minDistance;
 
                     // 安全地点を探す（Safe Zoneタグのオブジェクトがあれば）
-                    GameObject[] safeZones = GameObject.FindGameObjectsWithTag("SafeZone");
-                    if (safeZones.Length > 0)
+                    using var safeZones = GameplayTagManager.FindGameObjectsWithTag("Object.SafeZone");
+                    if (safeZones.Count > 0)
                     {
                         // 最も近い安全地点を選択
                         GameObject nearestSafeZone = null;

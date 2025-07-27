@@ -6,19 +6,19 @@ tree TurnBasedAI {
         
         # 最優先：生存確認と緊急回復
         Sequence emergency_survival {
-            CompareBlackBoard critical_health {
-                key1: "current_health"
-                value: "20"
-                compare: "less_equal"
+            Condition CompareBlackBoard {
+
+                condition: "current_health <= 20"
+
             }
             
             Selector survival_options {
                 # 回復アイテム使用
                 Sequence use_healing_item {
-                    CompareBlackBoard has_healing_items {
-                        key1: "healing_items_count"
-                        value: "0"
-                        compare: "greater"
+                    Condition CompareBlackBoard {
+
+                        condition: "healing_items_count > 0"
+
                     }
                     Action Log {
                         message: "CRITICAL HEALTH! Using healing item"
@@ -26,14 +26,10 @@ tree TurnBasedAI {
                     }
                     Action SetBlackBoard {
                         key: "selected_action"
-                        value: "use_healing_item"
-                        type: "string"
-                    }
+                        value: "use_healing_item"}
                     Action SetBlackBoard {
                         key: "turn_complete"
-                        value: "true"
-                        type: "bool"
-                    }
+                        value: "true"}
                 }
                 
                 # 防御行動
@@ -44,14 +40,10 @@ tree TurnBasedAI {
                     }
                     Action SetBlackBoard {
                         key: "selected_action"
-                        value: "defend"
-                        type: "string"
-                    }
+                        value: "defend"}
                     Action SetBlackBoard {
                         key: "turn_complete"
-                        value: "true"
-                        type: "bool"
-                    }
+                        value: "true"}
                 }
             }
         }
@@ -59,10 +51,10 @@ tree TurnBasedAI {
         # 攻撃的戦略
         Sequence offensive_strategy {
             # 体力が十分ある場合
-            CompareBlackBoard sufficient_health {
-                key1: "current_health"
-                value: "50"
-                compare: "greater"
+            Condition CompareBlackBoard {
+
+                condition: "current_health > 50"
+
             }
             
             # 敵が攻撃範囲内にいる
@@ -73,16 +65,16 @@ tree TurnBasedAI {
             Selector attack_options {
                 # 70%の確率で強攻撃
                 Sequence powerful_attack {
-                    Random aggressive_chance {
+                    Condition Random {
                         probability: "0.7"
                     }
                     
                     # マナが十分ある場合は魔法攻撃
                     Sequence magic_attack {
-                        CompareBlackBoard sufficient_mana {
-                            key1: "current_mana"
-                            value: "30"
-                            compare: "greater_equal"
+                        Condition CompareBlackBoard {
+
+                            condition: "current_mana >= 30"
+
                         }
                         Action Log {
                             message: "Casting powerful spell attack!"
@@ -90,19 +82,13 @@ tree TurnBasedAI {
                         }
                         Action SetBlackBoard {
                             key: "selected_action"
-                            value: "cast_fireball"
-                            type: "string"
-                        }
+                            value: "cast_fireball"}
                         Action SetBlackBoard {
                             key: "mana_cost"
-                            value: "30"
-                            type: "int"
-                        }
+                            value: "30"}
                         Action SetBlackBoard {
                             key: "turn_complete"
-                            value: "true"
-                            type: "bool"
-                        }
+                            value: "true"}
                     }
                     
                     # マナ不足なら物理攻撃
@@ -113,14 +99,10 @@ tree TurnBasedAI {
                         }
                         Action SetBlackBoard {
                             key: "selected_action"
-                            value: "strong_attack"
-                            type: "string"
-                        }
+                            value: "strong_attack"}
                         Action SetBlackBoard {
                             key: "turn_complete"
-                            value: "true"
-                            type: "bool"
-                        }
+                            value: "true"}
                     }
                 }
                 
@@ -132,14 +114,10 @@ tree TurnBasedAI {
                     }
                     Action SetBlackBoard {
                         key: "selected_action"
-                        value: "normal_attack"
-                        type: "string"
-                    }
+                        value: "normal_attack"}
                     Action SetBlackBoard {
                         key: "turn_complete"
-                        value: "true"
-                        type: "bool"
-                    }
+                        value: "true"}
                 }
             }
         }
@@ -147,22 +125,22 @@ tree TurnBasedAI {
         # サポート戦略
         Sequence support_strategy {
             # 体力が中程度
-            CompareBlackBoard moderate_health {
-                key1: "current_health"
-                value: "30"
-                compare: "greater"
+            Condition CompareBlackBoard {
+
+                condition: "current_health > 30"
+
             }
             
             Selector support_options {
                 # 味方を回復
                 Sequence heal_ally {
-                    CompareBlackBoard has_mana_for_heal {
-                        key1: "current_mana"
-                        value: "20"
-                        compare: "greater_equal"
+                    Condition CompareBlackBoard {
+
+                        condition: "current_mana >= 20"
+
                     }
                     # 50%の確率で味方回復を選択
-                    Random heal_chance {
+                    Condition Random {
                         probability: "0.5"
                     }
                     Action Log {
@@ -171,27 +149,21 @@ tree TurnBasedAI {
                     }
                     Action SetBlackBoard {
                         key: "selected_action"
-                        value: "heal_ally"
-                        type: "string"
-                    }
+                        value: "heal_ally"}
                     Action SetBlackBoard {
                         key: "mana_cost"
-                        value: "20"
-                        type: "int"
-                    }
+                        value: "20"}
                     Action SetBlackBoard {
                         key: "turn_complete"
-                        value: "true"
-                        type: "bool"
-                    }
+                        value: "true"}
                 }
                 
                 # バフ・デバフ使用
                 Sequence use_buff {
-                    CompareBlackBoard has_mana_for_buff {
-                        key1: "current_mana"
-                        value: "15"
-                        compare: "greater_equal"
+                    Condition CompareBlackBoard {
+
+                        condition: "current_mana >= 15"
+
                     }
                     Action Log {
                         message: "Applying buff/debuff"
@@ -199,30 +171,24 @@ tree TurnBasedAI {
                     }
                     Action SetBlackBoard {
                         key: "selected_action"
-                        value: "cast_buff"
-                        type: "string"
-                    }
+                        value: "cast_buff"}
                     Action SetBlackBoard {
                         key: "mana_cost"
-                        value: "15"
-                        type: "int"
-                    }
+                        value: "15"}
                     Action SetBlackBoard {
                         key: "turn_complete"
-                        value: "true"
-                        type: "bool"
-                    }
+                        value: "true"}
                 }
                 
                 # アイテム使用
                 Sequence use_item {
-                    CompareBlackBoard has_items {
-                        key1: "consumable_items_count"
-                        value: "0"
-                        compare: "greater"
+                    Condition CompareBlackBoard {
+
+                        condition: "consumable_items_count > 0"
+
                     }
                     # 30%の確率でアイテム使用
-                    Random item_chance {
+                    Condition Random {
                         probability: "0.3"
                     }
                     Action Log {
@@ -231,14 +197,10 @@ tree TurnBasedAI {
                     }
                     Action SetBlackBoard {
                         key: "selected_action"
-                        value: "use_item"
-                        type: "string"
-                    }
+                        value: "use_item"}
                     Action SetBlackBoard {
                         key: "turn_complete"
-                        value: "true"
-                        type: "bool"
-                    }
+                        value: "true"}
                 }
             }
         }
@@ -248,10 +210,10 @@ tree TurnBasedAI {
             Selector movement_options {
                 # 敵から距離を取る
                 Sequence retreat_movement {
-                    CompareBlackBoard low_health {
-                        key1: "current_health"
-                        value: "40"
-                        compare: "less"
+                    Condition CompareBlackBoard {
+
+                        condition: "current_health < 40"
+
                     }
                     Action Log {
                         message: "Moving to safer position"
@@ -259,22 +221,18 @@ tree TurnBasedAI {
                     }
                     Action SetBlackBoard {
                         key: "selected_action"
-                        value: "move_back"
-                        type: "string"
-                    }
+                        value: "move_back"}
                     Action SetBlackBoard {
                         key: "turn_complete"
-                        value: "true"
-                        type: "bool"
-                    }
+                        value: "true"}
                 }
                 
                 # 敵に近づく
                 Sequence approach_movement {
-                    CompareBlackBoard good_health {
-                        key1: "current_health"
-                        value: "60"
-                        compare: "greater"
+                    Condition CompareBlackBoard {
+
+                        condition: "current_health > 60"
+
                     }
                     # 敵がいるが攻撃範囲外
                     Inverter not_in_range {
@@ -288,14 +246,10 @@ tree TurnBasedAI {
                     }
                     Action SetBlackBoard {
                         key: "selected_action"
-                        value: "move_forward"
-                        type: "string"
-                    }
+                        value: "move_forward"}
                     Action SetBlackBoard {
                         key: "turn_complete"
-                        value: "true"
-                        type: "bool"
-                    }
+                        value: "true"}
                 }
                 
                 # 戦略的位置取り
@@ -306,14 +260,10 @@ tree TurnBasedAI {
                     }
                     Action SetBlackBoard {
                         key: "selected_action"
-                        value: "move_tactical"
-                        type: "string"
-                    }
+                        value: "move_tactical"}
                     Action SetBlackBoard {
                         key: "turn_complete"
-                        value: "true"
-                        type: "bool"
-                    }
+                        value: "true"}
                 }
             }
         }
@@ -326,14 +276,10 @@ tree TurnBasedAI {
             }
             Action SetBlackBoard {
                 key: "selected_action"
-                value: "wait"
-                type: "string"
-            }
+                value: "wait"}
             Action SetBlackBoard {
                 key: "turn_complete"
-                value: "true"
-                type: "bool"
-            }
+                value: "true"}
         }
     }
 }

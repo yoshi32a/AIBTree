@@ -1,6 +1,7 @@
 using ArcBT.Core;
 using ArcBT.Logger;
 using ArcBT.Samples.RPG.Interfaces;
+using ArcBT.TagSystem;
 using UnityEngine;
 
 namespace ArcBT.Samples.RPG.Conditions
@@ -42,7 +43,7 @@ namespace ArcBT.Samples.RPG.Conditions
             // BlackBoardに情報がない場合はシーンから検索
             if (targetEnemy == null)
             {
-                var enemies = GameObject.FindGameObjectsWithTag(targetTag);
+                var enemies = GameplayTagManager.FindGameObjectsWithTag(new GameplayTag(targetTag));
                 if (enemies.Length > 0)
                 {
                     targetEnemy = enemies[0]; // 最初の敵を選択

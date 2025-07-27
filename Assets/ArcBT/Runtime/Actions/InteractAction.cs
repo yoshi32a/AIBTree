@@ -1,5 +1,6 @@
 using ArcBT.Core;
 using ArcBT.Logger;
+using ArcBT.TagSystem;
 using UnityEngine;
 
 namespace ArcBT.Actions
@@ -7,7 +8,7 @@ namespace ArcBT.Actions
     [BTNode("Interact")]
     public class InteractAction : BTActionNode
     {
-        string targetTag = "Interactable";
+        GameplayTag targetTag = "Object.Interactable";
         float interactionRange = 2f;
 
         public override void SetProperty(string key, string value)
@@ -16,7 +17,7 @@ namespace ArcBT.Actions
             {
                 case "target":
                 case "target_tag":
-                    targetTag = value;
+                    targetTag = new GameplayTag(value);
                     break;
                 case "range":
                 case "interaction_range":
@@ -27,7 +28,7 @@ namespace ArcBT.Actions
 
         protected override BTNodeResult ExecuteAction()
         {
-            var interactables = GameObject.FindGameObjectsWithTag(targetTag);
+            var interactables = GameplayTagManager.FindGameObjectsWithTag(targetTag);
             GameObject nearestInteractable = null;
             var nearestDistance = float.MaxValue;
 

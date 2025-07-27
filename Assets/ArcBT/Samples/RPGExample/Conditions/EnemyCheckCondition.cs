@@ -1,6 +1,7 @@
 using System;
 using ArcBT.Core;
 using ArcBT.Logger;
+using ArcBT.TagSystem;
 using UnityEngine;
 
 namespace ArcBT.Samples.RPG.Conditions
@@ -28,7 +29,7 @@ namespace ArcBT.Samples.RPG.Conditions
             }
 
             // シンプルな敵検出: "Enemy"タグのオブジェクトを検索
-            var enemies = GameObject.FindGameObjectsWithTag("Enemy");
+            var enemies = GameplayTagManager.FindGameObjectsWithTag("Character.Enemy");
 
             foreach (var enemy in enemies)
             {

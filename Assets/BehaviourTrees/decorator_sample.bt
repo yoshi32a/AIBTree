@@ -55,9 +55,7 @@ tree DecoratorSample {
             Sequence PatrolStep {
                 Action SetBlackBoard {
                     key: "patrol_status"
-                    value: "patrolling"
-                    type: "string"
-                }
+                    value: "patrolling"}
                 Action Log {
                     message: "Patrol step starting"
                     include_blackboard: "true"
@@ -87,7 +85,7 @@ tree DecoratorSample {
                     duration: "3.0"
                 }
                 # ランダムで25%の確率で何かをログ出力
-                Random RandomEvent {
+                Condition Random {
                     probability: "0.25"
                 }
                 Action Log {

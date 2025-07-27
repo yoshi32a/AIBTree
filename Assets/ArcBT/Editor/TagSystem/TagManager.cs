@@ -19,14 +19,14 @@ namespace ArcBT.Editor
         static void CreateTag(string tagName)
         {
             // TagManagerアセットを取得
-            SerializedObject tagManager = new SerializedObject(AssetDatabase.LoadAllAssetsAtPath("ProjectSettings/TagManager.asset")[0]);
-            SerializedProperty tagsProp = tagManager.FindProperty("tags");
+            var tagManager = new SerializedObject(AssetDatabase.LoadAllAssetsAtPath("ProjectSettings/TagManager.asset")[0]);
+            var tagsProp = tagManager.FindProperty("tags");
             
             // タグが既に存在するかチェック
-            bool found = false;
-            for (int i = 0; i < tagsProp.arraySize; i++)
+            var found = false;
+            for (var i = 0; i < tagsProp.arraySize; i++)
             {
-                SerializedProperty t = tagsProp.GetArrayElementAtIndex(i);
+                var t = tagsProp.GetArrayElementAtIndex(i);
                 if (t.stringValue.Equals(tagName))
                 {
                     found = true;
@@ -38,7 +38,7 @@ namespace ArcBT.Editor
             if (!found)
             {
                 tagsProp.InsertArrayElementAtIndex(0);
-                SerializedProperty newTagProp = tagsProp.GetArrayElementAtIndex(0);
+                var newTagProp = tagsProp.GetArrayElementAtIndex(0);
                 newTagProp.stringValue = tagName;
                 tagManager.ApplyModifiedProperties();
                 BTLogger.Info($"Tag '{tagName}' created successfully");

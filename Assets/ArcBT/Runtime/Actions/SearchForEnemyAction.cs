@@ -1,5 +1,6 @@
 using ArcBT.Core;
 using ArcBT.Logger;
+using ArcBT.TagSystem;
 using UnityEngine;
 
 namespace ArcBT.Actions
@@ -8,7 +9,7 @@ namespace ArcBT.Actions
     public class SearchForEnemyAction : BTActionNode
     {
         float searchRange = 10f;
-        string enemyTag = "Enemy";
+        GameplayTag enemyTag = "Character.Enemy";
 
         public override void SetProperty(string key, string value)
         {
@@ -20,14 +21,14 @@ namespace ArcBT.Actions
                     break;
                 case "tag":
                 case "enemy_tag":
-                    enemyTag = value;
+                    enemyTag = new GameplayTag(value);
                     break;
             }
         }
 
         protected override BTNodeResult ExecuteAction()
         {
-            var enemies = GameObject.FindGameObjectsWithTag(enemyTag);
+            var enemies = GameplayTagManager.FindGameObjectsWithTag(enemyTag);
             GameObject nearestEnemy = null;
             var nearestDistance = float.MaxValue;
 

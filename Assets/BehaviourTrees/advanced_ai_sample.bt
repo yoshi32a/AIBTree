@@ -7,10 +7,8 @@ tree AdvancedAI {
         # 緊急事態対応（最優先）
         Sequence emergency_response {
             # 体力が低く、かつ敵が近くにいる場合
-            CompareBlackBoard health_check {
-                key1: "current_health"
-                value: "30"
-                compare: "less"
+            Condition CompareBlackBoard {
+                condition: "current_health < 30"
             }
             Condition HasTarget {
                 target_tag: "Enemy"
@@ -32,9 +30,7 @@ tree AdvancedAI {
                         }
                         Action SetBlackBoard {
                             key: "ai_state"
-                            value: "escaping"
-                            type: "string"
-                        }
+                            value: "escaping"}
                         Action MoveToPosition {
                             target: "SafeZone"
                             speed: "8.0"
@@ -51,10 +47,8 @@ tree AdvancedAI {
                 target_tag: "Enemy"
             }
             # 体力が50%以上の場合のみ戦闘
-            CompareBlackBoard health_sufficient {
-                key1: "current_health"
-                value: "50"
-                compare: "greater_equal"
+            Condition CompareBlackBoard {
+                condition: "current_health >= 50"
             }
             
             # 戦闘を5回まで繰り返し（失敗時は中断）
@@ -65,7 +59,7 @@ tree AdvancedAI {
                 
                 Selector combat_options {
                     # 75%の確率でランダムアクション選択
-                    Random aggressive_chance {
+                    Condition Random {
                         probability: "0.75"
                     }
                     
@@ -79,9 +73,7 @@ tree AdvancedAI {
                             }
                             Action SetBlackBoard {
                                 key: "ai_state"
-                                value: "attacking"
-                                type: "string"
-                            }
+                                value: "attacking"}
                             Action ScanEnvironment {
                                 scan_radius: "8.0"
                                 scan_interval: "0.5"
@@ -102,15 +94,13 @@ tree AdvancedAI {
                         }
                         Action SetBlackBoard {
                             key: "ai_state"
-                            value: "defensive"
-                            type: "string"
-                        }
+                            value: "defensive"}
                         Action Wait {
                             duration: "1.0"
                         }
                         # 成功/失敗を反転（守備的なので慎重に）
                         Inverter cautious_check {
-                            Random high_risk {
+                            Condition Random {
                                 probability: "0.8"
                             }
                         }
@@ -137,7 +127,7 @@ tree AdvancedAI {
                 Selector exploration_options {
                     # 50%の確率で環境スキャン
                     Sequence scan_exploration {
-                        Random scan_chance {
+                        Condition Random {
                             probability: "0.5"
                         }
                         
@@ -162,9 +152,7 @@ tree AdvancedAI {
                     Sequence wander_exploration {
                         Action SetBlackBoard {
                             key: "ai_state"
-                            value: "exploring"
-                            type: "string"
-                        }
+                            value: "exploring"}
                         
                         Timeout wander_timeout {
                             timeout: "15.0"
@@ -173,7 +161,6 @@ tree AdvancedAI {
                             Action RandomWander {
                                 speed: "3.0"
                                 wander_radius: "10.0"
-                                change_direction_interval: "4.0"
                             }
                         }
                         
@@ -194,9 +181,7 @@ tree AdvancedAI {
             Sequence idle_sequence {
                 Action SetBlackBoard {
                     key: "ai_state"
-                    value: "idle"
-                    type: "string"
-                }
+                    value: "idle"}
                 Action Log {
                     message: "AI in idle state"
                     level: "Debug"

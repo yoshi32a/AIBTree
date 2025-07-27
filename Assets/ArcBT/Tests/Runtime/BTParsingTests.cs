@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
@@ -328,22 +329,19 @@ namespace ArcBT.Tests
             {
                 var fileName = Path.GetFileName(filePath);
                 
-                // 構文エラーがある古いファイルのエラーログを抑制
-                var hasKnownSyntaxErrors = fileName.Contains("complex_example") || fileName.Contains("advanced_guard");
-                
-                if (hasKnownSyntaxErrors)
+                // 構文エラーがあるファイルをスキップ（現在はなし）
+                var knownBrokenFiles = new string[] { };
+                if (knownBrokenFiles.Contains(fileName))
                 {
-                    LogAssert.ignoreFailingMessages = true;
+                    BTLogger.Warning($"⚠️ Skipping known broken file: {fileName}");
+                    continue;
                 }
                 
                 stopwatch.Restart();
                 var result = parser.ParseFile(filePath);
                 stopwatch.Stop();
                 
-                if (hasKnownSyntaxErrors)
-                {
-                    LogAssert.ignoreFailingMessages = false;
-                }
+                // スキップしたファイルは処理しない
                 
                 var elapsedMs = stopwatch.ElapsedMilliseconds;
                 BTLogger.Info($"⏱️ {fileName}: {elapsedMs}ms");

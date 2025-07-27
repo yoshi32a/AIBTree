@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using ArcBT.Core;
 using ArcBT.Logger;
 using UnityEngine;
@@ -6,31 +7,18 @@ namespace ArcBT.Actions
 {
     /// <summary>
     /// BlackBoardに値を設定するアクション
+    /// key: value 形式で型自動判定
     /// </summary>
     [BTNode("SetBlackBoard")]
     public class SetBlackBoardAction : BTActionNode
     {
-        string bbKey = "";
-        string bbValue = "";
-        string valueType = "string"; // string, int, float, bool, vector3
+        Dictionary<string, string> assignments = new Dictionary<string, string>();
 
         public override void SetProperty(string key, string value)
         {
-            switch (key.ToLower())
-            {
-                case "key":
-                case "bb_key":
-                    bbKey = value;
-                    break;
-                case "value":
-                case "bb_value":
-                    bbValue = value;
-                    break;
-                case "type":
-                case "value_type":
-                    valueType = value.ToLower();
-                    break;
-            }
+            // 任意のkey名での直接代入
+            // 例: move_speed: 10.5 → assignments["move_speed"] = "10.5"
+            assignments[key] = value;
         }
 
         protected override BTNodeResult ExecuteAction()
@@ -41,88 +29,115 @@ namespace ArcBT.Actions
                 return BTNodeResult.Failure;
             }
 
-            if (string.IsNullOrEmpty(bbKey))
+            if (assignments.Count == 0)
             {
-                BTLogger.LogError(LogCategory.BlackBoard, "SetBlackBoard: Key is empty", Name, ownerComponent);
+                BTLogger.LogError(LogCategory.BlackBoard, "SetBlackBoard: No assignments specified", Name, ownerComponent);
                 return BTNodeResult.Failure;
             }
 
-            // 値の型に応じて変換して設定
             try
             {
-                switch (valueType)
+                foreach (var assignment in assignments)
                 {
-                    case "int":
-                        if (int.TryParse(bbValue, out var intValue))
-                        {
-                            blackBoard.SetValue(bbKey, intValue);
-                            BTLogger.LogBlackBoard($"Set {bbKey} = {intValue} (int)", Name, ownerComponent);
-                        }
-                        else
-                        {
-                            BTLogger.LogError(LogCategory.BlackBoard, $"Failed to parse '{bbValue}' as int", Name, ownerComponent);
-                            return BTNodeResult.Failure;
-                        }
-                        break;
-
-                    case "float":
-                        if (float.TryParse(bbValue, out var floatValue))
-                        {
-                            blackBoard.SetValue(bbKey, floatValue);
-                            BTLogger.LogBlackBoard($"Set {bbKey} = {floatValue} (float)", Name, ownerComponent);
-                        }
-                        else
-                        {
-                            BTLogger.LogError(LogCategory.BlackBoard, $"Failed to parse '{bbValue}' as float", Name, ownerComponent);
-                            return BTNodeResult.Failure;
-                        }
-                        break;
-
-                    case "bool":
-                        if (bool.TryParse(bbValue, out var boolValue))
-                        {
-                            blackBoard.SetValue(bbKey, boolValue);
-                            BTLogger.LogBlackBoard($"Set {bbKey} = {boolValue} (bool)", Name, ownerComponent);
-                        }
-                        else
-                        {
-                            BTLogger.LogError(LogCategory.BlackBoard, $"Failed to parse '{bbValue}' as bool", Name, ownerComponent);
-                            return BTNodeResult.Failure;
-                        }
-                        break;
-
-                    case "vector3":
-                        // "x,y,z" 形式をパース
-                        var parts = bbValue.Split(',');
-                        if (parts.Length == 3 &&
-                            float.TryParse(parts[0].Trim(), out var x) &&
-                            float.TryParse(parts[1].Trim(), out var y) &&
-                            float.TryParse(parts[2].Trim(), out var z))
-                        {
-                            var vector = new Vector3(x, y, z);
-                            blackBoard.SetValue(bbKey, vector);
-                            BTLogger.LogBlackBoard($"Set {bbKey} = {vector} (Vector3)", Name, ownerComponent);
-                        }
-                        else
-                        {
-                            BTLogger.LogError(LogCategory.BlackBoard, $"Failed to parse '{bbValue}' as Vector3", Name, ownerComponent);
-                            return BTNodeResult.Failure;
-                        }
-                        break;
-
-                    default: // string
-                        blackBoard.SetValue(bbKey, bbValue);
-                        BTLogger.LogBlackBoard($"Set {bbKey} = '{bbValue}' (string)", Name, ownerComponent);
-                        break;
+                    string key = assignment.Key;
+                    string value = assignment.Value;
+                    
+                    if (!SetBlackBoardValue(key, value))
+                    {
+                        return BTNodeResult.Failure;
+                    }
                 }
+
+                return BTNodeResult.Success;
             }
             catch (System.Exception e)
             {
                 BTLogger.LogError(LogCategory.BlackBoard, $"SetBlackBoard error: {e.Message}", Name, ownerComponent);
                 return BTNodeResult.Failure;
             }
-
-            return BTNodeResult.Success;
         }
+
+        /// <summary>
+        /// 値の型を自動判定してBlackBoardに設定
+        /// </summary>
+        bool SetBlackBoardValue(string key, string value)
+        {
+            if (string.IsNullOrEmpty(key))
+            {
+                BTLogger.LogError(LogCategory.BlackBoard, "SetBlackBoard: Key is empty", Name, ownerComponent);
+                return false;
+            }
+
+            // 型の自動判定と設定
+            // int
+            if (int.TryParse(value, out var intValue))
+            {
+                blackBoard.SetValue(key, intValue);
+                BTLogger.LogBlackBoard($"Set {key} = {intValue} (auto-detected: int)", Name, ownerComponent);
+                return true;
+            }
+            
+            // float
+            if (float.TryParse(value, out var floatValue))
+            {
+                blackBoard.SetValue(key, floatValue);
+                BTLogger.LogBlackBoard($"Set {key} = {floatValue} (auto-detected: float)", Name, ownerComponent);
+                return true;
+            }
+            
+            // bool
+            if (bool.TryParse(value, out var boolValue))
+            {
+                blackBoard.SetValue(key, boolValue);
+                BTLogger.LogBlackBoard($"Set {key} = {boolValue} (auto-detected: bool)", Name, ownerComponent);
+                return true;
+            }
+            
+            // Vector3 "(x,y,z)" 形式
+            if (TryParseVector3(value, out var vectorValue))
+            {
+                blackBoard.SetValue(key, vectorValue);
+                BTLogger.LogBlackBoard($"Set {key} = {vectorValue} (auto-detected: Vector3)", Name, ownerComponent);
+                return true;
+            }
+            
+            // string（デフォルト）
+            blackBoard.SetValue(key, value);
+            BTLogger.LogBlackBoard($"Set {key} = '{value}' (auto-detected: string)", Name, ownerComponent);
+            return true;
+        }
+
+
+        /// <summary>
+        /// Vector3パース: (x,y,z) 形式
+        /// </summary>
+        bool TryParseVector3(string value, out Vector3 result)
+        {
+            result = Vector3.zero;
+            
+            if (string.IsNullOrEmpty(value))
+                return false;
+                
+            value = value.Trim();
+            
+            // (x,y,z) 形式をチェック
+            if (value.StartsWith("(") && value.EndsWith(")"))
+            {
+                string inner = value.Substring(1, value.Length - 2);
+                var parts = inner.Split(',');
+                
+                if (parts.Length == 3 &&
+                    float.TryParse(parts[0].Trim(), out var x) &&
+                    float.TryParse(parts[1].Trim(), out var y) &&
+                    float.TryParse(parts[2].Trim(), out var z))
+                {
+                    result = new Vector3(x, y, z);
+                    return true;
+                }
+            }
+            
+            return false;
+        }
+
     }
 }

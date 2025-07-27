@@ -1,5 +1,6 @@
 using System;
 using ArcBT.Core;
+using ArcBT.TagSystem;
 using UnityEngine;
 
 namespace ArcBT.Samples.RPG.Conditions
@@ -34,7 +35,7 @@ namespace ArcBT.Samples.RPG.Conditions
 
             foreach (var collider in colliders)
             {
-                if (collider.CompareTag("Enemy"))
+                if (collider.gameObject.CompareGameplayTag("Character.Enemy"))
                 {
                     float distance = Vector3.Distance(transform.position, collider.transform.position);
                     if (distance < nearestDistance)

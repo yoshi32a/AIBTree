@@ -3,6 +3,7 @@ using UnityEditor;
 using ArcBT.Core;
 using ArcBT.Logger;
 using ArcBT.Samples.RPG.Components;
+using ArcBT.TagSystem;
 
 namespace ArcBT.Editor
 {
@@ -243,8 +244,9 @@ namespace ArcBT.Editor
             // AIステータス表示UI作成
             CreateAIStatusDisplay(aiObject);
             
-            // タグ設定
-            aiObject.tag = "Player";
+            // GameplayTag設定
+            var aiTagComponent = aiObject.AddComponent<GameplayTagComponent>();
+            aiTagComponent.AddTag(new GameplayTag("Character.Player"));
             
             Selection.activeGameObject = aiObject;
         }
@@ -279,8 +281,9 @@ namespace ArcBT.Editor
                 health.MaxHealth = 50;
                 health.CurrentHealth = 50;
                 
-                // Tag設定
-                enemyObject.tag = "Enemy";
+                // GameplayTag設定
+                var enemyTagComponent = enemyObject.AddComponent<GameplayTagComponent>();
+                enemyTagComponent.AddTag(new GameplayTag("Character.Enemy"));
             }
         }
         
@@ -325,7 +328,8 @@ namespace ArcBT.Editor
             // セーフゾーン
             var safeZone = new GameObject("SafeZone");
             safeZone.transform.position = new Vector3(-10, 0, 0);
-            safeZone.tag = "SafeZone";
+            var safeZoneTagComponent = safeZone.AddComponent<GameplayTagComponent>();
+            safeZoneTagComponent.AddTag(new GameplayTag("Environment.SafeZone"));
             CreateEnvironmentVisual(safeZone, Color.magenta, new Vector3(2, 0.1f, 2));
             
             // リソースポイント
@@ -344,28 +348,32 @@ namespace ArcBT.Editor
                 // 興味深いオブジェクト（調査用）- AIの近くに配置
                 var interestObject = new GameObject("InterestingObject");
                 interestObject.transform.position = new Vector3(4, 0, -3); // より近い位置
-                interestObject.tag = "Interactable";
+                var interestTagComponent = interestObject.AddComponent<GameplayTagComponent>();
+                interestTagComponent.AddTag(new GameplayTag("Object.Interactable"));
                 CreateEnvironmentVisual(interestObject, Color.cyan, new Vector3(1, 1.5f, 1));
-                BTLogger.Info($"Created InterestingObject at {interestObject.transform.position} with tag: {interestObject.tag}");
+                BTLogger.Info($"Created InterestingObject at {interestObject.transform.position} with tag: Object.Interactable");
                 
                 // アイテムオブジェクト
                 var itemObject = new GameObject("PickupItem");
                 itemObject.transform.position = new Vector3(-4, 0, 3); // より近い位置
-                itemObject.tag = "Item";
+                var itemTagComponent = itemObject.AddComponent<GameplayTagComponent>();
+                itemTagComponent.AddTag(new GameplayTag("Object.Item"));
                 CreateEnvironmentVisual(itemObject, Color.yellow, new Vector3(0.5f, 0.5f, 0.5f));
-                BTLogger.Info($"Created PickupItem at {itemObject.transform.position} with tag: {itemObject.tag}");
+                BTLogger.Info($"Created PickupItem at {itemObject.transform.position} with tag: Object.Item");
                 
                 // 追加のテスト用オブジェクト（さらに近い位置）
                 var nearbyObject = new GameObject("NearbyTestObject");
                 nearbyObject.transform.position = new Vector3(2, 0, 0); // 非常に近い位置
-                nearbyObject.tag = "Interactable";
+                var nearbyTagComponent = nearbyObject.AddComponent<GameplayTagComponent>();
+                nearbyTagComponent.AddTag(new GameplayTag("Object.Interactable"));
                 CreateEnvironmentVisual(nearbyObject, Color.green, new Vector3(0.8f, 0.8f, 0.8f));
-                BTLogger.Info($"Created NearbyTestObject at {nearbyObject.transform.position} with tag: {nearbyObject.tag}");
+                BTLogger.Info($"Created NearbyTestObject at {nearbyObject.transform.position} with tag: Object.Interactable");
                 
                 // 追加のセーフゾーン
                 var safeZone2 = new GameObject("SafeZone2");
                 safeZone2.transform.position = new Vector3(15, 0, -8);
-                safeZone2.tag = "SafeZone";
+                var safeZone2TagComponent = safeZone2.AddComponent<GameplayTagComponent>();
+                safeZone2TagComponent.AddTag(new GameplayTag("Environment.SafeZone"));
                 CreateEnvironmentVisual(safeZone2, Color.magenta, new Vector3(1.5f, 0.1f, 1.5f));
             }
         }
@@ -377,8 +385,16 @@ namespace ArcBT.Editor
             visual.transform.localPosition = Vector3.zero;
             visual.transform.localScale = scale;
             
-            // 子オブジェクトにも親と同じタグを設定（Physics.OverlapSphere用）
-            visual.tag = obj.tag;
+            // 子オブジェクトにも親と同じGameplayTagを設定（Physics.OverlapSphere用）
+            var parentTagComponent = obj.GetComponent<GameplayTagComponent>();
+            if (parentTagComponent != null && parentTagComponent.OwnedTags.Tags.Count > 0)
+            {
+                var visualTagComponent = visual.AddComponent<GameplayTagComponent>();
+                foreach (var tag in parentTagComponent.OwnedTags.Tags)
+                {
+                    visualTagComponent.AddTag(tag);
+                }
+            }
             
             var renderer = visual.GetComponent<Renderer>();
             var material = GetMaterialByColor(color);
@@ -400,7 +416,8 @@ namespace ArcBT.Editor
                 var cameraObject = new GameObject("Main Camera");
                 mainCamera = cameraObject.AddComponent<Camera>();
                 cameraObject.AddComponent<AudioListener>();
-                cameraObject.tag = "MainCamera";
+                var cameraTagComponent = cameraObject.AddComponent<GameplayTagComponent>();
+                cameraTagComponent.AddTag(new GameplayTag("System.MainCamera"));
             }
             
             // SceneCameraコンポーネントを追加

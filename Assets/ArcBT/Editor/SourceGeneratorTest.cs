@@ -76,7 +76,7 @@ namespace ArcBT.Editor
             BTLogger.Info("=== Classes with BTNode Attribute ===");
             
             var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-            int count = 0;
+            var count = 0;
             
             foreach (var assembly in assemblies)
             {
@@ -96,7 +96,7 @@ namespace ArcBT.Editor
                             count++;
                             
                             // 基底クラスからNodeTypeを自動判定
-                            string nodeType = "Unknown";
+                            var nodeType = "Unknown";
                             if (typeof(BTActionNode).IsAssignableFrom(type))
                             {
                                 nodeType = "Action";

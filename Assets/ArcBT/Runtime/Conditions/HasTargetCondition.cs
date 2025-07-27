@@ -1,5 +1,6 @@
 using ArcBT.Core;
 using ArcBT.Logger;
+using ArcBT.TagSystem;
 using UnityEngine;
 
 namespace ArcBT.Conditions
@@ -7,7 +8,7 @@ namespace ArcBT.Conditions
     [BTNode("HasTarget")]
     public class HasTargetCondition : BTConditionNode
     {
-        string targetTag = "Enemy";
+        GameplayTag targetTag = "Character.Enemy";
 
         public override void SetProperty(string key, string value)
         {
@@ -15,7 +16,7 @@ namespace ArcBT.Conditions
             {
                 case "tag":
                 case "target_tag":
-                    targetTag = value;
+                    targetTag = new GameplayTag(value);
                     break;
             }
         }
@@ -34,7 +35,7 @@ namespace ArcBT.Conditions
             }
 
             // シーン内でターゲットを検索
-            var targets = GameObject.FindGameObjectsWithTag(targetTag);
+            var targets = GameplayTagManager.FindGameObjectsWithTag(targetTag);
             if (targets is { Length: > 0 })
             {
                 BTLogger.LogCondition($"ターゲット発見: {targets.Length}体の{targetTag}", Name);

@@ -58,9 +58,9 @@ namespace ArcBT.Samples.RPG.Actions
                 return BTNodeResult.Failure;
             }
 
-            aiController.MoveToPosition(target, speed, tolerance);
+            bool moveSucceeded = aiController.MoveToPosition(target, speed, tolerance);
             BTLogger.Log(LogLevel.Debug, LogCategory.Movement, $"Moving to {target} at speed {speed}");
-            return BTNodeResult.Success;
+            return moveSucceeded ? BTNodeResult.Success : BTNodeResult.Failure;
         }
     }
 }
