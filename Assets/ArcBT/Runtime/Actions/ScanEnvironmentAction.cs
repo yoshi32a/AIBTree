@@ -95,13 +95,13 @@ namespace ArcBT.Actions
             blackBoard.SetValue("scan_radius_used", scanRadius);
 
             // 環境の脅威レベルを計算
-            var threatLevel = "safe";
-            if (enemyCount > 3)
-                threatLevel = "high";
-            else if (enemyCount > 1)
-                threatLevel = "medium";
-            else if (enemyCount > 0)
-                threatLevel = "low";
+            var threatLevel = enemyCount switch
+            {
+                > 3 => "high",
+                > 1 => "medium",
+                > 0 => "low",
+                _ => "safe"
+            };
 
             blackBoard.SetValue("threat_level", threatLevel);
 
