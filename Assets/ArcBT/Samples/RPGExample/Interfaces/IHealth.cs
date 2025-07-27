@@ -1,4 +1,4 @@
-namespace ArcBT.Core
+namespace ArcBT.Samples.RPG.Interfaces
 {
     /// <summary>
     /// Healthコンポーネントのインターフェース

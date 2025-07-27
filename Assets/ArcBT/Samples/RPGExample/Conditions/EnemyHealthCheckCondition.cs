@@ -1,62 +1,75 @@
-using System;
 using ArcBT.Core;
 using ArcBT.Logger;
-using ArcBT.Samples.RPG.Components;
+using ArcBT.Samples.RPG.Interfaces;
 using UnityEngine;
 
 namespace ArcBT.Samples.RPG.Conditions
 {
-    /// <summary>敵の体力をチェックする条件</summary>
     [BTNode("EnemyHealthCheck")]
     public class EnemyHealthCheckCondition : BTConditionNode
     {
-        int minHealth = 80;
+        float minHealthPercent = 50f;
+        string targetTag = "Enemy";
 
         public override void SetProperty(string key, string value)
         {
-            switch (key)
+            switch (key.ToLower())
             {
                 case "min_health":
-                    minHealth = Convert.ToInt32(value);
+                case "min_health_percent":
+                    if (float.TryParse(value, out var h)) minHealthPercent = h;
+                    break;
+                case "target_tag":
+                    targetTag = value;
                     break;
             }
         }
 
         protected override BTNodeResult CheckCondition()
         {
-            if (ownerComponent == null || blackBoard == null)
+            // BlackBoardから敵情報を取得
+            GameObject targetEnemy = null;
+
+            if (blackBoard != null)
             {
-                return BTNodeResult.Failure;
+                var enemyInfo = blackBoard.GetValue<GameObject>("target_enemy");
+                if (enemyInfo != null)
+                {
+                    targetEnemy = enemyInfo;
+                }
             }
 
-            // BlackBoardから敵ターゲットを取得
-            GameObject enemy = blackBoard.GetValue<GameObject>("enemy_target");
-            if (enemy == null)
+            // BlackBoardに情報がない場合はシーンから検索
+            if (targetEnemy == null)
             {
-                enemy = blackBoard.GetValue<GameObject>("current_target");
+                var enemies = GameObject.FindGameObjectsWithTag(targetTag);
+                if (enemies.Length > 0)
+                {
+                    targetEnemy = enemies[0]; // 最初の敵を選択
+                }
             }
 
-            if (enemy == null)
+            if (targetEnemy != null)
             {
-                return BTNodeResult.Failure;
+                // インターフェースを使用してHealthコンポーネントを取得（リフレクション排除）
+                var health = targetEnemy.GetComponent<IHealth>();
+                if (health != null)
+                {
+                    var healthPercent = (health.CurrentHealth / health.MaxHealth) * 100f;
+                    var result = healthPercent >= minHealthPercent;
+
+                    BTLogger.LogCondition($"敵の体力: {healthPercent:F1}% (最低要求: {minHealthPercent}%)", Name);
+                    return result ? BTNodeResult.Success : BTNodeResult.Failure;
+                }
+                else
+                {
+                    BTLogger.Log(LogLevel.Warning, LogCategory.Condition,
+                        "Enemy does not implement IHealth interface.", Name);
+                }
             }
 
-            // 敵の体力コンポーネントを取得
-            Health enemyHealth = enemy.GetComponent<Health>();
-            if (enemyHealth == null)
-            {
-                BTLogger.LogError(LogCategory.System, $"EnemyHealthCheck: Enemy '{enemy.name}' has no Health component", Name, ownerComponent);
-                return BTNodeResult.Failure;
-            }
-
-            int currentHealth = enemyHealth.CurrentHealth;
-            bool healthSufficient = currentHealth >= minHealth;
-
-            // BlackBoardに敵の体力情報を記録
-            blackBoard.SetValue("enemy_current_health", currentHealth);
-            blackBoard.SetValue("enemy_health_sufficient", healthSufficient);
-
-            return healthSufficient ? BTNodeResult.Success : BTNodeResult.Failure;
+            BTLogger.LogCondition("敵またはHealthコンポーネントが見つかりません", Name);
+            return BTNodeResult.Failure;
         }
     }
 }

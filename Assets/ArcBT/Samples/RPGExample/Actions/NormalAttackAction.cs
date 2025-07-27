@@ -1,95 +1,67 @@
-using System;
 using ArcBT.Core;
 using ArcBT.Logger;
-using ArcBT.Samples.RPG.Components;
+using ArcBT.Samples.RPG.Interfaces;
 using UnityEngine;
 
 namespace ArcBT.Samples.RPG.Actions
 {
-    /// <summary>通常攻撃アクション</summary>
     [BTNode("NormalAttack")]
     public class NormalAttackAction : BTActionNode
     {
-        int damage = 15;
-        float cooldown = 1.0f;
-        float lastAttackTime = 0f;
+        float damage = 10f;
+        float range = 2f;
 
         public override void SetProperty(string key, string value)
         {
-            switch (key)
+            switch (key.ToLower())
             {
                 case "damage":
-                    damage = Convert.ToInt32(value);
+                    if (float.TryParse(value, out var d)) damage = d;
                     break;
-                case "cooldown":
-                    cooldown = Convert.ToSingle(value);
+                case "range":
+                    if (float.TryParse(value, out var r)) range = r;
                     break;
             }
         }
 
         protected override BTNodeResult ExecuteAction()
         {
-            if (ownerComponent == null || blackBoard == null)
+            var enemies = GameObject.FindGameObjectsWithTag("Enemy");
+            GameObject nearestEnemy = null;
+            var nearestDistance = float.MaxValue;
+
+            foreach (var enemy in enemies)
             {
-                return BTNodeResult.Failure;
+                var distance = Vector3.Distance(transform.position, enemy.transform.position);
+                if (distance <= range && distance < nearestDistance)
+                {
+                    nearestEnemy = enemy;
+                    nearestDistance = distance;
+                }
             }
 
-            // 現在のアクション状態をBlackBoardに記録
-            blackBoard.SetValue("current_action", "NormalAttack");
-
-            // ターゲットを取得
-            GameObject target = blackBoard.GetValue<GameObject>("nearest_enemy");
-            if (target == null)
+            if (nearestEnemy != null)
             {
-                target = blackBoard.GetValue<GameObject>("current_target");
-            }
+                BTLogger.LogCombat($"通常攻撃実行: ダメージ{damage}", Name);
 
-            if (target == null || !target.activeInHierarchy)
-            {
-                blackBoard.SetValue("current_action", "Idle");
-                BTLogger.LogCombat("NormalAttack: No valid target found", Name, ownerComponent);
-                return BTNodeResult.Failure;
-            }
+                // ダメージ処理の実装（インターフェース使用でリフレクション排除）
+                var health = nearestEnemy.GetComponent<IHealth>();
+                if (health != null)
+                {
+                    health.TakeDamage(damage);
+                }
+                else
+                {
+                    // 後方互換性のためのフォールバック（将来的に削除予定）
+                    BTLogger.Log(LogLevel.Warning, LogCategory.Combat,
+                        "Enemy does not implement IHealth interface. Consider updating Health component.", Name);
+                }
 
-            // ターゲット情報をBlackBoardに更新
-            blackBoard.SetValue("current_target", target);
-            blackBoard.SetValue("is_in_combat", true);
-
-            // クールダウンチェック
-            if (Time.time - lastAttackTime < cooldown)
-            {
-                blackBoard.SetValue("attack_cooldown_remaining", cooldown - (Time.time - lastAttackTime));
-                return BTNodeResult.Running;
-            }
-
-            // 通常攻撃実行
-            Health targetHealth = target.GetComponent<Health>();
-            if (targetHealth != null)
-            {
-                targetHealth.TakeDamage(damage);
-                lastAttackTime = Time.time;
-
-                // BlackBoardに攻撃情報を記録
-                blackBoard.SetValue("last_normal_attack_time", Time.time);
-                blackBoard.SetValue("normal_attack_count", blackBoard.GetValue<int>("normal_attack_count", 0) + 1);
-                blackBoard.SetValue("last_damage_dealt", damage);
-                blackBoard.SetValue("attack_cooldown_remaining", 0f);
-
-                BTLogger.LogCombat($"NormalAttack: Normal attack on '{target.name}' for {damage} damage", Name, ownerComponent);
                 return BTNodeResult.Success;
             }
-            else
-            {
-                blackBoard.SetValue("current_action", "Idle");
-                BTLogger.LogError(LogCategory.Combat, $"NormalAttack: Target '{target.name}' has no Health component", Name, ownerComponent);
-                return BTNodeResult.Failure;
-            }
-        }
 
-        public override void Reset()
-        {
-            base.Reset();
-            lastAttackTime = 0f;
+            BTLogger.LogCombat("攻撃範囲内に敵がいません", Name);
+            return BTNodeResult.Failure;
         }
     }
 }
