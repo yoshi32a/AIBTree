@@ -152,18 +152,6 @@ namespace ArcBT.Generators
                     if (scriptName == null || nodeType == null)
                         continue;
 
-                    // AssemblyName プロパティを取得（オプション）
-                    // 現在のアセンブリ名をデフォルトとして使用
-                    var assemblyName = currentAssemblyName;
-                    
-                    foreach (var namedArg in attribute.NamedArguments)
-                    {
-                        if (namedArg.Key == "AssemblyName" && namedArg.Value.Value is string asmName)
-                        {
-                            assemblyName = asmName;
-                        }
-                    }
-
                     var nodeInfo = new NodeInfo
                     {
                         ClassName = classSymbol.Name,
@@ -173,10 +161,10 @@ namespace ArcBT.Generators
                         Namespace = classSymbol.ContainingNamespace?.ToDisplayString() ?? "global"
                     };
 
-                    if (!nodesByAssembly.ContainsKey(assemblyName))
-                        nodesByAssembly[assemblyName] = new List<NodeInfo>();
+                    if (!nodesByAssembly.ContainsKey(currentAssemblyName))
+                        nodesByAssembly[currentAssemblyName] = new List<NodeInfo>();
 
-                    nodesByAssembly[assemblyName].Add(nodeInfo);
+                    nodesByAssembly[currentAssemblyName].Add(nodeInfo);
                 }
             }
 

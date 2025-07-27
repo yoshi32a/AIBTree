@@ -12,12 +12,7 @@ namespace ArcBT.Core
         /// .btファイルで使用するスクリプト名
         /// </summary>
         public string ScriptName { get; }
-        
-        /// <summary>
-        /// アセンブリ名（どのアセンブリの登録コードに含めるか）
-        /// </summary>
-        public string AssemblyName { get; set; }
-        
+
         /// <summary>
         /// BTNodeAttribute コンストラクタ（NodeTypeは基底クラスから自動判定）
         /// </summary>
@@ -26,11 +21,5 @@ namespace ArcBT.Core
         {
             ScriptName = scriptName;
         }
-    }
-    
-    public enum NodeType
-    {
-        Action,
-        Condition
     }
 }

@@ -107,7 +107,7 @@ namespace ArcBT.Editor
                                 nodeType = "Condition";
                             }
                             
-                            BTLogger.Info($"[{btNodeAttr.AssemblyName ?? "ArcBT"}] {type.FullName} -> Script: '{btNodeAttr.ScriptName}', Type: {nodeType} (auto-detected)");
+                            BTLogger.Info($"{type.FullName} -> Script: '{btNodeAttr.ScriptName}', Type: {nodeType} (auto-detected)");
                         }
                     }
                 }
