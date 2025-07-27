@@ -71,5 +71,11 @@ namespace ArcBT.Core
                 child.Reset();
             }
         }
+
+        /// <summary>条件が失敗した時に呼ばれる（オーバーライド可能）</summary>
+        public virtual void OnConditionFailed()
+        {
+            // デフォルトでは何もしない
+        }
     }
 }

@@ -1,0 +1,218 @@
+# 高度なAI行動のサンプル
+# デコレーター、条件、アクションを組み合わせた実用的なAI
+
+tree AdvancedAI {
+    Selector main_behavior {
+        
+        # 緊急事態対応（最優先）
+        Sequence emergency_response {
+            # 体力が低く、かつ敵が近くにいる場合
+            CompareBlackBoard health_check {
+                key1: "current_health"
+                value: "30"
+                compare: "less"
+            }
+            Condition HasTarget {
+                target_tag: "Enemy"
+            }
+            
+            # 3回まで逃走を試行（1.5秒間隔でリトライ）
+            Retry escape_attempt {
+                max_retries: "3"
+                retry_delay: "1.5"
+                
+                Timeout escape_with_timeout {
+                    timeout: "8.0"
+                    success_on_timeout: "false"
+                    
+                    Sequence escape_sequence {
+                        Action Log {
+                            message: "EMERGENCY! Attempting escape!"
+                            level: "Warning"
+                        }
+                        Action SetBlackBoard {
+                            key: "ai_state"
+                            value: "escaping"
+                            type: "string"
+                        }
+                        Action MoveToPosition {
+                            target: "SafeZone"
+                            speed: "8.0"
+                            tolerance: "3.0"
+                        }
+                    }
+                }
+            }
+        }
+        
+        # 戦闘行動
+        Sequence combat_behavior {
+            Condition HasTarget {
+                target_tag: "Enemy"
+            }
+            # 体力が50%以上の場合のみ戦闘
+            CompareBlackBoard health_sufficient {
+                key1: "current_health"
+                value: "50"
+                compare: "greater_equal"
+            }
+            
+            # 戦闘を5回まで繰り返し（失敗時は中断）
+            Repeat combat_loop {
+                count: "5"
+                stop_on_failure: "true"
+                reset_child: "true"
+                
+                Selector combat_options {
+                    # 75%の確率でランダムアクション選択
+                    Random aggressive_chance {
+                        probability: "0.75"
+                    }
+                    
+                    Timeout aggressive_attack {
+                        timeout: "10.0"
+                        
+                        Sequence attack_sequence {
+                            Action Log {
+                                message: "Initiating aggressive attack"
+                                level: "Info"
+                            }
+                            Action SetBlackBoard {
+                                key: "ai_state"
+                                value: "attacking"
+                                type: "string"
+                            }
+                            Action ScanEnvironment {
+                                scan_radius: "8.0"
+                                scan_interval: "0.5"
+                            }
+                            Action MoveToPosition {
+                                target: "Enemy"
+                                speed: "5.0"
+                                tolerance: "2.0"
+                            }
+                        }
+                    }
+                    
+                    # 守備的なアプローチ
+                    Sequence defensive_approach {
+                        Action Log {
+                            message: "Using defensive tactics"
+                            level: "Info"
+                        }
+                        Action SetBlackBoard {
+                            key: "ai_state"
+                            value: "defensive"
+                            type: "string"
+                        }
+                        Action Wait {
+                            duration: "1.0"
+                        }
+                        # 成功/失敗を反転（守備的なので慎重に）
+                        Inverter cautious_check {
+                            Random high_risk {
+                                probability: "0.8"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
+        # 探索・資源収集行動
+        Sequence exploration_behavior {
+            # 敵がいない平和な状態
+            Inverter no_enemies {
+                Condition HasTarget {
+                    target_tag: "Enemy"
+                }
+            }
+            
+            # 資源探索を無限ループ
+            Repeat exploration_loop {
+                count: "-1"
+                stop_on_failure: "false"
+                reset_child: "true"
+                
+                Selector exploration_options {
+                    # 50%の確率で環境スキャン
+                    Sequence scan_exploration {
+                        Random scan_chance {
+                            probability: "0.5"
+                        }
+                        
+                        Retry scan_with_retry {
+                            max_retries: "2"
+                            retry_delay: "0.5"
+                            
+                            Action ScanEnvironment {
+                                scan_radius: "12.0"
+                                scan_interval: "1.0"
+                            }
+                        }
+                        
+                        Action Log {
+                            message: "Environment scan completed"
+                            include_blackboard: "true"
+                            blackboard_key: "enemies_detected"
+                        }
+                    }
+                    
+                    # ランダム移動探索
+                    Sequence wander_exploration {
+                        Action SetBlackBoard {
+                            key: "ai_state"
+                            value: "exploring"
+                            type: "string"
+                        }
+                        
+                        Timeout wander_timeout {
+                            timeout: "15.0"
+                            success_on_timeout: "true"
+                            
+                            Action RandomWander {
+                                speed: "3.0"
+                                wander_radius: "10.0"
+                                change_direction_interval: "4.0"
+                            }
+                        }
+                        
+                        Action Log {
+                            message: "Exploration phase completed"
+                            level: "Debug"
+                        }
+                    }
+                }
+            }
+        }
+        
+        # デフォルトの待機状態
+        Repeat default_idle {
+            count: "-1"
+            reset_child: "true"
+            
+            Sequence idle_sequence {
+                Action SetBlackBoard {
+                    key: "ai_state"
+                    value: "idle"
+                    type: "string"
+                }
+                Action Log {
+                    message: "AI in idle state"
+                    level: "Debug"
+                    include_blackboard: "true"
+                    blackboard_key: "ai_state"
+                }
+                
+                Timeout idle_timeout {
+                    timeout: "5.0"
+                    success_on_timeout: "true"
+                    
+                    Action Wait {
+                        duration: "5.0"
+                    }
+                }
+            }
+        }
+    }
+}

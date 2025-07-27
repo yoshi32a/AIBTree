@@ -59,8 +59,9 @@ namespace ArcBT.Core
         }
 
         /// <summary>条件が失敗した時に呼ばれる（オーバーライド可能）</summary>
-        protected virtual void OnConditionFailed()
+        public override void OnConditionFailed()
         {
+            base.OnConditionFailed();
             // デフォルトでは何もしない
         }
 

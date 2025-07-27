@@ -109,7 +109,7 @@ namespace ArcBT.Actions
             return BTNodeResult.Running;
         }
 
-        protected override void OnConditionFailed()
+        public override void OnConditionFailed()
         {
             BTLogger.LogMovement($"MoveToPosition '{Name}': 🚨 Condition failed - stopping movement", Name, ownerComponent);
 

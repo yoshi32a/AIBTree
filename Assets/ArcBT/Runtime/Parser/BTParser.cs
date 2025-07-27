@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using ArcBT.Core;
+using ArcBT.Decorators;
 using ArcBT.Logger;
 
 namespace ArcBT.Parser
@@ -49,7 +50,8 @@ namespace ArcBT.Parser
         // よく使用されるキーワードを静的参照として保持（FrozenSetで高速化）
         static readonly HashSet<string> keywords = new()
         {
-            "tree", "Sequence", "Selector", "Action", "Condition", "Parallel"
+            "tree", "Sequence", "Selector", "Action", "Condition", "Parallel",
+            "Inverter", "Repeat", "Retry", "Timeout"
         };
 
         // ノードタイプの高速マッピング
@@ -58,6 +60,15 @@ namespace ArcBT.Parser
             ["Sequence"] = () => new BTSequenceNode(),
             ["Selector"] = () => new BTSelectorNode(),
             ["Parallel"] = () => new BTParallelNode()
+        };
+
+        // デコレーターノードの高速マッピング
+        static readonly Dictionary<string, Func<BTNode>> decoratorNodeFactories = new()
+        {
+            ["Inverter"] = () => new InverterDecorator(),
+            ["Repeat"] = () => new RepeatDecorator(),
+            ["Retry"] = () => new RetryDecorator(),
+            ["Timeout"] = () => new TimeoutDecorator()
         };
 
         // よく使われる文字列の事前割り当て（GC負荷軽減）
@@ -259,8 +270,10 @@ namespace ArcBT.Parser
             return span.Length switch
             {
                 4 => span.SequenceEqual("tree".AsSpan()),
-                6 => span.SequenceEqual("Action".AsSpan()),
-                8 => span.SequenceEqual("Sequence".AsSpan()) || span.SequenceEqual("Selector".AsSpan()) || span.SequenceEqual("Parallel".AsSpan()),
+                5 => span.SequenceEqual("Retry".AsSpan()),
+                6 => span.SequenceEqual("Action".AsSpan()) || span.SequenceEqual("Repeat".AsSpan()),
+                7 => span.SequenceEqual("Timeout".AsSpan()),
+                8 => span.SequenceEqual("Sequence".AsSpan()) || span.SequenceEqual("Selector".AsSpan()) || span.SequenceEqual("Parallel".AsSpan()) || span.SequenceEqual("Inverter".AsSpan()),
                 9 => span.SequenceEqual("Condition".AsSpan()),
                 _ => false
             };
@@ -390,6 +403,18 @@ namespace ArcBT.Parser
                 BTLogger.Log(LogLevel.Info, LogCategory.Parser, $"🚀 Creating {nodeType} with script '{scriptOrNodeName}'");
                 node = CreateNodeFromScript(scriptOrNodeName, nodeType, properties);
             }
+            else if (decoratorNodeFactories.ContainsKey(nodeType))
+            {
+                BTLogger.Log(LogLevel.Debug, LogCategory.Parser, $"🔧 Creating decorator node: {nodeType}");
+                node = CreateDecoratorNode(nodeType);
+                if (node != null)
+                {
+                    foreach (var prop in properties)
+                    {
+                        node.SetProperty(prop.Key, prop.Value);
+                    }
+                }
+            }
             else
             {
                 BTLogger.Log(LogLevel.Debug, LogCategory.Parser, $"🔧 Creating composite node: {nodeType}");
@@ -474,6 +499,15 @@ namespace ArcBT.Parser
                 return factory();
 
             BTLogger.LogError(LogCategory.Parser, $"Unknown composite node type: {nodeType}");
+            return null;
+        }
+
+        BTNode CreateDecoratorNode(string nodeType)
+        {
+            if (decoratorNodeFactories.TryGetValue(nodeType, out var factory))
+                return factory();
+            
+            BTLogger.LogError(LogCategory.Parser, $"Unknown decorator node type: {nodeType}");
             return null;
         }
 

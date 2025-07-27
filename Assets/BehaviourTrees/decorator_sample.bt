@@ -1,0 +1,100 @@
+# デコレーターノードのサンプル
+# 各種デコレーターの基本的な使用方法を示すBehaviourTree
+
+tree DecoratorSample {
+    Selector main {
+        
+        # 1. タイムアウト付きの攻撃行動
+        # 5秒以内に攻撃が完了しない場合は失敗扱い
+        Timeout AttackWithTimeout {
+            timeout: "5.0"
+            success_on_timeout: "false"
+            
+            Sequence AttackSequence {
+                Condition HasTarget {
+                    target_tag: "Enemy"
+                }
+                Action MoveToPosition {
+                    target: "Enemy"
+                    speed: "3.0"
+                    tolerance: "2.0"
+                }
+                Action Log {
+                    message: "Starting attack!"
+                    level: "Info"
+                }
+            }
+        }
+        
+        # 2. リトライ付きの環境スキャン
+        # 失敗した場合は最大3回まで1秒間隔でリトライ
+        Retry ScanWithRetry {
+            max_retries: "3"
+            retry_delay: "1.0"
+            
+            Action ScanEnvironment {
+                scan_radius: "10.0"
+                scan_interval: "0.5"
+            }
+        }
+        
+        # 3. 反転された条件チェック
+        # 敵がいない場合に真となる（平和状態の確認）
+        Inverter NoPeaceCheck {
+            Condition HasTarget {
+                target_tag: "Enemy"
+            }
+        }
+        
+        # 4. 3回繰り返すパトロール行動
+        Repeat PatrolLoop {
+            count: "3"
+            stop_on_failure: "false"
+            reset_child: "true"
+            
+            Sequence PatrolStep {
+                Action SetBlackBoard {
+                    key: "patrol_status"
+                    value: "patrolling"
+                    type: "string"
+                }
+                Action Log {
+                    message: "Patrol step starting"
+                    include_blackboard: "true"
+                    blackboard_key: "patrol_status"
+                }
+                Action Wait {
+                    duration: "2.0"
+                }
+                Action RandomWander {
+                    speed: "2.0"
+                    wander_radius: "5.0"
+                }
+            }
+        }
+        
+        # 5. デフォルトの待機行動（無限繰り返し）
+        Repeat IdleLoop {
+            count: "-1"
+            reset_child: "true"
+            
+            Sequence IdleBehavior {
+                Action Log {
+                    message: "Idle mode activated"
+                    level: "Debug"
+                }
+                Action Wait {
+                    duration: "3.0"
+                }
+                # ランダムで25%の確率で何かをログ出力
+                Random RandomEvent {
+                    probability: "0.25"
+                }
+                Action Log {
+                    message: "Random idle event occurred!"
+                    level: "Info"
+                }
+            }
+        }
+    }
+}

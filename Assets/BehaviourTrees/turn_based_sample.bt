@@ -1,0 +1,339 @@
+# ターン制ゲーム用BehaviourTree
+# 1ターンで完了する行動の決定ロジック
+
+tree TurnBasedAI {
+    Selector turn_decision {
+        
+        # 最優先：生存確認と緊急回復
+        Sequence emergency_survival {
+            CompareBlackBoard critical_health {
+                key1: "current_health"
+                value: "20"
+                compare: "less_equal"
+            }
+            
+            Selector survival_options {
+                # 回復アイテム使用
+                Sequence use_healing_item {
+                    CompareBlackBoard has_healing_items {
+                        key1: "healing_items_count"
+                        value: "0"
+                        compare: "greater"
+                    }
+                    Action Log {
+                        message: "CRITICAL HEALTH! Using healing item"
+                        level: "Warning"
+                    }
+                    Action SetBlackBoard {
+                        key: "selected_action"
+                        value: "use_healing_item"
+                        type: "string"
+                    }
+                    Action SetBlackBoard {
+                        key: "turn_complete"
+                        value: "true"
+                        type: "bool"
+                    }
+                }
+                
+                # 防御行動
+                Sequence defensive_stance {
+                    Action Log {
+                        message: "Low health - taking defensive stance"
+                        level: "Info"
+                    }
+                    Action SetBlackBoard {
+                        key: "selected_action"
+                        value: "defend"
+                        type: "string"
+                    }
+                    Action SetBlackBoard {
+                        key: "turn_complete"
+                        value: "true"
+                        type: "bool"
+                    }
+                }
+            }
+        }
+        
+        # 攻撃的戦略
+        Sequence offensive_strategy {
+            # 体力が十分ある場合
+            CompareBlackBoard sufficient_health {
+                key1: "current_health"
+                value: "50"
+                compare: "greater"
+            }
+            
+            # 敵が攻撃範囲内にいる
+            Condition HasTarget {
+                target_tag: "Enemy"
+            }
+            
+            Selector attack_options {
+                # 70%の確率で強攻撃
+                Sequence powerful_attack {
+                    Random aggressive_chance {
+                        probability: "0.7"
+                    }
+                    
+                    # マナが十分ある場合は魔法攻撃
+                    Sequence magic_attack {
+                        CompareBlackBoard sufficient_mana {
+                            key1: "current_mana"
+                            value: "30"
+                            compare: "greater_equal"
+                        }
+                        Action Log {
+                            message: "Casting powerful spell attack!"
+                            level: "Info"
+                        }
+                        Action SetBlackBoard {
+                            key: "selected_action"
+                            value: "cast_fireball"
+                            type: "string"
+                        }
+                        Action SetBlackBoard {
+                            key: "mana_cost"
+                            value: "30"
+                            type: "int"
+                        }
+                        Action SetBlackBoard {
+                            key: "turn_complete"
+                            value: "true"
+                            type: "bool"
+                        }
+                    }
+                    
+                    # マナ不足なら物理攻撃
+                    Sequence physical_attack {
+                        Action Log {
+                            message: "Performing strong physical attack"
+                            level: "Info"
+                        }
+                        Action SetBlackBoard {
+                            key: "selected_action"
+                            value: "strong_attack"
+                            type: "string"
+                        }
+                        Action SetBlackBoard {
+                            key: "turn_complete"
+                            value: "true"
+                            type: "bool"
+                        }
+                    }
+                }
+                
+                # 通常攻撃
+                Sequence normal_attack {
+                    Action Log {
+                        message: "Performing normal attack"
+                        level: "Info"
+                    }
+                    Action SetBlackBoard {
+                        key: "selected_action"
+                        value: "normal_attack"
+                        type: "string"
+                    }
+                    Action SetBlackBoard {
+                        key: "turn_complete"
+                        value: "true"
+                        type: "bool"
+                    }
+                }
+            }
+        }
+        
+        # サポート戦略
+        Sequence support_strategy {
+            # 体力が中程度
+            CompareBlackBoard moderate_health {
+                key1: "current_health"
+                value: "30"
+                compare: "greater"
+            }
+            
+            Selector support_options {
+                # 味方を回復
+                Sequence heal_ally {
+                    CompareBlackBoard has_mana_for_heal {
+                        key1: "current_mana"
+                        value: "20"
+                        compare: "greater_equal"
+                    }
+                    # 50%の確率で味方回復を選択
+                    Random heal_chance {
+                        probability: "0.5"
+                    }
+                    Action Log {
+                        message: "Healing ally"
+                        level: "Info"
+                    }
+                    Action SetBlackBoard {
+                        key: "selected_action"
+                        value: "heal_ally"
+                        type: "string"
+                    }
+                    Action SetBlackBoard {
+                        key: "mana_cost"
+                        value: "20"
+                        type: "int"
+                    }
+                    Action SetBlackBoard {
+                        key: "turn_complete"
+                        value: "true"
+                        type: "bool"
+                    }
+                }
+                
+                # バフ・デバフ使用
+                Sequence use_buff {
+                    CompareBlackBoard has_mana_for_buff {
+                        key1: "current_mana"
+                        value: "15"
+                        compare: "greater_equal"
+                    }
+                    Action Log {
+                        message: "Applying buff/debuff"
+                        level: "Info"
+                    }
+                    Action SetBlackBoard {
+                        key: "selected_action"
+                        value: "cast_buff"
+                        type: "string"
+                    }
+                    Action SetBlackBoard {
+                        key: "mana_cost"
+                        value: "15"
+                        type: "int"
+                    }
+                    Action SetBlackBoard {
+                        key: "turn_complete"
+                        value: "true"
+                        type: "bool"
+                    }
+                }
+                
+                # アイテム使用
+                Sequence use_item {
+                    CompareBlackBoard has_items {
+                        key1: "consumable_items_count"
+                        value: "0"
+                        compare: "greater"
+                    }
+                    # 30%の確率でアイテム使用
+                    Random item_chance {
+                        probability: "0.3"
+                    }
+                    Action Log {
+                        message: "Using consumable item"
+                        level: "Info"
+                    }
+                    Action SetBlackBoard {
+                        key: "selected_action"
+                        value: "use_item"
+                        type: "string"
+                    }
+                    Action SetBlackBoard {
+                        key: "turn_complete"
+                        value: "true"
+                        type: "bool"
+                    }
+                }
+            }
+        }
+        
+        # 移動・位置取り戦略
+        Sequence positioning_strategy {
+            Selector movement_options {
+                # 敵から距離を取る
+                Sequence retreat_movement {
+                    CompareBlackBoard low_health {
+                        key1: "current_health"
+                        value: "40"
+                        compare: "less"
+                    }
+                    Action Log {
+                        message: "Moving to safer position"
+                        level: "Info"
+                    }
+                    Action SetBlackBoard {
+                        key: "selected_action"
+                        value: "move_back"
+                        type: "string"
+                    }
+                    Action SetBlackBoard {
+                        key: "turn_complete"
+                        value: "true"
+                        type: "bool"
+                    }
+                }
+                
+                # 敵に近づく
+                Sequence approach_movement {
+                    CompareBlackBoard good_health {
+                        key1: "current_health"
+                        value: "60"
+                        compare: "greater"
+                    }
+                    # 敵がいるが攻撃範囲外
+                    Inverter not_in_range {
+                        Condition HasTarget {
+                            target_tag: "Enemy"
+                        }
+                    }
+                    Action Log {
+                        message: "Moving closer to enemy"
+                        level: "Info"
+                    }
+                    Action SetBlackBoard {
+                        key: "selected_action"
+                        value: "move_forward"
+                        type: "string"
+                    }
+                    Action SetBlackBoard {
+                        key: "turn_complete"
+                        value: "true"
+                        type: "bool"
+                    }
+                }
+                
+                # 戦略的位置取り
+                Sequence tactical_position {
+                    Action Log {
+                        message: "Taking tactical position"
+                        level: "Debug"
+                    }
+                    Action SetBlackBoard {
+                        key: "selected_action"
+                        value: "move_tactical"
+                        type: "string"
+                    }
+                    Action SetBlackBoard {
+                        key: "turn_complete"
+                        value: "true"
+                        type: "bool"
+                    }
+                }
+            }
+        }
+        
+        # デフォルト：ターン待機
+        Sequence default_wait {
+            Action Log {
+                message: "No optimal action found - waiting"
+                level: "Debug"
+            }
+            Action SetBlackBoard {
+                key: "selected_action"
+                value: "wait"
+                type: "string"
+            }
+            Action SetBlackBoard {
+                key: "turn_complete"
+                value: "true"
+                type: "bool"
+            }
+        }
+    }
+}
