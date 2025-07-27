@@ -25,7 +25,7 @@ namespace ArcBT.Conditions
             // BlackBoardからターゲット情報をチェック
             if (blackBoard != null)
             {
-                var targetInfo = blackBoard.GetValue<GameObject>("target_enemy", null);
+                var targetInfo = blackBoard.GetValue<GameObject>("target_enemy");
                 if (targetInfo != null)
                 {
                     BTLogger.LogCondition($"BlackBoardにターゲット情報があります: {targetInfo.name}", Name);
@@ -35,7 +35,7 @@ namespace ArcBT.Conditions
 
             // シーン内でターゲットを検索
             var targets = GameObject.FindGameObjectsWithTag(targetTag);
-            if (targets != null && targets.Length > 0)
+            if (targets is { Length: > 0 })
             {
                 BTLogger.LogCondition($"ターゲット発見: {targets.Length}体の{targetTag}", Name);
                 return BTNodeResult.Success;

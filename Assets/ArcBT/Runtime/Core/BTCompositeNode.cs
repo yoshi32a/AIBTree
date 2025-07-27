@@ -4,7 +4,7 @@ namespace ArcBT.Core
     [System.Serializable]
     public abstract class BTCompositeNode : BTNode
     {
-        protected int currentChildIndex = 0;
+        protected int currentChildIndex;
 
         public override void Reset()
         {

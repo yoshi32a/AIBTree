@@ -15,7 +15,7 @@ namespace ArcBT.Conditions
             switch (key)
             {
                 case "bb_key":
-                    blackBoardKey = value.ToString();
+                    blackBoardKey = value;
                     break;
             }
         }
@@ -29,7 +29,7 @@ namespace ArcBT.Conditions
             }
 
             // BlackBoardから敵情報の有無をチェック
-            var hasEnemyInfo = blackBoard.GetValue<bool>(blackBoardKey, false);
+            var hasEnemyInfo = blackBoard.GetValue<bool>(blackBoardKey);
             var enemyTarget = blackBoard.GetValue<GameObject>("enemy_target");
 
             // 敵ターゲットが有効かチェック

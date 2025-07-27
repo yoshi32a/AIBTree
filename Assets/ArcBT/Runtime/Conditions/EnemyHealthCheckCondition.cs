@@ -28,10 +28,10 @@ namespace ArcBT.Conditions
         {
             // BlackBoardから敵情報を取得
             GameObject targetEnemy = null;
-            
+
             if (blackBoard != null)
             {
-                var enemyInfo = blackBoard.GetValue<GameObject>("target_enemy", null);
+                var enemyInfo = blackBoard.GetValue<GameObject>("target_enemy");
                 if (enemyInfo != null)
                 {
                     targetEnemy = enemyInfo;
@@ -56,13 +56,13 @@ namespace ArcBT.Conditions
                 {
                     var healthPercent = (health.CurrentHealth / health.MaxHealth) * 100f;
                     var result = healthPercent >= minHealthPercent;
-                    
+
                     BTLogger.LogCondition($"敵の体力: {healthPercent:F1}% (最低要求: {minHealthPercent}%)", Name);
                     return result ? BTNodeResult.Success : BTNodeResult.Failure;
                 }
                 else
                 {
-                    BTLogger.Log(LogLevel.Warning, LogCategory.Condition, 
+                    BTLogger.Log(LogLevel.Warning, LogCategory.Condition,
                         "Enemy does not implement IHealth interface.", Name);
                 }
             }

@@ -17,9 +17,9 @@ namespace ArcBT.Core
         // スマートログ用の状態追跡
         BTNodeResult lastResult = BTNodeResult.Running;
         string lastExecutedNodeName = "";
-        float lastLogTime = 0f;
-        int executionCount = 0;
-        int repetitionCount = 0;
+        float lastLogTime;
+        int executionCount;
+        int repetitionCount;
         string lastLogPattern = "";
 
         public BTNode RootNode { get; set; }
@@ -49,10 +49,10 @@ namespace ArcBT.Core
 
                 // スマートログ: 状態変化時または定期的にのみログ出力
                 var shouldLog = debugMode && (
-                    result != lastResult ||  // 結果が変わった
-                    RootNode.Name != lastExecutedNodeName ||  // 実行ノードが変わった
-                    Time.time - lastLogTime > 5f ||  // 5秒間隔で生存確認
-                    executionCount <= 3  // 最初の3回は必ずログ
+                    result != lastResult || // 結果が変わった
+                    RootNode.Name != lastExecutedNodeName || // 実行ノードが変わった
+                    Time.time - lastLogTime > 5f || // 5秒間隔で生存確認
+                    executionCount <= 3 // 最初の3回は必ずログ
                 );
 
                 if (shouldLog)
@@ -309,6 +309,7 @@ namespace ArcBT.Core
                 var type = BlackBoard.GetValueType(key)?.Name ?? "unknown";
                 contents.AppendLine($"  {key}: {value} ({type})");
             }
+
             return contents.ToString();
         }
 

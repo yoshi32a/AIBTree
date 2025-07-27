@@ -11,7 +11,10 @@ namespace ArcBT.Core
         protected List<BTConditionNode> watchedConditions = new();
 
         // Action実行中かどうか
-        protected bool isExecuting = false;
+        protected bool isExecuting;
+
+        /// <summary>現在実行中かどうか</summary>
+        public bool IsExecuting => isExecuting;
 
         public override BTNodeResult Execute()
         {
@@ -60,9 +63,6 @@ namespace ArcBT.Core
         {
             // デフォルトでは何もしない
         }
-
-        /// <summary>現在実行中かどうか</summary>
-        public bool IsExecuting => isExecuting;
 
         public override void Reset()
         {

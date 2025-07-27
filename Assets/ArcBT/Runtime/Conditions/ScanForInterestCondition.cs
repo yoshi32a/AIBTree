@@ -28,7 +28,7 @@ namespace ArcBT.Conditions
         protected override BTNodeResult CheckCondition()
         {
             var interestObjects = GameObject.FindGameObjectsWithTag(interestTag);
-            
+
             foreach (var obj in interestObjects)
             {
                 var distance = Vector3.Distance(transform.position, obj.transform.position);

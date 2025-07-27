@@ -5,7 +5,8 @@ using UnityEngine;
 namespace ArcBT.Actions
 {
     [BTNode("EnvironmentScan")]
-    public class EnvironmentScanAction : BTActionNode    {
+    public class EnvironmentScanAction : BTActionNode
+    {
         float scanRange = 10f;
         string[] scanTags = { "Enemy", "Item", "Interactable" };
 
@@ -24,6 +25,7 @@ namespace ArcBT.Actions
                     {
                         scanTags[i] = scanTags[i].Trim();
                     }
+
                     break;
             }
         }
@@ -35,14 +37,14 @@ namespace ArcBT.Actions
             foreach (var tag in scanTags)
             {
                 var objects = GameObject.FindGameObjectsWithTag(tag);
-                
+
                 foreach (var obj in objects)
                 {
                     var distance = Vector3.Distance(transform.position, obj.transform.position);
                     if (distance <= scanRange)
                     {
                         foundObjects++;
-                        
+
                         // BlackBoardに情報を記録
                         if (blackBoard != null)
                         {

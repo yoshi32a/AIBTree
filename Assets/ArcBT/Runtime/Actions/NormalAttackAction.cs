@@ -5,7 +5,8 @@ using UnityEngine;
 namespace ArcBT.Actions
 {
     [BTNode("NormalAttack")]
-    public class NormalAttackAction : BTActionNode    {
+    public class NormalAttackAction : BTActionNode
+    {
         float damage = 10f;
         float range = 2f;
 
@@ -41,7 +42,7 @@ namespace ArcBT.Actions
             if (nearestEnemy != null)
             {
                 BTLogger.LogCombat($"通常攻撃実行: ダメージ{damage}", Name);
-                
+
                 // ダメージ処理の実装（インターフェース使用でリフレクション排除）
                 var health = nearestEnemy.GetComponent<IHealth>();
                 if (health != null)
@@ -51,7 +52,7 @@ namespace ArcBT.Actions
                 else
                 {
                     // 後方互換性のためのフォールバック（将来的に削除予定）
-                    BTLogger.Log(LogLevel.Warning, LogCategory.Combat, 
+                    BTLogger.Log(LogLevel.Warning, LogCategory.Combat,
                         "Enemy does not implement IHealth interface. Consider updating Health component.", Name);
                 }
 

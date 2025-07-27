@@ -9,17 +9,17 @@ namespace ArcBT.Core
     {
         readonly Dictionary<string, object> data = new();
         readonly Dictionary<string, System.Type> dataTypes = new();
-        
+
         // 変更追跡用
         readonly List<string> recentChanges = new();
-        float lastChangeTime = 0f;
+        float lastChangeTime;
 
         /// <summary>値を設定する</summary>
         public void SetValue<T>(string key, T value)
         {
             var isNewKey = !data.ContainsKey(key);
             var isValueChanged = false;
-            
+
             if (!isNewKey)
             {
                 var oldValue = data[key];
@@ -37,7 +37,7 @@ namespace ArcBT.Core
                     isValueChanged = !oldValue.Equals(value);
                 }
             }
-            
+
             data[key] = value;
             dataTypes[key] = typeof(T);
 
@@ -46,7 +46,7 @@ namespace ArcBT.Core
             {
                 recentChanges.Add($"{key}={value}");
                 lastChangeTime = Time.time;
-                
+
                 // 冗長ログを避けて重要な変更のみログ出力
                 if (IsImportantKey(key))
                 {
@@ -56,11 +56,11 @@ namespace ArcBT.Core
                 }
             }
         }
-        
+
         bool IsImportantKey(string key)
         {
             // 重要なキーのみログに出力（ノイズ低減）
-            return key.Contains("enemy") || key.Contains("target") || 
+            return key.Contains("enemy") || key.Contains("target") ||
                    key.Contains("position") || key.Contains("health") ||
                    key.Contains("state") || key.Contains("action");
         }
@@ -76,7 +76,8 @@ namespace ArcBT.Core
                 }
 
                 var valueTypeName = value?.GetType().Name ?? "null";
-                BTLogger.Log(LogLevel.Warning, LogCategory.BlackBoard, $"🗂️ BlackBoard: Type mismatch for key '{key}'. Expected {typeof(T).Name}, got {valueTypeName}");
+                BTLogger.Log(LogLevel.Warning, LogCategory.BlackBoard,
+                    $"🗂️ BlackBoard: Type mismatch for key '{key}'. Expected {typeof(T).Name}, got {valueTypeName}");
             }
 
             return defaultValue;
@@ -129,7 +130,7 @@ namespace ArcBT.Core
         {
             return dataTypes.GetValueOrDefault(key);
         }
-        
+
         /// <summary>値を文字列として取得（UI表示用）</summary>
         public string GetValueAsString(string key)
         {
@@ -137,30 +138,31 @@ namespace ArcBT.Core
             {
                 if (value == null)
                     return "null";
-                
+
                 // GameObject の場合は名前を表示
                 if (value is GameObject gameObj)
                     return gameObj.name;
-                
+
                 // Vector3 の場合は座標を簡潔に表示
                 if (value is Vector3 vec3)
                     return $"({vec3.x:F1}, {vec3.y:F1}, {vec3.z:F1})";
-                
+
                 // float の場合は小数点1桁まで表示
                 if (value is float floatVal)
                     return floatVal.ToString("F1");
-                
+
                 return value.ToString();
             }
+
             return "未設定";
         }
-        
+
         /// <summary>最近変更があったかチェック</summary>
         public bool HasRecentChanges()
         {
             return recentChanges.Count > 0 && Time.time - lastChangeTime < 1f;
         }
-        
+
         /// <summary>最近の変更のサマリーを取得</summary>
         public string GetRecentChangeSummary()
         {
@@ -168,9 +170,9 @@ namespace ArcBT.Core
             {
                 return "変更なし";
             }
-            
+
             var summary = string.Join(", ", recentChanges);
-            recentChanges.Clear();  // サマリーを取得したらクリア
+            recentChanges.Clear(); // サマリーを取得したらクリア
             return summary;
         }
     }

@@ -7,10 +7,11 @@ namespace ArcBT.Actions
 {
     /// <summary>環境をスキャンするアクション</summary>
     [BTNode("ScanEnvironment")]
-    public class ScanEnvironmentAction : BTActionNode    {
+    public class ScanEnvironmentAction : BTActionNode
+    {
         float scanInterval = 2.0f;
         float scanRadius = 15.0f;
-        float lastScanTime = 0f;
+        float lastScanTime;
 
         public override void SetProperty(string key, string value)
         {

@@ -37,29 +37,23 @@ namespace ArcBT.Core
                 }
             }
 
-            // 失敗条件チェック
-            if (FailurePolicy == ParallelPolicy.RequireOne && failureCount > 0)
+            switch (FailurePolicy)
             {
-                return BTNodeResult.Failure;
+                // 失敗条件チェック
+                case ParallelPolicy.RequireOne when failureCount > 0:
+                case ParallelPolicy.RequireAll when failureCount >= Children.Count:
+                    return BTNodeResult.Failure;
             }
 
-            if (FailurePolicy == ParallelPolicy.RequireAll && failureCount >= Children.Count)
+            switch (SuccessPolicy)
             {
-                return BTNodeResult.Failure;
+                // 成功条件チェック
+                case ParallelPolicy.RequireOne when successCount > 0:
+                case ParallelPolicy.RequireAll when successCount >= Children.Count:
+                    return BTNodeResult.Success;
+                default:
+                    return BTNodeResult.Running;
             }
-
-            // 成功条件チェック
-            if (SuccessPolicy == ParallelPolicy.RequireOne && successCount > 0)
-            {
-                return BTNodeResult.Success;
-            }
-
-            if (SuccessPolicy == ParallelPolicy.RequireAll && successCount >= Children.Count)
-            {
-                return BTNodeResult.Success;
-            }
-
-            return BTNodeResult.Running;
         }
     }
 }

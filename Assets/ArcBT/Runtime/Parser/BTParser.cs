@@ -10,7 +10,7 @@ namespace ArcBT.Parser
 {
     public class BTParser
     {
-        enum TokenType : byte  // byteで十分、メモリ節約
+        enum TokenType : byte // byteで十分、メモリ節約
         {
             Keyword,
             Identifier,
@@ -24,9 +24,9 @@ namespace ArcBT.Parser
         // 最適化されたToken構造体（フィールド順序を最適化）
         readonly struct Token
         {
-            public readonly string Value;      // 参照型を先頭に配置
-            public readonly ushort Line;       // 65535行まで対応、intより小さい
-            public readonly TokenType Type;    // byteサイズ、最後に配置
+            public readonly string Value; // 参照型を先頭に配置
+            public readonly ushort Line; // 65535行まで対応、intより小さい
+            public readonly TokenType Type; // byteサイズ、最後に配置
 
             public Token(TokenType type, string value, int line)
             {
@@ -38,7 +38,7 @@ namespace ArcBT.Parser
             // 高速比較用メソッド（インライン化）
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public bool IsKeyword(string keyword) => Type == TokenType.Keyword && Value == keyword;
-            
+
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public bool IsType(TokenType type) => Type == type;
 
@@ -67,7 +67,7 @@ namespace ArcBT.Parser
         const string COLON = ":";
 
 
-        Token[] tokens;  // Listより配列の方が高速アクセス
+        Token[] tokens; // Listより配列の方が高速アクセス
         int currentTokenIndex;
 
         public BTNode ParseFile(string filePath)
@@ -170,7 +170,7 @@ namespace ArcBT.Parser
                             linePos++;
                             continue;
                     }
-                    
+
                     if (c is '"' or '\'')
                     {
                         // 文字列リテラル
@@ -200,7 +200,7 @@ namespace ArcBT.Parser
                         }
 
                         var wordSpan = lineSpan.Slice(start, linePos - start);
-                        
+
                         // キーワードチェックを先に行い、文字列生成を最小化
                         if (IsKeywordSpan(wordSpan))
                         {
@@ -451,14 +451,13 @@ namespace ArcBT.Parser
             if (currentTokenIndex >= tokens.Length ||
                 (tokens[currentTokenIndex].Type != TokenType.String && tokens[currentTokenIndex].Type != TokenType.Number))
             {
-                BTLogger.LogError(LogCategory.Parser,
-                    $"Expected property value, got: {(currentTokenIndex < tokens.Length ? tokens[currentTokenIndex].Type.ToString() : "END_OF_TOKENS")}");
+                BTLogger.LogError(LogCategory.Parser, $"Expected property value, got: {(currentTokenIndex < tokens.Length ? tokens[currentTokenIndex].Type.ToString() : "END_OF_TOKENS")}");
                 return false;
             }
 
             var currentToken = tokens[currentTokenIndex++]; // 値の取得とインクリメントを同時に実行
             propertyValue = currentToken.Value;
-            
+
             // Remove quotes from string value only
             if (currentToken.Type == TokenType.String &&
                 propertyValue.StartsWith("\"") && propertyValue.EndsWith("\""))
@@ -473,7 +472,7 @@ namespace ArcBT.Parser
         {
             if (compositeNodeFactories.TryGetValue(nodeType, out var factory))
                 return factory();
-            
+
             BTLogger.LogError(LogCategory.Parser, $"Unknown composite node type: {nodeType}");
             return null;
         }
@@ -496,7 +495,8 @@ namespace ArcBT.Parser
                 }
                 else
                 {
-                    BTLogger.Log(LogLevel.Error, LogCategory.Parser, $"Unknown action script: {scriptName}. Please register the action in BTStaticNodeRegistry or use source generator.");
+                    BTLogger.Log(LogLevel.Error, LogCategory.Parser,
+                        $"Unknown action script: {scriptName}. Please register the action in BTStaticNodeRegistry or use source generator.");
                     return null;
                 }
             }

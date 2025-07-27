@@ -14,7 +14,7 @@ namespace ArcBT.Actions
         [SerializeField] float tolerance = 0.5f;
 
         Vector3 targetPosition;
-        bool hasValidTarget = false;
+        bool hasValidTarget;
 
         public override void Initialize(MonoBehaviour owner, BlackBoard sharedBlackBoard = null)
         {
@@ -81,8 +81,10 @@ namespace ArcBT.Actions
             var currentPos = transform.position;
             var distance = Vector3.Distance(currentPos, targetPosition);
 
-            BTLogger.Log(LogLevel.Debug, LogCategory.Movement, $"MoveToPosition '{Name}': Current pos = {currentPos}, Target pos = {targetPosition}", Name, ownerComponent);
-            BTLogger.Log(LogLevel.Debug, LogCategory.Movement, $"MoveToPosition '{Name}': Distance = {distance:F2}, Tolerance = {tolerance}", Name, ownerComponent);
+            BTLogger.Log(LogLevel.Debug, LogCategory.Movement, $"MoveToPosition '{Name}': Current pos = {currentPos}, Target pos = {targetPosition}", Name,
+                ownerComponent);
+            BTLogger.Log(LogLevel.Debug, LogCategory.Movement, $"MoveToPosition '{Name}': Distance = {distance:F2}, Tolerance = {tolerance}", Name,
+                ownerComponent);
 
             if (distance <= tolerance)
             {
@@ -102,7 +104,8 @@ namespace ArcBT.Actions
                 blackBoard.SetValue($"{Name}_is_moving", true);
             }
 
-            BTLogger.Log(LogLevel.Debug, LogCategory.Movement, $"MoveToPosition '{Name}': → Moving to '{target}' (Distance: {distance:F2}, Speed: {speed})", Name, ownerComponent);
+            BTLogger.Log(LogLevel.Debug, LogCategory.Movement, $"MoveToPosition '{Name}': → Moving to '{target}' (Distance: {distance:F2}, Speed: {speed})",
+                Name, ownerComponent);
             return BTNodeResult.Running;
         }
 

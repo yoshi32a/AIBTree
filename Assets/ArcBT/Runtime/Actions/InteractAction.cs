@@ -5,7 +5,8 @@ using UnityEngine;
 namespace ArcBT.Actions
 {
     [BTNode("Interact")]
-    public class InteractAction : BTActionNode    {
+    public class InteractAction : BTActionNode
+    {
         string targetTag = "Interactable";
         float interactionRange = 2f;
 
@@ -43,7 +44,7 @@ namespace ArcBT.Actions
             if (nearestInteractable != null)
             {
                 BTLogger.LogMovement($"オブジェクト {nearestInteractable.name} と相互作用", Name);
-                
+
                 // 相互作用処理の実装
                 var interactComponent = nearestInteractable.GetComponent<IInteractable>();
                 if (interactComponent != null)
@@ -58,6 +59,4 @@ namespace ArcBT.Actions
             return BTNodeResult.Failure;
         }
     }
-
-    // 相互作用インターフェース
 }
