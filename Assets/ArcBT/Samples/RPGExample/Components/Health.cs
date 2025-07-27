@@ -1,5 +1,4 @@
 using UnityEngine;
-using ArcBT.Core;
 using ArcBT.Logger;
 using ArcBT.Samples.RPG.Interfaces;
 

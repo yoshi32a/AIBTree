@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
-using ArcBT.Core;
 using ArcBT.Logger;
 
 namespace CameraControl

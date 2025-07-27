@@ -2,9 +2,7 @@ using UnityEngine;
 using UnityEditor;
 using System.Collections.Generic;
 using System.IO;
-using ArcBT.Core;
 using ArcBT.Logger;
-using ArcBT.Parser;
 
 namespace ArcBT.Tests
 {

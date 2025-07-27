@@ -1,6 +1,4 @@
-using UnityEngine;
 using UnityEditor;
-using ArcBT.Core;
 using ArcBT.Logger;
 
 namespace ArcBT.Editor

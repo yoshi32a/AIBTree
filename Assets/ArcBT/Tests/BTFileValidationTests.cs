@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.IO;
 using NUnit.Framework;
 using UnityEngine;
-using UnityEngine.TestTools;
 using ArcBT.Parser;
 using ArcBT.Core;
 using ArcBT.Logger;

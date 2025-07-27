@@ -1,7 +1,6 @@
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
-using ArcBT.Core;
 using System.Linq;
 using ArcBT.Logger;
 

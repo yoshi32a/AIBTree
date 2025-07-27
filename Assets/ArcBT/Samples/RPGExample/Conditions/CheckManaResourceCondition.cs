@@ -1,7 +1,6 @@
 using System;
 using ArcBT.Core;
 using ArcBT.Logger;
-using UnityEngine;
 
 namespace ArcBT.Samples.RPG.Conditions
 {

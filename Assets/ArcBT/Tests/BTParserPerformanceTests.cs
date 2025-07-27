@@ -2,9 +2,7 @@ using NUnit.Framework;
 using System.Diagnostics;
 using System.Text;
 using ArcBT.Parser;
-using UnityEngine;
 using UnityEngine.Profiling;
-using ArcBT.Core;
 using ArcBT.Logger;
 
 namespace ArcBT.Tests
