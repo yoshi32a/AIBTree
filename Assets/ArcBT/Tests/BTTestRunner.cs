@@ -3,6 +3,7 @@ using UnityEditor;
 using System.Collections.Generic;
 using System.IO;
 using ArcBT.Core;
+using ArcBT.Logger;
 using ArcBT.Parser;
 
 namespace ArcBT.Tests
@@ -105,14 +106,14 @@ namespace ArcBT.Tests
         /// <summary>特定ファイルのテスト実行</summary>
         static void TestSpecificFile(string fileName)
         {
-            Debug.Log($"🧪 Testing specific file: {fileName}");
+            BTLogger.Info($"🧪 Testing specific file: {fileName}");
             
             var parser = new ArcBT.Parser.BTParser();
             var filePath = Path.Combine(Application.dataPath, "BehaviourTrees", fileName);
             
             if (!File.Exists(filePath))
             {
-                Debug.LogError($"❌ File not found: {fileName}");
+                BTLogger.Error($"❌ File not found: {fileName}");
                 return;
             }
             
@@ -122,17 +123,17 @@ namespace ArcBT.Tests
                 
                 if (rootNode != null)
                 {
-                    Debug.Log($"✅ {fileName} parsed successfully!");
+                    BTLogger.Info($"✅ {fileName} parsed successfully!");
                     LogDetailedNodeInfo(rootNode, fileName, 0);
                 }
                 else
                 {
-                    Debug.LogError($"❌ {fileName} failed to parse (returned null)");
+                    BTLogger.Error($"❌ {fileName} failed to parse (returned null)");
                 }
             }
             catch (System.Exception ex)
             {
-                Debug.LogError($"❌ {fileName} failed with exception: {ex.Message}");
+                BTLogger.Error($"❌ {fileName} failed with exception: {ex.Message}");
             }
         }
         
@@ -142,7 +143,7 @@ namespace ArcBT.Tests
             if (node == null) return;
             
             var totalNodes = CountNodes(node);
-            Debug.Log($"📋 {fileName}: Root='{node.Name}', Total nodes={totalNodes}");
+            BTLogger.Info($"📋 {fileName}: Root='{node.Name}', Total nodes={totalNodes}");
         }
         
         /// <summary>ノード情報を詳細にログ出力</summary>
@@ -151,7 +152,7 @@ namespace ArcBT.Tests
             if (node == null) return;
             
             var indent = new string(' ', depth * 2);
-            Debug.Log($"{indent}🔹 {node.Name} ({node.GetType().Name})");
+            BTLogger.Info($"{indent}🔹 {node.Name} ({node.GetType().Name})");
             
             if (node.Children != null && node.Children.Count > 0)
             {
@@ -184,7 +185,7 @@ namespace ArcBT.Tests
         [MenuItem("BehaviourTree/Performance Test")]
         public static void RunPerformanceTest()
         {
-            Debug.Log("⏱️ Starting BT Performance Test...");
+            BTLogger.Info("⏱️ Starting BT Performance Test...");
             
             var parser = new ArcBT.Parser.BTParser();
             var btDirectory = Path.Combine(Application.dataPath, "BehaviourTrees");
@@ -209,15 +210,15 @@ namespace ArcBT.Tests
                 }
                 
                 var avgMs = totalMs / (double)iterations;
-                Debug.Log($"⏱️ {fileName}: {avgMs:F2}ms average ({totalMs}ms total for {iterations} iterations)");
+                BTLogger.Info($"⏱️ {fileName}: {avgMs:F2}ms average ({totalMs}ms total for {iterations} iterations)");
                 
                 if (avgMs > 100)
                 {
-                    Debug.LogWarning($"⚠️ {fileName} is slow: {avgMs:F2}ms average");
+                    BTLogger.Warning($"⚠️ {fileName} is slow: {avgMs:F2}ms average");
                 }
             }
             
-            Debug.Log("✅ Performance test completed");
+            BTLogger.Info("✅ Performance test completed");
         }
     }
 }

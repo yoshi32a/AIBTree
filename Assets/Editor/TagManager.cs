@@ -1,5 +1,7 @@
 using UnityEngine;
 using UnityEditor;
+using ArcBT.Core;
+using ArcBT.Logger;
 
 namespace ArcBT.Editor
 {
@@ -13,7 +15,7 @@ namespace ArcBT.Editor
             CreateTag("Item");
             CreateTag("Treasure");
             
-            Debug.Log("Required tags created successfully: SafeZone, Interactable, Item, Treasure");
+            BTLogger.Info("Required tags created successfully: SafeZone, Interactable, Item, Treasure");
         }
         
         static void CreateTag(string tagName)
@@ -41,11 +43,11 @@ namespace ArcBT.Editor
                 SerializedProperty newTagProp = tagsProp.GetArrayElementAtIndex(0);
                 newTagProp.stringValue = tagName;
                 tagManager.ApplyModifiedProperties();
-                Debug.Log($"Tag '{tagName}' created successfully");
+                BTLogger.Info($"Tag '{tagName}' created successfully");
             }
             else
             {
-                Debug.Log($"Tag '{tagName}' already exists");
+                BTLogger.Info($"Tag '{tagName}' already exists");
             }
         }
     }

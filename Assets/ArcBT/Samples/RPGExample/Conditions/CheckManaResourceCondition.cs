@@ -1,5 +1,6 @@
 using System;
 using ArcBT.Core;
+using ArcBT.Logger;
 using UnityEngine;
 
 namespace ArcBT.Samples.RPG.Conditions
@@ -39,12 +40,12 @@ namespace ArcBT.Samples.RPG.Conditions
 
             if (hasEnoughMana)
             {
-                Debug.Log($"CheckManaResource: Sufficient mana ({currentMana}/{maxMana})");
+                BTLogger.LogCondition($"CheckManaResource: Sufficient mana ({currentMana}/{maxMana})", Name, ownerComponent);
                 return BTNodeResult.Success;
             }
             else
             {
-                Debug.Log($"CheckManaResource: Insufficient mana ({currentMana} < {minMana})");
+                BTLogger.LogCondition($"CheckManaResource: Insufficient mana ({currentMana} < {minMana})", Name, ownerComponent);
                 return BTNodeResult.Failure;
             }
         }

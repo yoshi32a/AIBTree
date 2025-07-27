@@ -1,5 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using ArcBT.Core;
+using ArcBT.Logger;
 
 namespace CameraControl
 {
@@ -69,7 +71,7 @@ namespace CameraControl
             if (keyboard.fKey.wasPressedThisFrame)
             {
                 isFollowingTarget = !isFollowingTarget;
-                Debug.Log($"Camera Follow Mode: {isFollowingTarget}");
+                BTLogger.Info($"Camera Follow Mode: {isFollowingTarget}");
             }
 
             // カメラリセット
@@ -176,7 +178,7 @@ namespace CameraControl
             if (btRunner != null)
             {
                 followTarget = btRunner.transform;
-                Debug.Log($"Camera target set to AI: {followTarget.name}");
+                BTLogger.Info($"Camera target set to AI: {followTarget.name}");
             }
             else
             {
@@ -185,7 +187,7 @@ namespace CameraControl
                 if (testAI != null)
                 {
                     followTarget = testAI.transform;
-                    Debug.Log($"Camera target set to: {followTarget.name}");
+                    BTLogger.Info($"Camera target set to: {followTarget.name}");
                 }
             }
         }
@@ -205,7 +207,7 @@ namespace CameraControl
                     mainCamera.fieldOfView = fieldOfView;
                 }
                 
-                Debug.Log("Camera reset to default follow position");
+                BTLogger.Info("Camera reset to default follow position");
             }
         }
 
@@ -233,7 +235,7 @@ namespace CameraControl
         {
             followTarget = target;
             isFollowingTarget = true;
-            Debug.Log($"Camera follow target set to: {target.name}");
+            BTLogger.Info($"Camera follow target set to: {target.name}");
         }
 
         public void SetFollowOffset(Vector3 offset)

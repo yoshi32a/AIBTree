@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.TestTools;
 using ArcBT.Parser;
 using ArcBT.Core;
+using ArcBT.Logger;
 
 namespace ArcBT.Tests
 {
@@ -62,7 +63,7 @@ namespace ArcBT.Tests
             
             Assert.IsTrue(randomWanderAction.Name.Contains("RandomWander"), "Should have RandomWander action");
             
-            Debug.Log("✅ blackboard_sample.bt validation passed");
+            BTLogger.Info("✅ blackboard_sample.bt validation passed");
         }
 
         [Test(Description = "team_coordination_sample.btの詳細検証")]
@@ -93,7 +94,7 @@ namespace ArcBT.Tests
                 Assert.IsTrue(role.Children.Count > 0, $"Role {role.Name} should have children");
             }
             
-            Debug.Log("✅ team_coordination_sample.bt validation passed");
+            BTLogger.Info("✅ team_coordination_sample.bt validation passed");
         }
 
         [Test(Description = "dynamic_condition_sample.btの詳細検証")]
@@ -114,12 +115,12 @@ namespace ArcBT.Tests
             Assert.AreEqual("main", root.Name, "Root should be named 'main'");
             
             // デバッグ: 実際の子要素数を確認
-            Debug.Log($"Actual children count: {root.Children?.Count ?? 0}");
+            BTLogger.Info($"Actual children count: {root.Children?.Count ?? 0}");
             if (root.Children != null)
             {
                 for (var i = 0; i < root.Children.Count; i++)
                 {
-                    Debug.Log($"Child {i}: {root.Children[i]?.Name ?? "null"}");
+                    BTLogger.Info($"Child {i}: {root.Children[i]?.Name ?? "null"}");
                 }
             }
             
@@ -164,7 +165,7 @@ namespace ArcBT.Tests
                 }
             }
             
-            Debug.Log("✅ dynamic_condition_sample.bt validation passed");
+            BTLogger.Info("✅ dynamic_condition_sample.bt validation passed");
         }
 
         [Test(Description = "全BTファイルで使用されているスクリプト名の検証")]
@@ -202,7 +203,7 @@ namespace ArcBT.Tests
             foreach (var filePath in btFiles)
             {
                 var fileName = Path.GetFileName(filePath);
-                Debug.Log($"🔍 Analyzing script references in: {fileName}");
+                BTLogger.Info($"🔍 Analyzing script references in: {fileName}");
                 
                 var root = parser.ParseFile(filePath);
                 if (root != null)
@@ -212,17 +213,17 @@ namespace ArcBT.Tests
             }
             
             // 結果の出力
-            Debug.Log($"📊 Script Reference Analysis:");
-            Debug.Log($"📝 Used scripts: {string.Join(", ", usedScripts)}");
+            BTLogger.Info($"📊 Script Reference Analysis:");
+            BTLogger.Info($"📝 Used scripts: {string.Join(", ", usedScripts)}");
             
             if (unknownScripts.Count > 0)
             {
-                Debug.LogWarning($"⚠️ Unknown scripts found: {string.Join(", ", unknownScripts)}");
+                BTLogger.Warning($"⚠️ Unknown scripts found: {string.Join(", ", unknownScripts)}");
                 Assert.Fail($"Unknown scripts referenced in BT files: {string.Join(", ", unknownScripts)}");
             }
             
             Assert.IsTrue(usedScripts.Count > 0, "Should have found at least some script references");
-            Debug.Log("✅ All script references are valid");
+            BTLogger.Info("✅ All script references are valid");
         }
         
         /// <summary>スクリプト参照を再帰的に収集するヘルパーメソッド</summary>
@@ -318,11 +319,11 @@ namespace ArcBT.Tests
             
             if (syntaxErrors.Count > 0)
             {
-                Debug.LogError($"❌ Syntax errors found:\n  - {string.Join("\n  - ", syntaxErrors)}");
+                BTLogger.Error($"❌ Syntax errors found:\n  - {string.Join("\n  - ", syntaxErrors)}");
                 Assert.Fail($"Syntax errors in BT files:\n- {string.Join("\n- ", syntaxErrors)}");
             }
             
-            Debug.Log("✅ All BT files have valid syntax");
+            BTLogger.Info("✅ All BT files have valid syntax");
         }
         
         /// <summary>必須ファイルの存在チェック</summary>
@@ -352,7 +353,7 @@ namespace ArcBT.Tests
                 Assert.Fail($"Required BT files missing: {string.Join(", ", missingFiles)}");
             }
             
-            Debug.Log("✅ All required BT files exist");
+            BTLogger.Info("✅ All required BT files exist");
         }
     }
 }

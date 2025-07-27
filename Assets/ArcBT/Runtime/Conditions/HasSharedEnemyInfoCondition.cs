@@ -1,4 +1,5 @@
 using ArcBT.Core;
+using ArcBT.Logger;
 using UnityEngine;
 
 namespace ArcBT.Conditions
@@ -23,7 +24,7 @@ namespace ArcBT.Conditions
         {
             if (blackBoard == null)
             {
-                Debug.LogError("HasSharedEnemyInfo: BlackBoard is null");
+                BTLogger.LogError(LogCategory.BlackBoard, "HasSharedEnemyInfo: BlackBoard is null");
                 return BTNodeResult.Failure;
             }
 
@@ -39,11 +40,11 @@ namespace ArcBT.Conditions
             if (result)
             {
                 var enemyName = enemyTarget != null ? enemyTarget.name : "null";
-                Debug.Log($"HasSharedEnemyInfo: Enemy info available - Target: '{enemyName}'");
+                BTLogger.LogBlackBoard($"HasSharedEnemyInfo: Enemy info available - Target: '{enemyName}'", Name, ownerComponent);
             }
             else
             {
-                Debug.Log("HasSharedEnemyInfo: No valid enemy info in BlackBoard");
+                BTLogger.LogBlackBoard("HasSharedEnemyInfo: No valid enemy info in BlackBoard", Name, ownerComponent);
             }
 
             return result ? BTNodeResult.Success : BTNodeResult.Failure;

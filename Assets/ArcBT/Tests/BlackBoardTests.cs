@@ -4,6 +4,7 @@ using UnityEngine.TestTools;
 using ArcBT.Core;
 using System.Collections.Generic;
 using System.Linq;
+using ArcBT.Logger;
 
 namespace ArcBT.Tests
 {

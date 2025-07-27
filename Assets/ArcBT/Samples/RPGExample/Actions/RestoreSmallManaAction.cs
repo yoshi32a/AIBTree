@@ -1,5 +1,6 @@
 using System;
 using ArcBT.Core;
+using ArcBT.Logger;
 using UnityEngine;
 
 namespace ArcBT.Samples.RPG.Actions
@@ -40,12 +41,12 @@ namespace ArcBT.Samples.RPG.Actions
                 blackBoard.SetValue("mana_restored", actualGain);
                 blackBoard.SetValue("last_mana_restore_time", Time.time);
 
-                Debug.Log($"RestoreSmallMana: Restored {actualGain} mana ({currentMana} -> {newMana})");
+                BTLogger.LogSystem($"RestoreSmallMana: Restored {actualGain} mana ({currentMana} -> {newMana})", Name, ownerComponent);
                 return BTNodeResult.Success;
             }
             else
             {
-                Debug.Log("RestoreSmallMana: Mana already at maximum");
+                BTLogger.LogSystem("RestoreSmallMana: Mana already at maximum", Name, ownerComponent);
                 return BTNodeResult.Failure;
             }
         }

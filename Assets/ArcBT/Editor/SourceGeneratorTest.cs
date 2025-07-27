@@ -2,6 +2,7 @@
 using System;
 using System.Linq;
 using ArcBT.Core;
+using ArcBT.Logger;
 using UnityEditor;
 using UnityEngine;
 
@@ -15,26 +16,26 @@ namespace ArcBT.Editor
         [MenuItem("BehaviourTree/Source Generator/Test Registration")]
         public static void TestNodeRegistration()
         {
-            Debug.Log("=== Source Generator Registration Test ===");
+            BTLogger.Info("=== Source Generator Registration Test ===");
             
             // 登録されているアクションを表示
             var actionNames = BTStaticNodeRegistry.GetActionNames().ToList();
-            Debug.Log($"Registered Actions ({actionNames.Count}):");
+            BTLogger.Info($"Registered Actions ({actionNames.Count}):");
             foreach (var name in actionNames.OrderBy(n => n))
             {
-                Debug.Log($"  - {name}");
+                BTLogger.Info($"  - {name}");
             }
             
             // 登録されている条件を表示
             var conditionNames = BTStaticNodeRegistry.GetConditionNames().ToList();
-            Debug.Log($"\nRegistered Conditions ({conditionNames.Count}):");
+            BTLogger.Info($"\nRegistered Conditions ({conditionNames.Count}):");
             foreach (var name in conditionNames.OrderBy(n => n))
             {
-                Debug.Log($"  - {name}");
+                BTLogger.Info($"  - {name}");
             }
             
             // テスト作成
-            Debug.Log("\n=== Testing Node Creation ===");
+            BTLogger.Info("\n=== Testing Node Creation ===");
             TestCreateNode("MoveToPosition", true);
             TestCreateNode("Wait", true);
             TestCreateNode("AttackEnemy", true);
@@ -49,11 +50,11 @@ namespace ArcBT.Editor
                 var node = BTStaticNodeRegistry.CreateAction(scriptName);
                 if (node != null)
                 {
-                    Debug.Log($"✓ Successfully created Action: {scriptName} -> {node.GetType().Name}");
+                    BTLogger.Info($"✓ Successfully created Action: {scriptName} -> {node.GetType().Name}");
                 }
                 else
                 {
-                    Debug.LogWarning($"✗ Failed to create Action: {scriptName}");
+                    BTLogger.Warning($"✗ Failed to create Action: {scriptName}");
                 }
             }
             else
@@ -61,11 +62,11 @@ namespace ArcBT.Editor
                 var node = BTStaticNodeRegistry.CreateCondition(scriptName);
                 if (node != null)
                 {
-                    Debug.Log($"✓ Successfully created Condition: {scriptName} -> {node.GetType().Name}");
+                    BTLogger.Info($"✓ Successfully created Condition: {scriptName} -> {node.GetType().Name}");
                 }
                 else
                 {
-                    Debug.LogWarning($"✗ Failed to create Condition: {scriptName}");
+                    BTLogger.Warning($"✗ Failed to create Condition: {scriptName}");
                 }
             }
         }
@@ -73,7 +74,7 @@ namespace ArcBT.Editor
         [MenuItem("BehaviourTree/Source Generator/Show BTNode Attributes")]
         public static void ShowBTNodeAttributes()
         {
-            Debug.Log("=== Classes with BTNode Attribute ===");
+            BTLogger.Info("=== Classes with BTNode Attribute ===");
             
             var assemblies = AppDomain.CurrentDomain.GetAssemblies();
             int count = 0;
@@ -106,17 +107,17 @@ namespace ArcBT.Editor
                                 nodeType = "Condition";
                             }
                             
-                            Debug.Log($"[{btNodeAttr.AssemblyName ?? "ArcBT"}] {type.FullName} -> Script: '{btNodeAttr.ScriptName}', Type: {nodeType} (auto-detected)");
+                            BTLogger.Info($"[{btNodeAttr.AssemblyName ?? "ArcBT"}] {type.FullName} -> Script: '{btNodeAttr.ScriptName}', Type: {nodeType} (auto-detected)");
                         }
                     }
                 }
                 catch (Exception e)
                 {
-                    Debug.LogWarning($"Error reading assembly {assembly.FullName}: {e.Message}");
+                    BTLogger.Warning($"Error reading assembly {assembly.FullName}: {e.Message}");
                 }
             }
             
-            Debug.Log($"\nTotal classes with BTNode attribute: {count}");
+            BTLogger.Info($"\nTotal classes with BTNode attribute: {count}");
         }
         
         [MenuItem("BehaviourTree/Source Generator/Generate Registration Code (Manual)")]
@@ -124,13 +125,13 @@ namespace ArcBT.Editor
         {
             // Unity 2021.2より前のバージョン用の手動生成
             #if !UNITY_2021_2_OR_NEWER
-            Debug.Log("=== Manual Registration Code Generation ===");
-            Debug.Log("Source Generators require Unity 2021.2 or newer.");
-            Debug.Log("For older versions, please use the existing RPGNodeRegistration.cs pattern.");
+            BTLogger.Info("=== Manual Registration Code Generation ===");
+            BTLogger.Info("Source Generators require Unity 2021.2 or newer.");
+            BTLogger.Info("For older versions, please use the existing RPGNodeRegistration.cs pattern.");
             #else
-            Debug.Log("Source Generators are supported in this Unity version.");
-            Debug.Log("Generated code should be automatically created when you compile.");
-            Debug.Log("Check: Library/Bee/artifacts/ for generated files.");
+            BTLogger.Info("Source Generators are supported in this Unity version.");
+            BTLogger.Info("Generated code should be automatically created when you compile.");
+            BTLogger.Info("Check: Library/Bee/artifacts/ for generated files.");
             #endif
         }
     }

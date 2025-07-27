@@ -1,5 +1,6 @@
 using System;
 using ArcBT.Core;
+using ArcBT.Logger;
 using UnityEngine;
 
 namespace ArcBT.Samples.RPG.Conditions
@@ -18,11 +19,11 @@ namespace ArcBT.Samples.RPG.Conditions
 
         protected override BTNodeResult CheckCondition()
         {
-            Debug.Log($"=== EnemyCheckCondition '{Name}' EXECUTING ===");
+            BTLogger.LogCondition($"=== EnemyCheckCondition '{Name}' EXECUTING ===", Name, ownerComponent);
 
             if (detectionRange <= 0)
             {
-                Debug.LogError($"EnemyCheck '{Name}': Invalid detection range: {detectionRange}");
+                BTLogger.LogError(LogCategory.System, $"EnemyCheck '{Name}': Invalid detection range: {detectionRange}", Name, ownerComponent);
                 return BTNodeResult.Failure;
             }
 
@@ -34,7 +35,7 @@ namespace ArcBT.Samples.RPG.Conditions
                 var distance = Vector3.Distance(transform.position, enemy.transform.position);
                 if (distance <= detectionRange)
                 {
-                    Debug.Log($"EnemyCheck '{Name}': Enemy detected at distance {distance:F2} ✓");
+                    BTLogger.LogCondition($"EnemyCheck '{Name}': Enemy detected at distance {distance:F2} ✓", Name, ownerComponent);
 
                     // 検出した敵の情報を保存（他のノードで使用可能）
                     if (ownerComponent is BehaviourTreeRunner runner)
@@ -46,7 +47,7 @@ namespace ArcBT.Samples.RPG.Conditions
                 }
             }
 
-            Debug.Log($"EnemyCheck '{Name}': No enemies in range {detectionRange} ✗");
+            BTLogger.LogCondition($"EnemyCheck '{Name}': No enemies in range {detectionRange} ✗", Name, ownerComponent);
             return BTNodeResult.Failure;
         }
 

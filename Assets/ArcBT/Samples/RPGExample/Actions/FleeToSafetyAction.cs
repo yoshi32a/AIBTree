@@ -1,5 +1,6 @@
 using System;
 using ArcBT.Core;
+using ArcBT.Logger;
 using UnityEngine;
 
 namespace ArcBT.Samples.RPG.Actions
@@ -54,7 +55,7 @@ namespace ArcBT.Samples.RPG.Actions
                 {
                     fleeTarget = existingTarget;
                     hasFleeTarget = true;
-                    Debug.Log($"FleeToSafety: Using existing flee target: {fleeTarget}");
+                    BTLogger.LogMovement($"FleeToSafety: Using existing flee target: {fleeTarget}", Name, ownerComponent);
                 }
             }
             
@@ -102,7 +103,7 @@ namespace ArcBT.Samples.RPG.Actions
                 }
                 else
                 {
-                    Debug.LogWarning("FleeToSafety: No threat detected");
+                    BTLogger.LogError(LogCategory.Movement, "FleeToSafety: No threat detected", Name, ownerComponent);
                     return BTNodeResult.Failure;
                 }
             }
@@ -119,7 +120,7 @@ namespace ArcBT.Samples.RPG.Actions
                     blackBoard.SetValue("safety_timer", Time.time + 10.0f); // 10秒間安全状態
                     blackBoard.SetValue("last_flee_time", Time.time);
                     
-                    Debug.Log("FleeToSafety: Reached safety - Safe for 10 seconds");
+                    BTLogger.LogMovement("FleeToSafety: Reached safety - Safe for 10 seconds", Name, ownerComponent);
                 };
             }
 

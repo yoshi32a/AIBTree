@@ -1,5 +1,6 @@
 using System;
 using ArcBT.Core;
+using ArcBT.Logger;
 using UnityEngine;
 
 namespace ArcBT.Actions
@@ -21,12 +22,12 @@ namespace ArcBT.Actions
 
         protected override BTNodeResult ExecuteAction()
         {
-            Debug.Log($"=== WaitAction '{Name}' EXECUTING ===");
+            BTLogger.LogSystem($"=== WaitAction '{Name}' EXECUTING ===", Name, ownerComponent);
 
             if (startTime < 0)
             {
                 startTime = Time.time;
-                Debug.Log($"Wait '{Name}': Starting wait for {duration} seconds ⏱️");
+                BTLogger.LogSystem($"Wait '{Name}': Starting wait for {duration} seconds ⏱️", Name, ownerComponent);
             }
 
             var elapsed = Time.time - startTime;
@@ -34,12 +35,12 @@ namespace ArcBT.Actions
 
             if (elapsed >= duration)
             {
-                Debug.Log($"Wait '{Name}': Wait completed ✅ (waited {elapsed:F1}s)");
+                BTLogger.LogSystem($"Wait '{Name}': Wait completed ✅ (waited {elapsed:F1}s)", Name, ownerComponent);
                 startTime = -1f; // リセット
                 return BTNodeResult.Success;
             }
 
-            Debug.Log($"Wait '{Name}': Waiting... ({remaining:F1}s remaining) ⏳");
+            BTLogger.LogSystem($"Wait '{Name}': Waiting... ({remaining:F1}s remaining) ⏳", Name, ownerComponent);
             return BTNodeResult.Running;
         }
 

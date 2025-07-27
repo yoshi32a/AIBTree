@@ -2,6 +2,7 @@
 using System.Text.RegularExpressions;
 using ArcBT.Actions;
 using ArcBT.Core;
+using ArcBT.Logger;
 using ArcBT.Samples.RPG;
 using ArcBT.Samples.RPG.Actions;
 using ArcBT.Samples.RPG.Conditions;
@@ -177,7 +178,7 @@ namespace ArcBT.Tests
 
             // Expect error for unknown action
             LogAssert.Expect(LogType.Error, "[ERR][SYS]: Unknown action script: UnknownAction");
-            LogAssert.Expect(LogType.Error, "[ERR][PRS]: Unknown action script: UnknownAction. Please register the action in BTNodeRegistry.");
+            LogAssert.Expect(LogType.Error, "[ERR][PRS]: Unknown action script: UnknownAction. Please register the action in BTStaticNodeRegistry or use source generator.");
             LogAssert.Expect(LogType.Error, "[ERR][PRS]: Failed to create node of type: Action");
 
             // Act
@@ -270,7 +271,7 @@ namespace ArcBT.Tests
 
             // Expect error for unknown condition
             LogAssert.Expect(LogType.Error, "[ERR][SYS]: Unknown condition script: UnknownCondition");
-            LogAssert.Expect(LogType.Error, "[ERR][PRS]: Unknown condition script: UnknownCondition. Please register the condition in BTNodeRegistry.");
+            LogAssert.Expect(LogType.Error, "[ERR][PRS]: Unknown condition script: UnknownCondition. Please register the condition in BTStaticNodeRegistry or use source generator.");
             LogAssert.Expect(LogType.Error, "[ERR][PRS]: Failed to create node of type: Condition");
 
             // Act

@@ -1,5 +1,6 @@
 using System;
 using ArcBT.Core;
+using ArcBT.Logger;
 using ArcBT.Samples.RPG.Components;
 using UnityEngine;
 
@@ -44,7 +45,7 @@ namespace ArcBT.Samples.RPG.Conditions
             Health enemyHealth = enemy.GetComponent<Health>();
             if (enemyHealth == null)
             {
-                Debug.LogWarning($"EnemyHealthCheck: Enemy '{enemy.name}' has no Health component");
+                BTLogger.LogError(LogCategory.System, $"EnemyHealthCheck: Enemy '{enemy.name}' has no Health component", Name, ownerComponent);
                 return BTNodeResult.Failure;
             }
 

@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEditor;
 using ArcBT.Core;
+using ArcBT.Logger;
 using ArcBT.Samples.RPG.Components;
 
 namespace ArcBT.Editor
@@ -180,7 +181,7 @@ namespace ArcBT.Editor
                 SetupCamera();
             }
             
-            Debug.Log($"AIBTree Test Environment created successfully with BT file: {selectedBTFile}");
+            BTLogger.Info($"AIBTree Test Environment created successfully with BT file: {selectedBTFile}");
         }
         
         void CreateAIAgent()
@@ -345,21 +346,21 @@ namespace ArcBT.Editor
                 interestObject.transform.position = new Vector3(4, 0, -3); // より近い位置
                 interestObject.tag = "Interactable";
                 CreateEnvironmentVisual(interestObject, Color.cyan, new Vector3(1, 1.5f, 1));
-                Debug.Log($"Created InterestingObject at {interestObject.transform.position} with tag: {interestObject.tag}");
+                BTLogger.Info($"Created InterestingObject at {interestObject.transform.position} with tag: {interestObject.tag}");
                 
                 // アイテムオブジェクト
                 var itemObject = new GameObject("PickupItem");
                 itemObject.transform.position = new Vector3(-4, 0, 3); // より近い位置
                 itemObject.tag = "Item";
                 CreateEnvironmentVisual(itemObject, Color.yellow, new Vector3(0.5f, 0.5f, 0.5f));
-                Debug.Log($"Created PickupItem at {itemObject.transform.position} with tag: {itemObject.tag}");
+                BTLogger.Info($"Created PickupItem at {itemObject.transform.position} with tag: {itemObject.tag}");
                 
                 // 追加のテスト用オブジェクト（さらに近い位置）
                 var nearbyObject = new GameObject("NearbyTestObject");
                 nearbyObject.transform.position = new Vector3(2, 0, 0); // 非常に近い位置
                 nearbyObject.tag = "Interactable";
                 CreateEnvironmentVisual(nearbyObject, Color.green, new Vector3(0.8f, 0.8f, 0.8f));
-                Debug.Log($"Created NearbyTestObject at {nearbyObject.transform.position} with tag: {nearbyObject.tag}");
+                BTLogger.Info($"Created NearbyTestObject at {nearbyObject.transform.position} with tag: {nearbyObject.tag}");
                 
                 // 追加のセーフゾーン
                 var safeZone2 = new GameObject("SafeZone2");
@@ -426,7 +427,7 @@ namespace ArcBT.Editor
             mainCamera.nearClipPlane = 0.3f;
             mainCamera.farClipPlane = 100f;
             
-            Debug.Log($"Enhanced camera with SceneCamera controller positioned at {mainCamera.transform.position}");
+            BTLogger.Info($"Enhanced camera with SceneCamera controller positioned at {mainCamera.transform.position}");
         }
         
         Material GetMaterialByColor(Color color)
@@ -462,7 +463,7 @@ namespace ArcBT.Editor
             statusDisplay.showDetailedLogs = true;
             statusDisplay.updateInterval = 0.1f;
             
-            Debug.Log("AI Status Display created for enhanced visual feedback");
+            BTLogger.Info("AI Status Display created for enhanced visual feedback");
         }
 
         public void ClearTestEnvironment()
@@ -484,7 +485,7 @@ namespace ArcBT.Editor
                 }
             }
             
-            Debug.Log("Test environment cleared.");
+            BTLogger.Info("Test environment cleared.");
         }
         
         void CreateRequiredTags()

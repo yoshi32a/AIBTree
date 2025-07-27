@@ -1,4 +1,4 @@
-﻿namespace ArcBT.Core
+﻿namespace ArcBT.Logger
 {
     public enum LogCategory
     {

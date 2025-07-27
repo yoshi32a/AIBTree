@@ -1,5 +1,6 @@
 using System;
 using ArcBT.Core;
+using ArcBT.Logger;
 using ArcBT.Samples.RPG.Components;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -34,7 +35,7 @@ namespace ArcBT.Samples.RPG.Actions
         {
             if (ownerComponent == null || blackBoard == null)
             {
-                Debug.LogError("AttackTarget: Owner or BlackBoard is null");
+                BTLogger.LogError(LogCategory.Combat, "AttackTarget: Owner or BlackBoard is null", Name, ownerComponent);
                 return BTNodeResult.Failure;
             }
 
@@ -42,7 +43,7 @@ namespace ArcBT.Samples.RPG.Actions
             GameObject enemyTarget = blackBoard.GetValue<GameObject>("enemy_target");
             if (enemyTarget == null)
             {
-                Debug.Log("AttackTarget: No enemy target in BlackBoard");
+                BTLogger.LogCombat("AttackTarget: No enemy target in BlackBoard", Name, ownerComponent);
                 return BTNodeResult.Failure;
             }
 
@@ -51,7 +52,7 @@ namespace ArcBT.Samples.RPG.Actions
             {
                 blackBoard.SetValue("has_enemy_info", false);
                 blackBoard.SetValue<GameObject>("enemy_target", null);
-                Debug.Log("AttackTarget: Enemy target is destroyed");
+                BTLogger.LogCombat("AttackTarget: Enemy target is destroyed", Name, ownerComponent);
                 return BTNodeResult.Failure;
             }
 
@@ -59,7 +60,7 @@ namespace ArcBT.Samples.RPG.Actions
             float distance = Vector3.Distance(transform.position, enemyTarget.transform.position);
             if (distance > attackRange)
             {
-                Debug.Log($"AttackTarget: Enemy '{enemyTarget.name}' out of range ({distance:F1} > {attackRange})");
+                BTLogger.LogCombat($"AttackTarget: Enemy '{enemyTarget.name}' out of range ({distance:F1} > {attackRange})", Name, ownerComponent);
                 return BTNodeResult.Failure;
             }
 
@@ -73,7 +74,7 @@ namespace ArcBT.Samples.RPG.Actions
             var enemyHealth = enemyTarget.GetComponent<Health>();
             if (enemyHealth == null)
             {
-                Debug.LogWarning($"AttackTarget: Enemy '{enemyTarget.name}' has no Health component");
+                BTLogger.LogError(LogCategory.Combat, $"AttackTarget: Enemy '{enemyTarget.name}' has no Health component", Name, ownerComponent);
                 return BTNodeResult.Failure;
             }
 
@@ -88,7 +89,7 @@ namespace ArcBT.Samples.RPG.Actions
                 transform.rotation = Quaternion.LookRotation(directionToEnemy);
             }
 
-            Debug.Log($"AttackTarget: Attacked '{enemyTarget.name}' for {damage} damage. Enemy health: {enemyHealth.CurrentHealth}");
+            BTLogger.LogCombat($"AttackTarget: Attacked '{enemyTarget.name}' for {damage} damage. Enemy health: {enemyHealth.CurrentHealth}", Name, ownerComponent);
 
             // 敵が死んだらBlackBoardをクリアして実際にGameObjectを破壊
             if (enemyHealth.CurrentHealth <= 0)
@@ -100,7 +101,7 @@ namespace ArcBT.Samples.RPG.Actions
                 // GameObjectを実際に破壊
                 Object.DestroyImmediate(enemyTarget);
                 
-                Debug.Log($"💀 AttackTarget: 敵 '{enemyName}' を撃破しました");
+                BTLogger.LogCombat($"💀 AttackTarget: 敵 '{enemyName}' を撃破しました", Name, ownerComponent);
                 return BTNodeResult.Success;
             }
 

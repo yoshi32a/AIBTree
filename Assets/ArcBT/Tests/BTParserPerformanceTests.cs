@@ -5,6 +5,7 @@ using ArcBT.Parser;
 using UnityEngine;
 using UnityEngine.Profiling;
 using ArcBT.Core;
+using ArcBT.Logger;
 
 namespace ArcBT.Tests
 {
@@ -203,21 +204,21 @@ tree ComplexTree {
                 int gen2Collections = finalGen2 - initialGen2;
 
                 // 結果を出力
-                UnityEngine.Debug.Log($"\n=== {testName} Performance Results ===");
-                UnityEngine.Debug.Log($"Content Size: {content.Length:N0} characters");
-                UnityEngine.Debug.Log($"Iterations: {TEST_RUNS}");
-                UnityEngine.Debug.Log($"\nExecution Time:");
-                UnityEngine.Debug.Log($"  Average: {avgMs:F3} ms");
-                UnityEngine.Debug.Log($"  Min: {minMs:F3} ms");
-                UnityEngine.Debug.Log($"  Max: {maxMs:F3} ms");
-                UnityEngine.Debug.Log($"\nMemory Allocation:");
-                UnityEngine.Debug.Log($"  Total: {totalAllocatedBytes:N0} bytes");
-                UnityEngine.Debug.Log($"  Average per parse: {avgAllocatedBytes:N0} bytes");
-                UnityEngine.Debug.Log($"  Average per character: {avgAllocatedBytes / (double)content.Length:F2} bytes");
-                UnityEngine.Debug.Log($"\nGarbage Collections:");
-                UnityEngine.Debug.Log($"  Gen0: {gen0Collections}");
-                UnityEngine.Debug.Log($"  Gen1: {gen1Collections}");
-                UnityEngine.Debug.Log($"  Gen2: {gen2Collections}");
+                BTLogger.Info($"\n=== {testName} Performance Results ===");
+                BTLogger.Info($"Content Size: {content.Length:N0} characters");
+                BTLogger.Info($"Iterations: {TEST_RUNS}");
+                BTLogger.Info($"\nExecution Time:");
+                BTLogger.Info($"  Average: {avgMs:F3} ms");
+                BTLogger.Info($"  Min: {minMs:F3} ms");
+                BTLogger.Info($"  Max: {maxMs:F3} ms");
+                BTLogger.Info($"\nMemory Allocation:");
+                BTLogger.Info($"  Total: {totalAllocatedBytes:N0} bytes");
+                BTLogger.Info($"  Average per parse: {avgAllocatedBytes:N0} bytes");
+                BTLogger.Info($"  Average per character: {avgAllocatedBytes / (double)content.Length:F2} bytes");
+                BTLogger.Info($"\nGarbage Collections:");
+                BTLogger.Info($"  Gen0: {gen0Collections}");
+                BTLogger.Info($"  Gen1: {gen1Collections}");
+                BTLogger.Info($"  Gen2: {gen2Collections}");
                 
                 // パフォーマンス基準をテスト
                 Assert.That(avgMs, Is.LessThan(GetExpectedMaxTime(content.Length)), 
@@ -247,7 +248,7 @@ tree ComplexTree {
             var parser = new BTParser();
             var content = largeBTContent;
             
-            UnityEngine.Debug.Log("\n=== Tokenization Method Comparison ===");
+            BTLogger.Info("\n=== Tokenization Method Comparison ===");
             
             // 現在の実装をテスト
             MeasureTokenizationOnly("Current Implementation", parser, content);
@@ -263,7 +264,7 @@ tree ComplexTree {
             
             if (tokenizeMethod == null)
             {
-                UnityEngine.Debug.LogWarning("Tokenize method not found via reflection");
+                BTLogger.Warning("Tokenize method not found via reflection");
                 return;
             }
 
@@ -292,9 +293,9 @@ tree ComplexTree {
             double avgMs = stopwatch.ElapsedMilliseconds / (double)TEST_RUNS;
             long avgBytes = (finalMemory - initialMemory) / TEST_RUNS;
             
-            UnityEngine.Debug.Log($"\n{methodName}:");
-            UnityEngine.Debug.Log($"  Average time: {avgMs:F3} ms");
-            UnityEngine.Debug.Log($"  Average allocation: {avgBytes:N0} bytes");
+            BTLogger.Info($"\n{methodName}:");
+            BTLogger.Info($"  Average time: {avgMs:F3} ms");
+            BTLogger.Info($"  Average allocation: {avgBytes:N0} bytes");
         }
     }
 #endif

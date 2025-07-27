@@ -1,5 +1,6 @@
 using UnityEngine;
 using ArcBT.Core;
+using ArcBT.Logger;
 
 /// <summary>
 /// Source Generator の動作テスト用スクリプト
@@ -9,62 +10,62 @@ public class TestSourceGenerator : MonoBehaviour
 {
     void Start()
     {
-        Debug.Log("=== Testing Source Generator ===");
+        BTLogger.Info("=== Testing Source Generator ===");
         
         // MoveToPosition アクションを作成（自動登録されているはず）
         var moveAction = BTStaticNodeRegistry.CreateAction("MoveToPosition");
         if (moveAction != null)
         {
-            Debug.Log($"✓ MoveToPosition created successfully: {moveAction.GetType().Name}");
+            BTLogger.Info($"✓ MoveToPosition created successfully: {moveAction.GetType().Name}");
         }
         else
         {
-            Debug.LogError("✗ MoveToPosition not found in registry!");
+            BTLogger.Error("✗ MoveToPosition not found in registry!");
         }
         
         // Wait アクションを作成
         var waitAction = BTStaticNodeRegistry.CreateAction("Wait");
         if (waitAction != null)
         {
-            Debug.Log($"✓ Wait created successfully: {waitAction.GetType().Name}");
+            BTLogger.Info($"✓ Wait created successfully: {waitAction.GetType().Name}");
         }
         else
         {
-            Debug.LogError("✗ Wait not found in registry!");
+            BTLogger.Error("✗ Wait not found in registry!");
         }
         
         // HasSharedEnemyInfo 条件を作成
         var condition = BTStaticNodeRegistry.CreateCondition("HasSharedEnemyInfo");
         if (condition != null)
         {
-            Debug.Log($"✓ HasSharedEnemyInfo created successfully: {condition.GetType().Name}");
+            BTLogger.Info($"✓ HasSharedEnemyInfo created successfully: {condition.GetType().Name}");
         }
         else
         {
-            Debug.LogError("✗ HasSharedEnemyInfo not found in registry!");
+            BTLogger.Error("✗ HasSharedEnemyInfo not found in registry!");
         }
         
         // RPGサンプルのノード（自動登録されているはず）
         var attackAction = BTStaticNodeRegistry.CreateAction("AttackEnemy");
         if (attackAction != null)
         {
-            Debug.Log($"✓ AttackEnemy created successfully: {attackAction.GetType().Name}");
+            BTLogger.Info($"✓ AttackEnemy created successfully: {attackAction.GetType().Name}");
         }
         else
         {
-            Debug.LogError("✗ AttackEnemy not found in registry!");
+            BTLogger.Error("✗ AttackEnemy not found in registry!");
         }
         
         var healthCheck = BTStaticNodeRegistry.CreateCondition("HealthCheck");
         if (healthCheck != null)
         {
-            Debug.Log($"✓ HealthCheck created successfully: {healthCheck.GetType().Name}");
+            BTLogger.Info($"✓ HealthCheck created successfully: {healthCheck.GetType().Name}");
         }
         else
         {
-            Debug.LogError("✗ HealthCheck not found in registry!");
+            BTLogger.Error("✗ HealthCheck not found in registry!");
         }
         
-        Debug.Log("=== Test Complete ===");
+        BTLogger.Info("=== Test Complete ===");
     }
 }

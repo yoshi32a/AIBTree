@@ -1,5 +1,6 @@
 using System;
 using ArcBT.Core;
+using ArcBT.Logger;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -58,7 +59,7 @@ namespace ArcBT.Samples.RPG
         {
             if (ownerComponent == null || movementController == null)
             {
-                Debug.LogError("RandomWander: Owner or MovementController is null");
+                BTLogger.LogError(LogCategory.Movement, "RandomWander: Owner or MovementController is null", Name, ownerComponent);
                 return BTNodeResult.Failure;
             }
 
@@ -84,7 +85,7 @@ namespace ArcBT.Samples.RPG
                 movementController.OnTargetReached = () => {
                     // ターゲットに到達したら新しいターゲットを設定
                     hasTarget = false;
-                    Debug.Log("RandomWander: Reached wander target, setting new target");
+                    BTLogger.LogMovement("RandomWander: Reached wander target, setting new target", Name, ownerComponent);
                 };
             }
 
@@ -114,7 +115,7 @@ namespace ArcBT.Samples.RPG
             
             if (shouldLog)
             {
-                Debug.Log($"RandomWander: Moving to target - Distance: {distance:F1}");
+                BTLogger.LogMovement($"RandomWander: Moving to target - Distance: {distance:F1}", Name, ownerComponent);
             }
 
             return BTNodeResult.Running;
@@ -126,7 +127,7 @@ namespace ArcBT.Samples.RPG
             var randomCircle = Random.insideUnitCircle * wanderRadius;
             wanderTarget = initialPosition + new Vector3(randomCircle.x, 0, randomCircle.y);
 
-            Debug.Log($"RandomWander: New target set at ({wanderTarget.x:F2}, {wanderTarget.y:F2}, {wanderTarget.z:F2})");
+            BTLogger.LogMovement($"RandomWander: New target set at ({wanderTarget.x:F2}, {wanderTarget.y:F2}, {wanderTarget.z:F2})", Name, ownerComponent);
             
             // ログ状態をリセット
             lastLoggedDistance = float.MaxValue;

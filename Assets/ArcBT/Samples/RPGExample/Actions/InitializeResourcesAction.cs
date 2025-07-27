@@ -1,4 +1,5 @@
 using ArcBT.Core;
+using ArcBT.Logger;
 using ArcBT.Samples.RPG.Components;
 using UnityEngine;
 
@@ -24,7 +25,7 @@ namespace ArcBT.Samples.RPG.Actions
             blackBoard.SetValue("resources_initialized", true);
             blackBoard.SetValue("initialization_time", Time.time);
 
-            Debug.Log("InitializeResources: All resources initialized");
+            BTLogger.LogSystem("InitializeResources: All resources initialized", Name, ownerComponent);
             return BTNodeResult.Success;
         }
 

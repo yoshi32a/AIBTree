@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using ArcBT.Core;
+using ArcBT.Logger;
 using ArcBT.Samples.RPG.Components;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -43,7 +44,7 @@ namespace ArcBT.Samples.RPG.Actions
 
             if (target == null || !target.activeInHierarchy)
             {
-                Debug.Log("Interact: No interaction target found");
+                BTLogger.LogSystem("Interact: No interaction target found", Name, ownerComponent);
                 return BTNodeResult.Failure;
             }
 
@@ -51,7 +52,7 @@ namespace ArcBT.Samples.RPG.Actions
             float distance = Vector3.Distance(transform.position, target.transform.position);
             if (distance > interactionRange)
             {
-                Debug.Log($"Interact: Target out of range ({distance:F1} > {interactionRange})");
+                BTLogger.LogSystem($"Interact: Target out of range ({distance:F1} > {interactionRange})", Name, ownerComponent);
                 return BTNodeResult.Failure;
             }
 
@@ -93,12 +94,12 @@ namespace ArcBT.Samples.RPG.Actions
                 string objKey = $"{target.name}_{target.transform.position}";
                 recentlyInvestigated.Add(objKey);
 
-                Debug.Log($"Interact: Successfully {interactionType}ed '{target.name}'");
+                BTLogger.LogSystem($"Interact: Successfully {interactionType}ed '{target.name}'", Name, ownerComponent);
                 return BTNodeResult.Success;
             }
             else
             {
-                Debug.Log($"Interact: Failed to {interactionType} '{target.name}'");
+                BTLogger.LogSystem($"Interact: Failed to {interactionType} '{target.name}'", Name, ownerComponent);
                 return BTNodeResult.Failure;
             }
         }

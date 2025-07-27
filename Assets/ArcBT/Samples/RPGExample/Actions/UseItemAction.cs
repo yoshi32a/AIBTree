@@ -1,4 +1,5 @@
 using ArcBT.Core;
+using ArcBT.Logger;
 using ArcBT.Samples.RPG.Components;
 using UnityEngine;
 
@@ -30,13 +31,13 @@ namespace ArcBT.Samples.RPG.Actions
             var inventory = ownerComponent.GetComponent<Inventory>();
             if (inventory == null)
             {
-                Debug.LogWarning("UseItem: No Inventory component found");
+                BTLogger.LogError(LogCategory.System, "UseItem: No Inventory component found", Name, ownerComponent);
                 return BTNodeResult.Failure;
             }
 
             if (!inventory.HasItem(itemType))
             {
-                Debug.Log($"UseItem: No {itemType} available");
+                BTLogger.LogSystem($"UseItem: No {itemType} available", Name, ownerComponent);
                 return BTNodeResult.Failure;
             }
 
@@ -44,7 +45,7 @@ namespace ArcBT.Samples.RPG.Actions
             bool used = inventory.UseItem(itemType);
             if (!used)
             {
-                Debug.Log($"UseItem: Failed to use {itemType}");
+                BTLogger.LogSystem($"UseItem: Failed to use {itemType}", Name, ownerComponent);
                 return BTNodeResult.Failure;
             }
 
@@ -55,7 +56,7 @@ namespace ArcBT.Samples.RPG.Actions
             blackBoard.SetValue("last_used_item", itemType);
             blackBoard.SetValue("item_use_time", Time.time);
 
-            Debug.Log($"UseItem: Successfully used {itemType}");
+            BTLogger.LogSystem($"UseItem: Successfully used {itemType}", Name, ownerComponent);
             return BTNodeResult.Success;
         }
 

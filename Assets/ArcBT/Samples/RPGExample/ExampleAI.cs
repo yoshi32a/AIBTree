@@ -1,4 +1,5 @@
 using ArcBT.Core;
+using ArcBT.Logger;
 using UnityEngine;
 
 namespace ArcBT.Samples.RPG
@@ -64,7 +65,7 @@ namespace ArcBT.Samples.RPG
                 var direction = (targetTransform.position - transform.position).normalized;
                 transform.position += direction * speed * Time.deltaTime;
 
-                Debug.Log($"Moving to {targetName} at speed {speed}");
+                BTLogger.LogMovement($"Moving to {targetName} at speed {speed}", gameObject.name, this);
             }
         }
 
@@ -75,7 +76,7 @@ namespace ArcBT.Samples.RPG
                 var distance = Vector3.Distance(transform.position, target.position);
                 if (distance <= attackRange)
                 {
-                    Debug.Log($"Attacking enemy for {damage} damage!");
+                    BTLogger.LogCombat($"Attacking enemy for {damage} damage!", gameObject.name, this);
                     // 実際の攻撃ロジック
                 }
             }
@@ -83,7 +84,7 @@ namespace ArcBT.Samples.RPG
 
         public void Wait(float duration)
         {
-            Debug.Log($"Waiting for {duration} seconds");
+            BTLogger.LogSystem($"Waiting for {duration} seconds", gameObject.name, this);
             // 実際の待機ロジック（コルーチンなどで実装）
         }
 

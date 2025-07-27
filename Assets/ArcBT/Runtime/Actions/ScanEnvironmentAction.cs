@@ -1,5 +1,6 @@
 using System;
 using ArcBT.Core;
+using ArcBT.Logger;
 using UnityEngine;
 
 namespace ArcBT.Actions
@@ -103,7 +104,7 @@ namespace ArcBT.Actions
 
             blackBoard.SetValue("threat_level", threatLevel);
 
-            Debug.Log($"EnvironmentScan: Enemies:{enemyCount}, Items:{itemCount}, Threat:{threatLevel}");
+            BTLogger.LogSystem($"EnvironmentScan: Enemies:{enemyCount}, Items:{itemCount}, Threat:{threatLevel}", Name, ownerComponent);
 
             return BTNodeResult.Success;
         }

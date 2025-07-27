@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.TestTools;
 using ArcBT.Core;
 using System.Linq;
+using ArcBT.Logger;
 
 namespace ArcBT.Tests
 {

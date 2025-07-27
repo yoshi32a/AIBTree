@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using ArcBT.Core;
+using ArcBT.Logger;
 
 namespace ArcBT.Parser
 {
@@ -495,7 +496,7 @@ namespace ArcBT.Parser
                 }
                 else
                 {
-                    BTLogger.Log(LogLevel.Error, LogCategory.Parser, $"Unknown action script: {scriptName}. Please register the action in BTNodeRegistry.");
+                    BTLogger.Log(LogLevel.Error, LogCategory.Parser, $"Unknown action script: {scriptName}. Please register the action in BTStaticNodeRegistry or use source generator.");
                     return null;
                 }
             }
@@ -513,7 +514,7 @@ namespace ArcBT.Parser
                 else
                 {
                     BTLogger.Log(LogLevel.Error, LogCategory.Parser,
-                        $"Unknown condition script: {scriptName}. Please register the condition in BTNodeRegistry.");
+                        $"Unknown condition script: {scriptName}. Please register the condition in BTStaticNodeRegistry or use source generator.");
                     return null;
                 }
             }

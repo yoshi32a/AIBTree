@@ -1,5 +1,6 @@
 using System;
 using ArcBT.Core;
+using ArcBT.Logger;
 using UnityEngine;
 
 namespace ArcBT.Samples.RPG.Actions
@@ -78,7 +79,7 @@ namespace ArcBT.Samples.RPG.Actions
                 targetPosition = blackBoard.GetValue<Vector3>("target_position", Vector3.zero);
                 if (targetPosition == Vector3.zero)
                 {
-                    Debug.Log($"MoveToTarget: No valid target for move type '{moveType}'");
+                    BTLogger.LogMovement($"MoveToTarget: No valid target for move type '{moveType}'", Name, ownerComponent);
                     return BTNodeResult.Failure;
                 }
             }
@@ -88,7 +89,7 @@ namespace ArcBT.Samples.RPG.Actions
             {
                 movementController.SetTarget(targetPosition, speed);
                 movementController.OnTargetReached = () => {
-                    Debug.Log($"MoveToTarget: Reached target ({moveType})");
+                    BTLogger.LogMovement($"MoveToTarget: Reached target ({moveType})", Name, ownerComponent);
                 };
             }
 

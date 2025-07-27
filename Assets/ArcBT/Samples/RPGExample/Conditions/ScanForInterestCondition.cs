@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using ArcBT.Core;
+using ArcBT.Logger;
 using UnityEngine;
 
 namespace ArcBT.Samples.RPG.Conditions
@@ -38,17 +39,17 @@ namespace ArcBT.Samples.RPG.Conditions
                 string objName = obj.gameObject.name;
                 string objTag = obj.tag;
                 float distance = Vector3.Distance(transform.position, obj.transform.position);
-                Debug.Log($"ScanForInterest: Detected '{objName}' with tag '{objTag}' at distance {distance:F1}");
+                BTLogger.LogCondition($"ScanForInterest: Detected '{objName}' with tag '{objTag}' at distance {distance:F1}", Name, ownerComponent);
                 
                 // タグベースの安全な検査
                 if (HasTag(obj, "Interactable") || HasTag(obj, "Item") || HasTag(obj, "Treasure"))
                 {
                     interestingObjects.Add(obj);
-                    Debug.Log($"ScanForInterest: Added '{objName}' as interesting object");
+                    BTLogger.LogCondition($"ScanForInterest: Added '{objName}' as interesting object", Name, ownerComponent);
                 }
             }
             
-            Debug.Log($"ScanForInterest: Found {allObjects.Length} total objects, {interestingObjects.Count} interesting objects in radius {scanRadius}");
+            BTLogger.LogCondition($"ScanForInterest: Found {allObjects.Length} total objects, {interestingObjects.Count} interesting objects in radius {scanRadius}", Name, ownerComponent);
 
             if (interestingObjects.Count > 0)
             {
@@ -84,7 +85,7 @@ namespace ArcBT.Samples.RPG.Conditions
                     blackBoard.SetValue("interest_distance", nearestDistance);
                     blackBoard.SetValue("interest_type", nearestObject.tag);
 
-                    Debug.Log($"ScanForInterest: Found {nearestObject.name} at distance {nearestDistance:F1}");
+                    BTLogger.LogCondition($"ScanForInterest: Found {nearestObject.name} at distance {nearestDistance:F1}", Name, ownerComponent);
                     return BTNodeResult.Success;
                 }
             }
@@ -109,13 +110,13 @@ namespace ArcBT.Samples.RPG.Conditions
             catch (UnityException)
             {
                 // Unity固有の例外（タグ未定義など）をキャッチ
-                Debug.LogWarning($"Tag '{tagName}' is not defined in Unity Tag Manager.");
+                BTLogger.LogError(LogCategory.System, $"Tag '{tagName}' is not defined in Unity Tag Manager.", Name, ownerComponent);
                 return false;
             }
             catch (Exception ex)
             {
                 // その他の例外
-                Debug.LogWarning($"Unexpected error checking tag '{tagName}': {ex.Message}");
+                BTLogger.LogError(LogCategory.System, $"Unexpected error checking tag '{tagName}': {ex.Message}", Name, ownerComponent);
                 return false;
             }
         }

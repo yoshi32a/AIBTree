@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Diagnostics;
 
-namespace ArcBT.Core
+namespace ArcBT.Logger
 {
     public static class BTLogger
     {
@@ -78,7 +78,7 @@ namespace ArcBT.Core
 
         public static void EnableTestMode()
         {
-            currentLogLevel = LogLevel.Info;
+            currentLogLevel = LogLevel.Debug; // テスト時はDebugレベルまで有効化
             categoryFilters[LogCategory.Parser] = true; // テスト時はParserログを有効化
             categoryFilters[LogCategory.Debug] = true; // テスト時はDebugログも有効化
         }

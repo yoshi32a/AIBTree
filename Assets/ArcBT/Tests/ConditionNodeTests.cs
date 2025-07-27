@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.TestTools;
 using ArcBT.Core;
 using ArcBT.Conditions;
+using ArcBT.Logger;
 using ArcBT.Samples.RPG.Conditions;
 using ArcBT.Samples.RPG.Components;
 
@@ -68,7 +69,7 @@ namespace ArcBT.Tests
             blackBoard.SetValue("has_enemy_info", true);
             blackBoard.SetValue("enemy_target", enemyObject);
 
-            LogAssert.Expect(LogType.Log, "HasSharedEnemyInfo: Enemy info available - Target: 'TestEnemy'");
+            LogAssert.Expect(LogType.Log, "[DBG][BBD]: HasSharedEnemyInfo: Enemy info available - Target: 'TestEnemy'");
 
             // Act
             var result = condition.Execute();
@@ -88,7 +89,7 @@ namespace ArcBT.Tests
             condition.Initialize(testOwner.AddComponent<TestConditionComponent>(), blackBoard);
 
             blackBoard.SetValue("has_enemy_info", false);
-            LogAssert.Expect(LogType.Log, "HasSharedEnemyInfo: No valid enemy info in BlackBoard");
+            LogAssert.Expect(LogType.Log, "[DBG][BBD]: HasSharedEnemyInfo: No valid enemy info in BlackBoard");
 
             // Act
             var result = condition.Execute();
@@ -104,7 +105,7 @@ namespace ArcBT.Tests
             var condition = new HasSharedEnemyInfoCondition();
             condition.Initialize(testOwner.AddComponent<TestConditionComponent>(), null);
 
-            LogAssert.Expect(LogType.Error, "HasSharedEnemyInfo: BlackBoard is null");
+            LogAssert.Expect(LogType.Error, "[ERR][BBD]: HasSharedEnemyInfo: BlackBoard is null");
 
             // Act
             var result = condition.Execute();
@@ -125,7 +126,7 @@ namespace ArcBT.Tests
             blackBoard.SetValue("has_enemy_info", true);
             blackBoard.SetValue("enemy_target", enemyObject);
 
-            LogAssert.Expect(LogType.Log, "HasSharedEnemyInfo: No valid enemy info in BlackBoard");
+            LogAssert.Expect(LogType.Log, "[DBG][BBD]: HasSharedEnemyInfo: No valid enemy info in BlackBoard");
 
             // Act
             var result = condition.Execute();
@@ -182,9 +183,9 @@ namespace ArcBT.Tests
             var condition = new HealthCheckCondition();
             condition.Initialize(testOwner.AddComponent<TestConditionComponent>(), blackBoard);
 
-            LogAssert.Expect(LogType.Error, "HealthCheck: No Health component found on TestOwner");
-            LogAssert.Expect(LogType.Error, "HealthCheck '': Health component is null - trying to find it again");
-            LogAssert.Expect(LogType.Error, "HealthCheck '': Still no Health component found!");
+            LogAssert.Expect(LogType.Error, "[ERR][SYS]: HealthCheck: No Health component found on TestOwner");
+            LogAssert.Expect(LogType.Error, "[ERR][SYS]: HealthCheck '': Health component is null - trying to find it again");
+            LogAssert.Expect(LogType.Error, "[ERR][SYS]: HealthCheck '': Still no Health component found!");
 
             // Act
             var result = condition.Execute();
@@ -208,7 +209,7 @@ namespace ArcBT.Tests
             // 安全期間を設定
             blackBoard.SetValue("safety_timer", Time.time + 10f);
 
-            LogAssert.Expect(LogType.Log, "HealthCheck '': In safety period - skipping emergency check");
+            LogAssert.Expect(LogType.Log, "[INF][SYS]: HealthCheck '': In safety period - skipping emergency check");
 
             // Act
             var result = condition.Execute();
@@ -301,6 +302,9 @@ namespace ArcBT.Tests
             var condition = new HasManaCondition();
             condition.Initialize(testOwner.AddComponent<TestConditionComponent>(), blackBoard);
 
+            // BTLoggerのエラーログを期待（Manaコンポーネントがない場合）
+            LogAssert.Expect(LogType.Error, "[ERR][SYS]: ⚠️ HasMana: Manaコンポーネントが見つかりません");
+
             // Act
             var result = condition.Execute();
 
@@ -390,6 +394,11 @@ namespace ArcBT.Tests
 
             condition.SetProperty("item_name", "rare_item");
             condition.SetProperty("quantity", "1");
+            
+            // BTLoggerのエラーログを期待（正規のInventoryコンポーネントがない場合）
+            LogAssert.Expect(LogType.Error, "[ERR][SYS]: HasItem '': No Inventory component found on TestOwner");
+            LogAssert.Expect(LogType.Error, "[ERR][SYS]: HasItem '': No inventory component - assuming no items");
+            
             condition.Initialize(testOwner.AddComponent<TestConditionComponent>(), blackBoard);
 
             // Act

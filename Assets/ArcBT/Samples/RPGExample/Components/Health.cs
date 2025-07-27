@@ -1,4 +1,6 @@
 using UnityEngine;
+using ArcBT.Core;
+using ArcBT.Logger;
 
 namespace ArcBT.Samples.RPG.Components
 {
@@ -29,13 +31,13 @@ namespace ArcBT.Samples.RPG.Components
     public void TakeDamage(int damage)
     {
         currentHealth = Mathf.Max(0, currentHealth - damage);
-        Debug.Log($"{gameObject.name} took {damage} damage. Health: {currentHealth}/{maxHealth}");
+        BTLogger.LogSystem($"{gameObject.name} took {damage} damage. Health: {currentHealth}/{maxHealth}");
     }
     
     public void Heal(int amount)
     {
         currentHealth = Mathf.Min(maxHealth, currentHealth + amount);
-        Debug.Log($"{gameObject.name} healed {amount}. Health: {currentHealth}/{maxHealth}");
+        BTLogger.LogSystem($"{gameObject.name} healed {amount}. Health: {currentHealth}/{maxHealth}");
     }
     
     public bool IsAlive => currentHealth > 0;

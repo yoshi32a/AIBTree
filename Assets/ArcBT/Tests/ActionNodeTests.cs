@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.TestTools;
 using ArcBT.Core;
 using ArcBT.Actions;
+using ArcBT.Logger;
 using ArcBT.Samples.RPG;
 using ArcBT.Samples.RPG.Actions;
 
@@ -55,10 +56,10 @@ namespace ArcBT.Tests
             string expectedTargetKey = string.IsNullOrEmpty(action.Name) ? "_target_name" : $"{action.Name}_target_name";
 
             // Debug出力でBlackBoardの内容を確認
-            Debug.Log($"Action Name: '{action.Name}'");
-            Debug.Log($"Expected position key: '{expectedNameKey}'");
-            Debug.Log($"Expected target key: '{expectedTargetKey}'");
-            Debug.Log($"BlackBoard keys: {string.Join(", ", blackBoard.GetAllKeys())}");
+            BTLogger.Info($"Action Name: '{action.Name}'");
+            BTLogger.Info($"Expected position key: '{expectedNameKey}'");
+            BTLogger.Info($"Expected target key: '{expectedTargetKey}'");
+            BTLogger.Info($"BlackBoard keys: {string.Join(", ", blackBoard.GetAllKeys())}");
 
             Assert.IsTrue(blackBoard.HasKey(expectedNameKey), $"Expected key '{expectedNameKey}' not found in BlackBoard");
             Assert.IsTrue(blackBoard.HasKey(expectedTargetKey), $"Expected key '{expectedTargetKey}' not found in BlackBoard");
@@ -76,7 +77,7 @@ namespace ArcBT.Tests
             var action = new MoveToPositionAction();
             action.SetProperty("target", "NonExistentTarget");
 
-            LogAssert.Expect(LogType.Warning, "MoveToPosition: Target 'NonExistentTarget' not found!");
+            LogAssert.Expect(LogType.Error, "[ERR][MOV]: MoveToPosition: Target 'NonExistentTarget' not found!");
 
             // Act
             action.Initialize(testOwner.AddComponent<TestComponent>(), blackBoard);
@@ -93,8 +94,8 @@ namespace ArcBT.Tests
             action.Initialize(testOwner.AddComponent<TestComponent>(), blackBoard);
 
             // 期待されるエラーログを指定
-            LogAssert.Expect(LogType.Error, "MoveToPosition '': No valid target '' - trying to find it again");
-            LogAssert.Expect(LogType.Error, "MoveToPosition '': No target name specified!");
+            LogAssert.Expect(LogType.Error, "[ERR][MOV]: MoveToPosition '': No valid target '' - trying to find it again");
+            LogAssert.Expect(LogType.Error, "[ERR][MOV]: MoveToPosition '': No target name specified!");
 
             // Act
             var result = action.Execute();
@@ -345,6 +346,10 @@ namespace ArcBT.Tests
 
             // Assert
             action.Initialize(testOwner.AddComponent<TestComponent>(), blackBoard);
+            
+            // BTLoggerのエラーログを期待（Manaコンポーネントがない場合）
+            LogAssert.Expect(LogType.Error, "[ERR][SYS]: ⚠️ CastSpell: Manaコンポーネントが見つかりません");
+            
             var result = action.Execute();
 
             // 魔法詠唱の開始を確認
@@ -363,6 +368,9 @@ namespace ArcBT.Tests
             manaComponent.currentMana = 0;
 
             action.Initialize(testOwner.AddComponent<TestComponent>(), blackBoard);
+
+            // BTLoggerのエラーログを期待
+            LogAssert.Expect(LogType.Error, "[ERR][SYS]: ⚠️ CastSpell: Manaコンポーネントが見つかりません");
 
             // Act
             var result = action.Execute();
@@ -383,6 +391,10 @@ namespace ArcBT.Tests
 
             // Assert
             action.Initialize(testOwner.AddComponent<TestComponent>(), blackBoard);
+            
+            // BTLoggerのエラーログを期待（Inventoryコンポーネントがない場合）
+            LogAssert.Expect(LogType.Error, "[ERR][SYS]: UseItem: No Inventory component found");
+            
             var result = action.Execute();
 
             // アイテム使用の試行を確認
@@ -435,11 +447,11 @@ namespace ArcBT.Tests
             var scanResult = scanAction.Execute();
 
             // Debug: スキャン結果と BlackBoard 内容を確認
-            Debug.Log($"Scan result: {scanResult}");
-            Debug.Log($"BlackBoard keys count: {blackBoard.GetAllKeys().Length}");
+            BTLogger.Info($"Scan result: {scanResult}");
+            BTLogger.Info($"BlackBoard keys count: {blackBoard.GetAllKeys().Length}");
             foreach (var key in blackBoard.GetAllKeys())
             {
-                Debug.Log($"BlackBoard key: {key} = {blackBoard.GetValueAsString(key)}");
+                BTLogger.Info($"BlackBoard key: {key} = {blackBoard.GetValueAsString(key)}");
             }
 
             // スキャンが正常に実行されたことを確認

@@ -1,5 +1,6 @@
 using System;
 using ArcBT.Core;
+using ArcBT.Logger;
 using ArcBT.Samples.RPG.Components;
 using UnityEngine;
 
@@ -46,7 +47,7 @@ namespace ArcBT.Samples.RPG.Actions
             if (target == null || !target.activeInHierarchy)
             {
                 blackBoard.SetValue("current_action", "Idle");
-                Debug.Log("NormalAttack: No valid target found");
+                BTLogger.LogCombat("NormalAttack: No valid target found", Name, ownerComponent);
                 return BTNodeResult.Failure;
             }
 
@@ -74,13 +75,13 @@ namespace ArcBT.Samples.RPG.Actions
                 blackBoard.SetValue("last_damage_dealt", damage);
                 blackBoard.SetValue("attack_cooldown_remaining", 0f);
 
-                Debug.Log($"NormalAttack: Normal attack on '{target.name}' for {damage} damage");
+                BTLogger.LogCombat($"NormalAttack: Normal attack on '{target.name}' for {damage} damage", Name, ownerComponent);
                 return BTNodeResult.Success;
             }
             else
             {
                 blackBoard.SetValue("current_action", "Idle");
-                Debug.LogWarning($"NormalAttack: Target '{target.name}' has no Health component");
+                BTLogger.LogError(LogCategory.Combat, $"NormalAttack: Target '{target.name}' has no Health component", Name, ownerComponent);
                 return BTNodeResult.Failure;
             }
         }

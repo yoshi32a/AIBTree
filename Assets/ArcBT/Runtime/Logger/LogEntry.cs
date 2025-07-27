@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ArcBT.Core
+namespace ArcBT.Logger
 {
     public struct LogEntry
     {

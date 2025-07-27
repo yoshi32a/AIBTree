@@ -1,5 +1,6 @@
 using System;
 using ArcBT.Core;
+using ArcBT.Logger;
 using ArcBT.Samples.RPG.Components;
 using UnityEngine;
 
@@ -40,7 +41,7 @@ namespace ArcBT.Samples.RPG.Actions
                 isSearching = true;
                 searchStartTime = Time.time;
                 blackBoard.SetValue("is_searching", true);
-                Debug.Log("SearchForEnemy: Started enemy search");
+                BTLogger.LogSystem("SearchForEnemy: Started enemy search", Name, ownerComponent);
             }
 
             // 敵を検索
@@ -77,7 +78,7 @@ namespace ArcBT.Samples.RPG.Actions
                     blackBoard.SetValue("is_alert", true);
                     blackBoard.SetValue("alert_reason", "enemy_found");
 
-                    Debug.Log($"SearchForEnemy: Found enemy '{nearestEnemy.name}' at distance {nearestDistance:F1}");
+                    BTLogger.LogSystem($"SearchForEnemy: Found enemy '{nearestEnemy.name}' at distance {nearestDistance:F1}", Name, ownerComponent);
 
                     // 検索完了
                     isSearching = false;
@@ -94,7 +95,7 @@ namespace ArcBT.Samples.RPG.Actions
                 blackBoard.SetValue("is_searching", false);
                 blackBoard.SetValue("last_search_time", Time.time);
 
-                Debug.Log("SearchForEnemy: Search completed, no enemies found");
+                BTLogger.LogSystem("SearchForEnemy: Search completed, no enemies found", Name, ownerComponent);
 
                 isSearching = false;
                 return BTNodeResult.Failure;

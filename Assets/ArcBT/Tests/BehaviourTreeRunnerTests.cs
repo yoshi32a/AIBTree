@@ -5,6 +5,7 @@ using ArcBT.Core;
 using ArcBT.Actions;
 using System.Collections;
 using System.IO;
+using ArcBT.Logger;
 using ArcBT.Samples.RPG;
 
 namespace ArcBT.Tests
@@ -231,11 +232,11 @@ namespace ArcBT.Tests
 
             // Assert
             // ScanActionがBlackBoardにデータを設定したことを確認
-            Debug.Log($"Execution result: {result}");
-            Debug.Log($"BlackBoard keys count: {runner.BlackBoard.GetAllKeys().Length}");
+            BTLogger.Info($"Execution result: {result}");
+            BTLogger.Info($"BlackBoard keys count: {runner.BlackBoard.GetAllKeys().Length}");
             foreach (var key in runner.BlackBoard.GetAllKeys())
             {
-                Debug.Log($"BlackBoard key: {key} = {runner.BlackBoard.GetValueAsString(key)}");
+                BTLogger.Info($"BlackBoard key: {key} = {runner.BlackBoard.GetValueAsString(key)}");
             }
             
             Assert.IsTrue(runner.BlackBoard.GetAllKeys().Length > 0, "BlackBoard should contain data after ScanEnvironmentAction execution");

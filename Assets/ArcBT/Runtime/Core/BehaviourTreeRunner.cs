@@ -1,6 +1,7 @@
 using UnityEngine;
 using ArcBT.Parser;
 using System.IO;
+using ArcBT.Logger;
 
 namespace ArcBT.Core
 {

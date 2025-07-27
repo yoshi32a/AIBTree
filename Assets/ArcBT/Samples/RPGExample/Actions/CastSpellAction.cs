@@ -1,5 +1,6 @@
 using System;
 using ArcBT.Core;
+using ArcBT.Logger;
 using ArcBT.Samples.RPG.Components;
 using UnityEngine;
 
@@ -32,21 +33,21 @@ namespace ArcBT.Samples.RPG.Actions
         {
             if (ownerComponent == null)
             {
-                Debug.LogError("❌ CastSpell: Owner component is null");
+                BTLogger.LogError(LogCategory.System, "❌ CastSpell: Owner component is null", Name, ownerComponent);
                 return BTNodeResult.Failure;
             }
 
             var mana = ownerComponent.GetComponent<Mana>();
             if (mana == null)
             {
-                Debug.LogWarning("⚠️ CastSpell: Manaコンポーネントが見つかりません");
+                BTLogger.LogError(LogCategory.System, "⚠️ CastSpell: Manaコンポーネントが見つかりません", Name, ownerComponent);
                 return BTNodeResult.Failure;
             }
 
             // マナチェック
             if (!mana.HasEnoughMana(manaCost))
             {
-                Debug.Log($"🔴 CastSpell: マナ不足で '{spellName}' を使用できません ({mana.CurrentMana} < {manaCost})");
+                BTLogger.LogCombat($"🔴 CastSpell: マナ不足で '{spellName}' を使用できません ({mana.CurrentMana} < {manaCost})", Name, ownerComponent);
                 return BTNodeResult.Failure;
             }
 
@@ -59,7 +60,7 @@ namespace ArcBT.Samples.RPG.Actions
 
             if (target == null)
             {
-                Debug.Log("❓ CastSpell: 魔法のターゲットが見つかりません");
+                BTLogger.LogCombat("❓ CastSpell: 魔法のターゲットが見つかりません", Name, ownerComponent);
                 return BTNodeResult.Failure;
             }
 
@@ -71,7 +72,7 @@ namespace ArcBT.Samples.RPG.Actions
             if (targetHealth != null)
             {
                 targetHealth.TakeDamage(damage);
-                Debug.Log($"✨ CastSpell: '{spellName}' で '{target.name}' に {damage} ダメージ！ (マナ消費: {manaCost})");
+                BTLogger.LogCombat($"✨ CastSpell: '{spellName}' で '{target.name}' に {damage} ダメージ！ (マナ消費: {manaCost})", Name, ownerComponent);
                 
                 // BlackBoardに魔法使用履歴を記録
                 if (blackBoard != null)
@@ -84,7 +85,7 @@ namespace ArcBT.Samples.RPG.Actions
             }
             else
             {
-                Debug.LogWarning($"⚠️ CastSpell: ターゲット '{target.name}' にHealthコンポーネントがありません");
+                BTLogger.LogError(LogCategory.Combat, $"⚠️ CastSpell: ターゲット '{target.name}' にHealthコンポーネントがありません", Name, ownerComponent);
                 return BTNodeResult.Failure;
             }
         }

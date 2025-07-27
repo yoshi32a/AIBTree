@@ -1,5 +1,6 @@
 using System;
 using ArcBT.Core;
+using ArcBT.Logger;
 using UnityEngine;
 
 namespace ArcBT.Actions
@@ -35,11 +36,11 @@ namespace ArcBT.Actions
                         blackBoard.SetValue($"{Name}_target_name", target);
                     }
 
-                    Debug.Log($"MoveToPosition: Target found '{target}' at {targetPosition}");
+                    BTLogger.LogMovement($"MoveToPosition: Target found '{target}' at {targetPosition}", Name, ownerComponent);
                 }
                 else
                 {
-                    Debug.LogWarning($"MoveToPosition: Target '{target}' not found!");
+                    BTLogger.LogError(LogCategory.Movement, $"MoveToPosition: Target '{target}' not found!", Name, ownerComponent);
                     hasValidTarget = false;
                 }
             }
@@ -47,11 +48,11 @@ namespace ArcBT.Actions
 
         protected override BTNodeResult ExecuteAction()
         {
-            Debug.Log($"=== MoveToPositionAction '{Name}' EXECUTING ===");
+            BTLogger.LogMovement($"=== MoveToPositionAction '{Name}' EXECUTING ===", Name, ownerComponent);
 
             if (!hasValidTarget)
             {
-                Debug.LogError($"MoveToPosition '{Name}': No valid target '{target}' - trying to find it again");
+                BTLogger.LogError(LogCategory.Movement, $"MoveToPosition '{Name}': No valid target '{target}' - trying to find it again", Name, ownerComponent);
 
                 // ターゲットを再検索
                 if (!string.IsNullOrEmpty(target))
@@ -61,17 +62,17 @@ namespace ArcBT.Actions
                     {
                         targetPosition = targetObj.transform.position;
                         hasValidTarget = true;
-                        Debug.Log($"MoveToPosition '{Name}': Found target '{target}' at {targetPosition}");
+                        BTLogger.LogMovement($"MoveToPosition '{Name}': Found target '{target}' at {targetPosition}", Name, ownerComponent);
                     }
                     else
                     {
-                        Debug.LogError($"MoveToPosition '{Name}': Target '{target}' still not found!");
+                        BTLogger.LogError(LogCategory.Movement, $"MoveToPosition '{Name}': Target '{target}' still not found!", Name, ownerComponent);
                         return BTNodeResult.Failure;
                     }
                 }
                 else
                 {
-                    Debug.LogError($"MoveToPosition '{Name}': No target name specified!");
+                    BTLogger.LogError(LogCategory.Movement, $"MoveToPosition '{Name}': No target name specified!", Name, ownerComponent);
                     return BTNodeResult.Failure;
                 }
             }
@@ -80,12 +81,12 @@ namespace ArcBT.Actions
             var currentPos = transform.position;
             var distance = Vector3.Distance(currentPos, targetPosition);
 
-            Debug.Log($"MoveToPosition '{Name}': Current pos = {currentPos}, Target pos = {targetPosition}");
-            Debug.Log($"MoveToPosition '{Name}': Distance = {distance:F2}, Tolerance = {tolerance}");
+            BTLogger.Log(LogLevel.Debug, LogCategory.Movement, $"MoveToPosition '{Name}': Current pos = {currentPos}, Target pos = {targetPosition}", Name, ownerComponent);
+            BTLogger.Log(LogLevel.Debug, LogCategory.Movement, $"MoveToPosition '{Name}': Distance = {distance:F2}, Tolerance = {tolerance}", Name, ownerComponent);
 
             if (distance <= tolerance)
             {
-                Debug.Log($"MoveToPosition '{Name}': ✓ REACHED target '{target}' (Distance: {distance:F2} <= {tolerance})");
+                BTLogger.LogMovement($"MoveToPosition '{Name}': ✓ REACHED target '{target}' (Distance: {distance:F2} <= {tolerance})", Name, ownerComponent);
                 return BTNodeResult.Success;
             }
 
@@ -101,13 +102,13 @@ namespace ArcBT.Actions
                 blackBoard.SetValue($"{Name}_is_moving", true);
             }
 
-            Debug.Log($"MoveToPosition '{Name}': → Moving to '{target}' (Distance: {distance:F2}, Speed: {speed})");
+            BTLogger.Log(LogLevel.Debug, LogCategory.Movement, $"MoveToPosition '{Name}': → Moving to '{target}' (Distance: {distance:F2}, Speed: {speed})", Name, ownerComponent);
             return BTNodeResult.Running;
         }
 
         protected override void OnConditionFailed()
         {
-            Debug.Log($"MoveToPosition '{Name}': 🚨 Condition failed - stopping movement");
+            BTLogger.LogMovement($"MoveToPosition '{Name}': 🚨 Condition failed - stopping movement", Name, ownerComponent);
 
             // BlackBoardに停止状態を記録
             if (blackBoard != null)

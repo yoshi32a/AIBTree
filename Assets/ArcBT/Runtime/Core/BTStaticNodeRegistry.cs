@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using ArcBT.Logger;
 
 namespace ArcBT.Core
 {
@@ -11,10 +12,10 @@ namespace ArcBT.Core
     {
         // アクション生成関数の登録（実行時に追加可能）
         static readonly Dictionary<string, Func<BTActionNode>> actionCreators = new();
-        
+
         // 条件生成関数の登録（実行時に追加可能）
         static readonly Dictionary<string, Func<BTConditionNode>> conditionCreators = new();
-        
+
         /// <summary>アクションを作成（リフレクション不使用）</summary>
         public static BTActionNode CreateAction(string scriptName)
         {
@@ -22,20 +23,11 @@ namespace ArcBT.Core
             {
                 return creator();
             }
-            
-            // フォールバック: BTNodeRegistryを使用（RPGサンプル等のため）
-            var node = BTNodeRegistry.CreateAction(scriptName);
-            if (node != null)
-            {
-                BTLogger.Log(LogLevel.Debug, LogCategory.System, 
-                    $"Created action '{scriptName}' via BTNodeRegistry (reflection fallback)");
-                return node;
-            }
-            
+
             BTLogger.LogError(LogCategory.System, $"Unknown action script: {scriptName}");
             return null;
         }
-        
+
         /// <summary>条件を作成（リフレクション不使用）</summary>
         public static BTConditionNode CreateCondition(string scriptName)
         {
@@ -43,45 +35,36 @@ namespace ArcBT.Core
             {
                 return creator();
             }
-            
-            // フォールバック: BTNodeRegistryを使用（RPGサンプル等のため）
-            var node = BTNodeRegistry.CreateCondition(scriptName);
-            if (node != null)
-            {
-                BTLogger.Log(LogLevel.Debug, LogCategory.System, 
-                    $"Created condition '{scriptName}' via BTNodeRegistry (reflection fallback)");
-                return node;
-            }
-            
+
             BTLogger.LogError(LogCategory.System, $"Unknown condition script: {scriptName}");
             return null;
         }
-        
+
         /// <summary>アクションを動的に登録</summary>
         public static void RegisterAction(string scriptName, Func<BTActionNode> creator)
         {
             if (actionCreators.ContainsKey(scriptName))
             {
-                BTLogger.Log(LogLevel.Warning, LogCategory.System, 
-                    $"Action '{scriptName}' is already registered. Overwriting.");
+                BTLogger.Log(LogLevel.Warning, LogCategory.System, $"Action '{scriptName}' is already registered. Overwriting.");
             }
+
             actionCreators[scriptName] = creator;
         }
-        
+
         /// <summary>条件を動的に登録</summary>
         public static void RegisterCondition(string scriptName, Func<BTConditionNode> creator)
         {
             if (conditionCreators.ContainsKey(scriptName))
             {
-                BTLogger.Log(LogLevel.Warning, LogCategory.System, 
-                    $"Condition '{scriptName}' is already registered. Overwriting.");
+                BTLogger.Log(LogLevel.Warning, LogCategory.System, $"Condition '{scriptName}' is already registered. Overwriting.");
             }
+
             conditionCreators[scriptName] = creator;
         }
-        
+
         /// <summary>登録されているアクション名</summary>
         public static IEnumerable<string> GetActionNames() => actionCreators.Keys;
-        
+
         /// <summary>登録されている条件名</summary>
         public static IEnumerable<string> GetConditionNames() => conditionCreators.Keys;
     }

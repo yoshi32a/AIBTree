@@ -1,4 +1,5 @@
 using ArcBT.Core;
+using ArcBT.Logger;
 using UnityEngine;
 
 namespace ArcBT.Samples.RPG.Conditions
@@ -22,7 +23,7 @@ namespace ArcBT.Samples.RPG.Conditions
                 // 初期化を試行
                 blackBoard.SetValue("is_initialized", true);
                 blackBoard.SetValue("initialization_time", Time.time);
-                Debug.Log("IsInitialized: System initialized");
+                BTLogger.LogCondition("IsInitialized: System initialized", Name, ownerComponent);
                 return BTNodeResult.Success;
             }
 

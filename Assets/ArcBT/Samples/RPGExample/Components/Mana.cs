@@ -1,4 +1,6 @@
 using UnityEngine;
+using ArcBT.Core;
+using ArcBT.Logger;
 
 namespace ArcBT.Samples.RPG.Components
 {
@@ -41,7 +43,7 @@ namespace ArcBT.Samples.RPG.Components
             if (currentMana >= amount)
             {
                 currentMana -= amount;
-                Debug.Log($"🔵 マナ消費: -{amount} (残り: {currentMana}/{maxMana})");
+                BTLogger.LogSystem($"🔵 マナ消費: -{amount} (残り: {currentMana}/{maxMana})");
                 return true;
             }
             return false;
@@ -50,7 +52,7 @@ namespace ArcBT.Samples.RPG.Components
         public void RestoreMana(int amount)
         {
             currentMana = Mathf.Min(maxMana, currentMana + amount);
-            Debug.Log($"💙 マナ回復: +{amount} (現在: {currentMana}/{maxMana})");
+            BTLogger.LogSystem($"💙 マナ回復: +{amount} (現在: {currentMana}/{maxMana})");
         }
         
         public bool HasEnoughMana(int required)

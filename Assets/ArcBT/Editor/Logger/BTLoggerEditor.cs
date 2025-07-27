@@ -3,6 +3,7 @@ using UnityEditor;
 using ArcBT.Core;
 using System;
 using System.Linq;
+using ArcBT.Logger;
 
 [CustomEditor(typeof(BehaviourTreeRunner))]
 public class BTLoggerEditor : Editor

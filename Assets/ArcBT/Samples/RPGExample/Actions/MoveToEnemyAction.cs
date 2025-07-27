@@ -1,5 +1,6 @@
 using System;
 using ArcBT.Core;
+using ArcBT.Logger;
 using UnityEngine;
 
 namespace ArcBT.Samples.RPG.Actions
@@ -32,7 +33,7 @@ namespace ArcBT.Samples.RPG.Actions
         {
             if (ownerComponent == null || blackBoard == null)
             {
-                Debug.LogError("MoveToEnemy: Owner or BlackBoard is null");
+                BTLogger.LogError(LogCategory.Movement, "MoveToEnemy: Owner or BlackBoard is null", Name, ownerComponent);
                 return BTNodeResult.Failure;
             }
 
@@ -40,7 +41,7 @@ namespace ArcBT.Samples.RPG.Actions
             GameObject enemyTarget = blackBoard.GetValue<GameObject>("enemy_target");
             if (enemyTarget == null)
             {
-                Debug.Log("MoveToEnemy: No enemy target in BlackBoard");
+                BTLogger.LogMovement("MoveToEnemy: No enemy target in BlackBoard", Name, ownerComponent);
                 return BTNodeResult.Failure;
             }
 
@@ -49,7 +50,7 @@ namespace ArcBT.Samples.RPG.Actions
             {
                 blackBoard.SetValue("has_enemy_info", false);
                 blackBoard.SetValue<GameObject>("enemy_target", null);
-                Debug.Log("MoveToEnemy: Enemy target is destroyed or inactive");
+                BTLogger.LogMovement("MoveToEnemy: Enemy target is destroyed or inactive", Name, ownerComponent);
                 return BTNodeResult.Failure;
             }
 
@@ -62,7 +63,7 @@ namespace ArcBT.Samples.RPG.Actions
             // 目標に到達したかチェック
             if (distance <= tolerance)
             {
-                Debug.Log($"MoveToEnemy: Reached enemy '{enemyTarget.name}'");
+                BTLogger.LogMovement($"MoveToEnemy: Reached enemy '{enemyTarget.name}'", Name, ownerComponent);
                 return BTNodeResult.Success;
             }
 
@@ -77,13 +78,13 @@ namespace ArcBT.Samples.RPG.Actions
             }
 
             // スマートログ: 距離に大きな変化があった場合か、3秒間隔でのみログ出力
-            bool shouldLog = (lastLoggedDistance < 0) ||  // 初回
-                           (Mathf.Abs(distance - lastLoggedDistance) > 0.5f) ||  // 0.5m以上の変化
-                           (Time.time - lastLogTime > 3f);  // 3秒間隔
+            bool shouldLog = lastLoggedDistance < 0 ||  // 初回
+                           Mathf.Abs(distance - lastLoggedDistance) > 0.5f ||  // 0.5m以上の変化
+                           Time.time - lastLogTime > 3f;  // 3秒間隔
             
             if (shouldLog)
             {
-                Debug.Log($"🏃 MoveToEnemy: '{enemyTarget.name}' へ移動中 (距離: {distance:F1}m)");
+                BTLogger.LogMovement($"🏃 MoveToEnemy: '{enemyTarget.name}' へ移動中 (距離: {distance:F1}m)", Name, ownerComponent);
                 lastLoggedDistance = distance;
                 lastLogTime = Time.time;
             }
@@ -95,7 +96,7 @@ namespace ArcBT.Samples.RPG.Actions
         {
             if (ownerComponent != null && blackBoard != null)
             {
-                GameObject enemy = blackBoard.GetValue<GameObject>("enemy_target");
+                var enemy = blackBoard.GetValue<GameObject>("enemy_target");
                 if (enemy != null)
                 {
                     Gizmos.color = Color.red;

@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.TestTools;
 using ArcBT.Parser;
 using ArcBT.Core;
+using ArcBT.Logger;
 
 namespace ArcBT.Tests
 {
@@ -59,7 +60,7 @@ namespace ArcBT.Tests
                 }
                 else
                 {
-                    Debug.LogWarning($"Test file not found: {testFile}");
+                    BTLogger.Warning($"Test file not found: {testFile}");
                 }
             }
             
@@ -71,7 +72,7 @@ namespace ArcBT.Tests
             foreach (var filePath in btFiles)
             {
                 var fileName = Path.GetFileName(filePath);
-                Debug.Log($"Testing BT file: {fileName}");
+                BTLogger.Info($"Testing BT file: {fileName}");
                 
                 try
                 {
@@ -80,7 +81,7 @@ namespace ArcBT.Tests
                     if (rootNode != null)
                     {
                         successfulFiles.Add(fileName);
-                        Debug.Log($"✅ Successfully parsed: {fileName}");
+                        BTLogger.Info($"✅ Successfully parsed: {fileName}");
                         
                         // 追加検証: ノード構造の基本チェック
                         ValidateNodeStructure(rootNode, fileName);
@@ -88,30 +89,30 @@ namespace ArcBT.Tests
                     else
                     {
                         failedFiles.Add($"{fileName} (returned null)");
-                        Debug.LogError($"❌ Failed to parse: {fileName} - returned null");
+                        BTLogger.Error($"❌ Failed to parse: {fileName} - returned null");
                     }
                 }
                 catch (System.Exception ex)
                 {
                     failedFiles.Add($"{fileName} ({ex.Message})");
-                    Debug.LogError($"❌ Exception while parsing {fileName}: {ex.Message}");
+                    BTLogger.Error($"❌ Exception while parsing {fileName}: {ex.Message}");
                 }
             }
             
             // 結果の出力
-            Debug.Log($"🎯 Parsing Test Results:");
-            Debug.Log($"📊 Total files: {btFiles.Count}");
-            Debug.Log($"✅ Successful: {successfulFiles.Count}");
-            Debug.Log($"❌ Failed: {failedFiles.Count}");
+            BTLogger.Info($"🎯 Parsing Test Results:");
+            BTLogger.Info($"📊 Total files: {btFiles.Count}");
+            BTLogger.Info($"✅ Successful: {successfulFiles.Count}");
+            BTLogger.Info($"❌ Failed: {failedFiles.Count}");
             
             if (successfulFiles.Count > 0)
             {
-                Debug.Log($"✅ Successfully parsed files:\n  - {string.Join("\n  - ", successfulFiles)}");
+                BTLogger.Info($"✅ Successfully parsed files:\n  - {string.Join("\n  - ", successfulFiles)}");
             }
             
             if (failedFiles.Count > 0)
             {
-                Debug.LogError($"❌ Failed to parse files:\n  - {string.Join("\n  - ", failedFiles)}");
+                BTLogger.Error($"❌ Failed to parse files:\n  - {string.Join("\n  - ", failedFiles)}");
                 Assert.Fail($"Failed to parse {failedFiles.Count} out of {btFiles.Count} BT files:\n- {string.Join("\n- ", failedFiles)}");
             }
             
@@ -158,13 +159,13 @@ namespace ArcBT.Tests
                 
                 if (File.Exists(filePath))
                 {
-                    Debug.Log($"🔍 Testing structure of: {testCase.Key}");
+                    BTLogger.Info($"🔍 Testing structure of: {testCase.Key}");
                     var rootNode = parser.ParseFile(filePath);
                     
                     try
                     {
                         testCase.Value(rootNode);
-                        Debug.Log($"✅ Structure validation passed for: {testCase.Key}");
+                        BTLogger.Info($"✅ Structure validation passed for: {testCase.Key}");
                     }
                     catch (System.Exception ex)
                     {
@@ -173,7 +174,7 @@ namespace ArcBT.Tests
                 }
                 else
                 {
-                    Debug.LogWarning($"⚠️ Test file not found, skipping: {testCase.Key}");
+                    BTLogger.Warning($"⚠️ Test file not found, skipping: {testCase.Key}");
                 }
             }
         }
@@ -202,7 +203,7 @@ namespace ArcBT.Tests
             var emptyResult = parser.ParseContent("");
             Assert.IsNull(emptyResult, "Parsing empty content should return null");
             
-            Debug.Log("✅ Error handling tests passed");
+            BTLogger.Info("✅ Error handling tests passed");
         }
         
         /// <summary>特定のノードタイプが正しく作成されるかテスト</summary>
@@ -237,7 +238,7 @@ namespace ArcBT.Tests
             Assert.IsTrue(moveAction.Name.Contains("MoveToPosition"), "First child should be MoveToPosition action");
             Assert.IsTrue(healthCondition.Name.Contains("HealthCheck"), "Second child should be HealthCheck condition");
             
-            Debug.Log("✅ Node creation tests passed");
+            BTLogger.Info("✅ Node creation tests passed");
         }
         
         /// <summary>BlackBoard関連のノードが認識されるかテスト</summary>
@@ -270,7 +271,7 @@ namespace ArcBT.Tests
             Assert.IsTrue(root.Children[1].Name.Contains("HasSharedEnemyInfo"), "Should recognize HasSharedEnemyInfo condition");
             Assert.IsTrue(root.Children[2].Name.Contains("AttackTarget"), "Should recognize AttackTarget action");
             
-            Debug.Log("✅ BlackBoard node tests passed");
+            BTLogger.Info("✅ BlackBoard node tests passed");
         }
         
         /// <summary>ノード構造を再帰的に検証するヘルパーメソッド</summary>
@@ -346,19 +347,19 @@ namespace ArcBT.Tests
                 }
                 
                 var elapsedMs = stopwatch.ElapsedMilliseconds;
-                Debug.Log($"⏱️ {fileName}: {elapsedMs}ms");
+                BTLogger.Info($"⏱️ {fileName}: {elapsedMs}ms");
                 
                 // パース時間が1秒を超える場合は警告
                 if (elapsedMs > 1000)
                 {
-                    Debug.LogWarning($"⚠️ {fileName} took {elapsedMs}ms to parse (>1000ms)");
+                    BTLogger.Warning($"⚠️ {fileName} took {elapsedMs}ms to parse (>1000ms)");
                 }
                 
                 // パース時間が10秒を超える場合は失敗
                 Assert.IsTrue(elapsedMs < 10000, $"Parsing {fileName} took too long: {elapsedMs}ms");
             }
             
-            Debug.Log("✅ Performance tests completed");
+            BTLogger.Info("✅ Performance tests completed");
         }
     }
 }

@@ -1,5 +1,6 @@
 using System;
 using ArcBT.Core;
+using ArcBT.Logger;
 using ArcBT.Samples.RPG.Components;
 using UnityEngine;
 
@@ -31,7 +32,7 @@ namespace ArcBT.Samples.RPG.Conditions
             var mana = ownerComponent.GetComponent<Mana>();
             if (mana == null)
             {
-                Debug.LogWarning("⚠️ HasMana: Manaコンポーネントが見つかりません");
+                BTLogger.LogError(LogCategory.System, "⚠️ HasMana: Manaコンポーネントが見つかりません", Name, ownerComponent);
                 return BTNodeResult.Failure;
             }
 
@@ -46,12 +47,12 @@ namespace ArcBT.Samples.RPG.Conditions
 
             if (hasEnoughMana)
             {
-                Debug.Log($"🔵 HasMana: 十分なマナあり ({mana.CurrentMana}/{mana.MaxMana} >= {minMana})");
+                BTLogger.LogCondition($"🔵 HasMana: 十分なマナあり ({mana.CurrentMana}/{mana.MaxMana} >= {minMana})", Name, ownerComponent);
                 return BTNodeResult.Success;
             }
             else
             {
-                Debug.Log($"🔴 HasMana: マナ不足 ({mana.CurrentMana}/{mana.MaxMana} < {minMana})");
+                BTLogger.LogCondition($"🔴 HasMana: マナ不足 ({mana.CurrentMana}/{mana.MaxMana} < {minMana})", Name, ownerComponent);
                 return BTNodeResult.Failure;
             }
         }
