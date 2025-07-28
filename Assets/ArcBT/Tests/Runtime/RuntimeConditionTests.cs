@@ -10,28 +10,24 @@ namespace ArcBT.Tests
 {
     /// <summary>Runtime Conditionsの機能をテストするクラス</summary>
     [TestFixture]
-    public class RuntimeConditionTests
+    public class RuntimeConditionTests : BTTestBase
     {
         GameObject testOwner;
         BlackBoard blackBoard;
 
         [SetUp]
-        public void SetUp()
+        public override void SetUp()
         {
-            testOwner = new GameObject("TestOwner");
+            base.SetUp(); // BTTestBaseのセットアップを実行（ログ抑制含む）
+            testOwner = CreateTestGameObject("TestOwner");
             blackBoard = new BlackBoard();
-            BTLogger.EnableTestMode();
         }
 
         [TearDown]
-        public void TearDown()
+        public override void TearDown()
         {
-            if (testOwner != null)
-            {
-                Object.DestroyImmediate(testOwner);
-            }
-
-            BTLogger.ResetToDefaults();
+            DestroyTestObject(testOwner);
+            base.TearDown(); // BTTestBaseのクリーンアップを実行
         }
 
         #region ScanForInterestCondition Tests
@@ -264,14 +260,14 @@ namespace ArcBT.Tests
             var condition = new DistanceCheckCondition();
 
             // Act
-            LogAssert.Expect(LogType.Error, "[ERR][CHK]: DistanceCheck '': No target found (name='TestTarget', tag='')");
-            LogAssert.Expect(LogType.Error, "[ERR][CHK]: DistanceCheck '': No target found (name='TestTarget', tag='')");
             condition.SetProperty("target_name", "TestTarget");
             condition.Initialize(testOwner.AddComponent<TestConditionComponent>(), blackBoard);
 
             // Assert - 実行して動作確認（ターゲットがないのでFailure）
             var result = condition.Execute();
-            Assert.AreEqual(BTNodeResult.Failure, result);
+            Assert.AreEqual(BTNodeResult.Failure, result, "指定した名前のターゲットが存在しない場合、Failureが返されるべき");
+            
+            // 注意: エラーログはLoggingBehaviorTestsで専用テストが行われます
         }
 
         [Test(Description = "DistanceCheckConditionのdistanceパラメータで\"<= 8.0\"等の比較演算子指定機能の検証")]
@@ -281,14 +277,14 @@ namespace ArcBT.Tests
             var condition = new DistanceCheckCondition();
 
             // Act
-            LogAssert.Expect(LogType.Error, "[ERR][CHK]: DistanceCheck '': No target found (name='', tag='')");
-            LogAssert.Expect(LogType.Error, "[ERR][CHK]: DistanceCheck '': No target found (name='', tag='')");
             condition.SetProperty("distance", "<= 8.0");
             condition.Initialize(testOwner.AddComponent<TestConditionComponent>(), blackBoard);
 
-            // Assert - 実行して動作確認
+            // Assert - ログではなく実際の動作を検証
             var result = condition.Execute();
-            Assert.AreEqual(BTNodeResult.Failure, result); // ターゲットがないのでFailure
+            Assert.AreEqual(BTNodeResult.Failure, result, "ターゲットが存在しない場合、Failureが返されるべき");
+            
+            // 注意: エラーログはLoggingBehaviorTestsで専用テストが行われます
         }
 
         [Test][Description("範囲内にターゲットがある場合にDistanceCheckConditionがSuccessを返しBlackBoardに距離情報を記録することを確認")]
@@ -296,7 +292,6 @@ namespace ArcBT.Tests
         {
             // Arrange
             var condition = new DistanceCheckCondition();
-            LogAssert.Expect(LogType.Error, "[ERR][CHK]: DistanceCheck '': No target found (name='TestTarget', tag='')");
             condition.SetProperty("target_name", "TestTarget");
             condition.SetProperty("distance", "<= 10.0");
             condition.Initialize(testOwner.AddComponent<TestConditionComponent>(), blackBoard);
@@ -322,7 +317,6 @@ namespace ArcBT.Tests
         {
             // Arrange
             var condition = new DistanceCheckCondition();
-            LogAssert.Expect(LogType.Error, "[ERR][CHK]: DistanceCheck '': No target found (name='TestTarget', tag='')");
             condition.SetProperty("target_name", "TestTarget");
             condition.SetProperty("distance", "<= 3.0");
             condition.Initialize(testOwner.AddComponent<TestConditionComponent>(), blackBoard);
@@ -346,7 +340,6 @@ namespace ArcBT.Tests
         {
             // Arrange
             var condition = new DistanceCheckCondition();
-            LogAssert.Expect(LogType.Error, "[ERR][CHK]: DistanceCheck '': No target found (name='', tag='')");
             condition.SetProperty("use_blackboard_target", "true");
             condition.SetProperty("blackboard_position_key", "target_pos");
             condition.SetProperty("distance", "<= 8.0");
@@ -375,13 +368,13 @@ namespace ArcBT.Tests
 
             // Act
             condition.SetProperty("target_tag", "Waypoint");
-            LogAssert.Expect(LogType.Error, "[ERR][CHK]: Distance2DCheck '': No target found (name='', tag='Waypoint')");
-            LogAssert.Expect(LogType.Error, "[ERR][CHK]: Distance2DCheck '': No target found (name='', tag='Waypoint')");
             condition.Initialize(testOwner.AddComponent<TestConditionComponent>(), blackBoard);
 
-            // Assert - 実行して動作確認
+            // Assert - ログではなく実際の動作を検証
             var result = condition.Execute();
-            Assert.AreEqual(BTNodeResult.Failure, result); // ウェイポイントがないのでFailure
+            Assert.AreEqual(BTNodeResult.Failure, result, "指定したタグのオブジェクトが存在しない場合、Failureが返されるべき");
+            
+            // 注意: エラーログはLoggingBehaviorTestsで専用テストが行われます
         }
 
         [Test][Description("Distance2DCheckConditionで2D距離で判定しY軸を無視して適切に動作することを確認")]
@@ -389,7 +382,6 @@ namespace ArcBT.Tests
         {
             // Arrange
             var condition = new Distance2DCheckCondition();
-            LogAssert.Expect(LogType.Error, "[ERR][CHK]: Distance2DCheck '': No target found (name='HighTarget', tag='')");
             condition.SetProperty("target_name", "HighTarget");
             condition.SetProperty("distance", "<= 5.0");
             condition.Initialize(testOwner.AddComponent<TestConditionComponent>(), blackBoard);
@@ -401,10 +393,12 @@ namespace ArcBT.Tests
             // Act
             var result = condition.Execute();
 
-            // Assert - 2D距離は3なので成功するはず
-            Assert.AreEqual(BTNodeResult.Success, result);
-            Assert.IsTrue(blackBoard.HasKey("_current_distance_2d"));
-            Assert.IsTrue(blackBoard.HasKey("_ground_distance"));
+            // Assert - ログではなく実際の動作を検証（2D距離は3なので成功するはず）
+            Assert.AreEqual(BTNodeResult.Success, result, "2D距離が範囲内の場合、Successが返されるべき");
+            Assert.IsTrue(blackBoard.HasKey("_current_distance_2d"), "2D距離がBlackBoardに記録されるべき");
+            Assert.IsTrue(blackBoard.HasKey("_ground_distance"), "地面距離がBlackBoardに記録されるべき");
+            
+            // 注意: エラーログはLoggingBehaviorTestsで専用テストが行われます
 
             // Cleanup
             Object.DestroyImmediate(targetObj);
@@ -415,7 +409,6 @@ namespace ArcBT.Tests
         {
             // Arrange
             var condition = new Distance2DCheckCondition();
-            LogAssert.Expect(LogType.Error, "[ERR][CHK]: Distance2DCheck '': No target found (name='FarTarget', tag='')");
             condition.SetProperty("target_name", "FarTarget");
             condition.SetProperty("distance", "<= 2.0");
             condition.Initialize(testOwner.AddComponent<TestConditionComponent>(), blackBoard);
@@ -547,13 +540,13 @@ namespace ArcBT.Tests
             condition.Initialize(testOwner.AddComponent<TestConditionComponent>(), blackBoard);
 
             // Act
-            LogAssert.Expect(LogType.Error, "[ERR][CHK]: CompareBlackBoard '': No valid operator found in expression 'invalid expression without operator'");
-            LogAssert.Expect(LogType.Error, "[ERR][BBD]: CompareBlackBoard: key1 is empty");
             condition.SetProperty("condition", "invalid expression without operator");
             var result = condition.Execute();
 
-            // Assert
-            Assert.AreEqual(BTNodeResult.Failure, result);
+            // Assert - ログではなく実際の動作を検証
+            Assert.AreEqual(BTNodeResult.Failure, result, "無効な式が指定された場合、Failureが返されるべき");
+            
+            // 注意: エラーログはLoggingBehaviorTestsで専用テストが行われます
         }
 
         #endregion

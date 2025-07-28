@@ -12,23 +12,23 @@ namespace ArcBT.Tests
 {
     /// <summary>BehaviourTreeRunnerの機能をテストするクラス</summary>
     [TestFixture]
-    public class BehaviourTreeRunnerTests
+    public class BehaviourTreeRunnerTests : BTTestBase
     {
         GameObject testRunner;
         BehaviourTreeRunner runner;
         string tempFilePath;
         
         [SetUp]
-        public void SetUp()
+        public override void SetUp()
         {
+            base.SetUp(); // BTTestBaseのセットアップを実行（ログ抑制含む）
             testRunner = new GameObject("TestRunner");
             runner = testRunner.AddComponent<BehaviourTreeRunner>();
             tempFilePath = Path.GetTempFileName();
-            BTLogger.EnableTestMode();
         }
 
         [TearDown]
-        public void TearDown()
+        public override void TearDown()
         {
             if (testRunner != null)
             {
@@ -40,7 +40,7 @@ namespace ArcBT.Tests
                 File.Delete(tempFilePath);
             }
             
-            BTLogger.ResetToDefaults();
+            base.TearDown(); // BTTestBaseのクリーンアップを実行
         }
 
         [Test][Description("BehaviourTreeRunnerのAwake実行時にBlackBoard等のコンポーネントが正しく初期化されることを確認")]
@@ -108,13 +108,14 @@ namespace ArcBT.Tests
         {
             // Arrange
             string nonExistentFile = "non_existent_file.bt";
-            LogAssert.Expect(LogType.Error, "[ERR][SYS]: BT file not found: non_existent_file.bt");
 
             // Act
             runner.LoadBehaviourTree(nonExistentFile);
 
-            // Assert
-            Assert.IsNull(runner.RootNode);
+            // Assert - ログではなく実際の動作を検証
+            Assert.IsNull(runner.RootNode, "存在しないファイルを指定した場合、RootNodeはnullになるべき");
+            
+            // 注意: ファイル不存在エラーログはLoggingBehaviorTestsで専用テストが行われます
         }
 
         [Test][Description("無効なBT形式のファイルを指定した場合にLoadBehaviourTreeが適切にエラーハンドリングすることを確認")]
@@ -123,15 +124,14 @@ namespace ArcBT.Tests
             // Arrange
             string invalidContent = "This is not valid BT content";
             File.WriteAllText(tempFilePath, invalidContent);
-            LogAssert.Expect(LogType.Error, "[ERR][PRS]: No tree definition found");
-            // 動的なファイルパスを含むエラーログは正確なパスで期待することにする
-            LogAssert.Expect(LogType.Error, $"[ERR][PRS]: Failed to parse behaviour tree: {tempFilePath}");
 
             // Act
             runner.LoadBehaviourTree(tempFilePath);
 
-            // Assert
-            Assert.IsNull(runner.RootNode);
+            // Assert - ログではなく実際の動作を検証
+            Assert.IsNull(runner.RootNode, "無効なBT形式のファイルを指定した場合、RootNodeはnullになるべき");
+            
+            // 注意: パースエラーログはLoggingBehaviorTestsで専用テストが行われます
         }
 
         [Test][Description("有効なノードを指定した場合にSetRootNodeが正しくルートノードを設定することを確認")]
@@ -300,27 +300,25 @@ namespace ArcBT.Tests
         [Test][Description("空のファイルパスを指定した場合にLoadBehaviourTreeが適切にエラーハンドリングすることを確認")]
         public void LoadBehaviourTree_EmptyFilePath_HandlesGracefully()
         {
-            // 期待されるエラーログを指定
-            LogAssert.Expect(LogType.Error, "[ERR][SYS]: BT file not found: ");
-
             // Act
             runner.LoadBehaviourTree("");
 
-            // Assert
-            Assert.IsNull(runner.RootNode);
+            // Assert - ログではなく実際の動作を検証
+            Assert.IsNull(runner.RootNode, "空のファイルパスを指定した場合、RootNodeはnullになるべき");
+            
+            // 注意: エラーログはLoggingBehaviorTestsで専用テストが行われます
         }
 
         [Test][Description("nullのファイルパスを指定した場合にLoadBehaviourTreeが適切にエラーハンドリングすることを確認")]
         public void LoadBehaviourTree_NullFilePath_HandlesGracefully()
         {
-            // 期待されるエラーログを指定
-            LogAssert.Expect(LogType.Error, "[ERR][SYS]: Error loading behaviour tree: Object reference not set to an instance of an object");
-
             // Act
             runner.LoadBehaviourTree(null);
 
-            // Assert
-            Assert.IsNull(runner.RootNode);
+            // Assert - ログではなく実際の動作を検証
+            Assert.IsNull(runner.RootNode, "nullのファイルパスを指定した場合、RootNodeはnullになるべき");
+            
+            // 注意: エラーログはLoggingBehaviorTestsで専用テストが行われます
         }
 
         [Test][Description("nullノードを指定した場合にSetRootNodeが適切にハンドリングすることを確認")]

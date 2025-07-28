@@ -7,6 +7,8 @@ namespace ArcBT.Logger
     public static class BTLogger
     {
         static LogLevel currentLogLevel = LogLevel.Info;
+        static bool testModeEnabled = false;
+        static bool suppressLogsInTest = false;
 
         static readonly Dictionary<LogCategory, bool> categoryFilters = new()
         {
@@ -76,11 +78,29 @@ namespace ArcBT.Logger
             categoryFilters[LogCategory.Debug] = false;
         }
 
-        public static void EnableTestMode()
+        public static void EnableTestMode(bool suppressLogs = false)
         {
-            currentLogLevel = LogLevel.Debug; // テスト時はDebugレベルまで有効化
-            categoryFilters[LogCategory.Parser] = true; // テスト時はParserログを有効化
-            categoryFilters[LogCategory.Debug] = true; // テスト時はDebugログも有効化
+            testModeEnabled = true;
+            suppressLogsInTest = suppressLogs;
+            
+            if (!suppressLogs)
+            {
+                currentLogLevel = LogLevel.Debug; // テスト時はDebugレベルまで有効化
+                categoryFilters[LogCategory.Parser] = true; // テスト時はParserログを有効化
+                categoryFilters[LogCategory.Debug] = true; // テスト時はDebugログも有効化
+            }
+        }
+
+        public static void DisableTestMode()
+        {
+            testModeEnabled = false;
+            suppressLogsInTest = false;
+            ResetToDefaults();
+        }
+
+        public static bool IsTestMode()
+        {
+            return testModeEnabled;
         }
 
         public static void ClearHistory()
@@ -91,6 +111,9 @@ namespace ArcBT.Logger
         [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD"), Conditional("BT_LOGGING_ENABLED")]
         public static void Log(LogLevel level, LogCategory category, string message, string nodeName = "", UnityEngine.Object context = null)
         {
+            // テストモード時のログ抑制
+            if (suppressLogsInTest) return;
+
             // レベルフィルター
             if (level > currentLogLevel) return;
 

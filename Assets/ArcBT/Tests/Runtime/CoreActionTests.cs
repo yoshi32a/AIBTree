@@ -9,28 +9,24 @@ namespace ArcBT.Tests
 {
     /// <summary>Runtime Core Actionsの機能をテストするクラス</summary>
     [TestFixture]
-    public class CoreActionTests
+    public class CoreActionTests : BTTestBase
     {
         GameObject testOwner;
         BlackBoard blackBoard;
 
         [SetUp]
-        public void SetUp()
+        public override void SetUp()
         {
-            testOwner = new GameObject("TestOwner");
+            base.SetUp(); // BTTestBaseのセットアップを実行（ログ抑制含む）
+            testOwner = CreateTestGameObject("TestOwner");
             blackBoard = new BlackBoard();
-            BTLogger.EnableTestMode();
         }
 
         [TearDown]
-        public void TearDown()
+        public override void TearDown()
         {
-            if (testOwner != null)
-            {
-                Object.DestroyImmediate(testOwner);
-            }
-
-            BTLogger.ResetToDefaults();
+            DestroyTestObject(testOwner);
+            base.TearDown(); // BTTestBaseのクリーンアップを実行
         }
 
         #region MoveToPositionAction Tests
@@ -70,13 +66,13 @@ namespace ArcBT.Tests
             var action = new MoveToPositionAction();
             action.SetProperty("target", "NonExistentTarget");
 
-            LogAssert.Expect(LogType.Error, "[ERR][MOV]: MoveToPosition: Target 'NonExistentTarget' not found!");
-
             // Act
             action.Initialize(testOwner.AddComponent<TestCoreActionComponent>(), blackBoard);
 
-            // Assert
-            Assert.IsFalse(blackBoard.HasKey("Action:MoveToPosition_target_position"));
+            // Assert - ログではなく実際の動作を検証
+            // 存在しないターゲットの場合、BlackBoardに位置が設定されない
+            string expectedKey = string.IsNullOrEmpty(action.Name) ? "_target_position" : $"{action.Name}_target_position";
+            Assert.IsFalse(blackBoard.HasKey(expectedKey), "存在しないターゲットの場合、位置情報がBlackBoardに設定されるべきではない");
         }
 
         [Test][Description("MoveToPositionActionでターゲットが設定されていない場合にFailureが返されることを確認")]
@@ -86,15 +82,15 @@ namespace ArcBT.Tests
             var action = new MoveToPositionAction();
             action.Initialize(testOwner.AddComponent<TestCoreActionComponent>(), blackBoard);
 
-            // 期待されるエラーログを指定
-            LogAssert.Expect(LogType.Error, "[ERR][MOV]: MoveToPosition '': No valid target '' - trying to find it again");
-            LogAssert.Expect(LogType.Error, "[ERR][MOV]: MoveToPosition '': No target name specified!");
-
             // Act
             var result = action.Execute();
 
-            // Assert
-            Assert.AreEqual(BTNodeResult.Failure, result);
+            // Assert - ログではなく実際の戻り値を検証
+            Assert.AreEqual(BTNodeResult.Failure, result, "ターゲットが設定されていない場合、Failureが返されるべき");
+            
+            // BlackBoardの状態も確認
+            string expectedKey = string.IsNullOrEmpty(action.Name) ? "_target_position" : $"{action.Name}_target_position";
+            Assert.IsFalse(blackBoard.HasKey(expectedKey), "失敗時にはBlackBoardに位置情報が設定されるべきではない");
         }
 
         #endregion
@@ -249,11 +245,10 @@ namespace ArcBT.Tests
             action.Initialize(testOwner.AddComponent<TestCoreActionComponent>(), null);
 
             // Act
-            LogAssert.Expect(LogType.Error, "[ERR][BBD]: SetBlackBoard: BlackBoard is null");
             var result = action.Execute();
 
-            // Assert
-            Assert.AreEqual(BTNodeResult.Failure, result);
+            // Assert - ログではなく実際の動作を検証
+            Assert.AreEqual(BTNodeResult.Failure, result, "BlackBoardがnullの場合、Failureが返されるべき");
         }
 
         #endregion

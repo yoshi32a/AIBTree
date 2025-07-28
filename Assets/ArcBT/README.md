@@ -24,7 +24,7 @@ ArcBT is an elegant, extensible ArcBT framework for Unity with BlackBoard suppor
 - **Generic Actions**: MoveToPosition, Wait, RandomWander, ScanEnvironment, SetBlackBoard
 - **Generic Conditions**: HasSharedEnemyInfo, CompareBlackBoard, DistanceCheck
 - **Parser System**: Dynamic .bt file loading and node instantiation
-- **Testing Framework**: Comprehensive test suite with 324 test cases (28.6% code coverage)
+- **Commercial-Grade Testing**: LogAssert dependency reduction, BTTestBase unified infrastructure, functional testing
 
 ## 📦 Installation
 

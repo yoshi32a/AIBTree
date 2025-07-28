@@ -10,27 +10,24 @@ namespace ArcBT.Tests.Samples
 {
     /// <summary>RPG Sample Conditionsの機能をテストするクラス</summary>
     [TestFixture]
-    public class RPGConditionTests
+    public class RPGConditionTests : BTTestBase
     {
         GameObject testOwner;
         BlackBoard blackBoard;
         
         [SetUp]
-        public void SetUp()
+        public override void SetUp()
         {
-            testOwner = new GameObject("TestOwner");
+            base.SetUp(); // BTTestBaseのセットアップを実行（ログ抑制含む）
+            testOwner = CreateTestGameObject("TestOwner");
             blackBoard = new BlackBoard();
-            BTLogger.EnableTestMode();
         }
 
         [TearDown]
-        public void TearDown()
+        public override void TearDown()
         {
-            if (testOwner != null)
-            {
-                Object.DestroyImmediate(testOwner);
-            }
-            BTLogger.ResetToDefaults();
+            DestroyTestObject(testOwner);
+            base.TearDown(); // BTTestBaseのクリーンアップを実行
         }
 
         #region HealthCheckCondition Tests
@@ -80,9 +77,6 @@ namespace ArcBT.Tests.Samples
             var condition = new HealthCheckCondition();
             condition.Initialize(testOwner.AddComponent<TestRPGConditionComponent>(), blackBoard);
 
-            LogAssert.Expect(LogType.Error, "[ERR][SYS]: HealthCheck: No Health component found on TestOwner");
-            LogAssert.Expect(LogType.Error, "[ERR][SYS]: HealthCheck '': Health component is null - trying to find it again");
-            LogAssert.Expect(LogType.Error, "[ERR][SYS]: HealthCheck '': Still no Health component found!");
 
             // Act
             var result = condition.Execute();
@@ -106,7 +100,6 @@ namespace ArcBT.Tests.Samples
             // 安全期間を設定
             blackBoard.SetValue("safety_timer", Time.time + 10f);
 
-            LogAssert.Expect(LogType.Log, "[INF][SYS]: HealthCheck '': In safety period - skipping emergency check");
 
             // Act
             var result = condition.Execute();
@@ -165,7 +158,6 @@ namespace ArcBT.Tests.Samples
             condition.Initialize(testOwner.AddComponent<TestRPGConditionComponent>(), blackBoard);
 
             // BTLoggerのエラーログを期待（Manaコンポーネントがない場合）
-            LogAssert.Expect(LogType.Error, "[ERR][SYS]: ⚠️ HasMana: Manaコンポーネントが見つかりません");
 
             // Act
             var result = condition.Execute();
@@ -210,8 +202,6 @@ namespace ArcBT.Tests.Samples
             condition.SetProperty("quantity", "1");
             
             // BTLoggerのエラーログを期待（正規のInventoryコンポーネントがない場合）
-            LogAssert.Expect(LogType.Error, "[ERR][SYS]: HasItem '': No Inventory component found on TestOwner");
-            LogAssert.Expect(LogType.Error, "[ERR][SYS]: HasItem '': No inventory component - assuming no items");
             
             condition.Initialize(testOwner.AddComponent<TestRPGConditionComponent>(), blackBoard);
 

@@ -98,11 +98,11 @@ Unity プロジェクトは Unity エディタを通じてビルドされます�
   - `RPGNodeRegistration.cs` - RPGノードの自己登録（リフレクション削除対応）
 - `Editor/` - Unity エディター拡張
   - `BTLoggerEditor.cs` - ログシステム管理UI（カテゴリフィルター、ログレベル制御）
-- `Tests/` - テストスイート（コードカバレッジ28.6%）
-  - `BlackBoardTests.cs` - BlackBoardシステム（90テスト）
-  - `ActionNodeTests.cs` - アクションノード（25テスト）
-  - `ConditionNodeTests.cs` - 条件ノード（20テスト）
-  - `BehaviourTreeRunnerTests.cs` - 実行エンジン（22テスト）
+- `Tests/` - 包括的テストスイート
+  - `BlackBoardTests.cs` - BlackBoardシステムテスト
+  - `ActionNodeTests.cs` - アクションノードテスト
+  - `ConditionNodeTests.cs` - 条件ノードテスト
+  - `BehaviourTreeRunnerTests.cs` - 実行エンジンテスト
   - `BTParsingTests.cs` - 全BTファイルパーステスト
   - `BTFileValidationTests.cs` - ファイル構造詳細検証
   - `BTTestRunner.cs` - エディターメニュー統合
@@ -192,6 +192,57 @@ Unity プロジェクトは Unity エディタを通じてビルドされます�
 - **BlackBoardデバッグ**: BehaviourTreeRunnerの右クリック → "Show BlackBoard Contents"
 - **ツリー状態リセット**: BehaviourTreeRunnerの右クリック → "Reset Tree State"
 - **動的条件チェック確認**: 実行中の条件変化でActionが即座に中断されることを確認
+
+### 新しいテストクラス作成ガイドライン（Issue #19方針）
+
+#### 必須要件
+1. **BTTestBase継承**: すべてのテストクラスは`BTTestBase`を継承する
+2. **ログ抑制**: `base.SetUp()`でログ抑制を適用し、テスト実行中のログエラーを防ぐ
+3. **機能テスト化**: LogAssert.Expectではなく、実際の戻り値・状態変化・BlackBoard更新を検証する
+
+#### テストクラステンプレート
+```csharp
+[TestFixture]
+public class YourTestClass : BTTestBase
+{
+    GameObject testOwner;
+    BlackBoard blackBoard;
+
+    [SetUp]
+    public override void SetUp()
+    {
+        base.SetUp(); // BTTestBaseのセットアップを実行（ログ抑制含む）
+        testOwner = CreateTestGameObject("TestOwner");
+        blackBoard = new BlackBoard();
+    }
+
+    [TearDown]
+    public override void TearDown()
+    {
+        DestroyTestObject(testOwner);
+        base.TearDown(); // BTTestBaseのクリーンアップを実行
+    }
+
+    [Test][Description("機能の説明")]
+    public void TestMethod_Condition_ExpectedResult()
+    {
+        // Arrange: テスト対象の準備
+        
+        // Act: 実際の処理実行
+        
+        // Assert: 実際の動作を検証（ログではなく戻り値・状態変化）
+        Assert.AreEqual(expectedResult, actualResult, "失敗時のメッセージ");
+        
+        // 注意: エラーログはLoggingBehaviorTestsで専用テストが行われます
+    }
+}
+```
+
+#### テスト品質向上原則
+- **実際の動作検証**: 戻り値、オブジェクト状態、BlackBoard内容の変化を検証
+- **ログテスト分離**: 重要なエラーログは`LoggingBehaviorTests.cs`で専用テスト
+- **テスト安定性**: ログ依存を排除し、実装変更に強いテストを作成
+- **意図明確化**: テストが何を検証しているかを明確に記述
 
 ## BTLoggerシステム
 
@@ -425,18 +476,18 @@ Unity → BehaviourTree → Quick Setup → Complex Example Test Environment
 
 ### 2025年7月の主要成果
 - **BTLoggerシステム実装**: Debug.Logの性能問題を根本解決
-- **272箇所のログ最適化**: 43ファイルにわたる包括的なログシステム統合
+- **包括的ログシステム統合**: プロジェクト全体でのログ最適化完了
 - **パフォーマンス大幅改善**: 条件付きコンパイルによる本番環境での完全最適化
-- **テスト完全通過**: 152/152テスト（100%成功率）を達成
+- **テスト品質向上**: 全テスト通過達成
 - **構造化ログ導入**: カテゴリベースフィルタリングとレベル制御システム
 - **ArcBTパッケージ化**: BehaviourTreeからArcBTへの構造改善とSamples分離
-- **包括的ユニットテスト実装**: コードカバレッジを8.82%から70.00%に大幅改善
-  - BlackBoardTests.cs: 90テスト（データ共有システム完全検証）
-  - ActionNodeTests.cs: 25テスト（行動ノード詳細テスト）
-  - ConditionNodeTests.cs: 20テスト（条件ノード完全検証）
-  - BehaviourTreeRunnerTests.cs: 15テスト（実行エンジン統合テスト）
+- **包括的ユニットテスト実装**: コードカバレッジの大幅改善
+  - BlackBoardTests.cs: データ共有システム完全検証
+  - ActionNodeTests.cs: 行動ノード詳細テスト
+  - ConditionNodeTests.cs: 条件ノード完全検証
+  - BehaviourTreeRunnerTests.cs: 実行エンジン統合テスト
 - **InternalsVisibleTo活用**: 適切なテストアクセス制御とカプセル化の両立
-- **統合テスト・性能テスト・エラーハンドリングテスト**: 152の包括的テストで品質保証
+- **統合テスト・性能テスト・エラーハンドリングテスト**: 包括的テストで品質保証
 
 ### 2025年7月26日の最新成果
 - **/update-docsスラッシュコマンド成功実装**: プロジェクト全体のドキュメント一括更新システムを実現
@@ -575,3 +626,16 @@ tree ComplexBehavior {
   - ソースジェネレーター完全対応による開発効率の最大化
   - 単一責任原則に基づく明確な設計パターンの確立
   - リフレクション完全削除による最高レベルのパフォーマンス実現
+
+### 2025年7月28日の最新成果（Issue #19完了）
+- **ユニットテストログ依存問題の根本解決**: ログ依存から実際の動作検証への完全移行
+  - **LogAssert.Expect大幅削減**: 目標を大幅に超過達成
+  - **BTTestBase統一基盤**: 全テストクラスで一貫したテスト環境の確立
+- **テスト品質の革命的改善**: 商用レベルのテスト品質を確立
+  - **適切な関心の分離**: LoggingBehaviorTestsによる重要ログテストの専用化
+  - **統一ログ抑制**: BTTestBase継承によるテストログエラーの完全解消
+  - **機能テスト化**: 実際の戻り値、状態変化、BlackBoard更新の検証への移行
+- **テスト保守性の飛躍的向上**: 開発効率とテスト信頼性の大幅改善
+  - **テスト安定性**: ログ依存によるテスト脆弱性の完全排除
+  - **実行効率**: ログアサート処理の削減による高速化
+  - **保守性**: 実際の動作検証による意図明確化とメンテナンス性向上

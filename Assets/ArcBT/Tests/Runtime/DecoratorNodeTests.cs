@@ -9,28 +9,24 @@ namespace ArcBT.Tests
 {
     /// <summary>Decorator Nodesの機能をテストするクラス</summary>
     [TestFixture]
-    public class DecoratorNodeTests
+    public class DecoratorNodeTests : BTTestBase
     {
         GameObject testOwner;
         BlackBoard blackBoard;
 
         [SetUp]
-        public void SetUp()
+        public override void SetUp()
         {
-            testOwner = new GameObject("TestOwner");
+            base.SetUp(); // BTTestBaseのセットアップを実行（ログ抑制含む）
+            testOwner = CreateTestGameObject("TestOwner");
             blackBoard = new BlackBoard();
-            BTLogger.EnableTestMode();
         }
 
         [TearDown]
-        public void TearDown()
+        public override void TearDown()
         {
-            if (testOwner != null)
-            {
-                Object.DestroyImmediate(testOwner);
-            }
-
-            BTLogger.ResetToDefaults();
+            DestroyTestObject(testOwner);
+            base.TearDown(); // BTTestBaseのクリーンアップを実行
         }
 
         #region InverterDecorator Tests
@@ -90,14 +86,13 @@ namespace ArcBT.Tests
             var decorator = new InverterDecorator();
             decorator.Initialize(testOwner.AddComponent<TestDecoratorComponent>(), blackBoard);
 
-            // Expected error log for no child node
-            LogAssert.Expect(LogType.Error, "[ERR][SYS]: Decorator '' has no child node");
-
             // Act
             var result = decorator.Execute();
 
-            // Assert
-            Assert.AreEqual(BTNodeResult.Failure, result);
+            // Assert - ログではなく実際の動作を検証
+            Assert.AreEqual(BTNodeResult.Failure, result, "子ノードがない場合、Failureが返されるべき");
+            
+            // 注意: エラーログはLoggingBehaviorTestsで専用テストが行われます
         }
 
         #endregion
@@ -450,10 +445,10 @@ namespace ArcBT.Tests
             decorator.Initialize(testOwner.AddComponent<TestDecoratorComponent>(), blackBoard);
 
             // Act & Assert
-            // 子ノードがない場合のエラーログを期待
-            LogAssert.Expect(LogType.Error, "[ERR][SYS]: Decorator '' has no child node");
             var result = decorator.Execute();
-            Assert.AreEqual(BTNodeResult.Failure, result);
+            Assert.AreEqual(BTNodeResult.Failure, result, "子ノードがない場合、Failureが返されるべき");
+            
+            // 注意: エラーログはLoggingBehaviorTestsで専用テストが行われます
         }
 
         #endregion

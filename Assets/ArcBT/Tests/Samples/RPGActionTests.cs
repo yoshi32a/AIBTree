@@ -7,32 +7,28 @@ using ArcBT.Samples.RPG.Actions;
 using ArcBT.Samples.RPG.Components;
 using ArcBT.TagSystem;
 
-namespace ArcBT.Tests
+namespace ArcBT.Tests.Samples
 {
     /// <summary>RPG Sample Actionsの機能をテストするクラス</summary>
     [TestFixture]
-    public class RPGActionTests
+    public class RPGActionTests : BTTestBase
     {
         GameObject testOwner;
         BlackBoard blackBoard;
 
         [SetUp]
-        public void SetUp()
+        public override void SetUp()
         {
-            testOwner = new GameObject("TestOwner");
+            base.SetUp(); // BTTestBaseのセットアップを実行（ログ抑制含む）
+            testOwner = CreateTestGameObject("TestOwner");
             blackBoard = new BlackBoard();
-            BTLogger.EnableTestMode();
         }
 
         [TearDown]
-        public void TearDown()
+        public override void TearDown()
         {
-            if (testOwner != null)
-            {
-                Object.DestroyImmediate(testOwner);
-            }
-
-            BTLogger.ResetToDefaults();
+            DestroyTestObject(testOwner);
+            base.TearDown(); // BTTestBaseのクリーンアップを実行
         }
 
         #region AttackEnemyAction Tests
@@ -126,11 +122,12 @@ namespace ArcBT.Tests
             // Assert (プロパティ設定を実行動作で確認)
             action.Initialize(testOwner.AddComponent<TestRPGActionComponent>(), blackBoard);
             
-            LogAssert.Expect(LogType.Error, "[ERR][SYS]: ⚠️ CastSpell: Manaコンポーネントが見つかりません");
             var result = action.Execute();
 
-            // ManaコンポーネントがないのでFailure
-            Assert.AreEqual(BTNodeResult.Failure, result);
+            // Assert - ログではなく実際の動作を検証
+            Assert.AreEqual(BTNodeResult.Failure, result, "Manaコンポーネントがない場合、Failureが返されるべき");
+            
+            // 注意: エラーログはLoggingBehaviorTestsで専用テストが行われます
         }
 
         [Test][Description("CastSpellActionでマナが不足している場合にFailureが返されることを確認")]
@@ -145,15 +142,16 @@ namespace ArcBT.Tests
             manaComponent.CurrentMana = 20; // マナ不足
             manaComponent.MaxMana = 100;
 
-            LogAssert.Expect(LogType.Log, "[INF][ATK]: 🔴 CastSpell: マナ不足で 'Heal' を使用できません (20 < 50)");
-
             action.Initialize(testOwner.AddComponent<TestRPGActionComponent>(), blackBoard);
 
             // Act
             var result = action.Execute();
 
-            // Assert
-            Assert.AreEqual(BTNodeResult.Failure, result);
+            // Assert - ログではなく実際の動作を検証
+            Assert.AreEqual(BTNodeResult.Failure, result, "マナが不足している場合、Failureが返されるべき");
+            Assert.AreEqual(20, manaComponent.CurrentMana, "マナが消費されていないべき");
+            
+            // 注意: マナ不足ログはLoggingBehaviorTestsで専用テストが行われます
         }
 
         #endregion
@@ -170,14 +168,14 @@ namespace ArcBT.Tests
             action.SetProperty("item_type", "healing_potion");
             action.SetProperty("quantity", "1");
 
-            LogAssert.Expect(LogType.Error, "[ERR][SYS]: UseItem: No Inventory component found");
-
             // Assert (プロパティ設定を実行動作で確認)
             action.Initialize(testOwner.AddComponent<TestRPGActionComponent>(), blackBoard);
             var result = action.Execute();
 
-            // InventoryコンポーネントがないのでFailure
-            Assert.AreEqual(BTNodeResult.Failure, result);
+            // Assert - ログではなく実際の動作を検証
+            Assert.AreEqual(BTNodeResult.Failure, result, "Inventoryコンポーネントがない場合、Failureが返されるべき");
+            
+            // 注意: エラーログはLoggingBehaviorTestsで専用テストが行われます
         }
 
         [Test][Description("UseItemActionでアイテムを所持していない場合にFailureが返されることを確認")]
@@ -329,9 +327,10 @@ namespace ArcBT.Tests
             Assert.AreEqual(BTNodeResult.Failure, attackResult);
 
             // 3. 魔法（マナは十分だが、ターゲットが見つからないのでFailure）
-            LogAssert.Expect(LogType.Log, "[INF][ATK]: ❓ CastSpell: 魔法のターゲットが見つかりません");
             var spellResult = spellAction.Execute();
-            Assert.AreEqual(BTNodeResult.Failure, spellResult);
+            Assert.AreEqual(BTNodeResult.Failure, spellResult, "ターゲットが見つからない場合、魔法はFailureを返すべき");
+            
+            // 注意: ターゲット不在のログはLoggingBehaviorTestsで専用テストが行われます
         }
 
         #endregion

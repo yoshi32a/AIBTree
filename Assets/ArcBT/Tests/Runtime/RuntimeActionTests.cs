@@ -11,17 +11,17 @@ namespace ArcBT.Tests
 {
     /// <summary>Runtime Actionsの機能をテストするクラス</summary>
     [TestFixture]
-    public class RuntimeActionTests
+    public class RuntimeActionTests : BTTestBase
     {
         GameObject testOwner;
         BlackBoard blackBoard;
 
         [SetUp]
-        public void SetUp()
+        public override void SetUp()
         {
-            testOwner = new GameObject("TestOwner");
+            base.SetUp(); // BTTestBaseのセットアップを実行（ログ抑制含む）
+            testOwner = CreateTestGameObject("TestOwner");
             blackBoard = new BlackBoard();
-            BTLogger.EnableTestMode();
             
             // GameplayTagManagerを強制初期化
             var existingManager = GameObject.FindFirstObjectByType<GameplayTagManager>();
@@ -38,12 +38,9 @@ namespace ArcBT.Tests
         }
 
         [TearDown]
-        public void TearDown()
+        public override void TearDown()
         {
-            if (testOwner != null)
-            {
-                Object.DestroyImmediate(testOwner);
-            }
+            DestroyTestObject(testOwner);
 
             // すべてのテスト用GameObjectsを削除
             var testObjects = GameObject.FindObjectsByType<GameObject>(FindObjectsSortMode.None)
@@ -62,7 +59,7 @@ namespace ArcBT.Tests
                 Object.DestroyImmediate(manager.gameObject);
             }
 
-            BTLogger.ResetToDefaults();
+            base.TearDown(); // BTTestBaseのクリーンアップを実行
         }
 
         #region EnvironmentScanAction Tests
@@ -519,11 +516,10 @@ namespace ArcBT.Tests
             action.Initialize(testOwner.AddComponent<TestActionComponent>(), null);
 
             // Act
-            LogAssert.Expect(LogType.Error, "[ERR][BBD]: SetBlackBoard: BlackBoard is null");
             var result = action.Execute();
 
-            // Assert
-            Assert.AreEqual(BTNodeResult.Failure, result);
+            // Assert - ログではなく実際の動作を検証
+            Assert.AreEqual(BTNodeResult.Failure, result, "BlackBoardがnullの場合、Failureが返されるべき");
         }
 
         [Test][Description("SetBlackBoardActionで割り当てが指定されていない場合にFailureを返しエラーログを出力することを確認")]
@@ -534,11 +530,13 @@ namespace ArcBT.Tests
             action.Initialize(testOwner.AddComponent<TestActionComponent>(), blackBoard);
 
             // Act
-            LogAssert.Expect(LogType.Error, "[ERR][BBD]: SetBlackBoard: No assignments specified");
             var result = action.Execute();
 
-            // Assert
-            Assert.AreEqual(BTNodeResult.Failure, result);
+            // Assert - ログではなく実際の動作を検証
+            Assert.AreEqual(BTNodeResult.Failure, result, "割り当てが指定されていない場合、Failureが返されるべき");
+            
+            // BlackBoardに何も設定されていないことを確認
+            Assert.IsFalse(blackBoard.HasKey("test"), "割り当てなしの場合、BlackBoardにキーが追加されるべきではない");
         }
 
         #endregion

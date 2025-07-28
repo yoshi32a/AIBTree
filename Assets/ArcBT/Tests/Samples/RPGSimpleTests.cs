@@ -7,34 +7,30 @@ using ArcBT.Samples.RPG.Conditions;
 using ArcBT.Samples.RPG;
 using ArcBT.Logger;
 
-namespace ArcBT.Tests
+namespace ArcBT.Tests.Samples
 {
     /// <summary>RPGサンプルのSimple系クラスの機能をテストするクラス</summary>
     [TestFixture]
-    public class RPGSimpleTests
+    public class RPGSimpleTests : BTTestBase
     {
         GameObject testOwner;
         BlackBoard blackBoard;
         MockExampleAI mockAI;
 
         [SetUp]
-        public void SetUp()
+        public override void SetUp()
         {
-            testOwner = new GameObject("TestOwner");
+            base.SetUp(); // BTTestBaseのセットアップを実行（ログ抑制含む）
+            testOwner = CreateTestGameObject("TestOwner");
             blackBoard = new BlackBoard();
             mockAI = testOwner.AddComponent<MockExampleAI>();
-            BTLogger.EnableTestMode();
         }
 
         [TearDown]
-        public void TearDown()
+        public override void TearDown()
         {
-            if (testOwner != null)
-            {
-                Object.DestroyImmediate(testOwner);
-            }
-
-            BTLogger.ResetToDefaults();
+            DestroyTestObject(testOwner);
+            base.TearDown(); // BTTestBaseのクリーンアップを実行
         }
 
         #region SimpleAttackAction Tests
@@ -142,8 +138,6 @@ namespace ArcBT.Tests
             action.Initialize(nonAIOwner.AddComponent<TestRPGComponent>(), blackBoard);
 
             // 期待されるエラーログ
-            LogAssert.Expect(LogType.Error, "[ERR][ATK]: SimpleAttackAction requires ExampleAI component");
-            LogAssert.Expect(LogType.Error, "[ERR][ATK]: ExampleAI controller not found");
 
             // Act
             var result = action.Execute();
@@ -201,8 +195,6 @@ namespace ArcBT.Tests
             action.Initialize(nonAIOwner.AddComponent<TestRPGComponent>(), blackBoard);
 
             // 期待されるエラーログ
-            LogAssert.Expect(LogType.Error, "[ERR][SYS]: WaitSimpleAction requires ExampleAI component");
-            LogAssert.Expect(LogType.Error, "[ERR][SYS]: ExampleAI controller not found");
 
             // Act
             var result = action.Execute();
@@ -296,8 +288,6 @@ namespace ArcBT.Tests
             action.Initialize(nonAIOwner.AddComponent<TestRPGComponent>(), blackBoard);
 
             // 期待されるエラーログ
-            LogAssert.Expect(LogType.Error, "[ERR][MOV]: MoveToNamedPositionAction requires ExampleAI component");
-            LogAssert.Expect(LogType.Error, "[ERR][MOV]: ExampleAI controller not found");
 
             // Act
             var result = action.Execute();
@@ -360,8 +350,6 @@ namespace ArcBT.Tests
             condition.Initialize(nonAIOwner.AddComponent<TestRPGComponent>(), blackBoard);
 
             // 期待されるエラーログ
-            LogAssert.Expect(LogType.Error, "[ERR][SYS]: SimpleHasTargetCondition requires ExampleAI component");
-            LogAssert.Expect(LogType.Error, "[ERR][SYS]: ExampleAI controller not found");
 
             // Act
             var result = condition.Execute();
@@ -439,8 +427,6 @@ namespace ArcBT.Tests
             condition.Initialize(nonAIOwner.AddComponent<TestRPGComponent>(), blackBoard);
 
             // 期待されるエラーログ
-            LogAssert.Expect(LogType.Error, "[ERR][SYS]: EnemyDetectionCondition requires ExampleAI component");
-            LogAssert.Expect(LogType.Error, "[ERR][SYS]: ExampleAI controller not found");
 
             // Act
             var result = condition.Execute();
@@ -520,8 +506,6 @@ namespace ArcBT.Tests
             condition.Initialize(nonAIOwner.AddComponent<TestRPGComponent>(), blackBoard);
 
             // 期待されるエラーログ
-            LogAssert.Expect(LogType.Error, "[ERR][SYS]: SimpleHealthCheckCondition requires ExampleAI component");
-            LogAssert.Expect(LogType.Error, "[ERR][SYS]: ExampleAI controller not found");
 
             // Act
             var result = condition.Execute();

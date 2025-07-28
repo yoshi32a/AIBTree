@@ -9,27 +9,24 @@ namespace ArcBT.Tests
 {
     /// <summary>Runtime Core Conditionsの機能をテストするクラス</summary>
     [TestFixture]
-    public class CoreConditionTests
+    public class CoreConditionTests : BTTestBase
     {
         GameObject testOwner;
         BlackBoard blackBoard;
         
         [SetUp]
-        public void SetUp()
+        public override void SetUp()
         {
-            testOwner = new GameObject("TestOwner");
+            base.SetUp(); // BTTestBaseのセットアップを実行（ログ抑制含む）
+            testOwner = CreateTestGameObject("TestOwner");
             blackBoard = new BlackBoard();
-            BTLogger.EnableTestMode();
         }
 
         [TearDown]
-        public void TearDown()
+        public override void TearDown()
         {
-            if (testOwner != null)
-            {
-                Object.DestroyImmediate(testOwner);
-            }
-            BTLogger.ResetToDefaults();
+            DestroyTestObject(testOwner);
+            base.TearDown(); // BTTestBaseのクリーンアップを実行
         }
 
         #region HasSharedEnemyInfoCondition Tests
@@ -69,13 +66,15 @@ namespace ArcBT.Tests
             blackBoard.SetValue("has_enemy_info", true);
             blackBoard.SetValue("enemy_target", enemyObject);
 
-            LogAssert.Expect(LogType.Log, "[DBG][BBD]: HasSharedEnemyInfo: Enemy info available - Target: 'TestEnemy'");
-
             // Act
             var result = condition.Execute();
 
-            // Assert
-            Assert.AreEqual(BTNodeResult.Success, result);
+            // Assert - ログではなく実際の動作を検証
+            Assert.AreEqual(BTNodeResult.Success, result, "有効な敵情報がある場合、Successが返されるべき");
+            
+            // BlackBoardの状態を確認
+            Assert.IsTrue(blackBoard.GetValue<bool>("has_enemy_info"), "敵情報フラグが維持されているべき");
+            Assert.AreEqual(enemyObject, blackBoard.GetValue<GameObject>("enemy_target"), "敵オブジェクトが維持されているべき");
 
             // Cleanup
             Object.DestroyImmediate(enemyObject);
@@ -89,13 +88,13 @@ namespace ArcBT.Tests
             condition.Initialize(testOwner.AddComponent<TestCoreConditionComponent>(), blackBoard);
 
             blackBoard.SetValue("has_enemy_info", false);
-            LogAssert.Expect(LogType.Log, "[DBG][BBD]: HasSharedEnemyInfo: No valid enemy info in BlackBoard");
 
             // Act
             var result = condition.Execute();
 
-            // Assert
-            Assert.AreEqual(BTNodeResult.Failure, result);
+            // Assert - ログではなく実際の動作を検証
+            Assert.AreEqual(BTNodeResult.Failure, result, "敵情報がfalseの場合、Failureが返されるべき");
+            Assert.IsFalse(blackBoard.GetValue<bool>("has_enemy_info"), "敵情報フラグがfalseのまま維持されているべき");
         }
 
         [Test][Description("HasSharedEnemyInfoCondition実行時にBlackBoard参照がnullの場合のエラーハンドリング")]
@@ -105,13 +104,13 @@ namespace ArcBT.Tests
             var condition = new HasSharedEnemyInfoCondition();
             condition.Initialize(testOwner.AddComponent<TestCoreConditionComponent>(), null);
 
-            LogAssert.Expect(LogType.Error, "[ERR][BBD]: HasSharedEnemyInfo: BlackBoard is null");
-
             // Act
             var result = condition.Execute();
 
-            // Assert
-            Assert.AreEqual(BTNodeResult.Failure, result);
+            // Assert - ログではなく実際の動作を検証
+            Assert.AreEqual(BTNodeResult.Failure, result, "BlackBoardがnullの場合、Failureが返されるべき");
+            
+            // 注意: エラーログはLoggingBehaviorTestsで専用テストが行われます
         }
 
         [Test][Description("HasSharedEnemyInfoCondition実行時に敵オブジェクトがSetActive(false)の場合のフィルタリング")]
@@ -126,13 +125,16 @@ namespace ArcBT.Tests
             blackBoard.SetValue("has_enemy_info", true);
             blackBoard.SetValue("enemy_target", enemyObject);
 
-            LogAssert.Expect(LogType.Log, "[DBG][BBD]: HasSharedEnemyInfo: No valid enemy info in BlackBoard");
-
             // Act
             var result = condition.Execute();
 
-            // Assert
-            Assert.AreEqual(BTNodeResult.Failure, result);
+            // Assert - ログではなく実際の動作を検証
+            Assert.AreEqual(BTNodeResult.Failure, result, "非アクティブな敵オブジェクトの場合、Failureが返されるべき");
+            
+            // BlackBoardの状態確認（敵情報はあるが、オブジェクトが非アクティブ）
+            Assert.IsTrue(blackBoard.GetValue<bool>("has_enemy_info"), "敵情報フラグは残っているべき");
+            Assert.AreEqual(enemyObject, blackBoard.GetValue<GameObject>("enemy_target"), "敵オブジェクト参照は残っているべき");
+            Assert.IsFalse(enemyObject.activeInHierarchy, "敵オブジェクトは非アクティブのままであるべき");
 
             // Cleanup
             Object.DestroyImmediate(enemyObject);
@@ -251,13 +253,13 @@ namespace ArcBT.Tests
             condition.Initialize(testOwner.AddComponent<TestCoreConditionComponent>(), blackBoard);
 
             // Act
-            LogAssert.Expect(LogType.Error, "[ERR][CHK]: CompareBlackBoard '': No valid operator found in expression 'invalid expression without operator'");
-            LogAssert.Expect(LogType.Error, "[ERR][BBD]: CompareBlackBoard: key1 is empty");
             condition.SetProperty("condition", "invalid expression without operator");
             var result = condition.Execute();
 
-            // Assert
-            Assert.AreEqual(BTNodeResult.Failure, result);
+            // Assert - ログではなく実際の動作を検証
+            Assert.AreEqual(BTNodeResult.Failure, result, "無効な式が指定された場合、Failureが返されるべき");
+            
+            // 注意: エラーログはLoggingBehaviorTestsで専用テストが行われます
         }
 
         #endregion

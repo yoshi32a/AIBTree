@@ -8,21 +8,21 @@ namespace ArcBT.Tests
 {
     /// <summary>BlackBoardシステムの機能をテストするクラス</summary>
     [TestFixture]
-    public class BlackBoardTests
+    public class BlackBoardTests : BTTestBase
     {
         BlackBoard blackBoard;
 
         [SetUp]
-        public void SetUp()
+        public override void SetUp()
         {
+            base.SetUp(); // BTTestBaseのセットアップを実行（ログ抑制含む）
             blackBoard = new BlackBoard();
-            BTLogger.EnableTestMode(); // テストモードを有効化
         }
 
         [TearDown]
-        public void TearDown()
+        public override void TearDown()
         {
-            BTLogger.ResetToDefaults();
+            base.TearDown(); // BTTestBaseのクリーンアップを実行
         }
 
         [Test][Description("新しいキーで値を設定すると正しく保存され取得できることを確認")]
@@ -58,19 +58,23 @@ namespace ArcBT.Tests
             Assert.AreEqual(false, blackBoard.GetValue<bool>("non_existent"));
         }
 
-        [Test][Description("型が一致しない値を取得するとデフォルト値を返し警告をログ出力することを確認")]
-        public void GetValue_TypeMismatch_ReturnsDefaultAndLogsWarning()
+        [Test][Description("型が一致しない値を取得するとデフォルト値を返すことを確認")]
+        public void GetValue_TypeMismatch_ReturnsDefault()
         {
             // Arrange
             blackBoard.SetValue("test_key", "string_value");
-            LogAssert.Expect(LogType.Warning, 
-                "[WRN][BBD]: 🗂️ BlackBoard: Type mismatch for key 'test_key'. Expected Int32, got String");
 
-            // Act
+            // Act - 型の不一致（string → int）
             var result = blackBoard.GetValue<int>("test_key", 999);
 
-            // Assert
-            Assert.AreEqual(999, result);
+            // Assert - ログではなく実際の動作を検証
+            Assert.AreEqual(999, result, "型が一致しない場合、指定したデフォルト値が返されるべき");
+            
+            // 元のデータは変更されていないことを確認
+            Assert.IsTrue(blackBoard.HasKey("test_key"), "元のキーは残存しているべき");
+            Assert.AreEqual("string_value", blackBoard.GetValue<string>("test_key"), "元の値は変更されていないべき");
+            
+            // 注意: 警告ログはLoggingBehaviorTestsで専用テストが行われます
         }
 
         [Test][Description("存在するキーに対してHasKeyがtrueを返すことを確認")]
@@ -90,19 +94,29 @@ namespace ArcBT.Tests
             Assert.IsFalse(blackBoard.HasKey("non_existent_key"));
         }
 
-        [Test][Description("存在するキーの値を削除すると正しく削除され成功ログが出力されることを確認")]
-        public void RemoveValue_ExistingKey_RemovesAndLogsSuccess()
+        [Test][Description("存在するキーの値を削除すると正しく削除されることを確認")]
+        public void RemoveValue_ExistingKey_RemovesCorrectly()
         {
             // Arrange
             blackBoard.SetValue("test_key", "test_value");
-            LogAssert.Expect(LogType.Log, "[INF][BBD]: 🗂️ BlackBoard: Removed 'test_key'");
+            blackBoard.SetValue("other_key", "other_value");
+            var initialKeyCount = blackBoard.GetAllKeys().Length;
 
             // Act
             blackBoard.RemoveValue("test_key");
 
-            // Assert
-            Assert.IsFalse(blackBoard.HasKey("test_key"));
-            Assert.AreEqual("default", blackBoard.GetValue("test_key", "default"));
+            // Assert - ログではなく実際の機能を検証
+            Assert.IsFalse(blackBoard.HasKey("test_key"), "削除されたキーは存在しないべき");
+            Assert.AreEqual("default", blackBoard.GetValue("test_key", "default"), "削除されたキーはデフォルト値を返すべき");
+            
+            // 他のキーに影響していないことを確認
+            Assert.IsTrue(blackBoard.HasKey("other_key"), "他のキーは影響を受けないべき");
+            Assert.AreEqual("other_value", blackBoard.GetValue<string>("other_key"), "他のキーの値は変更されないべき");
+            
+            // キー数の変化を確認
+            Assert.AreEqual(initialKeyCount - 1, blackBoard.GetAllKeys().Length, "キー数が1つ減っているべき");
+            
+            // 注意: 成功ログはLoggingBehaviorTestsで専用テストが行われます
         }
 
         [Test][Description("存在しないキーの値を削除してもログが出力されないことを確認")]
@@ -121,16 +135,15 @@ namespace ArcBT.Tests
             blackBoard.SetValue("key1", "value1");
             blackBoard.SetValue("key2", 42);
             blackBoard.SetValue("key3", true);
-            LogAssert.Expect(LogType.Log, "[INF][BBD]: 🗂️ BlackBoard: Cleared all data");
 
             // Act
             blackBoard.Clear();
 
-            // Assert
-            Assert.IsFalse(blackBoard.HasKey("key1"));
-            Assert.IsFalse(blackBoard.HasKey("key2"));
-            Assert.IsFalse(blackBoard.HasKey("key3"));
-            Assert.AreEqual(0, blackBoard.GetAllKeys().Length);
+            // Assert - ログではなく実際の機能を検証
+            Assert.IsFalse(blackBoard.HasKey("key1"), "Clearされた後はkey1が存在しないべき");
+            Assert.IsFalse(blackBoard.HasKey("key2"), "Clearされた後はkey2が存在しないべき");
+            Assert.IsFalse(blackBoard.HasKey("key3"), "Clearされた後はkey3が存在しないべき"); 
+            Assert.AreEqual(0, blackBoard.GetAllKeys().Length, "Clearされた後は全キーが削除されているべき");
         }
 
         [Test][Description("異なる型の値を設定すると各型が正しく保存・取得できることを確認")]
@@ -386,12 +399,18 @@ namespace ArcBT.Tests
             Assert.AreEqual("未設定", result);
         }
 
-        [Test][Description("重要なキーの値を設定すると変更がログ出力されることを確認")]
-        public void SetValue_ImportantKey_LogsChange()
+        [Test][Description("重要なキーの値を設定すると正しく保存されることを確認")]
+        public void SetValue_ImportantKey_StoresCorrectly()
         {
-            // Arrange & Act (enemy関連は重要キーとしてログ出力される)
-            LogAssert.Expect(LogType.Log, "[INF][BBD]: 🗂️ BlackBoard[新規]: enemy_position = (1.00, 0.00, 1.00)");
-            blackBoard.SetValue("enemy_position", new Vector3(1, 0, 1));
+            // Arrange & Act (enemy関連は重要キーとして扱われる)
+            var expectedPosition = new Vector3(1, 0, 1);
+            blackBoard.SetValue("enemy_position", expectedPosition);
+            
+            // Assert - ログではなく実際の機能を検証
+            Assert.IsTrue(blackBoard.HasKey("enemy_position"), "重要キーが正しく設定されているべき");
+            Assert.AreEqual(expectedPosition, blackBoard.GetValue<Vector3>("enemy_position"), "設定した値が正しく取得できるべき");
+            
+            // 注意: 重要キーのログ出力はLoggingBehaviorTestsで専用テストが行われます
         }
 
         [Test][Description("重要でないキーの値を設定してもログが出力されないことを確認")]
@@ -403,19 +422,24 @@ namespace ArcBT.Tests
             // Assert (ログアサートなし = 期待されるログがない)
         }
 
-        [Test][Description("データがある状態でDebugLogを実行すると全ての内容がログ出力されることを確認")]
-        public void DebugLog_WithData_LogsAllContents()
+        [Test][Description("データがある状態でDebugLogを実行後もデータが正しく保持されることを確認")]
+        public void DebugLog_WithData_PreservesData()
         {
             // Arrange
             blackBoard.SetValue("test_string", "hello");
             blackBoard.SetValue("test_int", 42);
             
-            LogAssert.Expect(LogType.Log, "[INF][BBD]: 🗂️ BlackBoard Contents:");
-            LogAssert.Expect(LogType.Log, "[INF][BBD]:   - test_string: hello (String)");
-            LogAssert.Expect(LogType.Log, "[INF][BBD]:   - test_int: 42 (Int32)");
-
             // Act
-            blackBoard.DebugLog();
+            blackBoard.DebugLog(); // ログ出力を実行
+            
+            // Assert - DebugLog実行後もデータが正しく保持されていることを検証
+            Assert.IsTrue(blackBoard.HasKey("test_string"), "DebugLog後もtest_stringキーが存在するべき");
+            Assert.IsTrue(blackBoard.HasKey("test_int"), "DebugLog後もtest_intキーが存在するべき");
+            Assert.AreEqual("hello", blackBoard.GetValue<string>("test_string"), "DebugLog後もtest_stringの値が保持されているべき");
+            Assert.AreEqual(42, blackBoard.GetValue<int>("test_int"), "DebugLog後もtest_intの値が保持されているべき");
+            Assert.AreEqual(2, blackBoard.GetAllKeys().Length, "DebugLog後も全キーが保持されているべき");
+            
+            // 注意: ログ出力のテストはLoggingBehaviorTestsで専用テストが行われます
         }
 
         [Test][Description("複雑なAIシナリオでBlackBoardの全機能が正しく動作することを確認する統合テスト")]
