@@ -1,9 +1,9 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Diagnostics;
 using Microsoft.Extensions.Logging;
 using ZLogger;
-using ZLogger.Unity;
 
 namespace ArcBT.Logger
 {
@@ -65,29 +65,24 @@ namespace ArcBT.Logger
         {
             if (isInitialized) return;
 
-            // ZLoggerの初期化（Unity環境用）
+            // ZLoggerの初期化（シンプル版）
             var loggerFactory = LoggerFactory.Create(builder =>
             {
                 builder.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
-                builder.AddZLoggerUnityDebug(options =>
-                {
-                    // Unity Consoleに出力する形式を設定
-                    options.EnableStructuredLogging = false;
-                    options.PrefixFormatter = (writer, info) =>
-                    {
-                        // カスタムプレフィックスフォーマット（既存のタグ形式を維持）
-                        return ZString.Utf8Format(writer, "[BT] ");
-                    };
-                });
+                
+                // Unity Consoleへの出力
+                builder.AddZLoggerConsole();
                 
                 // 開発環境でファイル出力も有効にする場合
                 #if UNITY_EDITOR || DEVELOPMENT_BUILD
-                builder.AddZLoggerFile("Logs/aibtree.log", options =>
+                try
                 {
-                    options.EnableStructuredLogging = true;
-                    options.RollingInterval = ZLogger.RollingInterval.Day;
-                    options.RollingSizeLimit = 10 * 1024 * 1024; // 10MB
-                });
+                    builder.AddZLoggerFile("Logs/aibtree.log");
+                }
+                catch
+                {
+                    // ファイルログでエラーが出てもConsoleログは継続
+                }
                 #endif
             });
 
@@ -180,14 +175,33 @@ namespace ArcBT.Logger
                 logHistory.Dequeue();
             }
 
-            // ZLoggerを使用してログ出力（構造化ログ）
+            // ZLoggerを使用してログ出力
             var categoryTag = categoryTags.GetValueOrDefault(category, "[UNKNOWN]");
             var levelTag = levelTags.GetValueOrDefault(level, "[UNKNOWN]");
             var nodeInfo = !string.IsNullOrEmpty(nodeName) ? $"[{nodeName}]" : "";
             var msLogLevel = logLevelMapping.GetValueOrDefault(level, Microsoft.Extensions.Logging.LogLevel.Information);
 
-            // ZLoggerのC# 10 String Interpolationを活用した高性能ログ出力
-            logger.ZLog(msLogLevel, $"{levelTag}{categoryTag}{nodeInfo}: {message}");
+            // ZLoggerのString Interpolationを活用した高性能ログ出力
+            var formattedMessage = $"{levelTag}{categoryTag}{nodeInfo}: {message}";
+            
+            switch (msLogLevel)
+            {
+                case Microsoft.Extensions.Logging.LogLevel.Error:
+                    logger.ZLogError($"{formattedMessage}");
+                    break;
+                case Microsoft.Extensions.Logging.LogLevel.Warning:
+                    logger.ZLogWarning($"{formattedMessage}");
+                    break;
+                case Microsoft.Extensions.Logging.LogLevel.Information:
+                    logger.ZLogInformation($"{formattedMessage}");
+                    break;
+                case Microsoft.Extensions.Logging.LogLevel.Debug:
+                    logger.ZLogDebug($"{formattedMessage}");
+                    break;
+                case Microsoft.Extensions.Logging.LogLevel.Trace:
+                    logger.ZLogTrace($"{formattedMessage}");
+                    break;
+            }
         }
 
         static string FormatLogMessage(LogEntry entry)
@@ -260,9 +274,9 @@ namespace ArcBT.Logger
             Log(LogLevel.Debug, LogCategory.Debug, message, "", context);
         }
 
-        // ZLoggerのC# 10 String Interpolationを活用した高性能フォーマットメソッド
+        // ZLoggerの高性能フォーマットメソッド
         [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD"), Conditional("BT_LOGGING_ENABLED")]
-        public static void LogCombatFormat<T1>(string format, T1 arg1, string nodeName = "", UnityEngine.Object context = null)
+        public static void LogCombatFormat(string format, object arg1, string nodeName = "", UnityEngine.Object context = null)
         {
             if (LogLevel.Info > currentLogLevel || !categoryFilters.GetValueOrDefault(LogCategory.Combat, true)) return;
             EnsureInitialized();
@@ -275,7 +289,7 @@ namespace ArcBT.Logger
         }
 
         [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD"), Conditional("BT_LOGGING_ENABLED")]
-        public static void LogMovementFormat<T1>(string format, T1 arg1, string nodeName = "", UnityEngine.Object context = null)
+        public static void LogMovementFormat(string format, object arg1, string nodeName = "", UnityEngine.Object context = null)
         {
             if (LogLevel.Info > currentLogLevel || !categoryFilters.GetValueOrDefault(LogCategory.Movement, true)) return;
             EnsureInitialized();
@@ -285,20 +299,6 @@ namespace ArcBT.Logger
             var nodeInfo = !string.IsNullOrEmpty(nodeName) ? $"[{nodeName}]" : "";
             
             logger.ZLogInformation($"{levelTag}{categoryTag}{nodeInfo}: {format}", arg1);
-        }
-
-        // 高性能な条件付きログ（ZLoggerの恩恵を最大化）
-        [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD"), Conditional("BT_LOGGING_ENABLED")]
-        public static void LogCombatDebug<T1, T2>(string format, T1 arg1, T2 arg2, string nodeName = "")
-        {
-            if (LogLevel.Debug > currentLogLevel || !categoryFilters.GetValueOrDefault(LogCategory.Combat, true)) return;
-            EnsureInitialized();
-            
-            var categoryTag = categoryTags[LogCategory.Combat];
-            var levelTag = levelTags[LogLevel.Debug];
-            var nodeInfo = !string.IsNullOrEmpty(nodeName) ? $"[{nodeName}]" : "";
-            
-            logger.ZLogDebug($"{levelTag}{categoryTag}{nodeInfo}: {format}", arg1, arg2);
         }
 
         // 履歴取得
@@ -314,7 +314,7 @@ namespace ArcBT.Logger
 
         // ZLogger専用メソッド: 構造化ログ出力
         [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD"), Conditional("BT_LOGGING_ENABLED")]
-        public static void LogStructured<T>(LogLevel level, LogCategory category, string template, T value, string nodeName = "")
+        public static void LogStructured(LogLevel level, LogCategory category, string template, object value, string nodeName = "")
         {
             if (level > currentLogLevel || !categoryFilters.GetValueOrDefault(category, true)) return;
             EnsureInitialized();
@@ -324,7 +324,24 @@ namespace ArcBT.Logger
             var nodeInfo = !string.IsNullOrEmpty(nodeName) ? $"[{nodeName}]" : "";
             var msLogLevel = logLevelMapping.GetValueOrDefault(level, Microsoft.Extensions.Logging.LogLevel.Information);
             
-            logger.ZLog(msLogLevel, $"{levelTag}{categoryTag}{nodeInfo}: {template}", value);
+            switch (msLogLevel)
+            {
+                case Microsoft.Extensions.Logging.LogLevel.Error:
+                    logger.ZLogError($"{levelTag}{categoryTag}{nodeInfo}: {template}", value);
+                    break;
+                case Microsoft.Extensions.Logging.LogLevel.Warning:
+                    logger.ZLogWarning($"{levelTag}{categoryTag}{nodeInfo}: {template}", value);
+                    break;
+                case Microsoft.Extensions.Logging.LogLevel.Information:
+                    logger.ZLogInformation($"{levelTag}{categoryTag}{nodeInfo}: {template}", value);
+                    break;
+                case Microsoft.Extensions.Logging.LogLevel.Debug:
+                    logger.ZLogDebug($"{levelTag}{categoryTag}{nodeInfo}: {template}", value);
+                    break;
+                case Microsoft.Extensions.Logging.LogLevel.Trace:
+                    logger.ZLogTrace($"{levelTag}{categoryTag}{nodeInfo}: {template}", value);
+                    break;
+            }
         }
 
         // 高性能なパフォーマンス測定用ログ
