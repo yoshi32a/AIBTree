@@ -14,7 +14,9 @@
     "overrideReferences": true,
     "precompiledReferences": [
         "nunit.framework.dll",
-        "Microsoft.Extensions.Logging.Abstractions.dll"
+        "Microsoft.Extensions.Logging.Abstractions.dll",
+        "ZLogger.dll",
+        "Microsoft.Extensions.Logging.dll"
     ],
     "autoReferenced": false,
     "defineConstraints": [

@@ -9,20 +9,22 @@ using ArcBT.Logger;
 namespace ArcBT.Tests
 {
     /// <summary>ZLogger統合による性能向上をベンチマークするテストクラス</summary>
-    public class ZLoggerBenchmarkTests
+    public class ZLoggerBenchmarkTests : BTTestBase
     {
         [SetUp]
-        public void SetUp()
+        public override void SetUp()
         {
+            base.SetUp();
             BTLogger.ResetToDefaults();
             BTLogger.ClearHistory();
         }
 
         [TearDown] 
-        public void TearDown()
+        public override void TearDown()
         {
             BTLogger.ClearHistory();
             BTLogger.Dispose(); // ZLoggerリソース解放
+            base.TearDown();
         }
 
         /// <summary>ZLogger高性能ログ出力ベンチマーク</summary>
@@ -45,9 +47,9 @@ namespace ArcBT.Tests
             var elapsedMs = stopwatch.ElapsedMilliseconds;
             Assert.Less(elapsedMs, 800, $"ZLoggerによる高性能ログ出力（{logCount}件）が800ms以内で完了（実測: {elapsedMs}ms）");
             
-            // ログが正しく記録されていることを確認
+            // ZLoggerに委謗されているため、履歴取得は空配列
             var logs = BTLogger.GetRecentLogs(100);
-            Assert.Greater(logs.Length, 0, "ZLoggerでログが正常に記録されている");
+            Assert.AreEqual(0, logs.Length, "Phase 6.3: 履歴管理はZLoggerに委謗 - 空配列");
         }
 
         /// <summary>ZLogger構造化ログ性能テスト</summary>
@@ -195,9 +197,9 @@ namespace ArcBT.Tests
             Assert.Less(memoryIncreaseMB, 12, 
                 $"ZLoggerによるメモリ使用量増加が12MB以内（実測: {memoryIncreaseMB:F2}MB）従来比20%削減");
             
-            // 履歴制限による効率的なメモリ管理
+            // ZLoggerに委謗されているため、履歴取得は空配列
             var logs = BTLogger.GetRecentLogs(200);
-            Assert.LessOrEqual(logs.Length, 100, "ZLoggerでも履歴制限によるメモリ管理が機能");
+            Assert.AreEqual(0, logs.Length, "Phase 6.3: 履歴管理はZLoggerに委謗 - 空配列");
         }
 
         /// <summary>ZLogger条件付きコンパイル効果測定</summary>
@@ -228,7 +230,7 @@ namespace ArcBT.Tests
                 $"ZLoggerフィルタリング（{logCount * 3}件）が適切な時間で完了（実測: {elapsedMs}ms）");
             
             var logs = BTLogger.GetRecentLogs(100);
-            Assert.AreEqual(0, logs.Length, "フィルタリングによりログ履歴が空");
+            Assert.AreEqual(0, logs.Length, "Phase 6.3: 履歴管理はZLoggerに委謗 - 空配列");
             
             UnityEngine.Debug.Log($"Conditional compilation効果: {logCount * 3}件のログが{elapsedMs}msで処理（フィルタリング効果）");
         }
@@ -292,9 +294,9 @@ namespace ArcBT.Tests
                 {
                     yield return null;
                     
-                    // メモリとログ履歴の安定性確認
+                    // ZLoggerに委謗されているため、履歴取得は空配列
                     var logs = BTLogger.GetRecentLogs(50);
-                    Assert.LessOrEqual(logs.Length, 50, $"高負荷時でも履歴管理が安定（Iteration {iteration}）");
+                    Assert.AreEqual(0, logs.Length, "Phase 6.3: 履歴管理はZLoggerに委謗 - 空配列");
                 }
             }
             
@@ -304,7 +306,7 @@ namespace ArcBT.Tests
             Assert.Less(elapsedTime, 8.0f, "ZLogger高負荷処理が8秒以内で完了（従来比25%高速化）");
             
             var finalLogs = BTLogger.GetRecentLogs(200);
-            Assert.LessOrEqual(finalLogs.Length, 100, "最終的なZLoggerログ履歴が制限内に安定");
+            Assert.AreEqual(0, finalLogs.Length, "Phase 6.3: 履歴管理はZLoggerに委謗 - 空配列");
         }
     }
 }
