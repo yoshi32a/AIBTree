@@ -21,7 +21,15 @@ public class BTLoggerEditor : Editor
         DrawDefaultInspector();
         
         EditorGUILayout.Space(10);
-        EditorGUILayout.LabelField("BT Logger Controls", EditorStyles.boldLabel);
+        EditorGUILayout.LabelField("BT Logger Controls (ZLogger統合版)", EditorStyles.boldLabel);
+        
+        // ZLogger統合情報
+        EditorGUILayout.HelpBox(
+            "ZLogger統合による高性能ログシステム\n" +
+            "• ゼロアロケーション文字列補間\n" +
+            "• Microsoft.Extensions.Logging基盤\n" +
+            "• 構造化ログとファイル出力対応", 
+            MessageType.Info);
         
         // ログ設定セクション
         showLogSettings = EditorGUILayout.Foldout(showLogSettings, "ログ設定", true);
