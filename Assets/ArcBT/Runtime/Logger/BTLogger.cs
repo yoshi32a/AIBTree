@@ -288,43 +288,53 @@ namespace ArcBT.Logger
         }
 
         /// <summary>
-        /// 後方互換性：最近のログ取得（新実装では空配列）
+        /// 後方互換性：最近のログ取得（Phase 6.3: 完全削除）
         /// </summary>
-        public static LogEntry[] GetRecentLogs(int count = 10)
+        public static string[] GetRecentLogs(int count = 10)
         {
-            // ZLoggerプロバイダーが履歴を管理するため、空配列を返す
-            // 後方互換性のためにメソッドのみ残す
-            return new LogEntry[0];
+            // Phase 6.3: LogEntry完全削除のため、空文字列配列を返す
+            // ZLoggerプロバイダーが履歴を管理
+            return new string[0];
         }
 
         /// <summary>
-        /// 後方互換性：カテゴリ別ログ取得（新実装では空配列）
+        /// 後方互換性：カテゴリ別ログ取得（Phase 6.3: 完全削除）
         /// </summary>
-        public static LogEntry[] GetLogsByCategory(LogCategory category, int count = 10)
+        public static string[] GetLogsByCategory(LogCategory category, int count = 10)
         {
-            // ZLoggerプロバイダーが履歴を管理するため、空配列を返す
-            // 後方互換性のためにメソッドのみ残す
-            return new LogEntry[0];
+            // Phase 6.3: LogEntry完全削除のため、空文字列配列を返す
+            // ZLoggerプロバイダーが履歴を管理
+            return new string[0];
         }
 
         /// <summary>
-        /// 後方互換性：フォーマットログ（Combat）
+        /// 後方互換性：フォーマットログ（Combat）- ZLoggerネイティブ最適化
         /// </summary>
         [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD"), Conditional("BT_LOGGING_ENABLED")]
         public static void LogCombatFormat(string format, object arg1, string nodeName = "", UnityEngine.Object context = null)
         {
-            LogInternal(Microsoft.Extensions.Logging.LogLevel.Information, LogCategory.Combat, 
-                string.Format(format, arg1), nodeName, context);
+            if (suppressLogsInTest) return;
+
+            var categoryTag = GetCategoryTag(LogCategory.Combat);
+            var nodeInfo = !string.IsNullOrEmpty(nodeName) ? $"[{nodeName}]" : "";
+            
+            // ZLoggerネイティブフォーマット（ゼロアロケーション）
+            instance.ZLogInformation($"{categoryTag}{nodeInfo}: {format}", arg1);
         }
 
         /// <summary>
-        /// 後方互換性：フォーマットログ（Movement）
+        /// 後方互換性：フォーマットログ（Movement）- ZLoggerネイティブ最適化
         /// </summary>
         [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD"), Conditional("BT_LOGGING_ENABLED")]
         public static void LogMovementFormat(string format, object arg1, string nodeName = "", UnityEngine.Object context = null)
         {
-            LogInternal(Microsoft.Extensions.Logging.LogLevel.Information, LogCategory.Movement, 
-                string.Format(format, arg1), nodeName, context);
+            if (suppressLogsInTest) return;
+
+            var categoryTag = GetCategoryTag(LogCategory.Movement);
+            var nodeInfo = !string.IsNullOrEmpty(nodeName) ? $"[{nodeName}]" : "";
+            
+            // ZLoggerネイティブフォーマット（ゼロアロケーション）
+            instance.ZLogInformation($"{categoryTag}{nodeInfo}: {format}", arg1);
         }
 
         /// <summary>

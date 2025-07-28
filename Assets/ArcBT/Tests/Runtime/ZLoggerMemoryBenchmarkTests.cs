@@ -9,11 +9,12 @@ using ArcBT.Logger;
 namespace ArcBT.Tests
 {
     /// <summary>ZLoggerのメモリアロケーション性能を詳細測定するテストクラス</summary>
-    public class ZLoggerMemoryBenchmarkTests
+    public class ZLoggerMemoryBenchmarkTests : BTTestBase
     {
         [SetUp]
-        public void SetUp()
+        public override void SetUp()
         {
+            base.SetUp();
             BTLogger.ResetToDefaults();
             BTLogger.ClearHistory();
             
@@ -24,10 +25,11 @@ namespace ArcBT.Tests
         }
 
         [TearDown] 
-        public void TearDown()
+        public override void TearDown()
         {
             BTLogger.ClearHistory();
             BTLogger.Dispose();
+            base.TearDown();
         }
 
         /// <summary>ZLoggerゼロアロケーション文字列補間のメモリ効率測定</summary>
@@ -315,9 +317,9 @@ namespace ArcBT.Tests
             Assert.Less(memoryIncreaseMB, 2.0, 
                 $"ZLoggerフィルタリング（{logCount * 4}件フィルタ）のメモリ増加が2MB以内（実測: {memoryIncreaseMB:F2}MB）");
             
-            // フィルタリングによりログ履歴が空であることを確認
+            // ZLoggerに委謗されているため、履歴取得は空配列
             var logs = BTLogger.GetRecentLogs(100);
-            Assert.AreEqual(0, logs.Length, "フィルタリングによりメモリにログが残っていない");
+            Assert.AreEqual(0, logs.Length, "Phase 6.3: 履歴管理はZLoggerに委謗 - 空配列");
             
             UnityEngine.Debug.Log($"ZLogger Filtering Memory: {memoryIncreaseMB:F2}MB increase for {logCount * 4} filtered logs");
         }
