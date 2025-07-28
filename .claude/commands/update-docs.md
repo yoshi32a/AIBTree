@@ -19,7 +19,7 @@
    - **Assets/ArcBT/Samples/RPGExample/README.md**: RPGサンプル説明
    - **Assets/ArcBT/Samples/Documentation/RPG_IMPLEMENTATION_GUIDE.md**: 実装ガイド
 
-4. **変更のコミット**
+3. **変更のコミット**
    - 適切な日本語コミットメッセージでgitコミット
    - Claude Code署名付きでコミット
 
