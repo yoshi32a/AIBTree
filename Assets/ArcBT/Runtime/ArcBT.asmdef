@@ -1,16 +1,17 @@
 {
-  "name": "ArcBT",
-  "rootNamespace": "ArcBT",
-  "references": [
-    "Unity.InputSystem"
-  ],
-  "includePlatforms": [],
-  "excludePlatforms": [],
-  "allowUnsafeCode": false,
-  "overrideReferences": false,
-  "precompiledReferences": [],
-  "autoReferenced": true,
-  "defineConstraints": [],
-  "versionDefines": [],
-  "noEngineReferences": false
+    "name": "ArcBT",
+    "rootNamespace": "ArcBT",
+    "references": [
+        "Unity.InputSystem",
+        "ZLogger.Unity"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
 }
