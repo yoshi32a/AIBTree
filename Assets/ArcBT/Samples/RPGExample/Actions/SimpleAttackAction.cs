@@ -49,7 +49,7 @@ namespace ArcBT.Samples.RPG.Actions
             }
 
             bool attackSucceeded = aiController.AttackEnemy(damage, attackRange);
-            BTLogger.Log(LogLevel.Debug, LogCategory.Combat, $"Executed attack with damage {damage}");
+            BTLogger.Log(Microsoft.Extensions.Logging.LogLevel.Debug, LogCategory.Combat, $"Executed attack with damage {damage}");
             return attackSucceeded ? BTNodeResult.Success : BTNodeResult.Failure;
         }
     }

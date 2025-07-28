@@ -44,7 +44,7 @@ namespace ArcBT.Samples.RPG.Conditions
             }
 
             bool result = aiController.CheckHealth(minHealth);
-            BTLogger.Log(LogLevel.Debug, LogCategory.System, $"Simple health check: {aiController.Health} >= {minHealth} = {result}");
+            BTLogger.Log(Microsoft.Extensions.Logging.LogLevel.Debug, LogCategory.System, $"Simple health check: {aiController.Health} >= {minHealth} = {result}");
             return result ? BTNodeResult.Success : BTNodeResult.Failure;
         }
     }

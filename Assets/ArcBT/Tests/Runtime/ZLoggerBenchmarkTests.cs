@@ -62,7 +62,7 @@ namespace ArcBT.Tests
             stopwatch.Start();
             for (int i = 0; i < logCount; i++)
             {
-                BTLogger.LogStructured(LogLevel.Info, LogCategory.System, 
+                BTLogger.LogStructured(Microsoft.Extensions.Logging.LogLevel.Information, LogCategory.System, 
                     "Structured log test iteration {Iteration} with value {Value}", 
                     new { Iteration = i, Value = i * 2 }, "StructuredTest");
             }
@@ -205,7 +205,7 @@ namespace ArcBT.Tests
         public void TestZLoggerConditionalCompilation()
         {
             // Arrange: ログレベルを高く設定してフィルタリングを強制
-            BTLogger.SetLogLevel(LogLevel.Error);
+            BTLogger.SetLogLevel(Microsoft.Extensions.Logging.LogLevel.Error);
             const int logCount = 5000; // より多くのログで測定精度向上
             var stopwatch = new Stopwatch();
             
@@ -282,7 +282,7 @@ namespace ArcBT.Tests
                     BTLogger.LogSystem($"High load test - Iteration {iteration}, Log {i}", "HighLoadTest");
                     BTLogger.LogCombat($"Combat in iteration {iteration} - {i}", "HighLoadTest");
                     BTLogger.LogMovement($"Movement {iteration}-{i}", "HighLoadTest");
-                    BTLogger.LogStructured(LogLevel.Info, LogCategory.Debug, 
+                    BTLogger.LogStructured(Microsoft.Extensions.Logging.LogLevel.Information, LogCategory.Debug, 
                         "Debug iteration {Iteration} log {LogIndex}", 
                         new { Iteration = iteration, LogIndex = i }, "HighLoadTest");
                 }

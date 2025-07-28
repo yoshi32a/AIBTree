@@ -3,365 +3,337 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Diagnostics;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using ZLogger;
 
 namespace ArcBT.Logger
 {
+    /// <summary>
+    /// ArcBTパッケージのログシステム
+    /// ユーザーアプリケーションのLoggerFactoryに統合されることを前提とした設計
+    /// </summary>
     public static class BTLogger
     {
-        static LogLevel currentLogLevel = LogLevel.Info;
+        static ILogger instance = NullLogger.Instance;
         static bool testModeEnabled = false;
         static bool suppressLogsInTest = false;
-        static ILogger logger;
-        static bool isInitialized = false;
 
-        static readonly Dictionary<LogCategory, bool> categoryFilters = new()
+        /// <summary>
+        /// 現在設定されているILoggerインスタンス
+        /// </summary>
+        public static ILogger Instance => instance;
+
+        /// <summary>
+        /// ArcBTパッケージのロガーを設定します
+        /// アプリケーション起動時に一度だけ呼び出してください
+        /// </summary>
+        /// <param name="loggerFactory">ユーザーアプリケーションのLoggerFactory</param>
+        public static void Configure(ILoggerFactory loggerFactory)
         {
-            { LogCategory.Combat, true },
-            { LogCategory.Movement, true },
-            { LogCategory.Condition, true },
-            { LogCategory.BlackBoard, true },
-            { LogCategory.Parser, false }, // パーサーログはデフォルト無効
-            { LogCategory.System, true },
-            { LogCategory.Debug, false } // デバッグログはデフォルト無効
-        };
-
-        static readonly Queue<LogEntry> logHistory = new();
-        const int MAX_LOG_HISTORY = 100;
-
-        // カテゴリ別タグ（3文字）
-        static readonly Dictionary<LogCategory, string> categoryTags = new()
-        {
-            { LogCategory.Combat, "[ATK]" }, // Attack
-            { LogCategory.Movement, "[MOV]" }, // Move
-            { LogCategory.Condition, "[CHK]" }, // Check
-            { LogCategory.BlackBoard, "[BBD]" }, // BlackBoard
-            { LogCategory.Parser, "[PRS]" }, // Parse
-            { LogCategory.System, "[SYS]" }, // System
-            { LogCategory.Debug, "[DBG]" } // Debug
-        };
-
-        // レベル別タグ（3文字）
-        static readonly Dictionary<LogLevel, string> levelTags = new()
-        {
-            { LogLevel.Error, "[ERR]" }, // Error
-            { LogLevel.Warning, "[WRN]" }, // Warning
-            { LogLevel.Info, "[INF]" }, // Info
-            { LogLevel.Debug, "[DBG]" }, // Debug
-            { LogLevel.Trace, "[TRC]" } // Trace
-        };
-
-        // Microsoft.Extensions.Logging.LogLevelとBTLogger.LogLevelのマッピング
-        static readonly Dictionary<LogLevel, Microsoft.Extensions.Logging.LogLevel> logLevelMapping = new()
-        {
-            { LogLevel.Error, Microsoft.Extensions.Logging.LogLevel.Error },
-            { LogLevel.Warning, Microsoft.Extensions.Logging.LogLevel.Warning },
-            { LogLevel.Info, Microsoft.Extensions.Logging.LogLevel.Information },
-            { LogLevel.Debug, Microsoft.Extensions.Logging.LogLevel.Debug },
-            { LogLevel.Trace, Microsoft.Extensions.Logging.LogLevel.Trace }
-        };
-
-        static void EnsureInitialized()
-        {
-            if (isInitialized) return;
-
-            // ZLoggerの初期化（シンプル版）
-            var loggerFactory = LoggerFactory.Create(builder =>
-            {
-                builder.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
+            if (loggerFactory == null)
+                throw new ArgumentNullException(nameof(loggerFactory));
                 
-                // Unity Consoleへの出力
-                builder.AddZLoggerConsole();
-                
-                // 開発環境でファイル出力も有効にする場合
-                #if UNITY_EDITOR || DEVELOPMENT_BUILD
-                try
-                {
-                    builder.AddZLoggerFile("Logs/aibtree.log");
-                }
-                catch
-                {
-                    // ファイルログでエラーが出てもConsoleログは継続
-                }
-                #endif
-            });
-
-            logger = loggerFactory.CreateLogger("ArcBT");
-            isInitialized = true;
+            instance = loggerFactory.CreateLogger("ArcBT");
         }
-
-        public static void SetLogLevel(LogLevel level)
+        
+        /// <summary>
+        /// 直接ILoggerを設定（高度な使用例）
+        /// </summary>
+        public static void Configure(ILogger logger)
         {
-            currentLogLevel = level;
+            instance = logger ?? throw new ArgumentNullException(nameof(logger));
         }
+        
+        /// <summary>
+        /// 設定状況の確認
+        /// </summary>
+        public static bool IsConfigured => instance != NullLogger.Instance;
 
-        public static LogLevel GetCurrentLogLevel()
-        {
-            return currentLogLevel;
-        }
-
-        public static void SetCategoryFilter(LogCategory category, bool enabled)
-        {
-            categoryFilters[category] = enabled;
-        }
-
-        public static bool IsCategoryEnabled(LogCategory category)
-        {
-            return categoryFilters.GetValueOrDefault(category, true);
-        }
-
-        public static void ResetToDefaults()
-        {
-            currentLogLevel = LogLevel.Info;
-            categoryFilters[LogCategory.Combat] = true;
-            categoryFilters[LogCategory.Movement] = true;
-            categoryFilters[LogCategory.Condition] = true;
-            categoryFilters[LogCategory.BlackBoard] = true;
-            categoryFilters[LogCategory.Parser] = false;
-            categoryFilters[LogCategory.System] = true;
-            categoryFilters[LogCategory.Debug] = false;
-        }
-
+        /// <summary>
+        /// テストモードを有効化（ログ抑制機能付き）
+        /// </summary>
         public static void EnableTestMode(bool suppressLogs = false)
         {
             testModeEnabled = true;
             suppressLogsInTest = suppressLogs;
-            
-            if (!suppressLogs)
-            {
-                currentLogLevel = LogLevel.Debug; // テスト時はDebugレベルまで有効化
-                categoryFilters[LogCategory.Parser] = true; // テスト時はParserログを有効化
-                categoryFilters[LogCategory.Debug] = true; // テスト時はDebugログも有効化
-            }
         }
 
+        /// <summary>
+        /// テストモードを無効化
+        /// </summary>
         public static void DisableTestMode()
         {
             testModeEnabled = false;
             suppressLogsInTest = false;
-            ResetToDefaults();
         }
 
+        /// <summary>
+        /// テストモード状態の確認
+        /// </summary>
         public static bool IsTestMode()
         {
             return testModeEnabled;
         }
 
-        public static void ClearHistory()
-        {
-            logHistory.Clear();
-        }
-
+        /// <summary>
+        /// 基本ログ出力メソッド（内部使用）
+        /// </summary>
         [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD"), Conditional("BT_LOGGING_ENABLED")]
-        public static void Log(LogLevel level, LogCategory category, string message, string nodeName = "", UnityEngine.Object context = null)
+        static void LogInternal(Microsoft.Extensions.Logging.LogLevel msLogLevel, LogCategory category, string message, string nodeName = "", UnityEngine.Object context = null)
         {
             // テストモード時のログ抑制
             if (suppressLogsInTest) return;
 
-            // レベルフィルター
-            if (level > currentLogLevel) return;
-
-            // カテゴリフィルター
-            if (!categoryFilters.GetValueOrDefault(category, true)) return;
-
-            EnsureInitialized();
-
-            var entry = new LogEntry(level, category, message, nodeName, context);
-
-            // 履歴に追加
-            logHistory.Enqueue(entry);
-            if (logHistory.Count > MAX_LOG_HISTORY)
-            {
-                logHistory.Dequeue();
-            }
-
-            // ZLoggerを使用してログ出力
-            var categoryTag = categoryTags.GetValueOrDefault(category, "[UNKNOWN]");
-            var levelTag = levelTags.GetValueOrDefault(level, "[UNKNOWN]");
+            // カテゴリ別タグ
+            var categoryTag = GetCategoryTag(category);
             var nodeInfo = !string.IsNullOrEmpty(nodeName) ? $"[{nodeName}]" : "";
-            var msLogLevel = logLevelMapping.GetValueOrDefault(level, Microsoft.Extensions.Logging.LogLevel.Information);
-
-            // ZLoggerのString Interpolationを活用した高性能ログ出力
-            var formattedMessage = $"{levelTag}{categoryTag}{nodeInfo}: {message}";
             
+            // ZLoggerを使用した高性能ログ出力（ユーザー設定のフィルタリングも効く）
             switch (msLogLevel)
             {
                 case Microsoft.Extensions.Logging.LogLevel.Error:
-                    logger.ZLogError($"{formattedMessage}");
+                    instance.ZLogError($"{categoryTag}{nodeInfo}: {message}");
                     break;
                 case Microsoft.Extensions.Logging.LogLevel.Warning:
-                    logger.ZLogWarning($"{formattedMessage}");
+                    instance.ZLogWarning($"{categoryTag}{nodeInfo}: {message}");
                     break;
                 case Microsoft.Extensions.Logging.LogLevel.Information:
-                    logger.ZLogInformation($"{formattedMessage}");
+                    instance.ZLogInformation($"{categoryTag}{nodeInfo}: {message}");
                     break;
                 case Microsoft.Extensions.Logging.LogLevel.Debug:
-                    logger.ZLogDebug($"{formattedMessage}");
+                    instance.ZLogDebug($"{categoryTag}{nodeInfo}: {message}");
                     break;
                 case Microsoft.Extensions.Logging.LogLevel.Trace:
-                    logger.ZLogTrace($"{formattedMessage}");
+                    instance.ZLogTrace($"{categoryTag}{nodeInfo}: {message}");
                     break;
             }
         }
 
-        static string FormatLogMessage(LogEntry entry)
+        /// <summary>
+        /// カテゴリ別タグの取得
+        /// </summary>
+        static string GetCategoryTag(LogCategory category)
         {
-            var categoryTag = categoryTags.GetValueOrDefault(entry.Category, "[UNKNOWN]");
-            var levelTag = levelTags.GetValueOrDefault(entry.Level, "[UNKNOWN]");
-            var nodeInfo = !string.IsNullOrEmpty(entry.NodeName) ? $"[{entry.NodeName}]" : "";
-
-            return $"{levelTag}{categoryTag}{nodeInfo}: {entry.Message}";
+            return category switch
+            {
+                LogCategory.Combat => "[ATK]",
+                LogCategory.Movement => "[MOV]",
+                LogCategory.Condition => "[CHK]",
+                LogCategory.BlackBoard => "[BBD]",
+                LogCategory.Parser => "[PRS]",
+                LogCategory.System => "[SYS]",
+                LogCategory.Debug => "[DBG]",
+                _ => "[UNK]"
+            };
         }
 
-        // 便利メソッド（ZLoggerのゼロアロケーション機能を活用）
+        // カテゴリ別便利メソッド（ZLoggerネイティブ機能を活用）
         [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD"), Conditional("BT_LOGGING_ENABLED")]
         public static void LogCombat(string message, string nodeName = "", UnityEngine.Object context = null)
         {
-            Log(LogLevel.Info, LogCategory.Combat, message, nodeName, context);
+            LogInternal(Microsoft.Extensions.Logging.LogLevel.Information, LogCategory.Combat, message, nodeName, context);
         }
 
         [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD"), Conditional("BT_LOGGING_ENABLED")]
         public static void LogMovement(string message, string nodeName = "", UnityEngine.Object context = null)
         {
-            Log(LogLevel.Info, LogCategory.Movement, message, nodeName, context);
+            LogInternal(Microsoft.Extensions.Logging.LogLevel.Information, LogCategory.Movement, message, nodeName, context);
         }
 
         [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD"), Conditional("BT_LOGGING_ENABLED")]
         public static void LogCondition(string message, string nodeName = "", UnityEngine.Object context = null)
         {
-            Log(LogLevel.Debug, LogCategory.Condition, message, nodeName, context);
+            LogInternal(Microsoft.Extensions.Logging.LogLevel.Debug, LogCategory.Condition, message, nodeName, context);
         }
 
         [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD"), Conditional("BT_LOGGING_ENABLED")]
         public static void LogBlackBoard(string message, string nodeName = "", UnityEngine.Object context = null)
         {
-            Log(LogLevel.Debug, LogCategory.BlackBoard, message, nodeName, context);
+            LogInternal(Microsoft.Extensions.Logging.LogLevel.Debug, LogCategory.BlackBoard, message, nodeName, context);
         }
 
         [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD"), Conditional("BT_LOGGING_ENABLED")]
         public static void LogSystem(string message, string nodeName = "", UnityEngine.Object context = null)
         {
-            Log(LogLevel.Info, LogCategory.System, message, nodeName, context);
+            LogInternal(Microsoft.Extensions.Logging.LogLevel.Information, LogCategory.System, message, nodeName, context);
         }
 
         // エラーログは本番環境でも表示する
         public static void LogError(LogCategory category, string message, string nodeName = "", UnityEngine.Object context = null)
         {
-            Log(LogLevel.Error, category, message, nodeName, context);
+            LogInternal(Microsoft.Extensions.Logging.LogLevel.Error, category, message, nodeName, context);
         }
 
         // Debug.Logから移行用の便利メソッド
         [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD"), Conditional("BT_LOGGING_ENABLED")]
         public static void Info(string message, UnityEngine.Object context = null)
         {
-            Log(LogLevel.Info, LogCategory.System, message, "", context);
+            LogInternal(Microsoft.Extensions.Logging.LogLevel.Information, LogCategory.System, message, "", context);
         }
 
         [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD"), Conditional("BT_LOGGING_ENABLED")]
         public static void Warning(string message, UnityEngine.Object context = null)
         {
-            Log(LogLevel.Warning, LogCategory.System, message, "", context);
+            LogInternal(Microsoft.Extensions.Logging.LogLevel.Warning, LogCategory.System, message, "", context);
         }
 
         public static void Error(string message, UnityEngine.Object context = null)
         {
-            Log(LogLevel.Error, LogCategory.System, message, "", context);
+            LogInternal(Microsoft.Extensions.Logging.LogLevel.Error, LogCategory.System, message, "", context);
         }
 
         [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD"), Conditional("BT_LOGGING_ENABLED")]
         public static void Debug(string message, UnityEngine.Object context = null)
         {
-            Log(LogLevel.Debug, LogCategory.Debug, message, "", context);
+            LogInternal(Microsoft.Extensions.Logging.LogLevel.Debug, LogCategory.Debug, message, "", context);
         }
 
-        // ZLoggerの高性能フォーマットメソッド
+        // 構造化ログ出力（ZLogger推奨）
         [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD"), Conditional("BT_LOGGING_ENABLED")]
-        public static void LogCombatFormat(string format, object arg1, string nodeName = "", UnityEngine.Object context = null)
+        public static void LogStructured<T>(Microsoft.Extensions.Logging.LogLevel level, LogCategory category, string template, T value, string nodeName = "")
         {
-            if (LogLevel.Info > currentLogLevel || !categoryFilters.GetValueOrDefault(LogCategory.Combat, true)) return;
-            EnsureInitialized();
-            
-            var categoryTag = categoryTags[LogCategory.Combat];
-            var levelTag = levelTags[LogLevel.Info];
+            if (suppressLogsInTest) return;
+
+            var categoryTag = GetCategoryTag(category);
             var nodeInfo = !string.IsNullOrEmpty(nodeName) ? $"[{nodeName}]" : "";
             
-            logger.ZLogInformation($"{levelTag}{categoryTag}{nodeInfo}: {format}", arg1);
-        }
-
-        [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD"), Conditional("BT_LOGGING_ENABLED")]
-        public static void LogMovementFormat(string format, object arg1, string nodeName = "", UnityEngine.Object context = null)
-        {
-            if (LogLevel.Info > currentLogLevel || !categoryFilters.GetValueOrDefault(LogCategory.Movement, true)) return;
-            EnsureInitialized();
-            
-            var categoryTag = categoryTags[LogCategory.Movement];
-            var levelTag = levelTags[LogLevel.Info];
-            var nodeInfo = !string.IsNullOrEmpty(nodeName) ? $"[{nodeName}]" : "";
-            
-            logger.ZLogInformation($"{levelTag}{categoryTag}{nodeInfo}: {format}", arg1);
-        }
-
-        // 履歴取得
-        public static LogEntry[] GetRecentLogs(int count = 10)
-        {
-            return logHistory.TakeLast(count).ToArray();
-        }
-
-        public static LogEntry[] GetLogsByCategory(LogCategory category, int count = 10)
-        {
-            return logHistory.Where(log => log.Category == category).TakeLast(count).ToArray();
-        }
-
-        // ZLogger専用メソッド: 構造化ログ出力
-        [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD"), Conditional("BT_LOGGING_ENABLED")]
-        public static void LogStructured(LogLevel level, LogCategory category, string template, object value, string nodeName = "")
-        {
-            if (level > currentLogLevel || !categoryFilters.GetValueOrDefault(category, true)) return;
-            EnsureInitialized();
-            
-            var categoryTag = categoryTags.GetValueOrDefault(category, "[UNKNOWN]");
-            var levelTag = levelTags.GetValueOrDefault(level, "[UNKNOWN]");
-            var nodeInfo = !string.IsNullOrEmpty(nodeName) ? $"[{nodeName}]" : "";
-            var msLogLevel = logLevelMapping.GetValueOrDefault(level, Microsoft.Extensions.Logging.LogLevel.Information);
-            
-            switch (msLogLevel)
+            switch (level)
             {
                 case Microsoft.Extensions.Logging.LogLevel.Error:
-                    logger.ZLogError($"{levelTag}{categoryTag}{nodeInfo}: {template}", value);
+                    instance.ZLogError($"{categoryTag}{nodeInfo}: {template}", value);
                     break;
                 case Microsoft.Extensions.Logging.LogLevel.Warning:
-                    logger.ZLogWarning($"{levelTag}{categoryTag}{nodeInfo}: {template}", value);
+                    instance.ZLogWarning($"{categoryTag}{nodeInfo}: {template}", value);
                     break;
                 case Microsoft.Extensions.Logging.LogLevel.Information:
-                    logger.ZLogInformation($"{levelTag}{categoryTag}{nodeInfo}: {template}", value);
+                    instance.ZLogInformation($"{categoryTag}{nodeInfo}: {template}", value);
                     break;
                 case Microsoft.Extensions.Logging.LogLevel.Debug:
-                    logger.ZLogDebug($"{levelTag}{categoryTag}{nodeInfo}: {template}", value);
+                    instance.ZLogDebug($"{categoryTag}{nodeInfo}: {template}", value);
                     break;
                 case Microsoft.Extensions.Logging.LogLevel.Trace:
-                    logger.ZLogTrace($"{levelTag}{categoryTag}{nodeInfo}: {template}", value);
+                    instance.ZLogTrace($"{categoryTag}{nodeInfo}: {template}", value);
                     break;
             }
         }
 
-        // 高性能なパフォーマンス測定用ログ
+        // 基本Logメソッド（Microsoft.Extensions.Logging.LogLevel使用）
+        [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD"), Conditional("BT_LOGGING_ENABLED")]
+        public static void Log(Microsoft.Extensions.Logging.LogLevel level, LogCategory category, string message, string nodeName = "", UnityEngine.Object context = null)
+        {
+            LogInternal(level, category, message, nodeName, context);
+        }
+
+        // パフォーマンス測定用ログ
         [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD"), Conditional("BT_LOGGING_ENABLED")]
         public static void LogPerformance(string operation, float elapsedMs, string nodeName = "")
         {
-            if (LogLevel.Debug > currentLogLevel || !categoryFilters.GetValueOrDefault(LogCategory.System, true)) return;
-            EnsureInitialized();
-            
-            logger.ZLogDebug($"[DBG][SYS][{nodeName}]: {operation} completed in {elapsedMs:F2}ms");
+            LogInternal(Microsoft.Extensions.Logging.LogLevel.Debug, LogCategory.System, $"{operation} completed in {elapsedMs:F2}ms", nodeName);
         }
 
-        // リソース解放
+        // 後方互換性メソッド（新しい実装では機能を簡素化）
+        
+        /// <summary>
+        /// 後方互換性のためのResetメソッド（現在は何もしない）
+        /// </summary>
+        public static void ResetToDefaults()
+        {
+            // ZLoggerのフィルタリングに完全委譲しているため、このメソッドは現在何もしない
+            // テストコードの互換性のためにメソッドは残す
+        }
+
+        /// <summary>
+        /// 後方互換性：ログレベル設定（新実装では効果なし）
+        /// </summary>
+        public static void SetLogLevel(Microsoft.Extensions.Logging.LogLevel level)
+        {
+            // ZLoggerのフィルタリングに委譲しているため、このメソッドは効果なし
+            // 後方互換性のためにメソッドのみ残す
+        }
+
+        /// <summary>
+        /// 後方互換性：現在のログレベル取得（新実装では固定値）
+        /// </summary>
+        public static Microsoft.Extensions.Logging.LogLevel GetCurrentLogLevel()
+        {
+            // ZLoggerに委譲しているため、固定値を返す
+            return Microsoft.Extensions.Logging.LogLevel.Information;
+        }
+
+        /// <summary>
+        /// 後方互換性：カテゴリフィルター設定（新実装では効果なし）
+        /// </summary>
+        public static void SetCategoryFilter(LogCategory category, bool enabled)
+        {
+            // ZLoggerのフィルタリングに委譲しているため、このメソッドは効果なし
+            // 後方互換性のためにメソッドのみ残す
+        }
+
+        /// <summary>
+        /// 後方互換性：カテゴリ有効状態取得（新実装では常にtrue）
+        /// </summary>
+        public static bool IsCategoryEnabled(LogCategory category)
+        {
+            // ZLoggerに委譲しているため、常にtrueを返す
+            return true;
+        }
+
+        /// <summary>
+        /// 後方互換性：履歴クリア（新実装では何もしない）
+        /// </summary>
+        public static void ClearHistory()
+        {
+            // ZLoggerプロバイダーが履歴を管理するため、何もしない
+            // 後方互換性のためにメソッドのみ残す
+        }
+
+        /// <summary>
+        /// 後方互換性：最近のログ取得（新実装では空配列）
+        /// </summary>
+        public static LogEntry[] GetRecentLogs(int count = 10)
+        {
+            // ZLoggerプロバイダーが履歴を管理するため、空配列を返す
+            // 後方互換性のためにメソッドのみ残す
+            return new LogEntry[0];
+        }
+
+        /// <summary>
+        /// 後方互換性：カテゴリ別ログ取得（新実装では空配列）
+        /// </summary>
+        public static LogEntry[] GetLogsByCategory(LogCategory category, int count = 10)
+        {
+            // ZLoggerプロバイダーが履歴を管理するため、空配列を返す
+            // 後方互換性のためにメソッドのみ残す
+            return new LogEntry[0];
+        }
+
+        /// <summary>
+        /// 後方互換性：フォーマットログ（Combat）
+        /// </summary>
+        [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD"), Conditional("BT_LOGGING_ENABLED")]
+        public static void LogCombatFormat(string format, object arg1, string nodeName = "", UnityEngine.Object context = null)
+        {
+            LogInternal(Microsoft.Extensions.Logging.LogLevel.Information, LogCategory.Combat, 
+                string.Format(format, arg1), nodeName, context);
+        }
+
+        /// <summary>
+        /// 後方互換性：フォーマットログ（Movement）
+        /// </summary>
+        [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD"), Conditional("BT_LOGGING_ENABLED")]
+        public static void LogMovementFormat(string format, object arg1, string nodeName = "", UnityEngine.Object context = null)
+        {
+            LogInternal(Microsoft.Extensions.Logging.LogLevel.Information, LogCategory.Movement, 
+                string.Format(format, arg1), nodeName, context);
+        }
+
+        /// <summary>
+        /// 後方互換性：リソース解放（新実装では何もしない）
+        /// </summary>
         public static void Dispose()
         {
-            if (isInitialized && logger is IDisposable disposable)
-            {
-                disposable.Dispose();
-                isInitialized = false;
-            }
+            // ユーザーのLoggerFactoryを使用しているため、何もしない
+            // 後方互換性のためにメソッドのみ残す
         }
     }
 }

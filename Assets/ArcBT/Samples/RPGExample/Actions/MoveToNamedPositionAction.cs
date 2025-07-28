@@ -54,12 +54,12 @@ namespace ArcBT.Samples.RPG.Actions
 
             if (string.IsNullOrEmpty(target))
             {
-                BTLogger.Log(LogLevel.Warning, LogCategory.Movement, "No target specified for move action");
+                BTLogger.Log(Microsoft.Extensions.Logging.LogLevel.Warning, LogCategory.Movement, "No target specified for move action");
                 return BTNodeResult.Failure;
             }
 
             bool moveSucceeded = aiController.MoveToPosition(target, speed, tolerance);
-            BTLogger.Log(LogLevel.Debug, LogCategory.Movement, $"Moving to {target} at speed {speed}");
+            BTLogger.Log(Microsoft.Extensions.Logging.LogLevel.Debug, LogCategory.Movement, $"Moving to {target} at speed {speed}");
             return moveSucceeded ? BTNodeResult.Success : BTNodeResult.Failure;
         }
     }

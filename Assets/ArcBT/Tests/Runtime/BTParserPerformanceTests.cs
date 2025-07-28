@@ -134,7 +134,7 @@ tree ComplexTree {
             var originalParserCategory = BTLogger.IsCategoryEnabled(LogCategory.Parser);
             var originalSystemCategory = BTLogger.IsCategoryEnabled(LogCategory.System);
             
-            BTLogger.SetLogLevel(LogLevel.Error);
+            BTLogger.SetLogLevel(Microsoft.Extensions.Logging.LogLevel.Error);
             BTLogger.SetCategoryFilter(LogCategory.Parser, false);
             BTLogger.SetCategoryFilter(LogCategory.System, false);
             

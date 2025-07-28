@@ -4,6 +4,7 @@ using ArcBT.Core;
 using System;
 using System.Linq;
 using ArcBT.Logger;
+using Microsoft.Extensions.Logging;
 
 [CustomEditor(typeof(BehaviourTreeRunner))]
 public class BTLoggerEditor : Editor
@@ -198,26 +199,26 @@ public class BTLoggerEditor : Editor
         }
     }
     
-    GUIStyle GetLogStyle(LogLevel level)
+    GUIStyle GetLogStyle(Microsoft.Extensions.Logging.LogLevel level)
     {
         var style = new GUIStyle(EditorStyles.label);
         style.wordWrap = true;
         
         switch (level)
         {
-            case LogLevel.Error:
+            case Microsoft.Extensions.Logging.LogLevel.Error:
                 style.normal.textColor = Color.red;
                 break;
-            case LogLevel.Warning:
+            case Microsoft.Extensions.Logging.LogLevel.Warning:
                 style.normal.textColor = new Color(1f, 0.6f, 0f); // オレンジ
                 break;
-            case LogLevel.Info:
+            case Microsoft.Extensions.Logging.LogLevel.Information:
                 style.normal.textColor = EditorGUIUtility.isProSkin ? Color.white : Color.black;
                 break;
-            case LogLevel.Debug:
+            case Microsoft.Extensions.Logging.LogLevel.Debug:
                 style.normal.textColor = Color.cyan;
                 break;
-            case LogLevel.Trace:
+            case Microsoft.Extensions.Logging.LogLevel.Trace:
                 style.normal.textColor = Color.gray;
                 break;
         }
@@ -240,15 +241,15 @@ public class BTLoggerEditor : Editor
         }
     }
     
-    string GetLevelTag(LogLevel level)
+    string GetLevelTag(Microsoft.Extensions.Logging.LogLevel level)
     {
         switch (level)
         {
-            case LogLevel.Error: return "[ERR]";   // Error
-            case LogLevel.Warning: return "[WRN]"; // Warning
-            case LogLevel.Info: return "[INF]";    // Info
-            case LogLevel.Debug: return "[DBG]";   // Debug
-            case LogLevel.Trace: return "[TRC]";   // Trace
+            case Microsoft.Extensions.Logging.LogLevel.Error: return "[ERR]";   // Error
+            case Microsoft.Extensions.Logging.LogLevel.Warning: return "[WRN]"; // Warning
+            case Microsoft.Extensions.Logging.LogLevel.Information: return "[INF]";    // Info
+            case Microsoft.Extensions.Logging.LogLevel.Debug: return "[DBG]";   // Debug
+            case Microsoft.Extensions.Logging.LogLevel.Trace: return "[TRC]";   // Trace
             default: return "[UNK]";               // Unknown
         }
     }

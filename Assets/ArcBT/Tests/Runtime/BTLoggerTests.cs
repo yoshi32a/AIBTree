@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.TestTools;
 using System.Linq;
 using ArcBT.Logger;
+using Microsoft.Extensions.Logging;
 
 namespace ArcBT.Tests
 {
@@ -35,19 +36,19 @@ namespace ArcBT.Tests
         public void TestLogLevelFiltering()
         {
             // Arrange: ログレベルをWarningに設定
-            BTLogger.SetLogLevel(LogLevel.Warning);
+            BTLogger.SetLogLevel(Microsoft.Extensions.Logging.LogLevel.Warning);
             
             // Act: 異なるレベルのログを出力
-            BTLogger.Log(LogLevel.Error, LogCategory.System, "Error message");
-            BTLogger.Log(LogLevel.Warning, LogCategory.System, "Warning message");
-            BTLogger.Log(LogLevel.Info, LogCategory.System, "Info message");
-            BTLogger.Log(LogLevel.Debug, LogCategory.System, "Debug message");
+            BTLogger.Log(Microsoft.Extensions.Logging.LogLevel.Error, LogCategory.System, "Error message");
+            BTLogger.Log(Microsoft.Extensions.Logging.LogLevel.Warning, LogCategory.System, "Warning message");
+            BTLogger.Log(Microsoft.Extensions.Logging.LogLevel.Information, LogCategory.System, "Info message");
+            BTLogger.Log(Microsoft.Extensions.Logging.LogLevel.Debug, LogCategory.System, "Debug message");
             
             // Assert: Warning以上のログのみが記録されているか確認
             var logs = BTLogger.GetRecentLogs(10);
             Assert.AreEqual(2, logs.Length, "Warning以上のログが2件記録されているべき");
-            Assert.AreEqual(LogLevel.Error, logs[0].Level, "最初に記録されたログはErrorレベル");
-            Assert.AreEqual(LogLevel.Warning, logs[1].Level, "2番目に記録されたログはWarningレベル");
+            Assert.AreEqual(Microsoft.Extensions.Logging.LogLevel.Error, logs[0].Level, "最初に記録されたログはErrorレベル");
+            Assert.AreEqual(Microsoft.Extensions.Logging.LogLevel.Warning, logs[1].Level, "2番目に記録されたログはWarningレベル");
             
             UnityEngine.Debug.Log($"ZLogger log level filtering test: {logs.Length} logs recorded at Warning+ level");
         }
@@ -62,9 +63,9 @@ namespace ArcBT.Tests
             BTLogger.SetCategoryFilter(LogCategory.System, false);
             
             // Act: 異なるカテゴリのログを出力
-            BTLogger.Log(LogLevel.Info, LogCategory.Combat, "Combat message");
-            BTLogger.Log(LogLevel.Info, LogCategory.Movement, "Movement message");
-            BTLogger.Log(LogLevel.Info, LogCategory.System, "System message");
+            BTLogger.Log(Microsoft.Extensions.Logging.LogLevel.Information, LogCategory.Combat, "Combat message");
+            BTLogger.Log(Microsoft.Extensions.Logging.LogLevel.Information, LogCategory.Movement, "Movement message");
+            BTLogger.Log(Microsoft.Extensions.Logging.LogLevel.Information, LogCategory.System, "System message");
             
             // Assert: Combatカテゴリのログのみが記録されているか確認
             var logs = BTLogger.GetRecentLogs(10);
@@ -122,7 +123,7 @@ namespace ArcBT.Tests
         public void TestConvenienceMethods()
         {
             // Arrange: Debugレベルまでのログをすべて記録するよう設定
-            BTLogger.SetLogLevel(LogLevel.Debug);
+            BTLogger.SetLogLevel(Microsoft.Extensions.Logging.LogLevel.Debug);
             
             // Act: 各便利メソッドを実行
             BTLogger.LogCombat("Combat test", "TestNode");
@@ -176,19 +177,19 @@ namespace ArcBT.Tests
         public void TestDefaultSettingsReset()
         {
             // Arrange: 設定を変更
-            BTLogger.SetLogLevel(LogLevel.Error);
+            BTLogger.SetLogLevel(Microsoft.Extensions.Logging.LogLevel.Error);
             BTLogger.SetCategoryFilter(LogCategory.Combat, false);
             BTLogger.SetCategoryFilter(LogCategory.System, false);
             
             // 変更されたことを確認
-            Assert.AreEqual(LogLevel.Error, BTLogger.GetCurrentLogLevel(), "ログレベルが変更されている");
+            Assert.AreEqual(Microsoft.Extensions.Logging.LogLevel.Error, BTLogger.GetCurrentLogLevel(), "ログレベルが変更されている");
             Assert.IsFalse(BTLogger.IsCategoryEnabled(LogCategory.Combat), "Combatカテゴリが無効化されている");
             
             // Act: デフォルト設定にリセット
             BTLogger.ResetToDefaults();
             
             // Assert: デフォルト値に戻っているか確認
-            Assert.AreEqual(LogLevel.Info, BTLogger.GetCurrentLogLevel(), "ログレベルがInfoに戻っている");
+            Assert.AreEqual(Microsoft.Extensions.Logging.LogLevel.Information, BTLogger.GetCurrentLogLevel(), "ログレベルがInfoに戻っている");
             Assert.IsTrue(BTLogger.IsCategoryEnabled(LogCategory.Combat), "Combatカテゴリが有効に戻っている");
             Assert.IsTrue(BTLogger.IsCategoryEnabled(LogCategory.System), "Systemカテゴリが有効に戻っている");
             Assert.IsFalse(BTLogger.IsCategoryEnabled(LogCategory.Parser), "Parserカテゴリはデフォルトで無効");
@@ -205,7 +206,7 @@ namespace ArcBT.Tests
             // Assert: エラーレベルで記録されているか確認
             var logs = BTLogger.GetRecentLogs(1);
             Assert.AreEqual(1, logs.Length, "エラーログが記録されている");
-            Assert.AreEqual(LogLevel.Error, logs[0].Level, "エラーレベルで記録されている");
+            Assert.AreEqual(Microsoft.Extensions.Logging.LogLevel.Error, logs[0].Level, "エラーレベルで記録されている");
             Assert.AreEqual(LogCategory.Combat, logs[0].Category, "指定したカテゴリで記録されている");
             Assert.AreEqual("Critical error occurred", logs[0].Message, "メッセージが正しく記録されている");
             Assert.AreEqual("ErrorNode", logs[0].NodeName, "ノード名が正しく記録されている");
@@ -249,7 +250,7 @@ namespace ArcBT.Tests
                 Active = true 
             };
             
-            BTLogger.LogStructured(LogLevel.Info, LogCategory.System, 
+            BTLogger.LogStructured(Microsoft.Extensions.Logging.LogLevel.Information, LogCategory.System, 
                 "Player {PlayerId} scored {Score} in level {Level} with status {Active}", 
                 testData, "StructuredTest");
             

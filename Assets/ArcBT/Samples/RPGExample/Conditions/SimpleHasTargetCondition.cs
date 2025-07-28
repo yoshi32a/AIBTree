@@ -37,7 +37,7 @@ namespace ArcBT.Samples.RPG.Conditions
             }
 
             bool hasTarget = aiController.Target != null;
-            BTLogger.Log(LogLevel.Debug, LogCategory.System, $"Simple has target: {hasTarget}");
+            BTLogger.Log(Microsoft.Extensions.Logging.LogLevel.Debug, LogCategory.System, $"Simple has target: {hasTarget}");
             return hasTarget ? BTNodeResult.Success : BTNodeResult.Failure;
         }
     }

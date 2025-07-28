@@ -185,7 +185,7 @@ namespace ArcBT.Tests
                     Active = i % 2 == 0
                 };
                 
-                BTLogger.LogStructured(LogLevel.Info, LogCategory.System, 
+                BTLogger.LogStructured(Microsoft.Extensions.Logging.LogLevel.Information, LogCategory.System, 
                     "Structured log {Index} with {Value} at {Position} named {Name} active {Active}", 
                     structuredData, "StructuredMemory");
                 
@@ -231,7 +231,7 @@ namespace ArcBT.Tests
                     BTLogger.LogSystem($"Leak test cycle {cycle} log {i}", "LeakDetection");
                     BTLogger.LogCombatFormat("Combat cycle {0} iteration {1} with damage {2}", 
                         $"cycle_{cycle}_iter_{i}_damage_{i * 10}", "LeakDetection");
-                    BTLogger.LogStructured(LogLevel.Debug, LogCategory.Movement, 
+                    BTLogger.LogStructured(Microsoft.Extensions.Logging.LogLevel.Debug, LogCategory.Movement, 
                         "Movement cycle {Cycle} step {Step}", 
                         new { Cycle = cycle, Step = i }, "LeakDetection");
                 }
@@ -276,7 +276,7 @@ namespace ArcBT.Tests
         public IEnumerator TestZLoggerFilteringMemoryEfficiency()
         {
             // Arrange: フィルタリング設定で無効ログを大量生成
-            BTLogger.SetLogLevel(LogLevel.Error); // InfoとDebugをフィルタ
+            BTLogger.SetLogLevel(Microsoft.Extensions.Logging.LogLevel.Error); // InfoとDebugをフィルタ
             foreach (LogCategory category in Enum.GetValues(typeof(LogCategory)))
             {
                 if (category != LogCategory.System)
@@ -295,8 +295,8 @@ namespace ArcBT.Tests
                 // これらのログはフィルタリングされるため処理されない
                 BTLogger.LogCombat($"Filtered combat log {i}", "FilterMemory");
                 BTLogger.LogMovement($"Filtered movement log {i}", "FilterMemory");
-                BTLogger.Log(LogLevel.Info, LogCategory.System, $"Filtered info log {i}", "FilterMemory");
-                BTLogger.Log(LogLevel.Debug, LogCategory.Debug, $"Filtered debug log {i}", "FilterMemory");
+                BTLogger.Log(Microsoft.Extensions.Logging.LogLevel.Information, LogCategory.System, $"Filtered info log {i}", "FilterMemory");
+                BTLogger.Log(Microsoft.Extensions.Logging.LogLevel.Debug, LogCategory.Debug, $"Filtered debug log {i}", "FilterMemory");
                 
                 if (i % 250 == 0)
                 {
@@ -337,7 +337,7 @@ namespace ArcBT.Tests
             for (int i = 0; i < logCount; i++)
             {
                 BTLogger.LogSystem($"GC impact test {i} with data {i * 2.5f}", "GCImpact");
-                BTLogger.LogStructured(LogLevel.Info, LogCategory.Combat, 
+                BTLogger.LogStructured(Microsoft.Extensions.Logging.LogLevel.Information, LogCategory.Combat, 
                     "GC test {Index} value {Value}", 
                     new { Index = i, Value = i * 1.5f }, "GCImpact");
                 
