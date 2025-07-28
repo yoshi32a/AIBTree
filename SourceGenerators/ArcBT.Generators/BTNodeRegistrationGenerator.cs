@@ -126,17 +126,10 @@ namespace ArcBT.Generators
                         continue;
 
                     string scriptName = null;
-                    string nodeType = null;
 
-                    // 基底クラスからNodeTypeを自動判定
-                    if (IsInheritedFrom(classSymbol, btActionNodeSymbol))
-                    {
-                        nodeType = "Action";
-                    }
-                    else if (IsInheritedFrom(classSymbol, btConditionNodeSymbol))
-                    {
-                        nodeType = "Condition";
-                    }
+                    // BTNode継承チェック（NodeType判定不要）
+                    if (!InheritsFromBTNode(classSymbol))
+                        continue;
 
                     // 属性の第1引数：スクリプト名を取得
                     if (attribute.ConstructorArguments.Length >= 1)
@@ -149,7 +142,7 @@ namespace ArcBT.Generators
                         scriptName = classSymbol.Name;
                     }
 
-                    if (scriptName == null || nodeType == null)
+                    if (scriptName == null)
                         continue;
 
                     var nodeInfo = new NodeInfo
@@ -157,7 +150,6 @@ namespace ArcBT.Generators
                         ClassName = classSymbol.Name,
                         FullTypeName = classSymbol.ToDisplayString(),
                         ScriptName = scriptName,
-                        NodeType = nodeType,
                         Namespace = classSymbol.ContainingNamespace?.ToDisplayString() ?? "global"
                     };
 
@@ -218,31 +210,19 @@ namespace ArcBT.Generators
             sb.AppendLine("        static void RegisterNodes()");
             sb.AppendLine("        {");
             
-            // Action ノードの登録
-            var actionNodes = nodes.Where(n => n.NodeType == "Action").OrderBy(n => n.ScriptName);
-            if (actionNodes.Any())
+            // 統一ノード登録（全ノードタイプ対応）
+            var allNodes = nodes.OrderBy(n => n.ScriptName);
+            if (allNodes.Any())
             {
-                sb.AppendLine("            // Action ノードの登録");
-                foreach (var node in actionNodes)
+                sb.AppendLine("            // 統一ノード登録（全ノードタイプ対応）");
+                foreach (var node in allNodes)
                 {
-                    sb.AppendLine($"            BTStaticNodeRegistry.RegisterAction(\"{node.ScriptName}\", () => new {node.ClassName}());");
+                    sb.AppendLine($"            BTStaticNodeRegistry.RegisterNode(\"{node.ScriptName}\", () => new {node.ClassName}());");
                 }
                 sb.AppendLine();
             }
             
-            // Condition ノードの登録
-            var conditionNodes = nodes.Where(n => n.NodeType == "Condition").OrderBy(n => n.ScriptName);
-            if (conditionNodes.Any())
-            {
-                sb.AppendLine("            // Condition ノードの登録");
-                foreach (var node in conditionNodes)
-                {
-                    sb.AppendLine($"            BTStaticNodeRegistry.RegisterCondition(\"{node.ScriptName}\", () => new {node.ClassName}());");
-                }
-                sb.AppendLine();
-            }
-            
-            sb.AppendLine($"            BTLogger.LogSystem($\"{currentAssemblyName} ノードを自動登録しました (Actions: {actionNodes.Count()}, Conditions: {conditionNodes.Count()})\");");
+            sb.AppendLine($"            BTLogger.LogSystem($\"{currentAssemblyName} ノードを自動登録しました ({allNodes.Count()} nodes)\");");
             sb.AppendLine("        }");
             sb.AppendLine("    }");
             sb.AppendLine("}");
@@ -266,12 +246,32 @@ namespace ArcBT.Generators
             return false;
         }
 
+        private bool InheritsFromBTNode(INamedTypeSymbol classSymbol)
+        {
+            var currentType = classSymbol.BaseType;
+            while (currentType != null)
+            {
+                // BTNodeまたはその派生クラスを継承していればOK
+                switch (currentType.Name)
+                {
+                    case "BTNode":
+                    case "BTActionNode":
+                    case "BTConditionNode":
+                    case "BTCompositeNode":
+                    case "BTDecoratorNode":
+                    case "BTServiceNode":
+                        return true;
+                }
+                currentType = currentType.BaseType;
+            }
+            return false;
+        }
+
         private class NodeInfo
         {
             public string ClassName { get; set; } = "";
             public string FullTypeName { get; set; } = "";
             public string ScriptName { get; set; } = "";
-            public string NodeType { get; set; } = "";
             public string Namespace { get; set; } = "";
         }
 

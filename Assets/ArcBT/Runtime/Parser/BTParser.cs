@@ -514,52 +514,24 @@ namespace ArcBT.Parser
         BTNode CreateNodeFromScript(string scriptName, string nodeType, Dictionary<string, string> properties)
         {
             BTLogger.Log(LogLevel.Debug, LogCategory.Parser, $"🔧 CreateNodeFromScript: script='{scriptName}', type='{nodeType}'");
-            BTNode node = null;
 
-            if (nodeType == "Action")
-            {
-                BTLogger.Log(LogLevel.Debug, LogCategory.Parser, $"🔧 Creating ACTION node for script: {scriptName}");
-
-                // 静的レジストリから作成（リフレクション不使用）
-                node = BTStaticNodeRegistry.CreateAction(scriptName);
-
-                if (node != null)
-                {
-                    BTLogger.Log(LogLevel.Info, LogCategory.Parser, $"✅ Created action for script '{scriptName}'");
-                }
-                else
-                {
-                    BTLogger.Log(LogLevel.Error, LogCategory.Parser,
-                        $"Unknown action script: {scriptName}. Please register the action in BTStaticNodeRegistry or use source generator.");
-                    return null;
-                }
-            }
-            else if (nodeType == "Condition")
-            {
-                BTLogger.Log(LogLevel.Debug, LogCategory.Parser, $"🔧 Creating CONDITION node for script: {scriptName}");
-
-                // 静的レジストリから作成（リフレクション不使用）
-                node = BTStaticNodeRegistry.CreateCondition(scriptName);
-
-                if (node != null)
-                {
-                    BTLogger.Log(LogLevel.Info, LogCategory.Parser, $"✅ Created condition for script '{scriptName}'");
-                }
-                else
-                {
-                    BTLogger.Log(LogLevel.Error, LogCategory.Parser,
-                        $"Unknown condition script: {scriptName}. Please register the condition in BTStaticNodeRegistry or use source generator.");
-                    return null;
-                }
-            }
+            // 統一レジストリから作成（全ノードタイプ対応）
+            var node = BTStaticNodeRegistry.CreateNode(nodeType, scriptName);
 
             if (node != null)
             {
+                BTLogger.Log(LogLevel.Info, LogCategory.Parser, $"✅ Created {nodeType.ToLower()} for script '{scriptName}'");
+                
                 // プロパティを設定
                 foreach (var prop in properties)
                 {
                     node.SetProperty(prop.Key, prop.Value);
                 }
+            }
+            else
+            {
+                BTLogger.Log(LogLevel.Error, LogCategory.Parser,
+                    $"Unknown {nodeType.ToLower()} script: {scriptName}. Please register the node in BTStaticNodeRegistry or use source generator.");
             }
 
             return node;

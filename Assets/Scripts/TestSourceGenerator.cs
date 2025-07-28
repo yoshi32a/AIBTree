@@ -13,7 +13,7 @@ public class TestSourceGenerator : MonoBehaviour
         BTLogger.Info("=== Testing Source Generator ===");
         
         // MoveToPosition アクションを作成（自動登録されているはず）
-        var moveAction = BTStaticNodeRegistry.CreateAction("MoveToPosition");
+        var moveAction = BTStaticNodeRegistry.CreateNode("Action", "MoveToPosition");
         if (moveAction != null)
         {
             BTLogger.Info($"✓ MoveToPosition created successfully: {moveAction.GetType().Name}");
@@ -24,7 +24,7 @@ public class TestSourceGenerator : MonoBehaviour
         }
         
         // Wait アクションを作成
-        var waitAction = BTStaticNodeRegistry.CreateAction("Wait");
+        var waitAction = BTStaticNodeRegistry.CreateNode("Action", "Wait");
         if (waitAction != null)
         {
             BTLogger.Info($"✓ Wait created successfully: {waitAction.GetType().Name}");
@@ -35,7 +35,7 @@ public class TestSourceGenerator : MonoBehaviour
         }
         
         // HasSharedEnemyInfo 条件を作成
-        var condition = BTStaticNodeRegistry.CreateCondition("HasSharedEnemyInfo");
+        var condition = BTStaticNodeRegistry.CreateNode("Condition", "HasSharedEnemyInfo");
         if (condition != null)
         {
             BTLogger.Info($"✓ HasSharedEnemyInfo created successfully: {condition.GetType().Name}");
@@ -46,7 +46,7 @@ public class TestSourceGenerator : MonoBehaviour
         }
         
         // RPGサンプルのノード（自動登録されているはず）
-        var attackAction = BTStaticNodeRegistry.CreateAction("AttackEnemy");
+        var attackAction = BTStaticNodeRegistry.CreateNode("Action", "AttackEnemy");
         if (attackAction != null)
         {
             BTLogger.Info($"✓ AttackEnemy created successfully: {attackAction.GetType().Name}");
@@ -56,7 +56,7 @@ public class TestSourceGenerator : MonoBehaviour
             BTLogger.Error("✗ AttackEnemy not found in registry!");
         }
         
-        var healthCheck = BTStaticNodeRegistry.CreateCondition("HealthCheck");
+        var healthCheck = BTStaticNodeRegistry.CreateNode("Condition", "HealthCheck");
         if (healthCheck != null)
         {
             BTLogger.Info($"✓ HealthCheck created successfully: {healthCheck.GetType().Name}");

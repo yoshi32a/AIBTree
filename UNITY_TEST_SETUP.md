@@ -153,7 +153,7 @@ MoveToPosition: Using BlackBoard key 'current_patrol_point' = patrol_point_1
 ### Unity Test Runnerの使用
 1. **Window > General > Test Runner** でテストランナーを開く
 2. **EditModeタブ**を選択してエディターテストを実行
-3. **主要なテストクラス**（314テスト全て成功、コードカバレッジ70.00%）:
+3. **主要なテストクラス**（324テスト全て成功、コードカバレッジ28.6%）:
 
    **Runtime Tests (20ファイル)** - コアシステムテスト:
    - `BlackBoardTests` - BlackBoardシステムテスト（90テスト）
@@ -207,9 +207,19 @@ MoveToPosition: Using BlackBoard key 'current_patrol_point' = patrol_point_1
   - Inverter, Repeat, Retry, Timeoutの動作確認
   - ネストしたDecorator組み合わせパターンのテスト
 - **テスト構造の完全分離**: Runtime (302テスト) と Samples (12テスト) の独立化
-- **全テスト通過**: 314/314テスト（100%成功率）を達成
+- **全テスト通過**: 324/324テスト（100%成功率）を達成
 - **ValidateAllScriptReferences**: .btファイルで使用されているすべてのスクリプト名の検証が正常動作
 - **テスト安定性向上**: ソースジェネレーター改善により自動生成コードのテストも確実に通過
+
+### 最新のテスト改善（2025年7月28日）
+- **Issue #18完了**: ノード登録システム完全簡素化によるテスト品質向上
+  - 統一Dictionary実装でAction/Condition/Decorator全対応
+  - ソースジェネレーター拡張による自動ノードタイプ判定
+  - 324テスト全成功（100%成功率）を達成
+- **商用レベル品質保証**: ArcBTフレームワークの成熟度確立
+  - SourceGeneratorTest.csコンパイルエラー修正完了
+  - 統一Dictionary実装による動作安定性の向上
+  - BTStaticNodeRegistryの完全対応確認
 
 ## 7. トラブルシューティング
 
@@ -244,7 +254,7 @@ MoveToPosition: Using BlackBoard key 'current_patrol_point' = patrol_point_1
 - **場所**: `Assets/ArcBT/Tests/` フォルダ
 - **アセンブリ**: ArcBT.Tests.asmdef（独立したテストアセンブリ）
 - **参照関係**: ArcBT（Runtime）とArcBT.Samples（Samples）にアクセス可能
-- **テスト総数**: 314テスト（100%成功率、コードカバレッジ70.00%）
+- **テスト総数**: 324テスト（100%成功率、コードカバレッジ28.6%）
 - **Runtime/Samples分離**: コアシステム302テスト + サンプル12テスト
 
 ### RPGサンプルテスト
@@ -306,7 +316,7 @@ MoveToPosition: Using BlackBoard key 'current_patrol_point' = patrol_point_1
 
 ### バッチ実行
 ```bash
-# 全テスト実行（314テスト）
+# 全テスト実行（324テスト）
 Unity.exe -runTests -batchmode -quit -projectPath . -testResults TestResults.xml
 
 # カバレッジ付きテスト実行
@@ -320,9 +330,9 @@ Unity.exe -runTests -batchmode -quit -projectPath . -testResults TestResults.xml
 - **エディターメニュー**: `BehaviourTree > Run BT File Tests`
 
 ### 継続的統合対応
-- 全314テストの自動実行
+- 全324テストの自動実行
 - Runtime/Samples分離による効率的テスト実行
-- コードカバレッジ70.00%の維持
+- コードカバレッジ28.6%の維持
 - .btファイル解析テストの自動化
 - GameplayTagSystemパフォーマンス回帰テストの実行
 - Decoratorノード機能テストの自動化

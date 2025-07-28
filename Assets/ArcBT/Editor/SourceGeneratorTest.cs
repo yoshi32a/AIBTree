@@ -17,18 +17,10 @@ namespace ArcBT.Editor
         {
             BTLogger.Info("=== Source Generator Registration Test ===");
             
-            // 登録されているアクションを表示
-            var actionNames = BTStaticNodeRegistry.GetActionNames().ToList();
-            BTLogger.Info($"Registered Actions ({actionNames.Count}):");
-            foreach (var name in actionNames.OrderBy(n => n))
-            {
-                BTLogger.Info($"  - {name}");
-            }
-            
-            // 登録されている条件を表示
-            var conditionNames = BTStaticNodeRegistry.GetConditionNames().ToList();
-            BTLogger.Info($"\nRegistered Conditions ({conditionNames.Count}):");
-            foreach (var name in conditionNames.OrderBy(n => n))
+            // 登録されているすべてのノードを表示
+            var allNodeNames = BTStaticNodeRegistry.GetAllNodeNames().ToList();
+            BTLogger.Info($"Registered Nodes ({allNodeNames.Count}):");
+            foreach (var name in allNodeNames.OrderBy(n => n))
             {
                 BTLogger.Info($"  - {name}");
             }
@@ -44,29 +36,16 @@ namespace ArcBT.Editor
         
         static void TestCreateNode(string scriptName, bool isAction)
         {
-            if (isAction)
+            var nodeType = isAction ? "Action" : "Condition";
+            var node = BTStaticNodeRegistry.CreateNode(nodeType, scriptName);
+            
+            if (node != null)
             {
-                var node = BTStaticNodeRegistry.CreateAction(scriptName);
-                if (node != null)
-                {
-                    BTLogger.Info($"✓ Successfully created Action: {scriptName} -> {node.GetType().Name}");
-                }
-                else
-                {
-                    BTLogger.Warning($"✗ Failed to create Action: {scriptName}");
-                }
+                BTLogger.Info($"✓ Successfully created {nodeType}: {scriptName} -> {node.GetType().Name}");
             }
             else
             {
-                var node = BTStaticNodeRegistry.CreateCondition(scriptName);
-                if (node != null)
-                {
-                    BTLogger.Info($"✓ Successfully created Condition: {scriptName} -> {node.GetType().Name}");
-                }
-                else
-                {
-                    BTLogger.Warning($"✗ Failed to create Condition: {scriptName}");
-                }
+                BTLogger.Warning($"✗ Failed to create {nodeType}: {scriptName}");
             }
         }
         

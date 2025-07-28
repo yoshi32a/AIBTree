@@ -1,71 +1,81 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using ArcBT.Decorators;
 using ArcBT.Logger;
 
 namespace ArcBT.Core
 {
     /// <summary>
-    /// リフレクションを使わない静的ノードレジストリ
-    /// ビルド時に自動生成される想定
+    /// 統一された静的ノードレジストリ
+    /// 全ノードタイプを単一Dictionaryで管理
     /// </summary>
     public static class BTStaticNodeRegistry
     {
-        // アクション生成関数の登録（実行時に追加可能）
-        static readonly Dictionary<string, Func<BTActionNode>> actionCreators = new();
+        // 統一ノード生成関数の登録（全ノードタイプ対応）
+        static readonly Dictionary<string, Func<BTNode>> allNodes = new();
 
-        // 条件生成関数の登録（実行時に追加可能）
-        static readonly Dictionary<string, Func<BTConditionNode>> conditionCreators = new();
-
-        /// <summary>アクションを作成（リフレクション不使用）</summary>
-        public static BTActionNode CreateAction(string scriptName)
+        /// <summary>ノードを作成（統一メソッド）</summary>
+        public static BTNode CreateNode(string nodeTypeString, string scriptName)
         {
-            if (actionCreators.TryGetValue(scriptName, out var creator))
+            // 1. 登録済みノードから検索
+            if (allNodes.TryGetValue(scriptName, out var factory))
             {
-                return creator();
+                var node = factory.Invoke();
+                if (node != null)
+                {
+                    node.Name = scriptName;
+                    return node;
+                }
             }
 
-            BTLogger.LogError(LogCategory.System, $"Unknown action script: {scriptName}");
+            // 2. フォールバック：組み込みノード作成
+            var builtinNode = CreateBuiltinNode(nodeTypeString, scriptName);
+            if (builtinNode != null)
+            {
+                builtinNode.Name = scriptName;
+                return builtinNode;
+            }
+
+            BTLogger.LogError(LogCategory.Parser, $"Failed to create node: {nodeTypeString} {scriptName}");
             return null;
         }
 
-        /// <summary>条件を作成（リフレクション不使用）</summary>
-        public static BTConditionNode CreateCondition(string scriptName)
+        /// <summary>登録済みのすべてのノード名を取得</summary>
+        public static IEnumerable<string> GetAllNodeNames()
         {
-            if (conditionCreators.TryGetValue(scriptName, out var creator))
-            {
-                return creator();
-            }
-
-            BTLogger.LogError(LogCategory.System, $"Unknown condition script: {scriptName}");
-            return null;
+            return allNodes.Keys;
         }
 
-        /// <summary>アクションを動的に登録</summary>
-        public static void RegisterAction(string scriptName, Func<BTActionNode> creator)
+        /// <summary>ノードを動的に登録（統一メソッド）</summary>
+        public static void RegisterNode(string scriptName, Func<BTNode> factory)
         {
-            if (actionCreators.ContainsKey(scriptName))
+            if (allNodes.ContainsKey(scriptName))
             {
-                BTLogger.Log(LogLevel.Warning, LogCategory.System, $"Action '{scriptName}' is already registered. Overwriting.");
+                BTLogger.Log(LogLevel.Warning, LogCategory.System, $"Node '{scriptName}' is already registered. Overwriting.");
             }
 
-            actionCreators[scriptName] = creator;
+            allNodes[scriptName] = factory;
+            BTLogger.LogSystem($"Registered node: {scriptName}");
         }
 
-        /// <summary>条件を動的に登録</summary>
-        public static void RegisterCondition(string scriptName, Func<BTConditionNode> creator)
+        /// <summary>組み込みノード作成</summary>
+        static BTNode CreateBuiltinNode(string nodeType, string scriptName)
         {
-            if (conditionCreators.ContainsKey(scriptName))
+            return nodeType.ToLower() switch
             {
-                BTLogger.Log(LogLevel.Warning, LogCategory.System, $"Condition '{scriptName}' is already registered. Overwriting.");
-            }
-
-            conditionCreators[scriptName] = creator;
+                "sequence" => new BTSequenceNode(),
+                "selector" => new BTSelectorNode(),
+                "parallel" => new BTParallelNode(),
+                "inverter" => new InverterDecorator(),
+                "repeat" => new RepeatDecorator(),
+                "retry" => new RetryDecorator(),
+                "timeout" => new TimeoutDecorator(),
+                _ => null
+            };
         }
 
-        /// <summary>登録されているアクション名</summary>
-        public static IEnumerable<string> GetActionNames() => actionCreators.Keys;
-
-        /// <summary>登録されている条件名</summary>
-        public static IEnumerable<string> GetConditionNames() => conditionCreators.Keys;
+        /// <summary>登録されているノード名</summary>
+        public static IEnumerable<string> GetRegisteredNodeNames() => allNodes.Keys;
     }
 }
