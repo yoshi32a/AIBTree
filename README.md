@@ -4,114 +4,38 @@ Unity用の高度なBehaviourTreeシステムです。BlackBoardによるデー�
 
 ## ✨ 主要機能
 
-- **🏷️ GameplayTagSystem**: 階層的タグシステム（10-100倍性能向上、GameObject.tag完全置換）
-- **🎭 Decoratorノードシステム**: Inverter, Repeat, Retry, Timeoutによる柔軟な制御
 - **🧠 BlackBoardシステム**: AIノード間でのリアルタイムデータ共有
 - **⚡ 動的条件チェック**: Action実行中の条件変化に即座に対応
 - **🌲 階層型.btファイル**: 直感的な階層構造でAI定義
-- **🔧 VSCode完全対応**: シンタックスハイライト、スニペット、自動補完
-- **⚙️ Unity統合**: C#による高性能な実行エンジン
+- **🎭 Decoratorノード**: Inverter, Repeat, Retry, Timeoutによる柔軟な制御
 - **🚀 並列実行**: Parallelノードによる複数行動の同時実行
-- **📊 BTLoggerシステム**: 高性能な条件付きログシステム（カテゴリ別フィルタリング、本番環境完全最適化）
-- **🔥 リフレクション削除**: 静的ノード登録による10-100倍の性能改善
-- **🚀 ソースジェネレーター**: 別アセンブリ完全対応の自動ノード登録システム
-- **⚙️ BTNode属性簡素化**: `[BTNode("ScriptName")]`のみで基底クラスから自動判定
+- **🏷️ GameplayTagSystem**: 階層的タグシステムによる柔軟な分類
+- **🔧 VSCode完全対応**: シンタックスハイライト、スニペット、自動補完
 
 ## プロジェクト構成
 
 ```
 Assets/
-├── ArcBT/                        # ArcBTパッケージ（独立パッケージ v1.0.0）
+├── ArcBT/                        # ArcBTパッケージ（独立パッケージ）
 │   ├── Runtime/
-│   │   ├── Core/                 # コアシステム
-│   │   │   ├── BTNode.cs        # ベースノード（BlackBoard対応）
-│   │   │   ├── BlackBoard.cs    # データ共有システム
-│   │   │   ├── BTActionNode.cs  # アクション基底（動的条件対応）
-│   │   │   ├── BTConditionNode.cs
-│   │   │   ├── BTDecoratorNode.cs # デコレーター基底クラス
-│   │   │   ├── BTSequenceNode.cs # Sequenceノード
-│   │   │   ├── BTSelectorNode.cs # Selectorノード
-│   │   │   ├── BTParallelNode.cs # Parallelノード
-│   │   │   ├── BTLogger.cs      # 高性能ログシステム
-│   │   │   ├── BTStaticNodeRegistry.cs # 静的ノード登録（リフレクション削除）
-│   │   │   ├── BTNodeFactory.cs  # Expression Tree高速化
-│   │   │   ├── IHealth.cs       # Healthインターフェース
-│   │   │   ├── BehaviourTreeRunner.cs # 実行エンジン
-│   │   │   ├── MovementController.cs # 移動制御
-│   │   │   └── TagSystem/        # GameplayTagSystem
-│   │   │       ├── GameplayTag.cs     # 階層的タグ構造
-│   │   │       ├── GameplayTagManager.cs # 高速検索・キャッシュ
-│   │   │       ├── GameplayTagComponent.cs
-│   │   │       ├── GameplayTagContainer.cs
-│   │   │       ├── UnityTagCompatibility.cs # 移行支援
-│   │   │       └── GameObjectArrayPool.cs # メモリ最適化
-│   │   ├── Decorators/           # デコレーターノード（4種類）
-│   │   │   ├── InverterDecorator.cs   # 結果反転
-│   │   │   ├── RepeatDecorator.cs     # 繰り返し実行
-│   │   │   ├── RetryDecorator.cs      # リトライ機能
-│   │   │   └── TimeoutDecorator.cs    # タイムアウト制御
-│   │   ├── Actions/              # 基本アクション（8種類）
-│   │   │   ├── MoveToPositionAction.cs
-│   │   │   ├── WaitAction.cs
-│   │   │   ├── ScanEnvironmentAction.cs
-│   │   │   ├── RandomWanderAction.cs
-│   │   │   ├── SetBlackBoardAction.cs # 型自動検出対応
-│   │   │   ├── SimpleAttackAction.cs
-│   │   │   ├── MoveToNamedPositionAction.cs
-│   │   │   └── WaitSimpleAction.cs
-│   │   ├── Conditions/           # 基本条件（5種類）
-│   │   │   ├── HasSharedEnemyInfoCondition.cs
-│   │   │   ├── CompareBlackBoardCondition.cs # 式パーサー対応
-│   │   │   ├── SimpleHasTargetCondition.cs
-│   │   │   ├── EnemyDetectionCondition.cs
-│   │   │   └── SimpleHealthCheckCondition.cs
+│   │   ├── Core/                 # コアシステム（ノード基底、BlackBoard、実行エンジン等）
+│   │   ├── TagSystem/            # GameplayTagSystem（階層的タグ、高速検索）
+│   │   ├── Decorators/           # デコレーターノード（Inverter、Repeat、Retry、Timeout）
+│   │   ├── Actions/              # 基本アクションノード
+│   │   ├── Conditions/           # 基本条件ノード
 │   │   ├── Parser/               # .btファイルパーサー
-│   │   │   └── BTParser.cs
-│   │   ├── Examples/             # 使用例
-│   │   │   └── ExampleAI.cs
-│   │   └── Nodes/                # レガシーノード（後方互換性）
 │   ├── Samples/                  # サンプル実装
 │   │   ├── RPGExample/           # 完全なRPGサンプル
-│   │   │   ├── Actions/          # RPG用アクション（16種類）
-│   │   │   ├── Conditions/       # RPG用条件（12種類）
-│   │   │   ├── Components/       # Health、Mana、Inventory
-│   │   │   ├── RPGNodeRegistration.cs # ノード自己登録
-│   │   │   └── README.md
 │   │   └── Documentation/        # 実装ガイド
-│   │       └── RPG_IMPLEMENTATION_GUIDE.md
-│   ├── Tests/                    # 包括的テストスイート（314テスト）
-│   │   ├── Runtime Tests (20ファイル) # コアシステムテスト
-│   │   │   ├── BlackBoardTests.cs    # 90テスト
-│   │   │   ├── ActionNodeTests.cs    # 25テスト  
-│   │   │   ├── ConditionNodeTests.cs # 20テスト
-│   │   │   ├── BehaviourTreeRunnerTests.cs # 15テスト
-│   │   │   ├── GameplayTagSystemTests.cs # 45テスト
-│   │   │   ├── GameplayTagManagerTests.cs # 35テスト
-│   │   │   ├── DecoratorNodeTests.cs # 30テスト
-│   │   │   ├── HierarchicalSearchTests.cs # 15テスト
-│   │   │   ├── TagCachePerformanceTests.cs # 10テスト
-│   │   │   ├── UnityTagCompatibilityTests.cs # 12テスト
-│   │   │   └── その他27テスト...
-│   │   └── Samples Tests (2ファイル) # サンプル専用テスト
-│   │       ├── RPGSimpleTests.cs     # 10テスト
-│   │       └── TagSystemBenchmarkTests.cs # 2テスト
-│   ├── Editor/                   # エディター拡張
-│   │   └── BTLoggerEditor.cs     # ログシステム管理UI
-│   ├── README.md                 # パッケージ概要
-│   └── package.json              # パッケージ定義
-├── BehaviourTrees/               # .btファイルとサンプル
-│   ├── blackboard_sample.bt      # BlackBoard基本例
-│   ├── team_coordination_sample.bt # チーム連携例
-│   ├── resource_management_sample.bt # リソース管理例
-│   └── dynamic_condition_sample.bt # 動的条件例
+│   ├── Tests/                    # 包括的テストスイート
+│   │   ├── Runtime/              # コアシステムテスト
+│   │   └── Samples/              # サンプル専用テスト
+│   └── Editor/                   # エディター拡張
+├── BehaviourTrees/               # .btファイルサンプル集
 ├── Scripts/                      # アプリケーション固有スクリプト
 │   ├── UI/                       # 視覚的フィードバックシステム
 │   └── Camera/                   # カメラ制御システム
-vscode-bt-extension/              # VSCode拡張機能 v1.2.0
-├── package.json
-├── syntaxes/bt.tmLanguage.json   # 新形式対応
-├── snippets/bt.json              # BlackBoard対応スニペット
-└── src/extension.js
+└── vscode-bt-extension/          # VSCode拡張機能
 ```
 
 ## btファイル形式
@@ -146,46 +70,21 @@ tree TreeName {
 - **Retry**: 子ノードが失敗した場合に指定回数まで再試行
 - **Timeout**: 子ノードの実行に制限時間を設定
 
-### よく使用するプロパティ
-
-- `target`: 移動先やターゲット名
-- `speed`: 移動速度
-- `damage`: ダメージ量
-- `duration`: 実行時間
-- `min_health`: 最小体力閾値
-- `detection_range`: 検出範囲
-- `scan_radius`: スキャン範囲（ScanEnvironment用）
-- `attack_range`: 攻撃範囲（AttackTarget用）
-- `wander_radius`: 徘徊範囲（RandomWander用）
-- `tolerance`: 位置の許容誤差
-- `cooldown`: クールダウン時間
 
 ## VSCode拡張機能のインストール
 
-### 1. 拡張機能のビルド
+拡張機能をパッケージ化してインストール：
 
 ```bash
 cd vscode-bt-extension
 npm install
-```
-
-### 2. VSCodeでの開発モード実行
-
-1. VSCodeで`vscode-bt-extension`フォルダを開く
-2. F5キーを押して拡張開発ホストを起動
-3. 新しいVSCodeウィンドウが開く
-4. `.bt`ファイルを開いてシンタックスハイライトを確認
-
-### 3. 拡張機能のパッケージ化
-
-```bash
 npm install -g vsce
 vsce package
 ```
 
 生成された`.vsix`ファイルをVSCodeにインストール：
 ```bash
-code --install-extension behaviour-tree-language-1.0.0.vsix
+code --install-extension behaviour-tree-language-*.vsix
 ```
 
 ## Unity使用方法
@@ -394,24 +293,24 @@ MIT License
 
 - [x] **BlackBoardシステム**（データ共有、型安全、デバッグ対応）
 - [x] **動的条件チェック**（実行中の条件監視、即座の中断）
-- [x] **豊富なノード実装**（18種類のAction、6種類のCondition）
+- [x] **豊富なノード実装**（多数のAction、Condition、Decoratorノード）
 - [x] **並列実行ノード**（Parallel、success/failure policy対応）
-- [x] **VSCode完全対応**（v1.2.0、シンタックスハイライト、自動補完、診断）
-- [x] **包括的テストスイート**（314テストケース、Unity Test Framework、コードカバレッジ70.00%）
+- [x] **VSCode完全対応**（シンタックスハイライト、自動補完、診断）
+- [x] **包括的テストスイート**（Unity Test Framework、高いコードカバレッジ）
 - [x] **複合ノード**（Sequence, Selector, Parallel）
 - [x] **デバッグ機能**（BlackBoard表示、ツリー状態管理、右クリックメニュー）
 - [x] **エディターメニュー統合**（個別ファイルテスト、パフォーマンステスト）
-- [x] **リフレクション削除**（静的ノード登録、Expression Tree、IHealthインターフェース）
+- [x] **高速ノード登録**（静的登録、Expression Tree、IHealthインターフェース）
 
-## 🔥 最新技術情報
+## 🔥 技術的特徴
 
-### リフレクション削除による性能改善
+### 高速ノード登録システム
 
-AIBTreeは最新バージョンでリフレクションを完全に削除し、10-100倍の性能改善を実現しました：
+AIBTreeは高速なノード登録システムを採用：
 
-- **BTStaticNodeRegistry**: 静的ノード登録システムによりActivator.CreateInstanceを排除
-- **BTNodeFactory**: Expression Treeベースの高速ノード生成
-- **IHealthインターフェース**: GetComponent("Health")のリフレクションを削除
+- **BTStaticNodeRegistry**: 静的ノード登録による高速化
+- **BTNodeFactory**: Expression Treeベースの最適化されたノード生成
+- **IHealthインターフェース**: 型安全なコンポーネントアクセス
 - **自己登録パターン**: RPGサンプルノードは`RuntimeInitializeOnLoadMethod`で自動登録
 
 ### ノード登録方法
@@ -436,31 +335,18 @@ static void RegisterNodes()
 - **構文エラー完全解消**: 生成コードの構文正当性を100%保証
 - **サニタイズ機能**: 無効な名前空間・アセンブリ名を自動的に安全な形式に変換
 
-### BTNode属性の大幅簡素化
+### BTNode属性のシンプルな記述
 ```csharp
-// ❌ 従来の複雑な記述
-[BTNode("ScriptName", NodeType.Action)]
-
-// ✅ 新しいシンプルな記述
-[BTNode("ScriptName")]
+// シンプルな属性記述
+[BTNode("MoveToPosition")]
+public class MoveToPositionAction : BTActionNode
+{
+    // .btファイル内で "Action MoveToPosition" として使用
+}
 ```
-- **NodeType自動判定**: `BTActionNode`/`BTConditionNode`の基底クラスから自動的に判定
-- **全ノード統一**: すべてのBTNodeクラスが同じシンプルな属性記述に統一
-- **レガシーコード削除**: 不要なCustomActionNode/CustomConditionNodeクラスを削除
+- **単一の属性**: スクリプト名のマッピングのみを指定
+- **統一された記述**: すべてのノードクラスが同じシンプルな属性記述を使用
 
-### 新スクリプト追加
-**ExampleAI用Simple系スクリプト:**
-- `SimpleAttackAction` - シンプルな攻撃アクション
-- `MoveToNamedPositionAction` - 名前付き位置への移動
-- `WaitSimpleAction` - シンプルな待機アクション
-- `SimpleHasTargetCondition` - シンプルなターゲット確認
-- `EnemyDetectionCondition` - 敵検出条件
-- `SimpleHealthCheckCondition` - シンプルな体力チェック
-
-### テスト対応完了
-- **BTFileValidationTests更新**: 新スクリプトをテストの既知リストに追加
-- **全テスト通過**: 152/152テスト（100%成功率）を維持
-- **コードカバレッジ**: 70.00%のカバレッジを維持
 
 ## 🆕 最新の重要機能 (2025年7月27日)
 
@@ -472,10 +358,10 @@ static void RegisterNodes()
 "Object.Item.Weapon"       // 武器アイテム
 "Effect.Magic.Fire"        // 炎魔法エフェクト
 
-// 高速検索（10-100倍性能向上）
+// 高速な階層検索
 GameplayTagManager.HasTag(gameObject, "Character.Enemy");
 
-// Unity互換性レイヤー
+// 簡易アクセス
 gameObject.CompareGameplayTag("Character.Enemy");
 ```
 
@@ -485,10 +371,10 @@ tree ComplexAI {
     Sequence root {
         // 5秒以内に攻撃、失敗なら3回リトライ
         Timeout timeout_5s {
-            time = "5.0"
+            timeout: 5.0
             Retry retry_3times {
-                maxAttempts = "3"
-                Action AttackTarget { damage = "10" }
+                max_retries: 3
+                Action AttackTarget { damage: 10 }
             }
         }
         
@@ -499,21 +385,16 @@ tree ComplexAI {
         
         // 無限ループパトロール
         Repeat infinite_patrol {
-            repeatCount = "-1"
+            count: -1
             Sequence patrol_sequence {
-                Action MoveToPosition { target = "point1" }
-                Action Wait { duration = "2.0" }
+                Action MoveToPosition { target: "point1" }
+                Action Wait { duration: 2.0 }
             }
         }
     }
 }
 ```
 
-### アーキテクチャの成熟
-- **314個の包括的テスト**: Runtime（20ファイル）とSamples（2ファイル）の完全分離
-- **70.00%コードカバレッジ**: 商用レベルの品質保証
-- **ArcBT v1.0.0パッケージ**: 独立パッケージとしての完成度
-- **0アロケーション検索**: ReadOnlySpan活用による最適化
 
 ## 今後の予定
 

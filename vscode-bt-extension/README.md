@@ -37,10 +37,30 @@ VSCode extension for `.bt` (Behaviour Tree) files with syntax highlighting, auto
 5. Select the downloaded `.vsix` file
 
 ### Development Mode
-1. Clone the repository
-2. Open the `vscode-bt-extension` folder in VSCode
-3. Press `F5` to launch extension development host
+
+#### Setup
+```bash
+cd vscode-bt-extension
+npm install
+```
+
+#### Running in Development
+1. Open the `vscode-bt-extension` folder in VSCode
+2. Press `F5` to launch Extension Development Host
+3. A new VSCode window opens with the extension loaded
 4. Create or open a `.bt` file in the new window to test
+5. Make changes to the extension code and press `Ctrl+R` in the Extension Development Host to reload
+
+#### Building VSIX Package
+```bash
+npm install -g vsce
+vsce package
+```
+This creates a `.vsix` file that can be installed in VSCode.
+
+#### Debugging
+- Use `console.log()` in `src/extension.js` and check the Output panel → "Behaviour Tree Language Support"
+- Use VSCode's built-in debugger by setting breakpoints in the extension code
 
 ## Usage
 
