@@ -21,36 +21,39 @@ namespace ArcBT.Tests
         public void TearDown()
         {
             BTLogger.ClearHistory();
+            BTLogger.Dispose(); // ZLoggerリソース解放
         }
 
-        /// <summary>大量ログ出力のパフォーマンステスト</summary>
-        [Test][Description("大量ログ出力（1000件）の性能をベンチマークテスト（1秒以内で処理、履歴上限制御の確認）")]
-        public void TestHighVolumeLoggingPerformance()
+        /// <summary>ZLogger高性能大量ログ出力テスト</summary>
+        [Test][Description("ZLoggerによる大量ログ出力（2000件）の性能をベンチマークテスト（ZLoggerの高速化を活用）")]
+        public void TestZLoggerHighVolumeLoggingPerformance()
         {
             // Arrange
-            const int logCount = 1000;
+            const int logCount = 2000; // ZLoggerの高性能化により増量
             var stopwatch = new Stopwatch();
             
-            // Act: 大量のログを出力して時間を測定
+            // Act: ZLoggerベースの大量ログ出力
             stopwatch.Start();
             for (int i = 0; i < logCount; i++)
             {
-                BTLogger.LogSystem($"Performance test message {i}");
+                BTLogger.LogSystem($"ZLogger high performance test message {i} with data {i * 1.5f}");
             }
             stopwatch.Stop();
             
-            // Assert: 適切な時間内で処理されているか確認
+            // Assert: ZLoggerによる高速処理確認
             var elapsedMs = stopwatch.ElapsedMilliseconds;
-            Assert.Less(elapsedMs, 1000, $"1000件のログ出力が1秒以内に完了する（実測: {elapsedMs}ms）");
+            Assert.Less(elapsedMs, 1500, $"ZLoggerによる{logCount}件ログ出力が1.5秒以内で完了（実測: {elapsedMs}ms）");
             
             // 履歴の上限制御が機能しているか確認
             var logs = BTLogger.GetRecentLogs(200);
             Assert.LessOrEqual(logs.Length, 100, "履歴は最大100件に制限されている");
+            
+            UnityEngine.Debug.Log($"ZLogger high volume test: {logCount} logs in {elapsedMs}ms");
         }
 
-        /// <summary>フィルタリング機能のパフォーマンステスト</summary>
-        [Test][Description("カテゴリフィルタリング機能の性能をベンチマークテスト（フィルタされたログの高速処理を確認）")]
-        public void TestFilteringPerformance()
+        /// <summary>ZLoggerフィルタリング機能の高性能テスト</summary>
+        [Test][Description("ZLoggerの条件付きコンパイル・フィルタリング機能による高性能処理をベンチマーク")]
+        public void TestZLoggerFilteringPerformance()
         {
             // Arrange: すべてのカテゴリを無効化してフィルタリングを強制
             foreach (LogCategory category in System.Enum.GetValues(typeof(LogCategory)))
@@ -58,63 +61,73 @@ namespace ArcBT.Tests
                 BTLogger.SetCategoryFilter(category, false);
             }
             
-            const int logCount = 500;
+            const int logCount = 1000; // ZLoggerの高速フィルタリングにより増量
             var stopwatch = new Stopwatch();
             
             // Act: フィルタリングされるログを大量出力
             stopwatch.Start();
             for (int i = 0; i < logCount; i++)
             {
-                BTLogger.LogSystem($"Filtered message {i}");
-                BTLogger.LogCombat($"Filtered combat {i}");
+                BTLogger.LogSystem($"ZLogger filtered message {i} with complex data {i * 2.5f}");
+                BTLogger.LogCombat($"ZLogger filtered combat {i} action attack");
+                BTLogger.LogMovement($"ZLogger filtered movement {i} to position");
             }
             stopwatch.Stop();
             
-            // Assert: フィルタリングが効いており、高速に処理されている
+            // Assert: ZLoggerのフィルタリングが超高速処理
             var elapsedMs = stopwatch.ElapsedMilliseconds;
-            Assert.Less(elapsedMs, 500, $"フィルタリング処理が高速である（実測: {elapsedMs}ms）");
+            Assert.Less(elapsedMs, 800, $"ZLoggerフィルタリング処理が超高速（実測: {elapsedMs}ms）");
             
             var logs = BTLogger.GetRecentLogs(100);
             Assert.AreEqual(0, logs.Length, "フィルタリングによりログが記録されていない");
+            
+            UnityEngine.Debug.Log($"ZLogger filtering test: {logCount * 3} filtered logs in {elapsedMs}ms");
         }
 
-        /// <summary>メモリ使用量テスト</summary>
+        /// <summary>ZLoggerゼロアロケーションメモリ効率テスト</summary>
         [UnityTest]
-        [Description("大量ログ出力（2000件）時のメモリ使用量をベンチマークテスト（15MB以内、履歴制限機能の確認）")]
-        public IEnumerator TestMemoryUsage()
+        [Description("ZLoggerのゼロアロケーション機能による大量ログ出力（3000件）時のメモリ効率をベンチマーク")]
+        public IEnumerator TestZLoggerMemoryEfficiency()
         {
-            // Arrange: GCを実行してベースライン取得
+            // Arrange: 初期状態でGCを実行してベースラインを安定化
             System.GC.Collect();
-            yield return null;
+            System.GC.WaitForPendingFinalizers();
+            System.GC.Collect();
+            yield return new WaitForEndOfFrame();
             var initialMemory = System.GC.GetTotalMemory(false);
             
-            // Act: 大量のログを生成
-            const int logCount = 2000;
+            // Act: ZLoggerによる大量ログ生成（ゼロアロケーション効果を測定）
+            const int logCount = 3000; // ZLoggerの効率性により増量
             for (int i = 0; i < logCount; i++)
             {
-                BTLogger.LogSystem($"Memory test message with longer content to test memory usage {i}");
+                BTLogger.LogSystem($"ZLogger zero allocation test message {i} with complex data {i * 2.5f} and position {new Vector3(i, i, i)}");
                 
                 // 定期的にフレームを譲る
-                if (i % 100 == 0)
+                if (i % 150 == 0)
                 {
                     yield return null;
                 }
             }
             
-            // GCを実行して実際のメモリ使用量を確認
+            // 複数回GCを実行して正確なメモリ測定
+            yield return new WaitForEndOfFrame();
             System.GC.Collect();
-            yield return null;
+            yield return new WaitForEndOfFrame();
+            System.GC.Collect();
             var finalMemory = System.GC.GetTotalMemory(false);
             
-            // Assert: メモリ使用量が適切な範囲内か確認
+            // Assert: ZLoggerのメモリ効率性確認
             var memoryIncrease = finalMemory - initialMemory;
-            var memoryIncreaseMB = memoryIncrease / (1024 * 1024);
+            var memoryIncreaseMB = memoryIncrease / (1024.0 * 1024.0);
             
-            Assert.Less(memoryIncreaseMB, 15, $"メモリ使用量増加が15MB以内（実測: {memoryIncreaseMB:F2}MB）（Unity Editorの Debug.Log オーバーヘッドを含む）");
+            // Unity Editor環境を考慮した実用的なメモリ基準
+            Assert.Less(Math.Abs(memoryIncreaseMB), 20, $"ZLoggerメモリ効率テスト（{logCount}件）: {memoryIncreaseMB:F2}MB（Unity Editor環境）");
             
             // 履歴制限が機能しているか確認
             var logs = BTLogger.GetRecentLogs(200);
             Assert.LessOrEqual(logs.Length, 100, "履歴上限によりメモリ使用量が制御されている");
+            
+            UnityEngine.Debug.Log($"ZLogger memory efficiency: {logCount} logs with {memoryIncreaseMB:F2}MB memory change");
         }
 
         /// <summary>並行アクセス耐性テスト</summary>
@@ -255,6 +268,129 @@ namespace ArcBT.Tests
             
             var finalLogs = BTLogger.GetRecentLogs(200);
             Assert.LessOrEqual(finalLogs.Length, 100, "最終的なログ履歴が制限内に収まっている");
+        }
+
+        /// <summary>ZLogger構造化ログパフォーマンステスト</summary>
+        [Test][Description("ZLoggerの構造化ログ機能の性能をベンチマークテスト")]
+        public void TestZLoggerStructuredLoggingPerformance()
+        {
+            // Arrange
+            const int logCount = 800;
+            var stopwatch = new Stopwatch();
+            
+            // Act: ZLoggerの構造化ログを大量出力
+            stopwatch.Start();
+            for (int i = 0; i < logCount; i++)
+            {
+                var structuredData = new
+                {
+                    Index = i,
+                    Value = i * 1.5f,
+                    Position = new Vector3(i, i * 2, i * 3),
+                    Name = $"Entity_{i}",
+                    Active = i % 2 == 0
+                };
+                
+                BTLogger.LogStructured(LogLevel.Info, LogCategory.System, 
+                    "Structured performance test {Index} with {Value} at {Position} named {Name} active {Active}", 
+                    structuredData, "StructuredPerformance");
+            }
+            stopwatch.Stop();
+            
+            // Assert: 構造化ログの高性能処理
+            var elapsedMs = stopwatch.ElapsedMilliseconds;
+            Assert.Less(elapsedMs, 1000, $"ZLogger構造化ログ（{logCount}件）が1秒以内で完了（実測: {elapsedMs}ms）");
+            
+            UnityEngine.Debug.Log($"ZLogger structured logging performance: {logCount} logs in {elapsedMs}ms");
+        }
+
+        /// <summary>ZLoggerフォーマットメソッドパフォーマンステスト</summary>
+        [Test][Description("ZLoggerの高性能フォーマットメソッドの性能をベンチマークテスト")]
+        public void TestZLoggerFormatMethodsPerformance()
+        {
+            // Arrange
+            const int logCount = 1000;
+            var stopwatch = new Stopwatch();
+            
+            // Act: ZLoggerの高性能フォーマットメソッドを大量実行
+            stopwatch.Start();
+            for (int i = 0; i < logCount; i++)
+            {
+                BTLogger.LogCombatFormat("Combat performance test {0} with damage {1}", 
+                    $"Action_{i}_damage_{i * 10}", "FormatPerformance");
+                BTLogger.LogMovementFormat("Movement performance test {0} at speed {1}", 
+                    $"Position_{new Vector3(i, 0, i)}_speed_{i * 0.5f}", "FormatPerformance");
+            }
+            stopwatch.Stop();
+            
+            // Assert: フォーマットメソッドの高性能処理
+            var elapsedMs = stopwatch.ElapsedMilliseconds;
+            Assert.Less(elapsedMs, 800, $"ZLoggerフォーマットメソッド（{logCount * 2}件）が800ms以内で完了（実測: {elapsedMs}ms）");
+            
+            UnityEngine.Debug.Log($"ZLogger format methods performance: {logCount * 2} logs in {elapsedMs}ms");
+        }
+
+        /// <summary>ZLoggerパフォーマンス測定機能テスト</summary>
+        [Test][Description("ZLoggerのパフォーマンス測定ログ機能の性能をベンチマークテスト")]
+        public void TestZLoggerPerformanceMeasurementPerformance()
+        {
+            // Arrange
+            const int operationCount = 200;
+            var stopwatch = new Stopwatch();
+            
+            // Act: ZLoggerのパフォーマンス測定ログを大量実行
+            stopwatch.Start();
+            for (int i = 0; i < operationCount; i++)
+            {
+                var operationStart = Time.realtimeSinceStartup;
+                
+                // 何らかの処理をシミュレート
+                System.Threading.Thread.Sleep(1);
+                
+                var elapsedMs = (Time.realtimeSinceStartup - operationStart) * 1000;
+                BTLogger.LogPerformance($"PerformanceOperation_{i}", elapsedMs, "PerfMeasurementPerformance");
+            }
+            stopwatch.Stop();
+            
+            // Assert: パフォーマンス測定ログの効率性
+            var totalElapsedMs = stopwatch.ElapsedMilliseconds;
+            Assert.Less(totalElapsedMs, 1000, $"ZLoggerパフォーマンス測定（{operationCount}件）が1秒以内で完了（実測: {totalElapsedMs}ms）");
+            
+            UnityEngine.Debug.Log($"ZLogger performance measurement: {operationCount} measurements in {totalElapsedMs}ms");
+        }
+
+        /// <summary>ZLoggerリソース管理パフォーマンステスト</summary>
+        [Test][Description("ZLoggerの初期化・解放処理の性能をベンチマークテスト")]
+        public void TestZLoggerResourceManagementPerformance()
+        {
+            // Arrange
+            const int cycles = 10;
+            var stopwatch = new Stopwatch();
+            
+            // Act: ZLoggerの初期化・解放サイクルを測定
+            stopwatch.Start();
+            for (int cycle = 0; cycle < cycles; cycle++)
+            {
+                // ログ出力により暗黙的初期化
+                BTLogger.LogSystem($"Resource management test cycle {cycle}");
+                
+                // 明示的解放
+                BTLogger.Dispose();
+                
+                // 再初期化テスト
+                BTLogger.LogSystem($"Re-initialization test cycle {cycle}");
+            }
+            stopwatch.Stop();
+            
+            // Assert: リソース管理の高速処理
+            var elapsedMs = stopwatch.ElapsedMilliseconds;
+            Assert.Less(elapsedMs, 500, $"ZLoggerリソース管理（{cycles}サイクル）が500ms以内で完了（実測: {elapsedMs}ms）");
+            
+            // 最終的にログ機能が正常であることを確認
+            var logs = BTLogger.GetRecentLogs(5);
+            Assert.Greater(logs.Length, 0, "初期化・解放サイクル後もログ機能が正常");
+            
+            UnityEngine.Debug.Log($"ZLogger resource management: {cycles} cycles in {elapsedMs}ms");
         }
     }
 }
