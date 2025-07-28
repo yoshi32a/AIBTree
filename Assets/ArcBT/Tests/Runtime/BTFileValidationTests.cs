@@ -22,7 +22,7 @@ namespace ArcBT.Tests
             btDirectory = Path.Combine(Application.dataPath, "BehaviourTrees");
         }
 
-        [Test(Description = "blackboard_sample.btの詳細検証")]
+        [Test][Description("blackboard_sample.btの詳細検証")]
         public void ValidateBlackBoardSample()
         {
             var filePath = Path.Combine(btDirectory, "blackboard_sample.bt");
@@ -66,7 +66,7 @@ namespace ArcBT.Tests
             BTLogger.Info("✅ blackboard_sample.bt validation passed");
         }
 
-        [Test(Description = "team_coordination_sample.btの詳細検証")]
+        [Test][Description("team_coordination_sample.btの詳細検証")]
         public void ValidateTeamCoordinationSample()
         {
             var filePath = Path.Combine(btDirectory, "team_coordination_sample.bt");
@@ -97,7 +97,7 @@ namespace ArcBT.Tests
             BTLogger.Info("✅ team_coordination_sample.bt validation passed");
         }
 
-        [Test(Description = "dynamic_condition_sample.btの詳細検証")]
+        [Test][Description("dynamic_condition_sample.btの詳細検証")]
         public void ValidateDynamicConditionSample()
         {
             var filePath = Path.Combine(btDirectory, "dynamic_condition_sample.bt");
@@ -168,7 +168,7 @@ namespace ArcBT.Tests
             BTLogger.Info("✅ dynamic_condition_sample.bt validation passed");
         }
 
-        [Test(Description = "全BTファイルで使用されているスクリプト名の検証")]
+        [Test][Description("全BTファイルで使用されているスクリプト名の検証")]
         public void ValidateAllScriptReferences()
         {
             if (!Directory.Exists(btDirectory))
@@ -266,7 +266,7 @@ namespace ArcBT.Tests
         }
         
         /// <summary>BTファイルの基本構文チェック</summary>
-        [Test]
+        [Test][Description("全BTファイルの基本構文（tree宣言、括弧バランス）をチェックしパースエラーがないことを確認")]
         public void ValidateBTFileSyntax()
         {
             if (!Directory.Exists(btDirectory))
@@ -337,7 +337,7 @@ namespace ArcBT.Tests
         }
         
         /// <summary>必須ファイルの存在チェック</summary>
-        [Test]
+        [Test][Description("必須のBTサンプルファイル（blackboard_sample.bt等）が正しく存在することを確認")]
         public void ValidateRequiredFilesExist()
         {
             var requiredFiles = new string[]

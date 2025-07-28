@@ -6,7 +6,7 @@ namespace ArcBT.Tests
 {
     public class GameplayTagSystemTests
     {
-        [Test]
+        [Test][Description("GameplayTagコンストラクタで有効なタグが正しく作成されることを確認")]
         public void GameplayTag_Constructor_CreatesValidTag()
         {
             var tag = new GameplayTag("Character.Player");
@@ -15,7 +15,7 @@ namespace ArcBT.Tests
             Assert.AreEqual("Character.Player", tag.TagName);
         }
 
-        [Test]
+        [Test][Description("GameplayTagのMatchesTagメソッドで階層マッチングが正しく動作することを確認")]
         public void GameplayTag_MatchesTag_WorksCorrectly()
         {
             var parentTag = new GameplayTag("Character");
@@ -28,7 +28,7 @@ namespace ArcBT.Tests
             Assert.IsFalse(childTag.MatchesTag(unrelatedTag));
         }
 
-        [Test]
+        [Test][Description("GameplayTagのGetParentTagメソッドで正しい親タグが取得できることを確認")]
         public void GameplayTag_GetParentTag_ReturnsCorrectParent()
         {
             var tag = new GameplayTag("Character.Enemy.Boss");
@@ -37,7 +37,7 @@ namespace ArcBT.Tests
             Assert.AreEqual("Character.Enemy", parent.TagName);
         }
 
-        [Test]
+        [Test][Description("GameplayTagのGetDepthメソッドでタグの階層の深さが正しく取得できることを確認")]
         public void GameplayTag_GetDepth_ReturnsCorrectDepth()
         {
             var tag1 = new GameplayTag("Character");
@@ -49,7 +49,7 @@ namespace ArcBT.Tests
             Assert.AreEqual(3, tag3.GetDepth());
         }
 
-        [Test]
+        [Test][Description("GameplayTagContainerのAddTagメソッドでタグが正しく追加されることを確認")]
         public void GameplayTagContainer_AddTag_WorksCorrectly()
         {
             var container = new GameplayTagContainer();
@@ -61,7 +61,7 @@ namespace ArcBT.Tests
             Assert.IsTrue(container.HasTag(tag));
         }
 
-        [Test]
+        [Test][Description("GameplayTagContainerのHasTagメソッドで階層チェックが正しく動作することを確認")]
         public void GameplayTagContainer_HasTag_ChecksHierarchy()
         {
             var container = new GameplayTagContainer();
@@ -72,7 +72,7 @@ namespace ArcBT.Tests
             Assert.IsFalse(container.HasTag(new GameplayTag("Character.Enemy")));
         }
 
-        [Test]
+        [Test][Description("GameplayTagContainerのHasAllTagsメソッドで必要なタグをすべて持っているか正しく判定できることを確認")]
         public void GameplayTagContainer_HasAllTags_WorksCorrectly()
         {
             var container = new GameplayTagContainer();
@@ -87,7 +87,7 @@ namespace ArcBT.Tests
             Assert.IsTrue(container.HasAllTags(requiredTags));
         }
 
-        [Test]
+        [Test][Description("GameplayTagContainerのGetExpandedContainerメソッドで親タグを含む展開されたコンテナが取得できることを確認")]
         public void GameplayTagContainer_GetExpandedContainer_IncludesParents()
         {
             var container = new GameplayTagContainer();
@@ -100,7 +100,7 @@ namespace ArcBT.Tests
             Assert.IsTrue(expanded.HasTag(new GameplayTag("Character.Enemy.Boss")));
         }
 
-        [Test]
+        [Test][Description("GameplayTagComponentのAddTag実行時にタグ変更イベントが正しく発火されることを確認")]
         public void GameplayTagComponent_AddTag_FiresEvent()
         {
             var go = new GameObject("TestObject");
@@ -117,7 +117,7 @@ namespace ArcBT.Tests
             Object.DestroyImmediate(go);
         }
 
-        [Test]
+        [Test][Description("GameplayTagComponentのブロッキングタグ機能で特定タグの追加が防げることを確認")]
         public void GameplayTagComponent_BlockingTags_PreventAddition()
         {
             var go = new GameObject("TestObject");
@@ -134,7 +134,7 @@ namespace ArcBT.Tests
             Object.DestroyImmediate(go);
         }
 
-        [Test]
+        [Test][Description("GameplayTagManagerのFindGameObjectsWithTagメソッドで指定タグを持つオブジェクトが正しく検索できることを確認")]
         public void GameplayTagManager_FindGameObjectsWithTag_FindsCorrectObjects()
         {
             var go1 = new GameObject("Player");

@@ -22,7 +22,7 @@ namespace ArcBT.Tests
             if (testObject != null) Object.DestroyImmediate(testObject);
         }
 
-        [Test]
+        [Test][Description("GameObjectでのGameplayTag比較機能が正常に動作することを確認（階層マッチング含む）")]
         public void CompareGameplayTag_GameObject_WorksCorrectly()
         {
             // Arrange
@@ -38,7 +38,7 @@ namespace ArcBT.Tests
             Assert.IsFalse(testObject.CompareGameplayTag("Object.Item"));
         }
 
-        [Test]
+        [Test][Description("ComponentでのGameplayTag比較機能が正常に動作することを確認（階層マッチング含む）")]
         public void CompareGameplayTag_Component_WorksCorrectly()
         {
             // Arrange
@@ -54,7 +54,7 @@ namespace ArcBT.Tests
             Assert.IsFalse(tagComponent.CompareGameplayTag("State.Combat"));
         }
 
-        [Test]
+        [Test][Description("TagComponentがアタッチされていないGameObjectでのタグ比較がfalseを返すことを確認")]
         public void CompareGameplayTag_WithoutTagComponent_ReturnsFalse()
         {
             // Arrange
@@ -68,7 +68,7 @@ namespace ArcBT.Tests
             Object.DestroyImmediate(objectWithoutComponent);
         }
 
-        [Test]
+        [Test][Description("null入力や空文字列入力に対して適切にエラーハンドリングされることを確認")]
         public void CompareGameplayTag_NullInputs_HandleGracefully()
         {
             // Arrange
@@ -82,7 +82,7 @@ namespace ArcBT.Tests
             Assert.IsFalse(tagComponent.CompareGameplayTag(new GameplayTag("")));
         }
 
-        [Test]
+        [Test][Description("GameplayTagを使用したGameObject検索が正しいオブジェクトを返すことを確認")]
         public void FindWithGameplayTag_FindsCorrectObject()
         {
             // Arrange
@@ -98,7 +98,7 @@ namespace ArcBT.Tests
             Assert.AreEqual(testObject, found2);
         }
 
-        [Test]
+        [Test][Description("存在しないGameplayTagでの検索がnullを返すことを確認")]
         public void FindWithGameplayTag_ReturnsNullForNonExistent()
         {
             // Act
@@ -110,7 +110,7 @@ namespace ArcBT.Tests
             Assert.IsNull(found2);
         }
 
-        [Test]
+        [Test][Description("GameplayTagを使用した複数GameObject検索が正しいオブジェクト群を返すことを確認")]
         public void FindGameObjectsWithGameplayTag_FindsCorrectObjects()
         {
             // Arrange
@@ -135,7 +135,7 @@ namespace ArcBT.Tests
             Object.DestroyImmediate(secondObject);
         }
 
-        [Test]
+        [Test][Description("Unity標準タグからGameplayTagへの変換機能が正しいタグを追加することを確認")]
         public void ConvertUnityTagToGameplayTag_AddsCorrectTag()
         {
             // Arrange
@@ -153,7 +153,7 @@ namespace ArcBT.Tests
             Object.DestroyImmediate(objectWithoutComponent);
         }
 
-        [Test]
+        [Test][Description("既存TagComponentを持つGameObjectでのUnityタグ変換が新しいタグを追加することを確認")]
         public void ConvertUnityTagToGameplayTag_WithExistingComponent_AddsTag()
         {
             // Arrange
@@ -168,7 +168,7 @@ namespace ArcBT.Tests
             Assert.IsTrue(tagComponent.HasTag(new GameplayTag("Character.Enemy"))); // 新しいタグが追加
         }
 
-        [Test]
+        [Test][Description("UnityタグからGameplayTagへのマッピングルールが正しく適用されることを確認（Player→Character.Player等）")]
         public void TagConversion_FollowsCorrectMapping()
         {
             // Arrange & Act & Assert
@@ -201,7 +201,7 @@ namespace ArcBT.Tests
             }
         }
 
-        [Test]
+        [Test][Description("階層的タグマッチング機能が正しく動作することを確認（Character.Enemy.Boss→Characterマッチ等）")]
         public void HierarchicalMatching_WorksCorrectly()
         {
             // Arrange
@@ -218,7 +218,7 @@ namespace ArcBT.Tests
             Assert.IsFalse(testObject.CompareGameplayTag("Object"));
         }
 
-        [Test]
+        [Test][Description("一つのGameObjectに複数タグを設定した場合の検索機能が正しく動作することを確認")]
         public void MultipleTagsOnObject_AllWorkCorrectly()
         {
             // Arrange
@@ -238,7 +238,7 @@ namespace ArcBT.Tests
             Assert.IsFalse(testObject.CompareGameplayTag("Object.Item"));
         }
 
-        [Test]
+        [Test][Description("異なるタイプのComponent（BoxCollider、Rigidbody等）でのGameplayTag比較が正しく動作することを確認")]
         public void ComponentComparison_WorksWithDifferentComponentTypes()
         {
             // Arrange

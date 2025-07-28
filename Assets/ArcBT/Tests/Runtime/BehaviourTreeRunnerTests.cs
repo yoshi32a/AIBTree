@@ -43,7 +43,7 @@ namespace ArcBT.Tests
             BTLogger.ResetToDefaults();
         }
 
-        [Test]
+        [Test][Description("BehaviourTreeRunnerのAwake実行時にBlackBoard等のコンポーネントが正しく初期化されることを確認")]
         public void BehaviourTreeRunner_Awake_InitializesComponents()
         {
             // Act (Awakeは自動実行される)
@@ -52,7 +52,7 @@ namespace ArcBT.Tests
             Assert.IsNotNull(runner.BlackBoard);
         }
 
-        [Test]
+        [Test][Description("BehaviourTreeRunnerのStart実行時に指定されたファイルからBehaviourTreeが正しくロードされることを確認")]
         public void BehaviourTreeRunner_Start_LoadsBehaviourTreeFromFile()
         {
             // Arrange
@@ -79,7 +79,7 @@ namespace ArcBT.Tests
             Assert.IsInstanceOf<BTSequenceNode>(runner.RootNode);
         }
 
-        [Test]
+        [Test][Description("有効なBTファイルを指定した場合にLoadBehaviourTreeが正しくツリー構造をロードすることを確認")]
         public void LoadBehaviourTree_ValidFile_LoadsCorrectly()
         {
             // Arrange
@@ -103,7 +103,7 @@ namespace ArcBT.Tests
             Assert.AreEqual(1, runner.RootNode.Children.Count);
         }
 
-        [Test]
+        [Test][Description("存在しないファイルを指定した場合にLoadBehaviourTreeが適切にエラーハンドリングすることを確認")]
         public void LoadBehaviourTree_NonExistentFile_HandlesGracefully()
         {
             // Arrange
@@ -117,7 +117,7 @@ namespace ArcBT.Tests
             Assert.IsNull(runner.RootNode);
         }
 
-        [Test]
+        [Test][Description("無効なBT形式のファイルを指定した場合にLoadBehaviourTreeが適切にエラーハンドリングすることを確認")]
         public void LoadBehaviourTree_InvalidContent_HandlesGracefully()
         {
             // Arrange
@@ -134,7 +134,7 @@ namespace ArcBT.Tests
             Assert.IsNull(runner.RootNode);
         }
 
-        [Test]
+        [Test][Description("有効なノードを指定した場合にSetRootNodeが正しくルートノードを設定することを確認")]
         public void SetRootNode_ValidNode_SetsCorrectly()
         {
             // Arrange
@@ -149,7 +149,7 @@ namespace ArcBT.Tests
             Assert.AreEqual("TestSequence", runner.RootNode.Name);
         }
 
-        [Test]
+        [Test][Description("SetRootNode実行時にBlackBoardが初期化され、ノードがBlackBoardと関連付けられることを確認")]
         public void SetRootNode_InitializesBlackBoard()
         {
             // Arrange
@@ -180,7 +180,7 @@ namespace ArcBT.Tests
             // (実際の実行確認は困難なので、ログや状態変化で判断)
         }
 
-        [Test]
+        [Test][Description("シンプルなアクションを設定した状態でExecuteOnceを実行すると適切な結果が返されることを確認")]
         public void ExecuteOnce_WithSimpleAction_ReturnsResult()
         {
             // Arrange
@@ -196,7 +196,7 @@ namespace ArcBT.Tests
             Assert.IsTrue(result is BTNodeResult.Running or BTNodeResult.Success);
         }
 
-        [Test]
+        [Test][Description("ルートノードがnullの状態でExecuteOnceを実行するとFailureが返されることを確認")]
         public void ExecuteOnce_WithNullRoot_ReturnsFailure()
         {
             // Act
@@ -206,7 +206,7 @@ namespace ArcBT.Tests
             Assert.AreEqual(BTNodeResult.Failure, result);
         }
 
-        [Test]
+        [Test][Description("複数のノード間でBlackBoardを介したデータ共有が正しく機能することを確認する統合テスト")]
         public void BlackBoard_Integration_SharesDataBetweenNodes()
         {
             // Arrange
@@ -242,7 +242,7 @@ namespace ArcBT.Tests
             Assert.IsTrue(runner.BlackBoard.GetAllKeys().Length > 0, "BlackBoard should contain data after ScanEnvironmentAction execution");
         }
 
-        [Test]
+        [Test][Description("GetBlackBoardContentsメソッドがBlackBoardの内容を正しい形式で文字列として返すことを確認")]
         public void BlackBoard_GetBlackBoardContents_ReturnsCorrectInfo()
         {
             // Arrange
@@ -260,7 +260,7 @@ namespace ArcBT.Tests
             Assert.IsTrue(contents.Contains("3"));
         }
 
-        [Test]
+        [Test][Description("ResetTreeState実行時にBlackBoardがクリアされ、ツリー状態がリセットされることを確認")]
         public void ResetTreeState_ClearsBlackBoardAndResets()
         {
             // Arrange
@@ -275,7 +275,7 @@ namespace ArcBT.Tests
             Assert.IsFalse(runner.BlackBoard.HasKey("temp_data"));
         }
 
-        [Test]
+        [Test][Description("SetTickIntervalメソッドで実行間隔が正しく設定されることを確認")]
         public void SetTickInterval_UpdatesCorrectly()
         {
             // Act
@@ -286,7 +286,7 @@ namespace ArcBT.Tests
             Assert.IsNotNull(runner);
         }
 
-        [Test]
+        [Test][Description("SetDebugModeメソッドでデバッグモードの有効/無効が正しく設定されることを確認")]
         public void SetDebugMode_UpdatesCorrectly()
         {
             // Act
@@ -297,7 +297,7 @@ namespace ArcBT.Tests
             Assert.IsNotNull(runner);
         }
 
-        [Test]
+        [Test][Description("空のファイルパスを指定した場合にLoadBehaviourTreeが適切にエラーハンドリングすることを確認")]
         public void LoadBehaviourTree_EmptyFilePath_HandlesGracefully()
         {
             // 期待されるエラーログを指定
@@ -310,7 +310,7 @@ namespace ArcBT.Tests
             Assert.IsNull(runner.RootNode);
         }
 
-        [Test]
+        [Test][Description("nullのファイルパスを指定した場合にLoadBehaviourTreeが適切にエラーハンドリングすることを確認")]
         public void LoadBehaviourTree_NullFilePath_HandlesGracefully()
         {
             // 期待されるエラーログを指定
@@ -323,7 +323,7 @@ namespace ArcBT.Tests
             Assert.IsNull(runner.RootNode);
         }
 
-        [Test]
+        [Test][Description("nullノードを指定した場合にSetRootNodeが適切にハンドリングすることを確認")]
         public void SetRootNode_NullNode_HandlesGracefully()
         {
             // Act
@@ -333,7 +333,7 @@ namespace ArcBT.Tests
             Assert.IsNull(runner.RootNode);
         }
 
-        [Test]
+        [Test][Description("複雑なネスト構造を持つBehaviourTreeが正しく実行されることを確認する統合テスト")]
         public void ComplexTree_NestedStructure_ExecutesCorrectly()
         {
             // Arrange: 複雑なツリー構造を作成
@@ -367,7 +367,7 @@ namespace ArcBT.Tests
             Assert.AreEqual(1, runner.RootNode.Children.Count);
         }
 
-        [Test]
+        [Test][Description("複数のアクションを並列実行するBTParallelNodeが正しく動作することを確認")]
         public void ParallelExecution_MultipleActions_ExecutesCorrectly()
         {
             // Arrange
@@ -435,7 +435,7 @@ namespace ArcBT.Tests
             Assert.IsTrue(runner.BlackBoard.GetAllKeys().Length > 0);
         }
 
-        [Test]
+        [Test][Description("大量のノード実行（100回）が適切な時間内（100ms以内）で完了することを確認する性能テスト")]
         public void PerformanceTest_MultipleExecutions_CompletesQuickly()
         {
             // Arrange

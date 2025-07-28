@@ -21,7 +21,7 @@ namespace ArcBT.TagSystem
         /// <summary>
         /// すべてのタグを取得
         /// </summary>
-        public IReadOnlyList<GameplayTag> Tags => tags;
+        public List<GameplayTag> Tags => tags;
 
         /// <summary>
         /// 空のコンテナを作成

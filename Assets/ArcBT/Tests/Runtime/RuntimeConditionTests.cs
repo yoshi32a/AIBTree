@@ -36,7 +36,7 @@ namespace ArcBT.Tests
 
         #region ScanForInterestCondition Tests
 
-        [Test]
+        [Test][Description("ScanForInterestConditionのscan_rangeパラメータ設定機能の検証")]
         public void ScanForInterestCondition_SetProperty_SetsCorrectRange()
         {
             // Arrange - Runtime版ScanForInterestCondition
@@ -51,7 +51,7 @@ namespace ArcBT.Tests
             Assert.AreEqual(BTNodeResult.Failure, result); // アイテムがないのでFailure
         }
 
-        [Test]
+        [Test][Description("興味対象オブジェクトが範囲内にある場合にScanForInterestConditionがSuccessを返しBlackBoardに情報を記録することを確認")]
         public void ScanForInterestCondition_ExecuteWithInterestObject_ReturnsSuccess()
         {
             // Arrange - Runtime版ScanForInterestCondition (GameplayTagManagerベース)
@@ -83,7 +83,7 @@ namespace ArcBT.Tests
 
         #region RandomCondition Tests
 
-        [Test]
+        [Test][Description("RandomConditionのプロパティ設定で確率が正しく設定され、統計的に適切な結果を返すことを確認")]
         public void RandomCondition_SetProperty_SetsCorrectProbability()
         {
             // Arrange
@@ -111,7 +111,7 @@ namespace ArcBT.Tests
                 $"期待される成功率: 60-80%, 実際: {successCount}/100");
         }
 
-        [Test]
+        [Test][Description("RandomConditionのシード設定で同じシードでは同じ結果が返されることを確認")]
         public void RandomCondition_SetProperty_SetsCorrectSeed()
         {
             // Arrange
@@ -133,7 +133,7 @@ namespace ArcBT.Tests
             Assert.AreEqual(result1, result2);
         }
 
-        [Test]
+        [Test][Description("RandomConditionでBlackBoardから確率値を取得して判定する機能が正しく動作することを確認")]
         public void RandomCondition_ExecuteWithBlackBoardProbability_UsesBlackBoardValue()
         {
             // Arrange
@@ -151,7 +151,7 @@ namespace ArcBT.Tests
             Assert.AreEqual(BTNodeResult.Success, result);
         }
 
-        [Test]
+        [Test][Description("RandomConditionで低い確率を設定した場合にほとんどFailureが返されることを確認")]
         public void RandomCondition_ExecuteWithLowProbability_ReturnsMostlyFailure()
         {
             // Arrange
@@ -181,7 +181,7 @@ namespace ArcBT.Tests
 
         #region HasTargetCondition Tests
 
-        [Test]
+        [Test][Description("HasTargetConditionのtarget_tagパラメータでモンスター等のカスタムタグ指定機能の検証")]
         public void HasTargetCondition_SetProperty_SetsCorrectTargetTag()
         {
             // Arrange
@@ -196,7 +196,7 @@ namespace ArcBT.Tests
             Assert.AreEqual(BTNodeResult.Failure, result); // モンスターがないのでFailure
         }
 
-        [Test]
+        [Test][Description("HasTargetConditionでBlackBoardにターゲット情報がある場合にSuccessを返すことを確認")]
         public void HasTargetCondition_ExecuteWithBlackBoardTarget_ReturnsSuccess()
         {
             // Arrange
@@ -217,7 +217,7 @@ namespace ArcBT.Tests
             Object.DestroyImmediate(targetObj);
         }
 
-        [Test]
+        [Test][Description("HasTargetConditionでシーン内にタグ付きターゲットがある場合にSuccessを返すことを確認")]
         public void HasTargetCondition_ExecuteWithTaggedTarget_ReturnsSuccess()
         {
             // Arrange
@@ -239,7 +239,7 @@ namespace ArcBT.Tests
             Object.DestroyImmediate(enemyObj);
         }
 
-        [Test]
+        [Test][Description("HasTargetCondition実行時にBlackBoardとシーンの両方にターゲットがない場合の動作")]
         public void HasTargetCondition_ExecuteWithNoTarget_ReturnsFailure()
         {
             // Arrange
@@ -257,7 +257,7 @@ namespace ArcBT.Tests
 
         #region DistanceCheckCondition Tests
 
-        [Test]
+        [Test][Description("DistanceCheckConditionのtarget_nameパラメータでGameObject名指定機能の検証")]
         public void DistanceCheckCondition_SetProperty_SetsCorrectTargetName()
         {
             // Arrange
@@ -274,7 +274,7 @@ namespace ArcBT.Tests
             Assert.AreEqual(BTNodeResult.Failure, result);
         }
 
-        [Test]
+        [Test(Description = "DistanceCheckConditionのdistanceパラメータで\"<= 8.0\"等の比較演算子指定機能の検証")]
         public void DistanceCheckCondition_SetProperty_SetsCorrectDistance()
         {
             // Arrange
@@ -291,7 +291,7 @@ namespace ArcBT.Tests
             Assert.AreEqual(BTNodeResult.Failure, result); // ターゲットがないのでFailure
         }
 
-        [Test]
+        [Test][Description("範囲内にターゲットがある場合にDistanceCheckConditionがSuccessを返しBlackBoardに距離情報を記録することを確認")]
         public void DistanceCheckCondition_ExecuteWithTargetInRange_ReturnsSuccess()
         {
             // Arrange
@@ -317,7 +317,7 @@ namespace ArcBT.Tests
             Object.DestroyImmediate(targetObj);
         }
 
-        [Test]
+        [Test][Description("DistanceCheckCondition実行時にターゲットが指定距離より遠い位置にある場合の動作")]
         public void DistanceCheckCondition_ExecuteWithTargetOutOfRange_ReturnsFailure()
         {
             // Arrange
@@ -341,7 +341,7 @@ namespace ArcBT.Tests
             Object.DestroyImmediate(targetObj);
         }
 
-        [Test]
+        [Test][Description("DistanceCheckConditionでBlackBoardのターゲット位置を使用した距離チェックが正しく動作することを確認")]
         public void DistanceCheckCondition_ExecuteWithBlackBoardTarget_ReturnsSuccess()
         {
             // Arrange
@@ -367,7 +367,7 @@ namespace ArcBT.Tests
 
         #region Distance2DCheckCondition Tests
 
-        [Test]
+        [Test][Description("Distance2DCheckConditionのtarget_tagパラメータでウェイポイント等のタグ指定機能の検証")]
         public void Distance2DCheckCondition_SetProperty_SetsCorrectTargetTag()
         {
             // Arrange
@@ -384,7 +384,7 @@ namespace ArcBT.Tests
             Assert.AreEqual(BTNodeResult.Failure, result); // ウェイポイントがないのでFailure
         }
 
-        [Test]
+        [Test][Description("Distance2DCheckConditionで2D距離で判定しY軸を無視して適切に動作することを確認")]
         public void Distance2DCheckCondition_ExecuteWith2DDistance_IgnoresYAxis()
         {
             // Arrange
@@ -410,7 +410,7 @@ namespace ArcBT.Tests
             Object.DestroyImmediate(targetObj);
         }
 
-        [Test]
+        [Test][Description("Distance2DCheckCondition実行時に2D平面上の距離が闾値を超える場合の動作")]
         public void Distance2DCheckCondition_ExecuteWithFar2DDistance_ReturnsFailure()
         {
             // Arrange
@@ -438,7 +438,7 @@ namespace ArcBT.Tests
 
         #region CompareBlackBoardCondition Tests
 
-        [Test]
+        [Test][Description("CompareBlackBoardConditionのプロパティ設定でシンプルな比較式が正しくパースされることを確認")]
         public void CompareBlackBoardCondition_SetProperty_ParsesSimpleExpression()
         {
             // Arrange
@@ -455,7 +455,7 @@ namespace ArcBT.Tests
             Assert.AreEqual(BTNodeResult.Success, result);
         }
 
-        [Test]
+        [Test][Description("CompareBlackBoardConditionで整数値の比較が正しく動作することを確認")]
         public void CompareBlackBoardCondition_ExecuteWithIntComparison_ReturnsCorrectResult()
         {
             // Arrange
@@ -472,7 +472,7 @@ namespace ArcBT.Tests
             Assert.AreEqual(BTNodeResult.Success, result);
         }
 
-        [Test]
+        [Test][Description("CompareBlackBoardConditionで浮動小数点値の比較が正しく動作することを確認")]
         public void CompareBlackBoardCondition_ExecuteWithFloatComparison_ReturnsCorrectResult()
         {
             // Arrange
@@ -489,7 +489,7 @@ namespace ArcBT.Tests
             Assert.AreEqual(BTNodeResult.Success, result);
         }
 
-        [Test]
+        [Test][Description("CompareBlackBoardConditionで文字列の比較が正しく動作することを確認")]
         public void CompareBlackBoardCondition_ExecuteWithStringComparison_ReturnsCorrectResult()
         {
             // Arrange
@@ -506,7 +506,7 @@ namespace ArcBT.Tests
             Assert.AreEqual(BTNodeResult.Success, result);
         }
 
-        [Test]
+        [Test][Description("CompareBlackBoardConditionでBlackBoardキー同士の比較が正しく動作することを確認")]
         public void CompareBlackBoardCondition_ExecuteWithKeyToKeyComparison_ReturnsCorrectResult()
         {
             // Arrange
@@ -524,7 +524,7 @@ namespace ArcBT.Tests
             Assert.AreEqual(BTNodeResult.Success, result);
         }
 
-        [Test]
+        [Test][Description("CompareBlackBoardCondition実行時に比較式で未定義キーを参照した場合のエラーハンドリング")]
         public void CompareBlackBoardCondition_ExecuteWithMissingKey_ReturnsFailure()
         {
             // Arrange
@@ -539,7 +539,7 @@ namespace ArcBT.Tests
             Assert.AreEqual(BTNodeResult.Failure, result);
         }
 
-        [Test]
+        [Test][Description("CompareBlackBoardConditionで無効な式を指定した場合にFailureを返しエラーログを出力することを確認")]
         public void CompareBlackBoardCondition_ExecuteWithInvalidExpression_ReturnsFailure()
         {
             // Arrange
@@ -557,5 +557,11 @@ namespace ArcBT.Tests
         }
 
         #endregion
+    }
+
+    /// <summary>Runtime Condition Tests用のテストコンポーネント</summary>
+    public class TestConditionComponent : MonoBehaviour
+    {
+        // Runtime条件テスト用の基本的なMonoBehaviourコンポーネント
     }
 }

@@ -37,7 +37,7 @@ namespace ArcBT.Tests
             BTLogger.ResetToDefaults(); // テスト後は通常モードに戻す
         }
 
-        [Test]
+        [Test][Description("空のコンテンツを解析した場合にnullが返されることを確認")]
         public void ParseContent_EmptyContent_ReturnsNull()
         {
             // Arrange
@@ -53,7 +53,7 @@ namespace ArcBT.Tests
             Assert.IsNull(result);
         }
 
-        [Test]
+        [Test][Description("tree定義がないコンテンツを解析した場合にnullが返されることを確認")]
         public void ParseContent_NoTreeDefinition_ReturnsNull()
         {
             // Arrange
@@ -69,7 +69,7 @@ namespace ArcBT.Tests
             Assert.IsNull(result);
         }
 
-        [Test]
+        [Test][Description("シンプルなSequenceツリーが正常に解析されSequenceNodeが返されることを確認")]
         public void ParseContent_SimpleSequenceTree_ReturnsSequenceNode()
         {
             // Arrange
@@ -88,7 +88,7 @@ namespace ArcBT.Tests
             Assert.AreEqual("RootSequence", result.Name);
         }
 
-        [Test]
+        [Test][Description("シンプルなSelectorツリーが正常に解析されSelectorNodeが返されることを確認")]
         public void ParseContent_SimpleSelectorTree_ReturnsSelectorNode()
         {
             // Arrange
@@ -107,7 +107,7 @@ namespace ArcBT.Tests
             Assert.AreEqual("RootSelector", result.Name);
         }
 
-        [Test]
+        [Test][Description("シンプルなParallelツリーが正常に解析されParallelNodeが返されることを確認")]
         public void ParseContent_SimpleParallelTree_ReturnsParallelNode()
         {
             // Arrange
@@ -126,7 +126,7 @@ namespace ArcBT.Tests
             Assert.AreEqual("RootParallel", result.Name);
         }
 
-        [Test]
+        [Test][Description("プロパティなしのActionノードが正しいActionクラスとして作成されることを確認")]
         public void ParseContent_ActionNodeWithoutProperties_CreatesCorrectAction()
         {
             // Arrange
@@ -145,7 +145,7 @@ namespace ArcBT.Tests
             Assert.AreEqual("Action:MoveToPosition", result.Name);
         }
 
-        [Test]
+        [Test][Description("プロパティありのActionノードでプロパティが正しく設定されることを確認")]
         public void ParseContent_ActionNodeWithProperties_SetsPropertiesCorrectly()
         {
             // Arrange
@@ -166,7 +166,7 @@ namespace ArcBT.Tests
             Assert.AreEqual("Action:Wait", result.Name);
         }
 
-        [Test]
+        [Test][Description("未登録のActionが指定された場合に適切にエラーハンドリングされることを確認")]
         public void ParseContent_UnknownAction_CreatesCustomActionNode()
         {
             // Arrange
@@ -188,7 +188,7 @@ namespace ArcBT.Tests
             Assert.IsNull(result); // 未知のアクションの場合はnullが返される
         }
 
-        [Test]
+        [Test][Description("複数の既知のActionが含まれるツリーで各々が正しいActionタイプとして作成されることを確認")]
         public void ParseContent_MultipleKnownActions_CreatesCorrectActionTypes()
         {
             // Arrange
@@ -219,7 +219,7 @@ namespace ArcBT.Tests
             Assert.IsInstanceOf<FleeToSafetyAction>(result.Children[2]);
         }
 
-        [Test]
+        [Test][Description("プロパティなしのConditionノードが正しいConditionクラスとして作成されることを確認")]
         public void ParseContent_ConditionNodeWithoutProperties_CreatesCorrectCondition()
         {
             // Arrange
@@ -238,7 +238,7 @@ namespace ArcBT.Tests
             Assert.AreEqual("Condition:HealthCheck", result.Name);
         }
 
-        [Test]
+        [Test][Description("プロパティありのConditionノードでプロパティが正しく設定されることを確認")]
         public void ParseContent_ConditionNodeWithProperties_SetsPropertiesCorrectly()
         {
             // Arrange
@@ -259,7 +259,7 @@ namespace ArcBT.Tests
             Assert.AreEqual("Condition:EnemyCheck", result.Name);
         }
 
-        [Test]
+        [Test][Description("未登録のConditionが指定された場合に適切にエラーハンドリングされることを確認")]
         public void ParseContent_UnknownCondition_CreatesCustomConditionNode()
         {
             // Arrange
@@ -281,7 +281,7 @@ namespace ArcBT.Tests
             Assert.IsNull(result); // 未知の条件の場合はnullが返される
         }
 
-        [Test]
+        [Test][Description("複数の既知のConditionが含まれるツリーで各々が正しいConditionタイプとして作成されることを確認")]
         public void ParseContent_MultipleKnownConditions_CreatesCorrectConditionTypes()
         {
             // Arrange
@@ -311,7 +311,7 @@ namespace ArcBT.Tests
             Assert.IsInstanceOf<IsInitializedCondition>(result.Children[2]);
         }
 
-        [Test]
+        [Test][Description("ネストした複合ノードが正しい階層構造として作成されることを確認")]
         public void ParseContent_NestedCompositeNodes_CreatesCorrectHierarchy()
         {
             // Arrange
@@ -363,7 +363,7 @@ namespace ArcBT.Tests
             Assert.IsInstanceOf<WaitAction>(patrolSequence.Children[1]);
         }
 
-        [Test]
+        [Test][Description("複数の子ノードを持つParallelノードが正しい構造として作成されることを確認")]
         public void ParseContent_ParallelWithMultipleChildren_CreatesCorrectStructure()
         {
             // Arrange
@@ -397,7 +397,7 @@ namespace ArcBT.Tests
             Assert.IsInstanceOf<HealthCheckCondition>(result.Children[2]);
         }
 
-        [Test]
+        [Test][Description("文字列プロパティが正しく解析されることを確認")]
         public void ParseContent_StringProperties_ParsedCorrectly()
         {
             // Arrange
@@ -423,7 +423,7 @@ namespace ArcBT.Tests
             Assert.IsInstanceOf<CastSpellAction>(result);
         }
 
-        [Test]
+        [Test][Description("数値プロパティが正しく解析されることを確認")]
         public void ParseContent_NumberProperties_ParsedCorrectly()
         {
             // Arrange
@@ -449,14 +449,14 @@ namespace ArcBT.Tests
             Assert.IsInstanceOf<AttackEnemyAction>(result);
         }
 
-        [Test]
+        [Test][Description("混合型プロパティ（文字列・数値・真偽値）が正しく解析されることを確認")]
         public void ParseContent_MixedProperties_ParsedCorrectly()
         {
             // Arrange
             string content = @"
         tree TestTree {
             Action UseItem {
-                item_name: ""health_potion""
+                item_name: ""healing_potion""
                 quantity: ""1""
                 auto_use: ""true""
                 effectiveness: ""0.8""
@@ -476,7 +476,7 @@ namespace ArcBT.Tests
             Assert.IsInstanceOf<UseItemAction>(result);
         }
 
-        [Test]
+        [Test][Description("コメント（#）が含まれるBTファイルでコメントが正しく無視されることを確認")]
         public void ParseContent_WithComments_IgnoresComments()
         {
             // Arrange
@@ -502,7 +502,7 @@ namespace ArcBT.Tests
             Assert.IsInstanceOf<WaitAction>(result.Children[0]);
         }
 
-        [Test]
+        [Test][Description("余分な空白文字が含まれるBTファイルが正しく解析されることを確認")]
         public void ParseContent_WithExtraWhitespace_ParsesCorrectly()
         {
             // Arrange
@@ -536,7 +536,7 @@ namespace ArcBT.Tests
             Assert.IsInstanceOf<WaitAction>(result.Children[0]);
         }
 
-        [Test]
+        [Test][Description("有効なBTファイルからツリーが正しく読み込まれることを確認")]
         public void ParseFile_ValidFile_ReturnsCorrectTree()
         {
             // Arrange
@@ -559,7 +559,7 @@ namespace ArcBT.Tests
             Assert.AreEqual(1, result.Children.Count);
         }
 
-        [Test]
+        [Test][Description("存在しないBTファイルの読み込み時に適切にnullが返されることを確認")]
         public void ParseFile_NonExistentFile_ReturnsNull()
         {
             // Expect error log for non-existent file
@@ -572,7 +572,7 @@ namespace ArcBT.Tests
             Assert.IsNull(result);
         }
 
-        [Test]
+        [Test][Description("構文エラーのあるBTファイルが適切にエラーハンドリングされることを確認")]
         public void ParseContent_MalformedTree_HandlesGracefully()
         {
             // Arrange
@@ -594,7 +594,7 @@ namespace ArcBT.Tests
             // The exact behavior depends on your parser's error handling strategy
         }
 
-        [Test]
+        [Test][Description("空のノード本体を持つノードが子ノードなしで正しく作成されることを確認")]
         public void ParseContent_EmptyNodeBody_CreatesNodeWithoutChildren()
         {
             // Arrange
@@ -613,7 +613,7 @@ namespace ArcBT.Tests
             Assert.AreEqual(0, result.Children.Count);
         }
 
-        [Test]
+        [Test][Description("実際のAIシステムを想定した複雑なBTファイルが完全なツリー構造として作成されることを確認")]
         public void ParseContent_RealWorldExample_CreatesCompleteTree()
         {
             // Arrange
@@ -675,7 +675,7 @@ namespace ArcBT.Tests
             Assert.IsInstanceOf<BTSequenceNode>(result.Children[2]); // PatrolSequence
         }
 
-        [Test]
+        [Test][Description("Actionノード作成時に適切なデバッグメッセージが出力されることを確認")]
         public void ParseContent_ActionCreation_LogsCorrectDebugMessages()
         {
             // Arrange

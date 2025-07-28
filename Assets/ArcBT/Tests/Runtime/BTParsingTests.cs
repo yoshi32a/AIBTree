@@ -31,7 +31,7 @@ namespace ArcBT.Tests
         }
 
         /// <summary>全ての.btファイルが正常にパースできるかテスト</summary>
-        [Test]
+        [Test][Description("全ての.btファイル（blackboard_sample.bt等）が正常にパースできることを確認")]
         public void TestAllBTFilesParseSuccessfully()
         {
             var btDirectory = Path.Combine(Application.dataPath, "BehaviourTrees");
@@ -120,7 +120,7 @@ namespace ArcBT.Tests
         }
         
         /// <summary>各BTファイルの詳細構造をテスト</summary>
-        [Test]
+        [Test][Description("各BTファイル（blackboard_sample.bt、team_coordination_sample.bt等）の詳細なノード構造を検証")]
         public void TestSpecificBTFileStructures()
         {
             var testCases = new Dictionary<string, System.Action<BTNode>>
@@ -179,7 +179,7 @@ namespace ArcBT.Tests
             }
         }
 
-        [Test(Description = "パーサーエラーハンドリングをテスト")]
+        [Test][Description("パーサーエラーハンドリングをテスト")]
         public void TestParserErrorHandling()
         {
             // 存在しないファイルのテスト（エラーログを期待）
@@ -207,7 +207,7 @@ namespace ArcBT.Tests
         }
         
         /// <summary>特定のノードタイプが正しく作成されるかテスト</summary>
-        [Test]
+        [Test][Description("基本的なSequenceノードとAction/Conditionノードが正しく解析・作成されることを確認")]
         public void TestNodeCreation()
         {
             // 基本的なSequenceのテスト
@@ -242,7 +242,7 @@ namespace ArcBT.Tests
         }
         
         /// <summary>BlackBoard関連のノードが認識されるかテスト</summary>
-        [Test]
+        [Test][Description("BlackBoard専用ノード（ScanEnvironment、HasSharedEnemyInfo、AttackTarget）が正しく認識・解析されることを確認")]
         public void TestBlackBoardNodes()
         {
             var blackboardContent = @"
@@ -311,7 +311,7 @@ namespace ArcBT.Tests
         }
         
         /// <summary>パフォーマンステスト：大きなファイルの処理時間をチェック</summary>
-        [Test]
+        [Test][Description("全てのBTファイルの解析処理時間を測定し、各ファイルが適切な時間内（10秒以内）で処理されることを確認")]
         public void TestParsingPerformance()
         {
             var btDirectory = Path.Combine(Application.dataPath, "BehaviourTrees");

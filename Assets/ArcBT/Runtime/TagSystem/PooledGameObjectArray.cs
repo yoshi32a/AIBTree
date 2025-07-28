@@ -93,7 +93,7 @@ namespace ArcBT.TagSystem
             internal Enumerator(PooledGameObjectArray array)
             {
                 this.array = array;
-                this.index = -1;
+                index = -1;
             }
 
             public GameObject Current => array.Objects[index];

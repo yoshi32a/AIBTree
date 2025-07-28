@@ -33,7 +33,7 @@ namespace ArcBT.TagSystem
         readonly Dictionary<GameObject, HashSet<GameplayTag>> objectToTagsCache = new();
 
         // イベントリスナー管理（メモリリーク防止）
-        readonly Dictionary<GameplayTagComponent, System.Action<GameplayTagContainer>> listenerMap = new();
+        readonly Dictionary<GameplayTagComponent, Action<GameplayTagContainer>> listenerMap = new();
 
         /// <summary>
         /// シングルトンインスタンス
@@ -512,7 +512,7 @@ namespace ArcBT.TagSystem
             activeComponents.Add(component);
 
             // イベントリスナー登録（メモリリーク防止）
-            System.Action<GameplayTagContainer> listener = _ => OnTagsChangedFast(component);
+            Action<GameplayTagContainer> listener = _ => OnTagsChangedFast(component);
             listenerMap[component] = listener;
             component.OnTagsChanged += listener;
 
@@ -689,6 +689,24 @@ namespace ArcBT.TagSystem
             }
         }
 
+
+        /// <summary>
+        /// テスト用：すべてのキャッシュをクリア
+        /// </summary>
+        [System.Diagnostics.Conditional("UNITY_EDITOR")]
+        internal static void ClearAllCachesForTesting()
+        {
+            if (instance != null)
+            {
+                instance.componentCache.Clear();
+                instance.taggedObjectsCache.Clear();
+                instance.hierarchyCache.Clear();
+                instance.tagHierarchy.Clear();
+                instance.activeComponents.Clear();
+                instance.objectToTagsCache.Clear();
+                instance.listenerMap.Clear();
+            }
+        }
 
         void OnDestroy()
         {

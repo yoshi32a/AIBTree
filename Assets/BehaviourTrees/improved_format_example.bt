@@ -17,11 +17,11 @@ tree ImprovedFormatExample {
                     # 回復アイテムがあれば使用
                     Sequence use_healing {
                         Condition HasItem {
-                            item_type: "health_potion"
+                            item_type: "healing_potion"
                         }
                         
                         Action UseItem {
-                            item_type: "health_potion"
+                            item_type: "healing_potion"
                             duration: 2.0
                         }
                     }

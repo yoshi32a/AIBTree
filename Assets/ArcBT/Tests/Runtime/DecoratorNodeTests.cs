@@ -35,7 +35,7 @@ namespace ArcBT.Tests
 
         #region InverterDecorator Tests
 
-        [Test]
+        [Test][Description("InverterDecoratorでSuccess子ノードをFailureに反転させる基本動作の確認")]
         public void InverterDecorator_WithSuccessChild_ReturnsFailure()
         {
             // Arrange
@@ -51,7 +51,7 @@ namespace ArcBT.Tests
             Assert.AreEqual(BTNodeResult.Failure, result);
         }
 
-        [Test]
+        [Test][Description("InverterDecoratorでFailure子ノードをSuccessに反転させる動作の確認")]
         public void InverterDecorator_WithFailureChild_ReturnsSuccess()
         {
             // Arrange
@@ -67,7 +67,7 @@ namespace ArcBT.Tests
             Assert.AreEqual(BTNodeResult.Success, result);
         }
 
-        [Test]
+        [Test][Description("InverterDecoratorでRunning状態の子ノードはそのまま通す動作の確認")]
         public void InverterDecorator_WithRunningChild_ReturnsRunning()
         {
             // Arrange
@@ -83,7 +83,7 @@ namespace ArcBT.Tests
             Assert.AreEqual(BTNodeResult.Running, result);
         }
 
-        [Test]
+        [Test][Description("InverterDecoratorで子ノードが存在しない場合のエラーハンドリング")]
         public void InverterDecorator_WithNoChild_ReturnsFailure()
         {
             // Arrange
@@ -104,7 +104,7 @@ namespace ArcBT.Tests
 
         #region RepeatDecorator Tests
 
-        [Test]
+        [Test][Description("RepeatDecoratorのmax_countパラメータで最大繰り返し回数設定機能の検証")]
         public void RepeatDecorator_SetProperty_SetsCorrectMaxCount()
         {
             // Arrange
@@ -118,7 +118,7 @@ namespace ArcBT.Tests
             Assert.AreEqual(3, decorator.GetMaxCount());
         }
 
-        [Test]
+        [Test][Description("RepeatDecoratorのstop_on_failureパラメータで失敗時停止機能の検証")]
         public void RepeatDecorator_SetProperty_SetsStopOnFailure()
         {
             // Arrange
@@ -135,7 +135,7 @@ namespace ArcBT.Tests
             Assert.AreEqual(BTNodeResult.Running, result); // 繰り返し継続中
         }
 
-        [Test]
+        [Test][Description("RepeatDecoratorで指定回数（2回）まで実行して完了する動作の確認")]
         public void RepeatDecorator_WithLimitedCount_CompletesAfterMaxIterations()
         {
             // Arrange
@@ -157,7 +157,7 @@ namespace ArcBT.Tests
             Assert.AreEqual(2, decorator.GetCurrentCount());
         }
 
-        [Test]
+        [Test][Description("RepeatDecoratorで無限繰り返し（max_count=-1）設定時の継続動作確認")]
         public void RepeatDecorator_WithInfiniteCount_ContinuesIndefinitely()
         {
             // Arrange
@@ -180,7 +180,7 @@ namespace ArcBT.Tests
             Assert.AreEqual(5, decorator.GetCurrentCount());
         }
 
-        [Test]
+        [Test][Description("RepeatDecoratorで失敗時停止オプションが有効な場合の即座停止動作")]
         public void RepeatDecorator_WithStopOnFailure_StopsOnFirstFailure()
         {
             // Arrange
@@ -199,7 +199,7 @@ namespace ArcBT.Tests
             Assert.AreEqual(1, decorator.GetCurrentCount());
         }
 
-        [Test]
+        [Test][Description("RepeatDecoratorのReset()メソッドで現在の実行カウンターがリセットされることを確認")]
         public void RepeatDecorator_Reset_ResetsCurrentCount()
         {
             // Arrange
@@ -223,7 +223,7 @@ namespace ArcBT.Tests
 
         #region RetryDecorator Tests
 
-        [Test]
+        [Test][Description("RetryDecoratorのmax_retriesパラメータで最大リトライ回数設定機能の検証")]
         public void RetryDecorator_SetProperty_SetsCorrectMaxRetries()
         {
             // Arrange
@@ -237,7 +237,7 @@ namespace ArcBT.Tests
             Assert.AreEqual(5, decorator.GetMaxRetries());
         }
 
-        [Test]
+        [Test][Description("RetryDecoratorのretry_delayパラメータで再試行間隔設定機能の検証")]
         public void RetryDecorator_SetProperty_SetsCorrectRetryDelay()
         {
             // Arrange
@@ -254,7 +254,7 @@ namespace ArcBT.Tests
             Assert.AreEqual(BTNodeResult.Running, result); // 最初の失敗後、遅延中
         }
 
-        [Test]
+        [Test][Description("RetryDecoratorで成功する子ノードは即座にSuccessを返しリトライしない動作")]
         public void RetryDecorator_WithSuccessChild_ReturnsSuccessImmediately()
         {
             // Arrange
@@ -271,7 +271,7 @@ namespace ArcBT.Tests
             Assert.AreEqual(0, decorator.GetCurrentRetries());
         }
 
-        [Test]
+        [Test][Description("RetryDecoratorで失敗する子ノードを最大回数まで再試行する完全な動作検証")]
         public void RetryDecorator_WithFailureChild_RetriesUpToMaximum()
         {
             // Arrange
@@ -308,7 +308,7 @@ namespace ArcBT.Tests
             Assert.AreEqual(BTNodeResult.Failure, result4);
         }
 
-        [Test]
+        [Test][Description("RetryDecoratorでRunning状態の子ノードはそのまま実行継続する動作")]
         public void RetryDecorator_WithRunningChild_ReturnsRunning()
         {
             // Arrange
@@ -324,7 +324,7 @@ namespace ArcBT.Tests
             Assert.AreEqual(BTNodeResult.Running, result);
         }
 
-        [Test]
+        [Test][Description("RetryDecoratorのReset()メソッドでリトライカウンターと待機状態がリセットされることを確認")]
         public void RetryDecorator_Reset_ResetsRetryCount()
         {
             // Arrange
@@ -349,7 +349,7 @@ namespace ArcBT.Tests
 
         #region TimeoutDecorator Tests
 
-        [Test]
+        [Test][Description("TimeoutDecoratorのtimeoutパラメータでタイムアウト時間設定機能の検証")]
         public void TimeoutDecorator_SetProperty_SetsCorrectTimeout()
         {
             // Arrange
@@ -363,7 +363,7 @@ namespace ArcBT.Tests
             Assert.AreEqual(3.0f, decorator.GetTimeoutDuration());
         }
 
-        [Test]
+        [Test][Description("TimeoutDecoratorのsuccess_on_timeoutパラメータでタイムアウト時成功オプション設定の検証")]
         public void TimeoutDecorator_SetProperty_SetsSuccessOnTimeout()
         {
             // Arrange
@@ -382,7 +382,7 @@ namespace ArcBT.Tests
             Assert.IsTrue(decorator.IsRunning());
         }
 
-        [Test]
+        [Test][Description("TimeoutDecoratorで短時間で成功する子ノードがタイムアウト前に完了する動作")]
         public void TimeoutDecorator_WithQuickSuccessChild_ReturnsSuccessBeforeTimeout()
         {
             // Arrange
@@ -400,7 +400,7 @@ namespace ArcBT.Tests
             Assert.IsFalse(decorator.IsRunning());
         }
 
-        [Test]
+        [Test][Description("TimeoutDecoratorで実行中の子ノードの経過時間と残り時間を正確に追跡する機能")]
         public void TimeoutDecorator_WithRunningChild_TracksElapsedTime()
         {
             // Arrange
@@ -421,7 +421,7 @@ namespace ArcBT.Tests
             Assert.IsTrue(decorator.GetTimeoutProgress() >= 0f && decorator.GetTimeoutProgress() <= 1f);
         }
 
-        [Test]
+        [Test][Description("TimeoutDecoratorのReset()メソッドでタイムアウト状態と経過時間がリセットされることを確認")]
         public void TimeoutDecorator_Reset_ResetsTimeoutState()
         {
             // Arrange
@@ -442,7 +442,7 @@ namespace ArcBT.Tests
             Assert.AreEqual(0f, decorator.GetElapsedTime());
         }
 
-        [Test]
+        [Test][Description("TimeoutDecoratorで子ノードが存在しない場合のエラーハンドリング")]
         public void TimeoutDecorator_WithNoChild_ReturnsFailure()
         {
             // Arrange
@@ -460,7 +460,7 @@ namespace ArcBT.Tests
 
         #region Integration Tests
 
-        [Test]
+        [Test][Description("InverterとTimeoutのネストしたDecorator構造が正しく連携動作することを確認")]
         public void NestedDecorators_InverterWithTimeout_WorksCorrectly()
         {
             // Arrange - InverterでTimeoutをラップ
@@ -486,7 +486,7 @@ namespace ArcBT.Tests
             Assert.IsTrue(timeout.IsRunning());
         }
 
-        [Test]
+        [Test][Description("RepeatとRetryを組み合わせた複雑なDecorator階層の統合動作検証")]
         public void RepeatWithRetry_ComplexBehavior_WorksCorrectly()
         {
             // Arrange - RepeatでRetryをラップ

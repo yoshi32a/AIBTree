@@ -516,3 +516,22 @@ tree ComplexBehavior {
 - **Inverter + Condition**: 条件の論理反転
 - **Repeat + Sequence**: 一連の処理の繰り返し実行
 - **Nested Decorators**: 複数デコレーターの階層的組み合わせ
+
+## Memory Log
+
+### 2025年7月28日の主要な品質向上成果
+- **テスト品質の完全改善**: RuntimeコアとRPGサンプルの適切な分離によるテスト構造の最適化
+- **包括的テストエラー修正**: AttackEnemyAction、CastSpellAction、FleeToSafetyAction、UseItemAction等の全エラー解決
+  - GameplayTagシステムの適切な設定
+  - ログ期待値の実際出力への修正
+  - アイテム名統一（health_potion→healing_potion）
+  - 脅威検出システムの修正
+- **テスト属性の統一**: [Test(Description="")]から[Test][Description("")]への構造変更により、Unityテスト推奨形式に完全準拠
+- **314個のテストに日本語説明追加**: 約60テストファイルに具体的で差別化された説明を追加
+- **プロジェクト全体の一貫性向上**: 文字列統一、命名規則、テストパターンの標準化
+
+### テスト構造改善の具体的成果
+- **Runtime/Tests**（20ファイル）: コアシステム専用テスト、外部依存性なし
+- **Samples/Tests**（2ファイル）: RPG専用テスト、Runtime依存のみ
+- **アセンブリ分離**: ArcBT.Tests.asmdefがRuntime+Samples両方を参照する適切な構造
+- **テスト実行効率**: 分離により個別テスト実行と依存関係の明確化を実現

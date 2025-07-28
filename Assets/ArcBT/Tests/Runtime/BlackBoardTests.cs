@@ -25,7 +25,7 @@ namespace ArcBT.Tests
             BTLogger.ResetToDefaults();
         }
 
-        [Test]
+        [Test][Description("新しいキーで値を設定すると正しく保存され取得できることを確認")]
         public void SetValue_NewKey_StoresValue()
         {
             // Arrange & Act
@@ -36,7 +36,7 @@ namespace ArcBT.Tests
             Assert.AreEqual("test_value", blackBoard.GetValue<string>("test_key"));
         }
 
-        [Test]
+        [Test][Description("既存のキーに新しい値を設定すると値が更新されることを確認")]
         public void SetValue_ExistingKey_UpdatesValue()
         {
             // Arrange
@@ -49,7 +49,7 @@ namespace ArcBT.Tests
             Assert.AreEqual("new_value", blackBoard.GetValue<string>("test_key"));
         }
 
-        [Test]
+        [Test][Description("存在しないキーの値を取得するとデフォルト値が返されることを確認")]
         public void GetValue_NonExistentKey_ReturnsDefaultValue()
         {
             // Act & Assert
@@ -58,7 +58,7 @@ namespace ArcBT.Tests
             Assert.AreEqual(false, blackBoard.GetValue<bool>("non_existent"));
         }
 
-        [Test]
+        [Test][Description("型が一致しない値を取得するとデフォルト値を返し警告をログ出力することを確認")]
         public void GetValue_TypeMismatch_ReturnsDefaultAndLogsWarning()
         {
             // Arrange
@@ -73,7 +73,7 @@ namespace ArcBT.Tests
             Assert.AreEqual(999, result);
         }
 
-        [Test]
+        [Test][Description("存在するキーに対してHasKeyがtrueを返すことを確認")]
         public void HasKey_ExistingKey_ReturnsTrue()
         {
             // Arrange
@@ -83,14 +83,14 @@ namespace ArcBT.Tests
             Assert.IsTrue(blackBoard.HasKey("existing_key"));
         }
 
-        [Test]
+        [Test][Description("存在しないキーに対してHasKeyがfalseを返すことを確認")]
         public void HasKey_NonExistentKey_ReturnsFalse()
         {
             // Act & Assert
             Assert.IsFalse(blackBoard.HasKey("non_existent_key"));
         }
 
-        [Test]
+        [Test][Description("存在するキーの値を削除すると正しく削除され成功ログが出力されることを確認")]
         public void RemoveValue_ExistingKey_RemovesAndLogsSuccess()
         {
             // Arrange
@@ -105,7 +105,7 @@ namespace ArcBT.Tests
             Assert.AreEqual("default", blackBoard.GetValue("test_key", "default"));
         }
 
-        [Test]
+        [Test][Description("存在しないキーの値を削除してもログが出力されないことを確認")]
         public void RemoveValue_NonExistentKey_DoesNotLog()
         {
             // Act (非存在キーの削除はログを出力しない)
@@ -114,7 +114,7 @@ namespace ArcBT.Tests
             // Assert (ログアサートなし = 期待されるログがない)
         }
 
-        [Test]
+        [Test][Description("データが存在する状態でClearを実行すると全データが削除されることを確認")]
         public void Clear_WithData_RemovesAllData()
         {
             // Arrange
@@ -133,7 +133,7 @@ namespace ArcBT.Tests
             Assert.AreEqual(0, blackBoard.GetAllKeys().Length);
         }
 
-        [Test]
+        [Test][Description("異なる型の値を設定すると各型が正しく保存・取得できることを確認")]
         public void SetValue_DifferentTypes_StoresCorrectTypes()
         {
             // Arrange & Act
@@ -151,7 +151,7 @@ namespace ArcBT.Tests
             Assert.AreEqual(new Vector3(1, 2, 3), blackBoard.GetValue<Vector3>("vector_val"));
         }
 
-        [Test]
+        [Test][Description("存在するキーの型情報を取得すると正しい型が返されることを確認")]
         public void GetValueType_ExistingKey_ReturnsCorrectType()
         {
             // Arrange
@@ -163,14 +163,14 @@ namespace ArcBT.Tests
             Assert.AreEqual(typeof(int), blackBoard.GetValueType("int_key"));
         }
 
-        [Test]
+        [Test][Description("存在しないキーの型情報を取得するとnullが返されることを確認")]
         public void GetValueType_NonExistentKey_ReturnsNull()
         {
             // Act & Assert
             Assert.IsNull(blackBoard.GetValueType("non_existent"));
         }
 
-        [Test]
+        [Test][Description("null値を設定すると正しく保存され取得できることを確認")]
         public void SetValue_NullValue_StoresAndRetrievesCorrectly()
         {
             // Arrange & Act
@@ -181,7 +181,7 @@ namespace ArcBT.Tests
             Assert.IsNull(blackBoard.GetValue<string>("null_key"));
         }
 
-        [Test]
+        [Test][Description("nullから値への変更が正しく変更追跡されることを確認")]
         public void SetValue_NullToValue_TriggersChange()
         {
             // Arrange
@@ -194,7 +194,7 @@ namespace ArcBT.Tests
             Assert.AreEqual("new_value", blackBoard.GetValue<string>("test_key"));
         }
 
-        [Test]
+        [Test][Description("値からnullへの変更が正しく変更追跡されることを確認")]
         public void SetValue_ValueToNull_TriggersChange()
         {
             // Arrange
@@ -207,7 +207,7 @@ namespace ArcBT.Tests
             Assert.IsNull(blackBoard.GetValue<string>("test_key"));
         }
 
-        [Test]
+        [Test][Description("nullからnullへの変更は変更追跡されないことを確認")]
         public void SetValue_NullToNull_NoChange()
         {
             // Arrange
@@ -222,7 +222,7 @@ namespace ArcBT.Tests
             Assert.IsFalse(blackBoard.HasRecentChanges());
         }
 
-        [Test]
+        [Test][Description("複数のキーが存在する状態でGetAllKeysが全てのキーを返すことを確認")]
         public void GetAllKeys_WithMultipleKeys_ReturnsAllKeys()
         {
             // Arrange
@@ -240,7 +240,7 @@ namespace ArcBT.Tests
             Assert.Contains("key3", keys);
         }
 
-        [Test]
+        [Test][Description("空のBlackBoardでGetAllKeysが空の配列を返すことを確認")]
         public void GetAllKeys_EmptyBlackBoard_ReturnsEmptyArray()
         {
             // Act
@@ -250,7 +250,7 @@ namespace ArcBT.Tests
             Assert.AreEqual(0, keys.Length);
         }
 
-        [Test]
+        [Test][Description("最近の変更がある場合HasRecentChangesがtrueを返すことを確認")]
         public void HasRecentChanges_WithRecentChange_ReturnsTrue()
         {
             // Act
@@ -260,14 +260,14 @@ namespace ArcBT.Tests
             Assert.IsTrue(blackBoard.HasRecentChanges());
         }
 
-        [Test]
+        [Test][Description("変更がない場合HasRecentChangesがfalseを返すことを確認")]
         public void HasRecentChanges_NoChanges_ReturnsFalse()
         {
             // Assert
             Assert.IsFalse(blackBoard.HasRecentChanges());
         }
 
-        [Test]
+        [Test][Description("変更がある場合GetRecentChangeSummaryがフォーマットされたサマリーを返すことを確認")]
         public void GetRecentChangeSummary_WithChanges_ReturnsFormattedSummary()
         {
             // Arrange & Act
@@ -282,7 +282,7 @@ namespace ArcBT.Tests
             Assert.IsTrue(summary.Contains("key2=42"));
         }
 
-        [Test]
+        [Test][Description("変更がない場合GetRecentChangeSummaryが変更なしメッセージを返すことを確認")]
         public void GetRecentChangeSummary_NoChanges_ReturnsNoChangeMessage()
         {
             // Act
@@ -292,7 +292,7 @@ namespace ArcBT.Tests
             Assert.AreEqual("変更なし", summary);
         }
 
-        [Test]
+        [Test][Description("GetRecentChangeSummaryを2回呼び出すと1回目の後に変更履歴がクリアされることを確認")]
         public void GetRecentChangeSummary_CalledTwice_ClearsAfterFirst()
         {
             // Arrange
@@ -307,7 +307,7 @@ namespace ArcBT.Tests
             Assert.AreEqual("変更なし", secondSummary);
         }
 
-        [Test]
+        [Test][Description("文字列値をGetValueAsStringで取得すると文字列として返されることを確認")]
         public void GetValueAsString_StringValue_ReturnsString()
         {
             // Arrange
@@ -320,7 +320,7 @@ namespace ArcBT.Tests
             Assert.AreEqual("hello world", result);
         }
 
-        [Test]
+        [Test][Description("GameObjectをGetValueAsStringで取得するとオブジェクト名が返されることを確認")]
         public void GetValueAsString_GameObject_ReturnsName()
         {
             // Arrange
@@ -337,7 +337,7 @@ namespace ArcBT.Tests
             Object.DestroyImmediate(gameObject);
         }
 
-        [Test]
+        [Test][Description("Vector3をGetValueAsStringで取得するとフォーマットされた座標が返されることを確認")]
         public void GetValueAsString_Vector3_ReturnsFormattedCoordinates()
         {
             // Arrange
@@ -350,7 +350,7 @@ namespace ArcBT.Tests
             Assert.AreEqual("(1.2, 2.6, 3.9)", result);
         }
 
-        [Test]
+        [Test][Description("float値をGetValueAsStringで取得するとフォーマットされた数値が返されることを確認")]
         public void GetValueAsString_Float_ReturnsFormattedFloat()
         {
             // Arrange
@@ -363,7 +363,7 @@ namespace ArcBT.Tests
             Assert.AreEqual("85.7", result);
         }
 
-        [Test]
+        [Test][Description("null値をGetValueAsStringで取得するとnull文字列が返されることを確認")]
         public void GetValueAsString_NullValue_ReturnsNull()
         {
             // Arrange
@@ -376,7 +376,7 @@ namespace ArcBT.Tests
             Assert.AreEqual("null", result);
         }
 
-        [Test]
+        [Test][Description("存在しないキーをGetValueAsStringで取得すると未設定メッセージが返されることを確認")]
         public void GetValueAsString_NonExistentKey_ReturnsNotSet()
         {
             // Act
@@ -386,7 +386,7 @@ namespace ArcBT.Tests
             Assert.AreEqual("未設定", result);
         }
 
-        [Test]
+        [Test][Description("重要なキーの値を設定すると変更がログ出力されることを確認")]
         public void SetValue_ImportantKey_LogsChange()
         {
             // Arrange & Act (enemy関連は重要キーとしてログ出力される)
@@ -394,7 +394,7 @@ namespace ArcBT.Tests
             blackBoard.SetValue("enemy_position", new Vector3(1, 0, 1));
         }
 
-        [Test]
+        [Test][Description("重要でないキーの値を設定してもログが出力されないことを確認")]
         public void SetValue_UnimportantKey_DoesNotLog()
         {
             // Act (重要でないキーはログに出力されない)
@@ -403,7 +403,7 @@ namespace ArcBT.Tests
             // Assert (ログアサートなし = 期待されるログがない)
         }
 
-        [Test]
+        [Test][Description("データがある状態でDebugLogを実行すると全ての内容がログ出力されることを確認")]
         public void DebugLog_WithData_LogsAllContents()
         {
             // Arrange
@@ -418,7 +418,7 @@ namespace ArcBT.Tests
             blackBoard.DebugLog();
         }
 
-        [Test]
+        [Test][Description("複雑なAIシナリオでBlackBoardの全機能が正しく動作することを確認する統合テスト")]
         public void IntegrationTest_ComplexScenario_WorksCorrectly()
         {
             // Arrange: 複雑なAI状況をシミュレート
@@ -459,7 +459,7 @@ namespace ArcBT.Tests
             Object.DestroyImmediate(playerObject);
         }
 
-        [Test]
+        [Test][Description("大量の操作を実行しても十分な性能で完了することを確認する性能テスト")]
         public void PerformanceTest_ManyOperations_CompletesQuickly()
         {
             // Arrange

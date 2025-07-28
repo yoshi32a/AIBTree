@@ -55,7 +55,7 @@
         },
         {
           "name": "constant.language.special.bt",
-          "match": "\\b(fireball|healing_potion|health_potion|bow|ranged|melee|investigate|examine|high|standard_route|healthy|low_health|condition_failed)\\b"
+          "match": "\\b(fireball|healing_potion|bow|ranged|melee|investigate|examine|high|standard_route|healthy|low_health|condition_failed)\\b"
         }
       ]
     },

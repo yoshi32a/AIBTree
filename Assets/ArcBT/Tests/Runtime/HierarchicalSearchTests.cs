@@ -24,6 +24,9 @@ namespace ArcBT.Tests
         [SetUp]
         public void Setup()
         {
+            // テスト開始前にGameplayTagManagerのキャッシュをクリア
+            GameplayTagManager.ClearAllCachesForTesting();
+            
             // 階層構造のテストオブジェクト作成
             player = new GameObject("Player");
             enemy = new GameObject("Enemy");
@@ -57,9 +60,12 @@ namespace ArcBT.Tests
             Object.DestroyImmediate(minion);
             Object.DestroyImmediate(item);
             Object.DestroyImmediate(weapon);
+            
+            // テスト終了後もキャッシュをクリア
+            GameplayTagManager.ClearAllCachesForTesting();
         }
 
-        [Test]
+        [Test][Description("Character階層タグで全キャラクター（Player, Enemy, Boss, Minion）を検索できることを確認")]
         public void HierarchicalSearch_Character_FindsAllCharacters()
         {
             // Act
@@ -73,7 +79,7 @@ namespace ArcBT.Tests
             Assert.IsTrue(found.Contains(minion));
         }
 
-        [Test]
+        [Test][Description("Character.Enemy階層タグで全敵キャラクター（Enemy, Boss, Minion）を検索し、Playerは除外されることを確認")]
         public void HierarchicalSearch_CharacterEnemy_FindsAllEnemies()
         {
             // Act
@@ -87,7 +93,7 @@ namespace ArcBT.Tests
             Assert.IsFalse(found.Contains(player)); // プレイヤーは含まれない
         }
 
-        [Test]
+        [Test][Description("Character.Player階層タグでPlayerのみが検索されることを確認")]
         public void HierarchicalSearch_CharacterPlayer_FindsOnlyPlayer()
         {
             // Act
@@ -98,7 +104,7 @@ namespace ArcBT.Tests
             Assert.IsTrue(found.Contains(player));
         }
 
-        [Test]
+        [Test][Description("Object階層タグで全オブジェクト（Item, Weapon）を検索できることを確認")]
         public void HierarchicalSearch_Object_FindsAllObjects()
         {
             // Act
@@ -110,7 +116,7 @@ namespace ArcBT.Tests
             Assert.IsTrue(found.Contains(weapon));
         }
 
-        [Test]
+        [Test][Description("Object.Item階層タグで全アイテム（Item, Weapon）を検索できることを確認")]
         public void HierarchicalSearch_ObjectItem_FindsAllItems()
         {
             // Act
@@ -122,7 +128,7 @@ namespace ArcBT.Tests
             Assert.IsTrue(found.Contains(weapon));
         }
 
-        [Test]
+        [Test][Description("リーフノード（末端タグ）の検索でそのタグを持つオブジェクトのみが返されることを確認")]
         public void HierarchicalSearch_LeafNode_FindsOnlyItself()
         {
             // Act
@@ -137,7 +143,7 @@ namespace ArcBT.Tests
             Assert.IsTrue(foundWeapon.Contains(weapon));
         }
 
-        [Test]
+        [Test][Description("存在しないタグでの検索で空の結果が返されることを確認")]
         public void HierarchicalSearch_NonExistentTag_ReturnsEmpty()
         {
             // Act
@@ -147,7 +153,7 @@ namespace ArcBT.Tests
             Assert.AreEqual(0, found.Length);
         }
 
-        [Test]
+        [Test][Description("深い階層構造（Level1.Level2.Level3.Level4.DeepTag）で階層検索が正しく動作することを確認")]
         public void HierarchicalSearch_DeepHierarchy_WorksCorrectly()
         {
             // Arrange - 深い階層のタグを追加
@@ -170,9 +176,10 @@ namespace ArcBT.Tests
 
             // Cleanup
             Object.DestroyImmediate(deepObject);
+            GameplayTagManager.ClearAllCachesForTesting();
         }
 
-        [Test]
+        [Test][Description("同一オブジェクトに複数の階層タグがある場合の階層検索が正しく動作することを確認")]
         public void HierarchicalSearch_MultipleTagsOnSameObject_WorksCorrectly()
         {
             // Arrange - 複数の階層タグを追加
@@ -196,9 +203,11 @@ namespace ArcBT.Tests
 
             // Cleanup
             Object.DestroyImmediate(multiTagObject);
+            // キャッシュから削除を確実にするため、キャッシュクリア
+            GameplayTagManager.ClearAllCachesForTesting();
         }
 
-        [Test]
+        [Test][Description("同じ階層検索を繰り返し実行したときにキャッシュが正しく動作し、一貫した結果が返されることを確認")]
         public void HierarchicalSearch_CachePerformance_WorksCorrectly()
         {
             // Act - 同じ検索を複数回実行（キャッシュテスト）
@@ -217,7 +226,7 @@ namespace ArcBT.Tests
             }
         }
 
-        [Test]
+        [Test][Description("タグ変更後に階層検索結果が正しく更新されることを確認")]
         public void HierarchicalSearch_AfterTagChange_UpdatesCorrectly()
         {
             // Arrange - 最初の検索
@@ -237,7 +246,7 @@ namespace ArcBT.Tests
             Assert.IsTrue(playerFound.Contains(boss)); // Bossがプレイヤー側に移動
         }
 
-        [Test]
+        [Test][Description("階層検索と通常検索の結果が一貫していることを確認（階層検索の結果 = 部分検索の合計）")]
         public void HierarchicalSearch_MixedWithRegularSearch_ConsistentResults()
         {
             // Act
@@ -253,7 +262,7 @@ namespace ArcBT.Tests
             Assert.AreEqual(regularSearchTotal, hierarchicalEnemies.Length);
         }
 
-        [Test]
+        [Test][Description("空のタグや無効なタグでの階層検索が適切に処理されることを確認")]
         public void HierarchicalSearch_EmptyTag_HandlesGracefully()
         {
             // Act & Assert
@@ -264,7 +273,7 @@ namespace ArcBT.Tests
             Assert.AreEqual(0, nullTagResult.Length);
         }
 
-        [Test]
+        [Test][Description("タグの大文字小文字の区別が正しく動作することを確認（正確なケースのみマッチ）")]
         public void HierarchicalSearch_CaseSensitivity_WorksCorrectly()
         {
             // Act

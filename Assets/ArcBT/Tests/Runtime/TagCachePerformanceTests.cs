@@ -3,7 +3,6 @@ using UnityEngine;
 using ArcBT.TagSystem;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System;
 
 namespace ArcBT.Tests
@@ -63,7 +62,7 @@ namespace ArcBT.Tests
             }
         }
 
-        [Test]
+        [Test][Description("小規模タグキャッシュ検索の性能をベンチマークテスト（100オブジェクトで100回検索が100ms以内）")]
         public void Cache_SmallScale_SearchPerformance()
         {
             // Arrange
@@ -85,7 +84,7 @@ namespace ArcBT.Tests
             Assert.Less(stopwatch.ElapsedMilliseconds, 100, "小規模検索は100ms以内であるべき");
         }
 
-        [Test]
+        [Test][Description("中規模タグキャッシュ検索の性能をベンチマークテスト（500オブジェクトで50回検索が200ms以内）")]
         public void Cache_MediumScale_SearchPerformance()
         {
             // Arrange
@@ -107,7 +106,7 @@ namespace ArcBT.Tests
             Assert.Less(stopwatch.ElapsedMilliseconds, 200, "中規模検索は200ms以内であるべき");
         }
 
-        [Test]
+        [Test][Description("大規模タグキャッシュ検索の性能をベンチマークテスト（1000オブジェクトで初回・キャッシュ検索の性能比較）")]
         public void Cache_LargeScale_SearchPerformance()
         {
             // Arrange
@@ -133,7 +132,7 @@ namespace ArcBT.Tests
             Assert.AreEqual(firstResult.Length, secondResult.Length, "キャッシュ結果は同じであるべき");
         }
 
-        [Test]
+        [Test][Description("階層タグ検索の性能をベンチマークテスト（1000オブジェクトで10回階層検索が300ms以内）")]
         public void Cache_HierarchicalSearch_Performance()
         {
             // Arrange
@@ -155,7 +154,7 @@ namespace ArcBT.Tests
             Assert.Less(stopwatch.ElapsedMilliseconds, 300, "階層検索は300ms以内であるべき");
         }
 
-        [Test]
+        [Test][Description("タグ変更処理の性能をベンチマークテスト（500オブジェクトに50回タグ追加が200ms以内）")]
         public void Cache_TagModification_Performance()
         {
             // Arrange
@@ -177,7 +176,7 @@ namespace ArcBT.Tests
             Assert.Less(stopwatch.ElapsedMilliseconds, 200, "タグ変更は200ms以内であるべき");
         }
 
-        [Test]
+        [Test][Description("コンポーネント登録処理の性能をベンチマークテスト（500コンポーネントの自動登録が300ms以内）")]
         public void Cache_ComponentRegistration_Performance()
         {
             // Act & Measure - Component registration
@@ -204,7 +203,7 @@ namespace ArcBT.Tests
             }
         }
 
-        [Test]
+        [Test][Description("GetTagComponent呼び出しの性能をベンチマークテスト（1000オブジェクトで1000回呼び出しが100ms以内）")]
         public void Cache_GetTagComponent_Performance()
         {
             // Arrange
@@ -227,7 +226,7 @@ namespace ArcBT.Tests
             Assert.Less(stopwatch.ElapsedMilliseconds, 100, "GetTagComponent呼び出しは100ms以内であるべき");
         }
 
-        [Test]
+        [Test][Description("複数タグ検索の性能をベンチマークテスト（500オブジェクトで200回検索が400ms以内、メモリ1000KB以内）")]
         public void Cache_MultipleTagSearch_Performance()
         {
             // Arrange - 現実的なシナリオ：中規模ゲーム環境
@@ -274,7 +273,7 @@ namespace ArcBT.Tests
             Assert.Less(allocatedBytes, 1024 * 1000, $"アロケーションは1000KB以内であるべき (実際: {allocatedBytes / 1024.0:F1}KB)");
         }
 
-        [Test]
+        [Test][Description("並行アクセスパターンの性能をベンチマークテスト（1000オブジェクトで160操作が400ms以内）")]
         public void Cache_ConcurrentAccess_Performance()
         {
             // Arrange
@@ -306,7 +305,7 @@ namespace ArcBT.Tests
             Assert.Less(stopwatch.ElapsedMilliseconds, 400, "並行アクセスパターンは400ms以内であるべき");
         }
 
-        [Test]
+        [Test][Description("キャッシュメモリ使用量の正当性をベンチマークテスト（1000オブジェクトでキャッシュ操作が1MB以内）")]
         public void Cache_MemoryUsage_Validation()
         {
             // Arrange
@@ -347,7 +346,7 @@ namespace ArcBT.Tests
             Assert.Less(memoryIncrease, 1024 * 1024, "メモリ増加は1MB以内であるべき"); // 1MB未満
         }
 
-        [Test]
+        [Test][Description("タグ変更時のキャッシュ無効化性能をベンチマークテスト（500オブジェクトで100操作が250ms以内）")]
         public void Cache_InvalidationPerformance_OnTagChange()
         {
             // Arrange

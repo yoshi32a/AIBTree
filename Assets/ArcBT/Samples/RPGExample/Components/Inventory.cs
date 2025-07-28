@@ -15,7 +15,7 @@ namespace ArcBT.Samples.RPG.Components
         // デフォルトアイテムを追加（テスト用）
         if (items.Count == 0)
         {
-            items.Add(new InventoryItem("health_potion", 2));
+            items.Add(new InventoryItem("healing_potion", 2));
             items.Add(new InventoryItem("bow", 1));
             BTLogger.LogSystem($"Inventory: Added default items to {gameObject.name}");
         }
@@ -81,7 +81,7 @@ namespace ArcBT.Samples.RPG.Components
     [ContextMenu("Add Health Potion")]
     void AddHealthPotion()
     {
-        AddItem("health_potion", 1);
+        AddItem("healing_potion", 1);
     }
     
     [ContextMenu("Add Bow")]
@@ -93,7 +93,7 @@ namespace ArcBT.Samples.RPG.Components
     [ContextMenu("Use Health Potion")]
     void UseHealthPotion()
     {
-        UseItem("health_potion", 1);
+        UseItem("healing_potion", 1);
     }
     
     // UIシステム用のアイテム一覧取得メソッド

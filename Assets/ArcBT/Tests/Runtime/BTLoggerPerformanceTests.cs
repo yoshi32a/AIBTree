@@ -24,7 +24,7 @@ namespace ArcBT.Tests
         }
 
         /// <summary>大量ログ出力のパフォーマンステスト</summary>
-        [Test]
+        [Test][Description("大量ログ出力（1000件）の性能をベンチマークテスト（1秒以内で処理、履歴上限制御の確認）")]
         public void TestHighVolumeLoggingPerformance()
         {
             // Arrange
@@ -49,7 +49,7 @@ namespace ArcBT.Tests
         }
 
         /// <summary>フィルタリング機能のパフォーマンステスト</summary>
-        [Test]
+        [Test][Description("カテゴリフィルタリング機能の性能をベンチマークテスト（フィルタされたログの高速処理を確認）")]
         public void TestFilteringPerformance()
         {
             // Arrange: すべてのカテゴリを無効化してフィルタリングを強制
@@ -80,6 +80,7 @@ namespace ArcBT.Tests
 
         /// <summary>メモリ使用量テスト</summary>
         [UnityTest]
+        [Description("大量ログ出力（2000件）時のメモリ使用量をベンチマークテスト（15MB以内、履歴制限機能の確認）")]
         public IEnumerator TestMemoryUsage()
         {
             // Arrange: GCを実行してベースライン取得
@@ -118,6 +119,7 @@ namespace ArcBT.Tests
 
         /// <summary>並行アクセス耐性テスト</summary>
         [UnityTest]
+        [Description("複数処理からの同時ログ出力をシミュレートし、並行アクセス耐性をベンチマークテスト（3秒以内で完了）")]
         public IEnumerator TestConcurrentAccess()
         {
             // Arrange: 複数の並行処理で同時ログ出力をシミュレート
@@ -168,7 +170,7 @@ namespace ArcBT.Tests
         }
 
         /// <summary>ログ取得処理のパフォーマンステスト</summary>
-        [Test]
+        [Test][Description("ログ履歴取得処理の性能をベンチマークテスト（カテゴリ別取得、最新ログ取得の高速処理を確認）")]
         public void TestLogRetrievalPerformance()
         {
             // Arrange: 履歴にログを蓄積
@@ -196,7 +198,7 @@ namespace ArcBT.Tests
         }
 
         /// <summary>設定変更処理のパフォーマンステスト</summary>
-        [Test]
+        [Test][Description("ログレベルやカテゴリフィルタの動的変更処理の性能をベンチマークテスト（1000回変更が50ms以内）")]
         public void TestSettingsChangePerformance()
         {
             var stopwatch = new Stopwatch();
@@ -218,6 +220,7 @@ namespace ArcBT.Tests
 
         /// <summary>長時間実行安定性テスト</summary>
         [UnityTest]
+        [Description("長時間の連続ログ出力をシミュレートし、システムの安定性をベンチマークテスト（5000件ログが10秒以内で完了）")]
         public IEnumerator TestLongRunningStability()
         {
             // Arrange: 長時間の連続ログ出力をシミュレート

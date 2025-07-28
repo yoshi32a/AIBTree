@@ -104,21 +104,21 @@ tree ComplexTree {
             largeBTContent = sb.ToString();
         }
 
-        [Test]
+        [Test][Description("小さなBTファイルの解析性能をベンチマークテスト（1000文字以下のファイル）")]
         [Category("Heavy")]
         public void MeasureParserPerformance_SmallFile()
         {
             MeasurePerformance("Small BT", smallBTContent);
         }
 
-        [Test]
+        [Test][Description("中規模BTファイルの解析性能をベンチマークテスト（1000-2000文字程度のファイル）")]
         [Category("Heavy")]
         public void MeasureParserPerformance_MediumFile()
         {
             MeasurePerformance("Medium BT", mediumBTContent);
         }
 
-        [Test]
+        [Test][Description("大規模BTファイルの解析性能をベンチマークテスト（複雑な階層構造を持つファイル）")]
         [Category("Heavy")]
         public void MeasureParserPerformance_LargeFile()
         {
@@ -239,7 +239,7 @@ tree ComplexTree {
             return 20.0; // 大きいファイル
         }
 
-        [Test]
+        [Test][Description("異なるトークン化手法の性能比較テスト（現在の実装とその他手法の比較）")]
         [Category("Heavy")]
         public void CompareTokenizationMethods()
         {

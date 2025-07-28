@@ -135,7 +135,7 @@ namespace ArcBT.Tests
             UnityEngine.Debug.Log($"1検索アロケーション: {before.AllocPerSearch:F1}bytes → {after.AllocPerSearch:F1}bytes");
         }
 
-        [Test]
+        [Test][Description("タグシステムの全検索種類を統合したベンチマークテスト（単一・複数・階層検索の性能測定）")]
         public void Benchmark_AllTagSearchTypes_Combined()
         {
             UnityEngine.Debug.Log("=== 統合ベンチマーク開始 ===");

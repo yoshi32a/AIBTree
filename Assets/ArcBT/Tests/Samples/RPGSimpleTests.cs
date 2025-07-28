@@ -39,7 +39,7 @@ namespace ArcBT.Tests
 
         #region SimpleAttackAction Tests
 
-        [Test]
+        [Test][Description("SimpleAttackActionのdamageプロパティが正しく設定されることを確認")]
         public void SimpleAttackAction_SetProperty_SetsCorrectDamage()
         {
             // Arrange
@@ -54,7 +54,7 @@ namespace ArcBT.Tests
             Assert.IsTrue(result is BTNodeResult.Success or BTNodeResult.Failure);
         }
 
-        [Test]
+        [Test][Description("SimpleAttackActionのattack_rangeプロパティが正しく設定されることを確認")]
         public void SimpleAttackAction_SetProperty_SetsCorrectAttackRange()
         {
             // Arrange
@@ -69,7 +69,7 @@ namespace ArcBT.Tests
             Assert.IsTrue(result is BTNodeResult.Success or BTNodeResult.Failure);
         }
 
-        [Test]
+        [Test][Description("SimpleAttackActionがターゲットあり・範囲内で実行された時にAIの攻撃メソッドを呼び出すことを確認")]
         public void SimpleAttackAction_ExecuteWithTarget_CallsAttackOnAI()
         {
             // Arrange
@@ -92,7 +92,7 @@ namespace ArcBT.Tests
             Object.DestroyImmediate(targetObj);
         }
 
-        [Test]
+        [Test][Description("SimpleAttackActionがターゲットなしで実行された時にFailureを返すことを確認")]
         public void SimpleAttackAction_ExecuteWithoutTarget_ReturnsFailure()
         {
             // Arrange
@@ -110,7 +110,7 @@ namespace ArcBT.Tests
             Assert.IsFalse(mockAI.attackCalled);
         }
 
-        [Test]
+        [Test][Description("SimpleAttackActionが範囲外ターゲットで実行された時にFailureを返すことを確認")]
         public void SimpleAttackAction_ExecuteWithOutOfRangeTarget_ReturnsFailure()
         {
             // Arrange
@@ -133,7 +133,7 @@ namespace ArcBT.Tests
             Object.DestroyImmediate(targetObj);
         }
 
-        [Test]
+        [Test][Description("SimpleAttackActionがExampleAIコンポーネントなしで実行された時にエラーログ出力とFailureを返すことを確認")]
         public void SimpleAttackAction_ExecuteWithoutExampleAI_ReturnsFailure()
         {
             // Arrange
@@ -159,7 +159,7 @@ namespace ArcBT.Tests
 
         #region WaitSimpleAction Tests
 
-        [Test]
+        [Test][Description("WaitSimpleActionのdurationプロパティが正しく設定され、AIの待機メソッドを呼び出すことを確認")]
         public void WaitSimpleAction_SetProperty_SetsCorrectDuration()
         {
             // Arrange
@@ -176,7 +176,7 @@ namespace ArcBT.Tests
             Assert.AreEqual(2.5f, mockAI.lastWaitDuration);
         }
 
-        [Test]
+        [Test][Description("WaitSimpleActionが実行された時にAIの待機メソッドを呼び出し、Successを返すことを確認")]
         public void WaitSimpleAction_Execute_CallsWaitOnAI()
         {
             // Arrange
@@ -192,7 +192,7 @@ namespace ArcBT.Tests
             Assert.AreEqual(1.0f, mockAI.lastWaitDuration); // デフォルト値
         }
 
-        [Test]
+        [Test][Description("WaitSimpleActionがExampleAIコンポーネントなしで実行された時にエラーログ出力とFailureを返すことを確認")]
         public void WaitSimpleAction_ExecuteWithoutExampleAI_ReturnsFailure()
         {
             // Arrange
@@ -218,7 +218,7 @@ namespace ArcBT.Tests
 
         #region MoveToNamedPositionAction Tests
 
-        [Test]
+        [Test][Description("MoveToNamedPositionActionのtargetプロパティが正しく設定されることを確認")]
         public void MoveToNamedPositionAction_SetProperty_SetsCorrectTarget()
         {
             // Arrange
@@ -233,7 +233,7 @@ namespace ArcBT.Tests
             Assert.IsTrue(result is BTNodeResult.Success or BTNodeResult.Failure);
         }
 
-        [Test]
+        [Test][Description("MoveToNamedPositionActionのspeedプロパティが正しく設定されることを確認")]
         public void MoveToNamedPositionAction_SetProperty_SetsCorrectSpeed()
         {
             // Arrange
@@ -248,7 +248,7 @@ namespace ArcBT.Tests
             Assert.IsTrue(result is BTNodeResult.Success or BTNodeResult.Failure);
         }
 
-        [Test]
+        [Test][Description("MoveToNamedPositionActionが有効なターゲットで実行された時にAIの移動メソッドを呼び出すことを確認")]
         public void MoveToNamedPositionAction_ExecuteWithValidTarget_CallsMoveOnAI()
         {
             // Arrange
@@ -269,7 +269,7 @@ namespace ArcBT.Tests
             Assert.AreEqual("TestTarget", mockAI.lastMoveTarget);
         }
 
-        [Test]
+        [Test][Description("MoveToNamedPositionActionが無効なターゲットで実行された時にFailureを返すことを確認")]
         public void MoveToNamedPositionAction_ExecuteWithInvalidTarget_ReturnsFailure()
         {
             // Arrange
@@ -287,7 +287,7 @@ namespace ArcBT.Tests
             Assert.AreEqual(BTNodeResult.Failure, result);
         }
 
-        [Test]
+        [Test][Description("MoveToNamedPositionActionがExampleAIコンポーネントなしで実行された時にエラーログ出力とFailureを返すことを確認")]
         public void MoveToNamedPositionAction_ExecuteWithoutExampleAI_ReturnsFailure()
         {
             // Arrange
@@ -313,7 +313,7 @@ namespace ArcBT.Tests
 
         #region SimpleHasTargetCondition Tests
 
-        [Test]
+        [Test][Description("SimpleHasTargetConditionがターゲットありで実行された時にSuccessを返すことを確認")]
         public void SimpleHasTargetCondition_ExecuteWithTarget_ReturnsSuccess()
         {
             // Arrange
@@ -334,7 +334,7 @@ namespace ArcBT.Tests
             Object.DestroyImmediate(targetObj);
         }
 
-        [Test]
+        [Test][Description("SimpleHasTargetConditionがターゲットなしで実行された時にFailureを返すことを確認")]
         public void SimpleHasTargetCondition_ExecuteWithoutTarget_ReturnsFailure()
         {
             // Arrange
@@ -351,7 +351,7 @@ namespace ArcBT.Tests
             Assert.AreEqual(BTNodeResult.Failure, result);
         }
 
-        [Test]
+        [Test][Description("SimpleHasTargetConditionがExampleAIコンポーネントなしで実行された時にエラーログ出力とFailureを返すことを確認")]
         public void SimpleHasTargetCondition_ExecuteWithoutExampleAI_ReturnsFailure()
         {
             // Arrange
@@ -377,7 +377,7 @@ namespace ArcBT.Tests
 
         #region EnemyDetectionCondition Tests
 
-        [Test]
+        [Test][Description("EnemyDetectionConditionのdetection_rangeプロパティが正しく設定され、敵検出処理で使用されることを確認")]
         public void EnemyDetectionCondition_SetProperty_SetsCorrectDetectionRange()
         {
             // Arrange
@@ -394,7 +394,7 @@ namespace ArcBT.Tests
             Assert.AreEqual(8.0f, mockAI.lastDetectionRange);
         }
 
-        [Test]
+        [Test][Description("EnemyDetectionConditionが敵検出時にAIの検出メソッドを呼び出し、Successを返すことを確認")]
         public void EnemyDetectionCondition_ExecuteWithEnemyDetected_ReturnsSuccess()
         {
             // Arrange
@@ -412,7 +412,7 @@ namespace ArcBT.Tests
             Assert.IsTrue(mockAI.detectEnemyCalled);
         }
 
-        [Test]
+        [Test][Description("EnemyDetectionConditionが敵未検出時にAIの検出メソッドを呼び出し、Failureを返すことを確認")]
         public void EnemyDetectionCondition_ExecuteWithNoEnemyDetected_ReturnsFailure()
         {
             // Arrange
@@ -430,7 +430,7 @@ namespace ArcBT.Tests
             Assert.IsTrue(mockAI.detectEnemyCalled);
         }
 
-        [Test]
+        [Test][Description("EnemyDetectionConditionがExampleAIコンポーネントなしで実行された時にエラーログ出力とFailureを返すことを確認")]
         public void EnemyDetectionCondition_ExecuteWithoutExampleAI_ReturnsFailure()
         {
             // Arrange
@@ -456,7 +456,7 @@ namespace ArcBT.Tests
 
         #region SimpleHealthCheckCondition Tests
 
-        [Test]
+        [Test][Description("SimpleHealthCheckConditionのmin_healthプロパティが正しく設定され、体力チェック処理で使用されることを確認")]
         public void SimpleHealthCheckCondition_SetProperty_SetsCorrectMinHealth()
         {
             // Arrange
@@ -473,7 +473,7 @@ namespace ArcBT.Tests
             Assert.AreEqual(50f, mockAI.lastHealthCheck);
         }
 
-        [Test]
+        [Test][Description("SimpleHealthCheckConditionが十分な体力で実行された時にAIの体力チェックメソッドを呼び出し、Successを返すことを確認")]
         public void SimpleHealthCheckCondition_ExecuteWithSufficientHealth_ReturnsSuccess()
         {
             // Arrange
@@ -492,7 +492,7 @@ namespace ArcBT.Tests
             Assert.IsTrue(mockAI.checkHealthCalled);
         }
 
-        [Test]
+        [Test][Description("SimpleHealthCheckConditionが不十分な体力で実行された時にAIの体力チェックメソッドを呼び出し、Failureを返すことを確認")]
         public void SimpleHealthCheckCondition_ExecuteWithInsufficientHealth_ReturnsFailure()
         {
             // Arrange
@@ -511,7 +511,7 @@ namespace ArcBT.Tests
             Assert.IsTrue(mockAI.checkHealthCalled);
         }
 
-        [Test]
+        [Test][Description("SimpleHealthCheckConditionがExampleAIコンポーネントなしで実行された時にエラーログ出力とFailureを返すことを確認")]
         public void SimpleHealthCheckCondition_ExecuteWithoutExampleAI_ReturnsFailure()
         {
             // Arrange

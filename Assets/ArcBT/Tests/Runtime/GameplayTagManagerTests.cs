@@ -34,7 +34,7 @@ namespace ArcBT.Tests
             if (testObject2 != null) Object.DestroyImmediate(testObject2);
         }
 
-        [Test]
+        [Test][Description("GameplayTagManagerのシングルトンパターンが正しく機能し同一インスタンスを返すことを確認")]
         public void GameplayTagManager_Singleton_WorksCorrectly()
         {
             // Arrange & Act
@@ -46,7 +46,7 @@ namespace ArcBT.Tests
             Assert.AreSame(instance1, instance2);
         }
 
-        [Test]
+        [Test][Description("FindGameObjectsWithTagメソッドで指定タグを持つオブジェクトが正確に検索できることを確認")]
         public void FindGameObjectsWithTag_FindsCorrectObjects()
         {
             // Arrange
@@ -67,7 +67,7 @@ namespace ArcBT.Tests
             Assert.AreEqual(testObject2, foundEnemies[0]);
         }
 
-        [Test]
+        [Test][Description("FindGameObjectsWithTagメソッドで存在しないタグを指定した場合に空の結果が返されることを確認")]
         public void FindGameObjectsWithTag_EmptyForInvalidTag()
         {
             // Arrange
@@ -80,7 +80,7 @@ namespace ArcBT.Tests
             Assert.AreEqual(0, found.Length);
         }
 
-        [Test]
+        [Test][Description("FindGameObjectWithTagメソッドで複数オブジェクトが同じタグを持つ場合に最初のオブジェクトが返されることを確認")]
         public void FindGameObjectWithTag_ReturnsFirstObject()
         {
             // Arrange
@@ -96,7 +96,7 @@ namespace ArcBT.Tests
             Assert.IsTrue(found == testObject1 || found == testObject2);
         }
 
-        [Test]
+        [Test][Description("FindGameObjectsWithTagHierarchyメソッドで階層タグの親と子の両方が正しく検索されることを確認")]
         public void FindGameObjectsWithTagHierarchy_FindsParentAndChildren()
         {
             // Arrange
@@ -115,7 +115,7 @@ namespace ArcBT.Tests
             Assert.IsTrue(found.Contains(testObject2));
         }
 
-        [Test]
+        [Test][Description("FindGameObjectsWithAnyTagsメソッドで指定タグのいずれかを持つオブジェクトが検索できることを確認")]
         public void FindGameObjectsWithAnyTags_WorksCorrectly()
         {
             // Arrange
@@ -135,7 +135,7 @@ namespace ArcBT.Tests
             Assert.AreEqual(testObject1, found[0]);
         }
 
-        [Test]
+        [Test][Description("FindGameObjectsWithAllTagsメソッドで指定タグをすべて持つオブジェクトのみが検索されることを確認")]
         public void FindGameObjectsWithAllTags_WorksCorrectly()
         {
             // Arrange
@@ -157,7 +157,7 @@ namespace ArcBT.Tests
             Assert.AreEqual(testObject1, found[0]);
         }
 
-        [Test]
+        [Test][Description("GetTagComponentメソッドでGameObjectから正しいGameplayTagComponentが取得できることを確認")]
         public void GetTagComponent_ReturnsCorrectComponent()
         {
             // Act
@@ -171,7 +171,7 @@ namespace ArcBT.Tests
             Assert.IsNull(foundComponentNull);
         }
 
-        [Test]
+        [Test][Description("HasTagメソッドでGameObjectが指定タグを持つかどうかの判定が正しく動作することを確認")]
         public void HasTag_WorksCorrectly()
         {
             // Arrange
@@ -184,7 +184,7 @@ namespace ArcBT.Tests
             Assert.IsFalse(GameplayTagManager.HasTag(null, testTag));
         }
 
-        [Test]
+        [Test][Description("GameplayTagComponentの作成時に自動的にマネージャーに登録され検索可能になることを確認")]
         public void ComponentRegistration_WorksAutomatically()
         {
             // Arrange
@@ -206,7 +206,7 @@ namespace ArcBT.Tests
             Object.DestroyImmediate(newObject);
         }
 
-        [Test]
+        [Test][Description("タグの追加・削除時にキャッシュが自動更新され検索結果が正しく反映されることを確認")]
         public void TagCacheUpdate_WorksWhenTagsChange()
         {
             // Arrange
@@ -236,7 +236,7 @@ namespace ArcBT.Tests
             Assert.AreEqual(testObject1, foundAfter2[0]);
         }
 
-        [Test]
+        [Test][Description("同一オブジェクトに複数のタグが設定された場合にすべてのタグで正しく検索できることを確認")]
         public void MultipleTagsOnSameObject_WorkCorrectly()
         {
             // Arrange
@@ -262,7 +262,7 @@ namespace ArcBT.Tests
             Assert.AreEqual(testObject1, found3[0]);
         }
 
-        [Test]
+        [Test][Description("nullや無効な入力値を渡した場合にGameplayTagManagerが適切にエラーハンドリングすることを確認")]
         public void NullAndInvalidInputs_HandleGracefully()
         {
             // Arrange

@@ -67,7 +67,7 @@ namespace ArcBT.Tests
 
         #region EnvironmentScanAction Tests
 
-        [Test]
+        [Test][Description("EnvironmentScanActionのscan_rangeパラメータ設定機能の動作検証")]
         public void EnvironmentScanAction_SetProperty_SetsCorrectRange()
         {
             // Arrange
@@ -82,7 +82,7 @@ namespace ArcBT.Tests
             Assert.IsTrue(result is BTNodeResult.Success or BTNodeResult.Failure);
         }
 
-        [Test]
+        [Test][Description("EnvironmentScanActionのscan_tagsパラメータで複数タグ指定機能の検証")]
         public void EnvironmentScanAction_SetProperty_SetsCorrectTags()
         {
             // Arrange
@@ -97,7 +97,7 @@ namespace ArcBT.Tests
             Assert.IsTrue(result is BTNodeResult.Success or BTNodeResult.Failure);
         }
 
-        [Test]
+        [Test][Description("EnvironmentScanAction実行時にスキャン範囲内にタグ付きオブジェクトがない場合の動作")]
         public void EnvironmentScanAction_ExecuteWithNoObjects_ReturnsFailure()
         {
             // Arrange
@@ -111,7 +111,7 @@ namespace ArcBT.Tests
             Assert.AreEqual(BTNodeResult.Failure, result);
         }
 
-        [Test]
+        [Test][Description("タグ付きオブジェクトが範囲内に存在する場合にEnvironmentScanActionがSuccessを返すことを確認")]
         public void EnvironmentScanAction_ExecuteWithTaggedObjects_ReturnsSuccess()
         {
             // Arrange
@@ -144,7 +144,7 @@ namespace ArcBT.Tests
 
         #region SearchForEnemyAction Tests
 
-        [Test]
+        [Test][Description("SearchForEnemyActionのsearch_rangeパラメータ設定機能の検証")]
         public void SearchForEnemyAction_SetProperty_SetsCorrectRange()
         {
             // Arrange
@@ -159,7 +159,7 @@ namespace ArcBT.Tests
             Assert.AreEqual(BTNodeResult.Failure, result); // 敵がいないのでFailure
         }
 
-        [Test]
+        [Test][Description("SearchForEnemyActionのenemy_tagパラメータでカスタムタグ指定機能の検証")]
         public void SearchForEnemyAction_SetProperty_SetsCorrectEnemyTag()
         {
             // Arrange
@@ -174,7 +174,7 @@ namespace ArcBT.Tests
             Assert.AreEqual(BTNodeResult.Failure, result); // モンスターがいないのでFailure
         }
 
-        [Test]
+        [Test][Description("SearchForEnemyAction実行時に検索範囲内に敵オブジェクトがいない場合の動作")]
         public void SearchForEnemyAction_ExecuteWithNoEnemies_ReturnsFailure()
         {
             // Arrange
@@ -188,7 +188,7 @@ namespace ArcBT.Tests
             Assert.AreEqual(BTNodeResult.Failure, result);
         }
 
-        [Test]
+        [Test][Description("範囲内に敵がいる場合にSearchForEnemyActionがSuccessを返しBlackBoardに敵情報を記録することを確認")]
         public void SearchForEnemyAction_ExecuteWithEnemyInRange_ReturnsSuccess()
         {
             // Arrange
@@ -219,7 +219,7 @@ namespace ArcBT.Tests
             Object.DestroyImmediate(enemyObj);
         }
 
-        [Test]
+        [Test][Description("複数の敵がいる場合にSearchForEnemyActionが最も近い敵を選択することを確認")]
         public void SearchForEnemyAction_ExecuteWithMultipleEnemies_ReturnsNearest()
         {
             // Arrange
@@ -256,7 +256,7 @@ namespace ArcBT.Tests
 
         #region InteractAction Tests
 
-        [Test]
+        [Test][Description("InteractActionのtarget_tagパラメータでスイッチ等の特定タグ指定機能の検証")]
         public void InteractAction_SetProperty_SetsCorrectTargetTag()
         {
             // Arrange
@@ -271,7 +271,7 @@ namespace ArcBT.Tests
             Assert.AreEqual(BTNodeResult.Failure, result); // スイッチがないのでFailure
         }
 
-        [Test]
+        [Test][Description("InteractActionのinteraction_rangeパラメータで接触可能距離設定機能の検証")]
         public void InteractAction_SetProperty_SetsCorrectRange()
         {
             // Arrange
@@ -286,7 +286,7 @@ namespace ArcBT.Tests
             Assert.AreEqual(BTNodeResult.Failure, result); // インタラクト可能オブジェクトがないのでFailure
         }
 
-        [Test]
+        [Test][Description("InteractAction実行時にIInteractableを実装したオブジェクトが範囲内にない場合の動作")]
         public void InteractAction_ExecuteWithNoInteractables_ReturnsFailure()
         {
             // Arrange
@@ -300,7 +300,7 @@ namespace ArcBT.Tests
             Assert.AreEqual(BTNodeResult.Failure, result);
         }
 
-        [Test]
+        [Test][Description("範囲内にインタラクト可能オブジェクトがある場合にInteractActionがインタラクションを実行することを確認")]
         public void InteractAction_ExecuteWithInteractableInRange_PerformsInteraction()
         {
             // Arrange
@@ -332,7 +332,7 @@ namespace ArcBT.Tests
 
         #region LogAction Tests
 
-        [Test]
+        [Test][Description("LogActionのmessageパラメータで日本語メッセージ出力機能の検証")]
         public void LogAction_SetProperty_SetsCorrectMessage()
         {
             // Arrange
@@ -347,7 +347,7 @@ namespace ArcBT.Tests
             Assert.AreEqual(BTNodeResult.Success, result);
         }
 
-        [Test]
+        [Test][Description("LogActionのlevelパラメータでWarningレベル等のログ出力機能の検証")]
         public void LogAction_SetProperty_SetsCorrectLogLevel()
         {
             // Arrange
@@ -363,7 +363,7 @@ namespace ArcBT.Tests
             Assert.AreEqual(BTNodeResult.Success, result);
         }
 
-        [Test]
+        [Test][Description("LogActionでBlackBoard情報を含むログ出力が正しく動作することを確認")]
         public void LogAction_ExecuteWithBlackBoardInfo_IncludesBlackBoardData()
         {
             // Arrange
@@ -382,7 +382,7 @@ namespace ArcBT.Tests
             Assert.AreEqual(BTNodeResult.Success, result);
         }
 
-        [Test]
+        [Test][Description("LogActionで特定のBlackBoardキーの値をログ出力することを確認")]
         public void LogAction_ExecuteWithSpecificBlackBoardKey_LogsKeyValue()
         {
             // Arrange
@@ -405,7 +405,7 @@ namespace ArcBT.Tests
 
         #region SetBlackBoardAction Tests
 
-        [Test]
+        [Test][Description("SetBlackBoardActionでint型の値（health=100）をBlackBoardに設定")]
         public void SetBlackBoardAction_SetProperty_SetsIntValue()
         {
             // Arrange
@@ -422,7 +422,7 @@ namespace ArcBT.Tests
             Assert.AreEqual(100, blackBoard.GetValue<int>("health"));
         }
 
-        [Test]
+        [Test][Description("SetBlackBoardActionでfloat型の値（speed=10.5）をBlackBoardに設定")]
         public void SetBlackBoardAction_SetProperty_SetsFloatValue()
         {
             // Arrange
@@ -439,7 +439,7 @@ namespace ArcBT.Tests
             Assert.AreEqual(10.5f, blackBoard.GetValue<float>("speed"));
         }
 
-        [Test]
+        [Test][Description("SetBlackBoardActionでbool型の値（is_active=true）をBlackBoardに設定")]
         public void SetBlackBoardAction_SetProperty_SetsBoolValue()
         {
             // Arrange
@@ -456,7 +456,7 @@ namespace ArcBT.Tests
             Assert.AreEqual(true, blackBoard.GetValue<bool>("is_active"));
         }
 
-        [Test]
+        [Test][Description("SetBlackBoardActionでVector3型の値（position=(1,2,3)）をBlackBoardに設定")]
         public void SetBlackBoardAction_SetProperty_SetsVector3Value()
         {
             // Arrange
@@ -473,7 +473,7 @@ namespace ArcBT.Tests
             Assert.AreEqual(new Vector3(1.0f, 2.0f, 3.0f), blackBoard.GetValue<Vector3>("position"));
         }
 
-        [Test]
+        [Test][Description("SetBlackBoardActionでstring型の値（player_name=Hero）をBlackBoardに設定")]
         public void SetBlackBoardAction_SetProperty_SetsStringValue()
         {
             // Arrange
@@ -490,7 +490,7 @@ namespace ArcBT.Tests
             Assert.AreEqual("Hero", blackBoard.GetValue<string>("player_name"));
         }
 
-        [Test]
+        [Test][Description("SetBlackBoardActionで複数の異なる型の値を同時にBlackBoardに設定")]
         public void SetBlackBoardAction_SetMultipleProperties_SetsAllValues()
         {
             // Arrange
@@ -510,7 +510,7 @@ namespace ArcBT.Tests
             Assert.AreEqual(false, blackBoard.GetValue<bool>("ready"));
         }
 
-        [Test]
+        [Test][Description("SetBlackBoardActionでBlackBoardがnullの場合にFailureを返しエラーログを出力することを確認")]
         public void SetBlackBoardAction_ExecuteWithNullBlackBoard_ReturnsFailure()
         {
             // Arrange
@@ -526,7 +526,7 @@ namespace ArcBT.Tests
             Assert.AreEqual(BTNodeResult.Failure, result);
         }
 
-        [Test]
+        [Test][Description("SetBlackBoardActionで割り当てが指定されていない場合にFailureを返しエラーログを出力することを確認")]
         public void SetBlackBoardAction_ExecuteWithNoAssignments_ReturnsFailure()
         {
             // Arrange

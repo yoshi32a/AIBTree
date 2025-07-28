@@ -31,7 +31,7 @@ namespace ArcBT.Tests
         }
 
         /// <summary>ログレベル設定とフィルタリングのテスト</summary>
-        [Test]
+        [Test][Description("ログレベルフィルタリング機能が正しく動作し、指定レベル以上のログのみ記録されることを確認")]
         public void TestLogLevelFiltering()
         {
             // Arrange: Unity Test環境でのログ期待設定
@@ -55,7 +55,7 @@ namespace ArcBT.Tests
         }
 
         /// <summary>カテゴリフィルタリングのテスト</summary>
-        [Test]
+        [Test][Description("カテゴリフィルタリング機能が正しく動作し、有効なカテゴリのログのみ記録されることを確認")]
         public void TestCategoryFiltering()
         {
             // Arrange: Combatカテゴリのみ有効にし、他を無効化
@@ -76,7 +76,7 @@ namespace ArcBT.Tests
         }
 
         /// <summary>ログ履歴管理のテスト</summary>
-        [Test]
+        [Test][Description("ログ履歴管理機能が正しく動作し、指定件数の最新ログが取得できることを確認")]
         public void TestLogHistoryManagement()
         {
             // Arrange & Act: 複数のログを追加
@@ -98,7 +98,7 @@ namespace ArcBT.Tests
         }
 
         /// <summary>カテゴリ別ログ取得のテスト</summary>
-        [Test]
+        [Test][Description("カテゴリ別ログ取得機能が正しく動作し、指定カテゴリのログのみフィルタリングして取得できることを確認")]
         public void TestCategorySpecificLogRetrieval()
         {
             // Arrange & Act: 異なるカテゴリのログを混在させる
@@ -120,7 +120,7 @@ namespace ArcBT.Tests
         }
 
         /// <summary>便利メソッドのテスト</summary>
-        [Test]
+        [Test][Description("カテゴリ別の便利メソッド（LogCombat、LogMovement等）が正しいカテゴリでログを記録することを確認")]
         public void TestConvenienceMethods()
         {
             // Arrange: Debugレベルまでのログをすべて記録するよう設定
@@ -153,7 +153,7 @@ namespace ArcBT.Tests
         }
 
         /// <summary>ログクリア機能のテスト</summary>
-        [Test]
+        [Test][Description("ログクリア機能が正しく動作し、履歴が完全に削除されることを確認")]
         public void TestLogClearFunctionality()
         {
             // Arrange: いくつかのログを追加
@@ -174,7 +174,7 @@ namespace ArcBT.Tests
         }
 
         /// <summary>デフォルト設定リセットのテスト</summary>
-        [Test]
+        [Test][Description("デフォルト設定リセット機能が正しく動作し、すべての設定が初期状態に戻ることを確認")]
         public void TestDefaultSettingsReset()
         {
             // Arrange: 設定を変更
@@ -198,7 +198,7 @@ namespace ArcBT.Tests
         }
 
         /// <summary>エラーログ機能のテスト</summary>
-        [Test]
+        [Test][Description("エラーログ出力機能が正しく動作し、適切なレベルとカテゴリで記録されることを確認")]
         public void TestErrorLogging()
         {
             // Arrange: Unity Test環境でのエラーログ期待設定
@@ -217,7 +217,7 @@ namespace ArcBT.Tests
         }
 
         /// <summary>タイムスタンプ機能のテスト</summary>
-        [Test]
+        [Test][Description("タイムスタンプ機能が正しく動作し、ログ記録時の正確な時刻が記録されることを確認")]
         public void TestTimestampFunctionality()
         {
             // Arrange: 現在時刻を記録
