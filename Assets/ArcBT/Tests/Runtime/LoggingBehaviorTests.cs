@@ -46,12 +46,10 @@ namespace ArcBT.Tests
             var action = new MoveToPositionAction();
             action.SetProperty("target", "NonExistentTarget");
 
-            LogAssert.Expect(LogType.Error, "[ERR][MOV]: MoveToPosition: Target 'NonExistentTarget' not found!");
-
             // Act
             action.Initialize(testOwner.AddComponent<TestCoreActionComponent>(), blackBoard);
 
-            // エラーログの出力を確認し、同時に機能も検証
+            // Assert - エラー処理後の状態を検証（ログはZLoggerで処理される）
             string expectedKey = string.IsNullOrEmpty(action.Name) ? "_target_position" : $"{action.Name}_target_position";
             Assert.IsFalse(blackBoard.HasKey(expectedKey), "エラー時にはBlackBoardに設定されるべきではない");
         }
@@ -61,14 +59,12 @@ namespace ArcBT.Tests
         {
             // Arrange
             var condition = new HasSharedEnemyInfoCondition();
-            
-            LogAssert.Expect(LogType.Error, "[ERR][BBD]: HasSharedEnemyInfo: BlackBoard is null");
 
             // Act
             condition.Initialize(testOwner.AddComponent<TestCoreConditionComponent>(), null); // BlackBoardをnullに設定
             var result = condition.Execute();
 
-            // Assert - エラーログと同時に戻り値も確認
+            // Assert - エラー処理後の戻り値を検証（ログはZLoggerで処理される）
             Assert.AreEqual(BTNodeResult.Failure, result, "BlackBoardがnullの場合はFailureが返されるべき");
         }
 
@@ -77,13 +73,11 @@ namespace ArcBT.Tests
         {
             // Arrange
             var runner = testOwner.AddComponent<BehaviourTreeRunner>();
-            
-            LogAssert.Expect(LogType.Error, "[ERR][SYS]: BT file not found: non_existent_file.bt");
 
             // Act
             runner.LoadBehaviourTree("non_existent_file.bt");
 
-            // Assert - エラーログと同時に状態も確認
+            // Assert - エラー処理後の状態を検証（ログはZLoggerで処理される）
             Assert.IsNull(runner.RootNode, "ファイルが存在しない場合、ツリーは設定されるべきではない");
         }
 

@@ -182,24 +182,20 @@ namespace ArcBT.Tests
         [Test][Description("パーサーエラーハンドリングをテスト")]
         public void TestParserErrorHandling()
         {
-            // 存在しないファイルのテスト（エラーログを期待）
-            LogAssert.Expect(LogType.Error, "[ERR][PRS]: BT file not found: nonexistent_file.bt");
+            // 存在しないファイルのテスト
             var result = parser.ParseFile("nonexistent_file.bt");
             Assert.IsNull(result, "Parsing non-existent file should return null");
             
-            // 無効な構文のテスト（エラーログが発生する可能性）
+            // 無効な構文のテスト
             var invalidContent = @"
                 invalid syntax here
                 not a proper bt file
             ";
             
-            // 無効な構文ではエラーログが出る可能性があるため、期待
-            LogAssert.Expect(LogType.Error, "[ERR][PRS]: No tree definition found");
             var invalidResult = parser.ParseContent(invalidContent);
             Assert.IsNull(invalidResult, "Parsing invalid content should return null");
             
             // 空のコンテンツのテスト
-            LogAssert.Expect(LogType.Error, "[ERR][PRS]: No tree definition found");
             var emptyResult = parser.ParseContent("");
             Assert.IsNull(emptyResult, "Parsing empty content should return null");
             
