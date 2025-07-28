@@ -81,9 +81,9 @@ namespace ArcBT.Actions
             var currentPos = transform.position;
             var distance = Vector3.Distance(currentPos, targetPosition);
 
-            BTLogger.Log(LogLevel.Debug, LogCategory.Movement, $"MoveToPosition '{Name}': Current pos = {currentPos}, Target pos = {targetPosition}", Name,
+            BTLogger.Log(Microsoft.Extensions.Logging.LogLevel.Debug, LogCategory.Movement, $"MoveToPosition '{Name}': Current pos = {currentPos}, Target pos = {targetPosition}", Name,
                 ownerComponent);
-            BTLogger.Log(LogLevel.Debug, LogCategory.Movement, $"MoveToPosition '{Name}': Distance = {distance:F2}, Tolerance = {tolerance}", Name,
+            BTLogger.Log(Microsoft.Extensions.Logging.LogLevel.Debug, LogCategory.Movement, $"MoveToPosition '{Name}': Distance = {distance:F2}, Tolerance = {tolerance}", Name,
                 ownerComponent);
 
             if (distance <= tolerance)
@@ -104,7 +104,7 @@ namespace ArcBT.Actions
                 blackBoard.SetValue($"{Name}_is_moving", true);
             }
 
-            BTLogger.Log(LogLevel.Debug, LogCategory.Movement, $"MoveToPosition '{Name}': → Moving to '{target}' (Distance: {distance:F2}, Speed: {speed})",
+            BTLogger.Log(Microsoft.Extensions.Logging.LogLevel.Debug, LogCategory.Movement, $"MoveToPosition '{Name}': → Moving to '{target}' (Distance: {distance:F2}, Speed: {speed})",
                 Name, ownerComponent);
             return BTNodeResult.Running;
         }

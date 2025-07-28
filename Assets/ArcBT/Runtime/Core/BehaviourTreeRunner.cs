@@ -91,7 +91,7 @@ namespace ArcBT.Core
             }
 
             // 構造化ログを使用
-            var logLevel = result == BTNodeResult.Failure ? LogLevel.Warning : LogLevel.Info;
+            var logLevel = result == BTNodeResult.Failure ? Microsoft.Extensions.Logging.LogLevel.Warning : Microsoft.Extensions.Logging.LogLevel.Information;
             BTLogger.Log(logLevel, LogCategory.System,
                 $"BT[{RootNode.Name}] → {result}{changeInfo} " +
                 $"(実行回数: {executionCount}, 時刻: {Time.time:F1}s)" +

@@ -85,7 +85,7 @@ namespace ArcBT.Conditions
                 _ => false
             };
 
-            BTLogger.Log(LogLevel.Debug, LogCategory.Condition, 
+            BTLogger.Log(Microsoft.Extensions.Logging.LogLevel.Debug, LogCategory.Condition, 
                 $"DistanceCheck '{Name}': Distance={actualDistance:F2}, Target={distance:F2}, Comparison={comparison}, Result={conditionMet}", 
                 Name, ownerComponent);
 
@@ -104,7 +104,7 @@ namespace ArcBT.Conditions
                 if (targetObject != null)
                 {
                     hasValidTarget = true;
-                    BTLogger.Log(LogLevel.Debug, LogCategory.Condition, $"DistanceCheck '{Name}': Found target by name '{targetName}'", Name, ownerComponent);
+                    BTLogger.Log(Microsoft.Extensions.Logging.LogLevel.Debug, LogCategory.Condition, $"DistanceCheck '{Name}': Found target by name '{targetName}'", Name, ownerComponent);
                     return;
                 }
             }
@@ -116,7 +116,7 @@ namespace ArcBT.Conditions
                 if (targetObject != null)
                 {
                     hasValidTarget = true;
-                    BTLogger.Log(LogLevel.Debug, LogCategory.Condition, $"DistanceCheck '{Name}': Found target by GameplayTag '{targetTag}'", Name, ownerComponent);
+                    BTLogger.Log(Microsoft.Extensions.Logging.LogLevel.Debug, LogCategory.Condition, $"DistanceCheck '{Name}': Found target by GameplayTag '{targetTag}'", Name, ownerComponent);
                     return;
                 }
             }
@@ -191,7 +191,7 @@ namespace ArcBT.Conditions
                 distance = 5.0f;
             }
 
-            BTLogger.Log(LogLevel.Debug, LogCategory.Condition, 
+            BTLogger.Log(Microsoft.Extensions.Logging.LogLevel.Debug, LogCategory.Condition, 
                 $"DistanceCheck '{Name}': Parsed expression '{distanceExpression}' → {comparison} {distance}", 
                 Name, ownerComponent);
         }

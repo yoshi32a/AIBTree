@@ -44,7 +44,7 @@ namespace ArcBT.Samples.RPG.Actions
             }
 
             aiController.Wait(duration);
-            BTLogger.Log(LogLevel.Debug, LogCategory.System, $"Executed wait for {duration} seconds");
+            BTLogger.Log(Microsoft.Extensions.Logging.LogLevel.Debug, LogCategory.System, $"Executed wait for {duration} seconds");
             return BTNodeResult.Success;
         }
     }

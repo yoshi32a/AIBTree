@@ -147,7 +147,7 @@ namespace ArcBT.Tests
                 LongString = new string('B', 5000),
                 NestedObject = new { Inner = "test" }
             };
-            BTLogger.LogStructured(LogLevel.Info, LogCategory.System, 
+            BTLogger.LogStructured(Microsoft.Extensions.Logging.LogLevel.Information, LogCategory.System, 
                 "Complex object: {ComplexObject}", complexObject, "ExceptionTest");
             
             // Assert: 例外が発生せずに処理が完了
@@ -171,7 +171,7 @@ namespace ArcBT.Tests
             BTLogger.LogSystem("🎮🔥⚡🚀 Emoji test 🎯🎲🎪🎨", "MultiLanguageTest");
             
             // 構造化ログでも多言語テスト
-            BTLogger.LogStructured(LogLevel.Info, LogCategory.System, 
+            BTLogger.LogStructured(Microsoft.Extensions.Logging.LogLevel.Information, LogCategory.System, 
                 "多言語構造化テスト {Message}", 
                 new { Message = "日本語メッセージ with English and 한국어" }, "MultiLanguageTest");
             
@@ -215,7 +215,7 @@ namespace ArcBT.Tests
                         for (int i = 0; i < logsPerThread; i++)
                         {
                             BTLogger.LogSystem($"Thread {index} message {i}", $"Thread{index}");
-                            BTLogger.LogStructured(LogLevel.Info, LogCategory.Combat, 
+                            BTLogger.LogStructured(Microsoft.Extensions.Logging.LogLevel.Information, LogCategory.Combat, 
                                 "Thread {ThreadId} combat {Index}", 
                                 new { ThreadId = index, Index = i }, $"Thread{index}");
                             
@@ -287,7 +287,7 @@ namespace ArcBT.Tests
                     // 多様なログパターンを本番環境相当で実行
                     BTLogger.LogSystem($"Production log {index} with data {index * 1.5f}", "ProductionOverall");
                     BTLogger.LogCombatFormat("Combat {0} damage {1}", $"Action{index}_damage_{index * 10}", "ProductionOverall");
-                    BTLogger.LogStructured(LogLevel.Info, LogCategory.Movement, 
+                    BTLogger.LogStructured(Microsoft.Extensions.Logging.LogLevel.Information, LogCategory.Movement, 
                         "Movement {Index} to {Position}", 
                         new { Index = index, Position = new Vector3(index, index, index) }, "ProductionOverall");
                     

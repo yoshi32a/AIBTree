@@ -222,7 +222,7 @@ namespace ArcBT.Conditions
                         useSecondKey = true;
                     }
 
-                    BTLogger.Log(LogLevel.Debug, LogCategory.Condition, 
+                    BTLogger.Log(Microsoft.Extensions.Logging.LogLevel.Debug, LogCategory.Condition, 
                         $"CompareBlackBoard '{Name}': Parsed '{expression}' → key1='{key1}', op='{compareType}', " +
                         $"{(useSecondKey ? $"key2='{key2}'" : $"value='{value2}'")}", 
                         Name, ownerComponent);

@@ -247,13 +247,44 @@ public class YourTestClass : BTTestBase
 ## BTLoggerシステム
 
 ### 概要
-BTLoggerは統合ログシステムで、Debug.Logの性能問題を解決し、構造化されたログ出力を提供します。
+BTLoggerは統合ログシステムで、ZLogger（Cysharp製）をベースとした高性能ログ機能を提供します。
 
 ### 主要機能
-- **条件付きコンパイル**: 本番ビルドで完全にログ処理を除去
-- **カテゴリベースフィルタリング**: Combat, Movement, Parser等のカテゴリ別制御
-- **ログレベル制御**: Error, Warning, Info, Debug, Traceの5段階
-- **パフォーマンス最適化**: 高負荷ログ処理でも25.8ms以内の高速処理
+- **ILogger注入方式**: ユーザーのLoggerFactoryと完全統合
+- **ZLoggerベース**: ゼロアロケーション高性能ログ出力
+- **カテゴリベースタグ**: Combat, Movement, Parser等のカテゴリ別タグ
+- **ユーザー制御**: フィルタリング・出力先をユーザーが完全制御
+
+### ユーザー設定（重要）
+ArcBTパッケージを使用する際は、アプリケーション起動時にBTLoggerを設定してください：
+
+```csharp
+// Unity起動時の推奨設定
+public class GameBootstrap : MonoBehaviour
+{
+    void Awake()
+    {
+        // LoggerFactoryを作成
+        var loggerFactory = LoggerFactory.Create(builder => {
+            builder.SetMinimumLevel(LogLevel.Trace);
+            builder.AddZLoggerUnityDebug();
+            
+            #if UNITY_EDITOR || DEVELOPMENT_BUILD
+            builder.AddZLoggerFile("Logs/game.log");
+            #endif
+            
+            // ArcBTログレベル制御
+            builder.AddFilter("ArcBT", LogLevel.Information);
+        });
+        
+        // ArcBTパッケージにLoggerFactoryを設定
+        BTLogger.Configure(loggerFactory);
+    }
+}
+```
+
+### 設定しない場合
+設定を忘れてもエラーは発生しません。NullLoggerが使用され、ログは出力されません。
 
 ### 使用方法
 ```csharp

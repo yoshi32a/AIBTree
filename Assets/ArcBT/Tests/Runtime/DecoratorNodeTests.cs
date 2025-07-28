@@ -86,13 +86,10 @@ namespace ArcBT.Tests
             var decorator = new InverterDecorator();
             decorator.Initialize(testOwner.AddComponent<TestDecoratorComponent>(), blackBoard);
 
-            // Expect error log for no child node
-            LogAssert.Expect(LogType.Error, "[ERR][SYS]: Decorator '' has no child node");
-
             // Act
             var result = decorator.Execute();
 
-            // Assert - 実際の動作を検証
+            // Assert - 実際の動作を検証（エラーログはログシステムで処理される）
             Assert.AreEqual(BTNodeResult.Failure, result, "子ノードがない場合、Failureが返されるべき");
         }
 
@@ -445,10 +442,7 @@ namespace ArcBT.Tests
             var decorator = new TimeoutDecorator();
             decorator.Initialize(testOwner.AddComponent<TestDecoratorComponent>(), blackBoard);
 
-            // Expect error log for no child node
-            LogAssert.Expect(LogType.Error, "[ERR][SYS]: Decorator '' has no child node");
-
-            // Act & Assert
+            // Act & Assert - 実際の動作を検証（エラーログはログシステムで処理される）
             var result = decorator.Execute();
             Assert.AreEqual(BTNodeResult.Failure, result, "子ノードがない場合、Failureが返されるべき");
         }

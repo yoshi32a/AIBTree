@@ -54,7 +54,7 @@ namespace ArcBT.Samples.RPG.Actions
                 else
                 {
                     // 後方互換性のためのフォールバック（将来的に削除予定）
-                    BTLogger.Log(LogLevel.Warning, LogCategory.Combat,
+                    BTLogger.Log(Microsoft.Extensions.Logging.LogLevel.Warning, LogCategory.Combat,
                         "Enemy does not implement IHealth interface. Consider updating Health component.", Name);
                 }
 

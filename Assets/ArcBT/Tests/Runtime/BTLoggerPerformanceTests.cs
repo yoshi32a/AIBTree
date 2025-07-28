@@ -5,6 +5,7 @@ using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
 using ArcBT.Logger;
+using Microsoft.Extensions.Logging;
 
 namespace ArcBT.Tests
 {
@@ -292,7 +293,7 @@ namespace ArcBT.Tests
                     Active = i % 2 == 0
                 };
                 
-                BTLogger.LogStructured(LogLevel.Info, LogCategory.System, 
+                BTLogger.LogStructured(Microsoft.Extensions.Logging.LogLevel.Information, LogCategory.System, 
                     "Structured performance test {Index} with {Value} at {Position} named {Name} active {Active}", 
                     structuredData, "StructuredPerformance");
             }

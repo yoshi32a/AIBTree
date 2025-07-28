@@ -293,7 +293,7 @@ namespace ArcBT.Parser
 
             var treeName = tokens[currentTokenIndex++].Value; // インクリメントを同時に実行
 
-            BTLogger.Log(LogLevel.Info, LogCategory.Parser, $"📋 Parsing tree: {treeName}");
+            BTLogger.Log(Microsoft.Extensions.Logging.LogLevel.Information, LogCategory.Parser, $"📋 Parsing tree: {treeName}");
 
             // opening brace
             if (currentTokenIndex >= tokens.Length || tokens[currentTokenIndex].Type != TokenType.LeftBrace)
@@ -311,7 +311,7 @@ namespace ArcBT.Parser
             {
                 // ツリー名をルートノードのプロパティとして設定
                 rootNode.SetProperty("treeName", treeName);
-                BTLogger.Log(LogLevel.Debug, LogCategory.Parser, $"✅ Successfully parsed tree '{treeName}' with root node: {rootNode.Name}");
+                BTLogger.Log(Microsoft.Extensions.Logging.LogLevel.Debug, LogCategory.Parser, $"✅ Successfully parsed tree '{treeName}' with root node: {rootNode.Name}");
             }
 
             // closing brace
@@ -395,17 +395,17 @@ namespace ArcBT.Parser
 
             // 新フォーマット: Action/Condition は直接スクリプト名、Sequence/Selector は従来通り
             BTNode node = null;
-            BTLogger.Log(LogLevel.Info, LogCategory.Parser, $"🔍 Creating node: {nodeType} {scriptOrNodeName}");
-            BTLogger.Log(LogLevel.Debug, LogCategory.Parser, $"🔍 Properties: {string.Join(", ", properties.Select(p => $"{p.Key}={p.Value}"))}");
+            BTLogger.Log(Microsoft.Extensions.Logging.LogLevel.Information, LogCategory.Parser, $"🔍 Creating node: {nodeType} {scriptOrNodeName}");
+            BTLogger.Log(Microsoft.Extensions.Logging.LogLevel.Debug, LogCategory.Parser, $"🔍 Properties: {string.Join(", ", properties.Select(p => $"{p.Key}={p.Value}"))}");
 
             if (nodeType is "Action" or "Condition")
             {
-                BTLogger.Log(LogLevel.Info, LogCategory.Parser, $"🚀 Creating {nodeType} with script '{scriptOrNodeName}'");
+                BTLogger.Log(Microsoft.Extensions.Logging.LogLevel.Information, LogCategory.Parser, $"🚀 Creating {nodeType} with script '{scriptOrNodeName}'");
                 node = CreateNodeFromScript(scriptOrNodeName, nodeType, properties);
             }
             else if (decoratorNodeFactories.ContainsKey(nodeType))
             {
-                BTLogger.Log(LogLevel.Debug, LogCategory.Parser, $"🔧 Creating decorator node: {nodeType}");
+                BTLogger.Log(Microsoft.Extensions.Logging.LogLevel.Debug, LogCategory.Parser, $"🔧 Creating decorator node: {nodeType}");
                 node = CreateDecoratorNode(nodeType);
                 if (node != null)
                 {
@@ -417,7 +417,7 @@ namespace ArcBT.Parser
             }
             else
             {
-                BTLogger.Log(LogLevel.Debug, LogCategory.Parser, $"🔧 Creating composite node: {nodeType}");
+                BTLogger.Log(Microsoft.Extensions.Logging.LogLevel.Debug, LogCategory.Parser, $"🔧 Creating composite node: {nodeType}");
                 node = CreateNode(nodeType);
                 if (node != null)
                 {
@@ -513,14 +513,14 @@ namespace ArcBT.Parser
 
         BTNode CreateNodeFromScript(string scriptName, string nodeType, Dictionary<string, string> properties)
         {
-            BTLogger.Log(LogLevel.Debug, LogCategory.Parser, $"🔧 CreateNodeFromScript: script='{scriptName}', type='{nodeType}'");
+            BTLogger.Log(Microsoft.Extensions.Logging.LogLevel.Debug, LogCategory.Parser, $"🔧 CreateNodeFromScript: script='{scriptName}', type='{nodeType}'");
 
             // 統一レジストリから作成（全ノードタイプ対応）
             var node = BTStaticNodeRegistry.CreateNode(nodeType, scriptName);
 
             if (node != null)
             {
-                BTLogger.Log(LogLevel.Info, LogCategory.Parser, $"✅ Created {nodeType.ToLower()} for script '{scriptName}'");
+                BTLogger.Log(Microsoft.Extensions.Logging.LogLevel.Information, LogCategory.Parser, $"✅ Created {nodeType.ToLower()} for script '{scriptName}'");
                 
                 // プロパティを設定
                 foreach (var prop in properties)
@@ -530,7 +530,7 @@ namespace ArcBT.Parser
             }
             else
             {
-                BTLogger.Log(LogLevel.Error, LogCategory.Parser,
+                BTLogger.Log(Microsoft.Extensions.Logging.LogLevel.Error, LogCategory.Parser,
                     $"Unknown {nodeType.ToLower()} script: {scriptName}. Please register the node in BTStaticNodeRegistry or use source generator.");
             }
 

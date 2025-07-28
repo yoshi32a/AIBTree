@@ -52,7 +52,7 @@ namespace ArcBT.Core
         {
             if (allNodes.ContainsKey(scriptName))
             {
-                BTLogger.Log(LogLevel.Warning, LogCategory.System, $"Node '{scriptName}' is already registered. Overwriting.");
+                BTLogger.Log(Microsoft.Extensions.Logging.LogLevel.Warning, LogCategory.System, $"Node '{scriptName}' is already registered. Overwriting.");
             }
 
             allNodes[scriptName] = factory;

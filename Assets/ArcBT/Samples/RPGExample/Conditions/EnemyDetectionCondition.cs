@@ -44,7 +44,7 @@ namespace ArcBT.Samples.RPG.Conditions
             }
 
             bool result = aiController.DetectEnemy(detectionRange);
-            BTLogger.Log(LogLevel.Debug, LogCategory.System, $"Enemy detection in range {detectionRange}: {result}");
+            BTLogger.Log(Microsoft.Extensions.Logging.LogLevel.Debug, LogCategory.System, $"Enemy detection in range {detectionRange}: {result}");
             return result ? BTNodeResult.Success : BTNodeResult.Failure;
         }
     }
