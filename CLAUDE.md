@@ -8,6 +8,16 @@
 - エラーメッセージの説明も日本語で提供する
 - コードの説明や質問への回答は必ず日本語で行う
 
+## GitHub操作ポリシー
+- **MCPツール優先**: GitHub関連の操作（PR作成、Issue管理、ブランチ操作等）は `mcp__github__*` ツールを使用する
+- **gh CLI避用**: `gh` コマンドでの操作は避け、MCPツールを使用することで安定性とエラーハンドリングを向上させる
+- **対象操作**: 
+  - PR作成・更新・マージ: `mcp__github__create_pull_request`, `mcp__github__merge_pull_request`
+  - Issue操作: `mcp__github__create_issue`, `mcp__github__update_issue`
+  - ブランチ管理: `mcp__github__create_branch`
+  - ファイル操作: `mcp__github__create_or_update_file`
+  - 通知確認: `mcp__github__list_notifications`
+
 ## プロジェクト概要
 
 これは **Universal Render Pipeline (URP)** を使用した Unity 6000.1.10f1 プロジェクト「AIBTree」です。**BehaviourTree AI システム**の実装が主な目的で、.btファイル形式でのAI定義とVSCode統合を提供します。

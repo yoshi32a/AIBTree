@@ -5,10 +5,6 @@ on:
     paths:
       - 'SourceGenerators/**'
       - '.github/workflows/build-source-generator.yml'
-  pull_request:
-    paths:
-      - 'SourceGenerators/**'
-      - '.github/workflows/build-source-generator.yml'
   workflow_dispatch:
 
 jobs:
@@ -16,33 +12,33 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     
     - name: Setup .NET
-      uses: actions/setup-dotnet@v3
+      uses: actions/setup-dotnet@v4
       with:
         dotnet-version: '6.0.x'
     
     - name: Restore dependencies
-      run: dotnet restore
-      working-directory: SourceGenerators/ArcBT.Generators
+      run: dotnet restore ArcBT.Generators.sln
+      working-directory: SourceGenerators
     
     - name: Build
-      run: dotnet build -c Release --no-restore
-      working-directory: SourceGenerators/ArcBT.Generators
+      run: dotnet build ArcBT.Generators.sln -c Release --no-restore
+      working-directory: SourceGenerators
     
     - name: Pack
-      run: dotnet pack -c Release --no-build
-      working-directory: SourceGenerators/ArcBT.Generators
+      run: dotnet pack ArcBT.Generators/ArcBT.Generators.csproj -c Release --no-build
+      working-directory: SourceGenerators
     
     - name: Upload DLL artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: ArcBT.Generators-dll
         path: SourceGenerators/ArcBT.Generators/bin/Release/netstandard2.0/ArcBT.Generators.dll
     
     - name: Upload NuGet package
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: ArcBT.Generators-nupkg
         path: SourceGenerators/ArcBT.Generators/bin/Release/*.nupkg
@@ -53,13 +49,13 @@ jobs:
     if: startsWith(github.ref, 'refs/tags/v')
     
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     
     - name: Download artifacts
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       
     - name: Create Release
-      uses: softprops/action-gh-release@v1
+      uses: softprops/action-gh-release@v2
       with:
         files: |
           ArcBT.Generators-dll/ArcBT.Generators.dll
