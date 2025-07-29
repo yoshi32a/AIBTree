@@ -8,12 +8,13 @@ namespace ArcBT.Samples.RPG.Actions
 {
     /// <summary>安全な場所に逃走するアクション</summary>
     [BTNode("FleeToSafety")]
-    public class FleeToSafetyAction : BTActionNode    {
+    public class FleeToSafetyAction : BTActionNode
+    {
         float minDistance = 20.0f;
         float speedMultiplier = 1.5f;
         Vector3 fleeTarget;
         bool hasFleeTarget = false;
-        
+
         MovementController movementController;
 
         public override void SetProperty(string key, string value)
@@ -32,7 +33,7 @@ namespace ArcBT.Samples.RPG.Actions
         public override void Initialize(MonoBehaviour owner, BlackBoard sharedBlackBoard = null)
         {
             base.Initialize(owner, sharedBlackBoard);
-            
+
             // MovementControllerを取得または追加
             movementController = owner.GetComponent<MovementController>();
             if (movementController == null)
@@ -59,7 +60,7 @@ namespace ArcBT.Samples.RPG.Actions
                     BTLogger.LogMovement($"FleeToSafety: Using existing flee target: {fleeTarget}", Name, ownerComponent);
                 }
             }
-            
+
             // 新しい逃走先を決定
             if (!hasFleeTarget)
             {
@@ -114,13 +115,14 @@ namespace ArcBT.Samples.RPG.Actions
             {
                 float moveSpeed = 22.0f * speedMultiplier;
                 movementController.SetTarget(fleeTarget, moveSpeed);
-                movementController.OnTargetReached = () => {
+                movementController.OnTargetReached = () =>
+                {
                     // 安全地点に到達 - 一定時間安全状態を維持
                     blackBoard.SetValue("is_safe", true);
                     blackBoard.SetValue("flee_completed", true);
                     blackBoard.SetValue("safety_timer", Time.time + 10.0f); // 10秒間安全状態
                     blackBoard.SetValue("last_flee_time", Time.time);
-                    
+
                     BTLogger.LogMovement("FleeToSafety: Reached safety - Safe for 10 seconds", Name, ownerComponent);
                 };
             }

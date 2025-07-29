@@ -47,7 +47,7 @@ namespace ArcBT.Conditions
                 }
                 else
                 {
-                    BTLogger.LogSystemError("Condition", $"DistanceCheck '{Name}': BlackBoard key '{blackBoardPositionKey}' not found");
+                    BTLogger.LogSystemError(this, $"BlackBoard key '{blackBoardPositionKey}' not found");
                     return BTNodeResult.Failure;
                 }
             }
@@ -85,7 +85,7 @@ namespace ArcBT.Conditions
                 _ => false
             };
 
-            BTLogger.LogSystem(Name, 
+            BTLogger.LogSystem(this, 
                 $"Distance={actualDistance:F2}, Target={distance:F2}, Comparison={comparison}, Result={conditionMet}");
 
             return conditionMet ? BTNodeResult.Success : BTNodeResult.Failure;
@@ -103,7 +103,7 @@ namespace ArcBT.Conditions
                 if (targetObject != null)
                 {
                     hasValidTarget = true;
-                    BTLogger.LogSystem(Name, $"Found target by name '{targetName}'");
+                    BTLogger.LogSystem(this, $"Found target by name '{targetName}'");
                     return;
                 }
             }
@@ -115,13 +115,13 @@ namespace ArcBT.Conditions
                 if (targetObject != null)
                 {
                     hasValidTarget = true;
-                    BTLogger.LogSystem(Name, $"Found target by GameplayTag '{targetTag}'");
+                    BTLogger.LogSystem(this, $"Found target by GameplayTag '{targetTag}'");
                     return;
                 }
             }
 
-            BTLogger.LogSystemError("Condition", 
-                $"DistanceCheck '{Name}': No target found (name='{targetName}', tag='{targetTag}')");
+            BTLogger.LogSystemError(this, 
+                $"No target found (name='{targetName}', tag='{targetTag}')");
         }
 
         /// <summary>
@@ -183,12 +183,12 @@ namespace ArcBT.Conditions
             }
             else
             {
-                BTLogger.LogSystemError("Condition", 
-                    $"DistanceCheck '{Name}': Failed to parse distance expression '{expression}'");
+                BTLogger.LogSystemError(this, 
+                    $"Failed to parse distance expression '{expression}'");
                 distance = 5.0f;
             }
 
-            BTLogger.LogSystem(Name,
+            BTLogger.LogSystem(this,
                 $"Parsed expression '{distanceExpression}' → {comparison} {distance}");
         }
 

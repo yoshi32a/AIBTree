@@ -50,7 +50,7 @@ namespace ArcBT.Decorators
             {
                 isRunning = true;
                 startTime = Time.time;
-                BTLogger.LogSystem(Name, $"Timeout: Starting execution with {timeoutDuration}s timeout");
+                BTLogger.LogSystem(this, $"Starting execution with {timeoutDuration}s timeout");
             }
 
             // タイムアウトチェック
@@ -58,7 +58,7 @@ namespace ArcBT.Decorators
             if (elapsedTime >= timeoutDuration)
             {
                 // タイムアウト発生
-                BTLogger.LogSystem(Name, $"Timeout: Timed out after {elapsedTime:F2}s");
+                BTLogger.LogSystem(this, $"Timed out after {elapsedTime:F2}s");
                 
                 // 子ノードに条件失敗を通知
                 child.OnConditionFailed();
@@ -79,7 +79,7 @@ namespace ArcBT.Decorators
                 case BTNodeResult.Success:
                 case BTNodeResult.Failure:
                     // 子ノードが完了した場合
-                    BTLogger.LogSystem(Name, $"Timeout: Child completed with {result} after {elapsedTime:F2}s");
+                    BTLogger.LogSystem(this, $"Child completed with {result} after {elapsedTime:F2}s");
                     isRunning = false;
                     return result;
 

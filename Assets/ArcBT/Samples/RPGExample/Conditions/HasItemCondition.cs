@@ -28,7 +28,7 @@ namespace ArcBT.Samples.RPG.Conditions
 
         protected override BTNodeResult CheckCondition()
         {
-            BTLogger.LogCondition($"=== HasItemCondition '{Name}' EXECUTING ===", Name, ownerComponent);
+            BTLogger.LogCondition(this, $"=== HasItemCondition '{Name}' EXECUTING ===");
 
             if (inventoryComponent == null)
             {
@@ -44,7 +44,7 @@ namespace ArcBT.Samples.RPG.Conditions
 
             var hasItem = inventoryComponent.HasItem(itemType);
 
-            BTLogger.LogCondition($"HasItem '{Name}': Checking for '{itemType}' = {(hasItem ? "FOUND ✓" : "NOT FOUND ✗")}", Name, ownerComponent);
+            BTLogger.LogCondition(this, $"HasItem '{Name}': Checking for '{itemType}' = {(hasItem ? "FOUND ✓" : "NOT FOUND ✗")}");
 
             return hasItem ? BTNodeResult.Success : BTNodeResult.Failure;
         }

@@ -1,5 +1,6 @@
 using ArcBT.Conditions;
 using ArcBT.Core;
+using ArcBT.Samples.RPG.Conditions;
 using ArcBT.TagSystem;
 using NUnit.Framework;
 using UnityEngine;

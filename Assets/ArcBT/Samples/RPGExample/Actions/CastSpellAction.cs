@@ -8,7 +8,8 @@ namespace ArcBT.Samples.RPG.Actions
 {
     /// <summary>魔法を詠唱するアクション</summary>
     [BTNode("CastSpell")]
-    public class CastSpellAction : BTActionNode    {
+    public class CastSpellAction : BTActionNode
+    {
         string spellName = "fireball";
         int damage = 40;
         int manaCost = 50;
@@ -73,14 +74,14 @@ namespace ArcBT.Samples.RPG.Actions
             {
                 targetHealth.TakeDamage(damage);
                 BTLogger.LogCombat($"✨ CastSpell: '{spellName}' で '{target.name}' に {damage} ダメージ！ (マナ消費: {manaCost})", Name, ownerComponent);
-                
+
                 // BlackBoardに魔法使用履歴を記録
                 if (blackBoard != null)
                 {
                     blackBoard.SetValue("last_spell_used", spellName);
                     blackBoard.SetValue("last_spell_time", Time.time);
                 }
-                
+
                 return BTNodeResult.Success;
             }
             else

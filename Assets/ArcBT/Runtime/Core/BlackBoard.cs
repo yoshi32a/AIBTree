@@ -40,6 +40,7 @@ namespace ArcBT.Core
 
             data[key] = value;
             dataTypes[key] = typeof(T);
+            BTLogger.LogBlackBoardSet(key, value, typeof(T).Name);
 
             // 変更追跡
             if (isNewKey || isValueChanged)

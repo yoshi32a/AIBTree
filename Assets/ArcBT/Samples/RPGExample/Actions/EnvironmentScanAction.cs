@@ -3,7 +3,7 @@ using ArcBT.Logger;
 using ArcBT.TagSystem;
 using UnityEngine;
 
-namespace ArcBT.Actions
+namespace ArcBT.Samples.RPG.Actions
 {
     [BTNode("EnvironmentScan")]
     public class EnvironmentScanAction : BTActionNode
@@ -27,6 +27,7 @@ namespace ArcBT.Actions
                     {
                         scanTags[i] = new GameplayTag(tagStrings[i].Trim());
                     }
+
                     break;
             }
         }
@@ -51,7 +52,7 @@ namespace ArcBT.Actions
                         {
                             var key = $"scanned_{tag.TagName.ToLower().Replace(".", "_")}";
                             blackBoard.SetValue(key, obj);
-                            BTLogger.LogSystem($"環境スキャン: {tag} を発見 - {obj.name} (距離: {distance:F1})", Name);
+                            BTLogger.LogSystem(this, $"{tag} を発見 - {obj.name} (距離: {distance:F1})");
                         }
                     }
                 }
@@ -59,11 +60,11 @@ namespace ArcBT.Actions
 
             if (foundObjects > 0)
             {
-                BTLogger.LogSystem($"環境スキャン完了: {foundObjects}個のオブジェクトを発見", Name);
+                BTLogger.LogSystem(this, $"スキャン完了: {foundObjects}個のオブジェクトを発見");
                 return BTNodeResult.Success;
             }
 
-            BTLogger.LogSystem("環境スキャン: 範囲内にオブジェクトが見つかりませんでした", Name);
+            BTLogger.LogSystem(this, "範囲内にオブジェクトが見つかりませんでした");
             return BTNodeResult.Failure;
         }
     }

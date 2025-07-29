@@ -59,16 +59,16 @@ namespace ArcBT.Samples.RPG.Conditions
                     var healthPercent = (health.CurrentHealth / health.MaxHealth) * 100f;
                     var result = healthPercent >= minHealthPercent;
 
-                    BTLogger.LogCondition($"敵の体力: {healthPercent:F1}% (最低要求: {minHealthPercent}%)", Name);
+                    BTLogger.LogCondition(this, $"敵の体力: {healthPercent:F1}% (最低要求: {minHealthPercent}%)");
                     return result ? BTNodeResult.Success : BTNodeResult.Failure;
                 }
                 else
                 {
-                    BTLogger.LogSystemError(Name, "Enemy does not implement IHealth interface.");
+                    BTLogger.LogSystemError(this, "Enemy does not implement IHealth interface.");
                 }
             }
 
-            BTLogger.LogCondition("敵またはHealthコンポーネントが見つかりません", Name);
+            BTLogger.LogCondition(this, "敵またはHealthコンポーネントが見つかりません");
             return BTNodeResult.Failure;
         }
     }

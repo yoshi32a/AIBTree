@@ -24,7 +24,7 @@ namespace ArcBT.Conditions
         {
             if (blackBoard == null)
             {
-                BTLogger.LogSystemError("BlackBoard", "HasSharedEnemyInfo: BlackBoard is null");
+                BTLogger.LogSystemError(this, "BlackBoard is null");
                 return BTNodeResult.Failure;
             }
 
@@ -40,11 +40,11 @@ namespace ArcBT.Conditions
             if (result)
             {
                 var enemyName = enemyTarget != null ? enemyTarget.name : "null";
-                BTLogger.LogBlackBoard($"HasSharedEnemyInfo: Enemy info available - Target: '{enemyName}'", Name, ownerComponent);
+                BTLogger.LogSystem(this, $"Enemy info available - Target: '{enemyName}'");
             }
             else
             {
-                BTLogger.LogBlackBoard("HasSharedEnemyInfo: No valid enemy info in BlackBoard", Name, ownerComponent);
+                BTLogger.LogSystem(this, "No valid enemy info in BlackBoard");
             }
 
             return result ? BTNodeResult.Success : BTNodeResult.Failure;

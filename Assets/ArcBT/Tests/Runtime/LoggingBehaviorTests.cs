@@ -1,6 +1,7 @@
 using ArcBT.Actions;
 using ArcBT.Conditions;
 using ArcBT.Core;
+using ArcBT.Samples.RPG.Actions;
 using NUnit.Framework;
 using UnityEngine;
 

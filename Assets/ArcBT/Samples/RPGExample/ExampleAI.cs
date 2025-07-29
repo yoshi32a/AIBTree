@@ -65,7 +65,7 @@ namespace ArcBT.Samples.RPG
                 var direction = (targetTransform.position - transform.position).normalized;
                 transform.position += direction * speed * Time.deltaTime;
 
-                BTLogger.LogMovement($"Moving to {targetName} at speed {speed}", gameObject.name, this);
+                SampleLogger.EnemyAI($"Moving to {targetName} at speed {speed}, pos {transform.position}, target {targetTransform.position}, speed {speed}");
                 return true;
             }
             return false;
@@ -78,7 +78,7 @@ namespace ArcBT.Samples.RPG
                 var distance = Vector3.Distance(transform.position, target.position);
                 if (distance <= attackRange)
                 {
-                    BTLogger.LogCombat($"Attacking enemy for {damage} damage!", gameObject.name, this);
+                    SampleLogger.EnemyAI($"Attacking enemy for {damage} damage!");
                     // 実際の攻撃ロジック
                     return true;
                 }
@@ -88,7 +88,7 @@ namespace ArcBT.Samples.RPG
 
         public virtual void Wait(float duration)
         {
-            BTLogger.LogSystem(gameObject.name, $"Waiting for {duration} seconds");
+            BTLogger.LogSystem("wait", $"Waiting for {duration} seconds");
             // 実際の待機ロジック（コルーチンなどで実装）
         }
 

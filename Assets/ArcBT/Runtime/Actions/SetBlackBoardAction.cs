@@ -25,13 +25,13 @@ namespace ArcBT.Actions
         {
             if (blackBoard == null)
             {
-                BTLogger.LogSystemError("BlackBoard", "SetBlackBoard: BlackBoard is null");
+                BTLogger.LogSystemError(this, "BlackBoard is null");
                 return BTNodeResult.Failure;
             }
 
             if (assignments.Count == 0)
             {
-                BTLogger.LogSystemError("BlackBoard", "SetBlackBoard: No assignments specified");
+                BTLogger.LogSystemError(this, "No assignments specified");
                 return BTNodeResult.Failure;
             }
 
@@ -52,7 +52,7 @@ namespace ArcBT.Actions
             }
             catch (System.Exception e)
             {
-                BTLogger.LogSystemError("BlackBoard", $"SetBlackBoard error: {e.Message}");
+                BTLogger.LogSystemError(this, $"Error: {e.Message}");
                 return BTNodeResult.Failure;
             }
         }
@@ -64,7 +64,7 @@ namespace ArcBT.Actions
         {
             if (string.IsNullOrEmpty(key))
             {
-                BTLogger.LogSystemError("BlackBoard", "SetBlackBoard: Key is empty");
+                BTLogger.LogSystemError(this, "Key is empty");
                 return false;
             }
 
@@ -73,7 +73,6 @@ namespace ArcBT.Actions
             if (int.TryParse(value, out var intValue))
             {
                 blackBoard.SetValue(key, intValue);
-                BTLogger.LogBlackBoard($"Set {key} = {intValue} (auto-detected: int)", Name, ownerComponent);
                 return true;
             }
             
@@ -81,7 +80,6 @@ namespace ArcBT.Actions
             if (float.TryParse(value, out var floatValue))
             {
                 blackBoard.SetValue(key, floatValue);
-                BTLogger.LogBlackBoard($"Set {key} = {floatValue} (auto-detected: float)", Name, ownerComponent);
                 return true;
             }
             
@@ -89,7 +87,6 @@ namespace ArcBT.Actions
             if (bool.TryParse(value, out var boolValue))
             {
                 blackBoard.SetValue(key, boolValue);
-                BTLogger.LogBlackBoard($"Set {key} = {boolValue} (auto-detected: bool)", Name, ownerComponent);
                 return true;
             }
             
@@ -97,13 +94,11 @@ namespace ArcBT.Actions
             if (TryParseVector3(value, out var vectorValue))
             {
                 blackBoard.SetValue(key, vectorValue);
-                BTLogger.LogBlackBoard($"Set {key} = {vectorValue} (auto-detected: Vector3)", Name, ownerComponent);
                 return true;
             }
             
             // string（デフォルト）
             blackBoard.SetValue(key, value);
-            BTLogger.LogBlackBoard($"Set {key} = '{value}' (auto-detected: string)", Name, ownerComponent);
             return true;
         }
 

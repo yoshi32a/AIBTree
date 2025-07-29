@@ -7,7 +7,8 @@ namespace ArcBT.Samples.RPG.Actions
 {
     /// <summary>アイテムを使用するアクション</summary>
     [BTNode("UseItem")]
-    public class UseItemAction : BTActionNode    {
+    public class UseItemAction : BTActionNode
+    {
         string itemType = "healing_potion";
 
         public override void SetProperty(string key, string value)
@@ -37,7 +38,7 @@ namespace ArcBT.Samples.RPG.Actions
 
             if (!inventory.HasItem(itemType))
             {
-                BTLogger.LogSystem(Name, $"No {itemType} available");
+                BTLogger.LogSystem(this, $"No {itemType} available");
                 return BTNodeResult.Failure;
             }
 
@@ -45,7 +46,7 @@ namespace ArcBT.Samples.RPG.Actions
             bool used = inventory.UseItem(itemType);
             if (!used)
             {
-                BTLogger.LogSystem(Name, $"Failed to use {itemType}");
+                BTLogger.LogSystem(this, $"Failed to use {itemType}");
                 return BTNodeResult.Failure;
             }
 
@@ -56,7 +57,7 @@ namespace ArcBT.Samples.RPG.Actions
             blackBoard.SetValue("last_used_item", itemType);
             blackBoard.SetValue("item_use_time", Time.time);
 
-            BTLogger.LogSystem(Name, $"Successfully used {itemType}");
+            BTLogger.LogSystem(this, $"Successfully used {itemType}");
             return BTNodeResult.Success;
         }
 

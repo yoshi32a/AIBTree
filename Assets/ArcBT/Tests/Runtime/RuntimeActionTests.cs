@@ -1,6 +1,7 @@
 using System.Linq;
 using ArcBT.Actions;
 using ArcBT.Core;
+using ArcBT.Samples.RPG.Actions;
 using ArcBT.TagSystem;
 using NUnit.Framework;
 using UnityEngine;

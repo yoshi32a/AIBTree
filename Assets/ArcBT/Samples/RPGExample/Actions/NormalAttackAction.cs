@@ -43,7 +43,7 @@ namespace ArcBT.Samples.RPG.Actions
 
             if (nearestEnemy != null)
             {
-                BTLogger.LogCombat($"通常攻撃実行: ダメージ{damage}", Name);
+                BTLogger.LogCombat(this, $"通常攻撃実行: ダメージ{damage}");
 
                 // ダメージ処理の実装（インターフェース使用でリフレクション排除）
                 var health = nearestEnemy.GetComponent<IHealth>();
@@ -54,13 +54,13 @@ namespace ArcBT.Samples.RPG.Actions
                 else
                 {
                     // 後方互換性のためのフォールバック（将来的に削除予定）
-                    BTLogger.LogSystemError(Name, "Enemy does not implement IHealth interface. Consider updating Health component.");
+                    BTLogger.LogSystemError(this, "Enemy does not implement IHealth interface. Consider updating Health component.");
                 }
 
                 return BTNodeResult.Success;
             }
 
-            BTLogger.LogCombat("攻撃範囲内に敵がいません", Name);
+            BTLogger.LogCombat(this, "攻撃範囲内に敵がいません");
             return BTNodeResult.Failure;
         }
     }

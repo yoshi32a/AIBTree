@@ -7,7 +7,8 @@ namespace ArcBT.Samples.RPG.Actions
 {
     /// <summary>少量のマナを回復するアクション</summary>
     [BTNode("RestoreSmallMana")]
-    public class RestoreSmallManaAction : BTActionNode    {
+    public class RestoreSmallManaAction : BTActionNode
+    {
         int manaGain = 10;
 
         public override void SetProperty(string key, string value)
@@ -41,12 +42,12 @@ namespace ArcBT.Samples.RPG.Actions
                 blackBoard.SetValue("mana_restored", actualGain);
                 blackBoard.SetValue("last_mana_restore_time", Time.time);
 
-                BTLogger.LogSystem(Name, $"Restored {actualGain} mana ({currentMana} -> {newMana})");
+                BTLogger.LogSystem(this, $"Restored {actualGain} mana ({currentMana} -> {newMana})");
                 return BTNodeResult.Success;
             }
             else
             {
-                BTLogger.LogSystem(Name, "Mana already at maximum");
+                BTLogger.LogSystem(this, "Mana already at maximum");
                 return BTNodeResult.Failure;
             }
         }

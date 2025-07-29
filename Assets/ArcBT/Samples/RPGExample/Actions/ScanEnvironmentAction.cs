@@ -3,7 +3,7 @@ using ArcBT.Core;
 using ArcBT.Logger;
 using UnityEngine;
 
-namespace ArcBT.Actions
+namespace ArcBT.Samples.RPG.Actions
 {
     /// <summary>環境をスキャンするアクション</summary>
     [BTNode("ScanEnvironment")]
@@ -105,7 +105,7 @@ namespace ArcBT.Actions
 
             blackBoard.SetValue("threat_level", threatLevel);
 
-            BTLogger.LogSystem($"ScanEnvironment", $"EnvironmentScan: Enemies:{enemyCount}, Items:{itemCount}");
+            BTLogger.LogSystem(this, $"Enemies:{enemyCount}, Items:{itemCount}");
 
             return BTNodeResult.Success;
         }

@@ -3,7 +3,7 @@ using ArcBT.Core;
 using ArcBT.Logger;
 using UnityEngine;
 
-namespace ArcBT.Actions
+namespace ArcBT.Samples.RPG.Actions
 {
     [Serializable]
     [BTNode("MoveToPosition")]
@@ -36,11 +36,11 @@ namespace ArcBT.Actions
                         blackBoard.SetValue($"{Name}_target_name", target);
                     }
 
-                    BTLogger.LogMovement(Name, transform.position, targetPosition, speed);
+                    BTLogger.LogMovement(this, transform.position, targetPosition, speed);
                 }
                 else
                 {
-                    BTLogger.LogSystemError("Movement", $"MoveToPosition: Target '{target}' not found!");
+                    BTLogger.LogSystemError(this, $"Target '{target}' not found!");
                     hasValidTarget = false;
                 }
             }
@@ -48,11 +48,11 @@ namespace ArcBT.Actions
 
         protected override BTNodeResult ExecuteAction()
         {
-            BTLogger.LogSystem(Name, "=== MoveToPositionAction EXECUTING ===");
+            BTLogger.LogSystem(this, "=== EXECUTING ===");
 
             if (!hasValidTarget)
             {
-                BTLogger.LogSystemError("Movement", $"MoveToPosition '{Name}': No valid target '{target}' - trying to find it again");
+                BTLogger.LogSystemError(this, $"No valid target '{target}' - trying to find it again");
 
                 // ターゲットを再検索
                 if (!string.IsNullOrEmpty(target))
@@ -62,17 +62,17 @@ namespace ArcBT.Actions
                     {
                         targetPosition = targetObj.transform.position;
                         hasValidTarget = true;
-                        BTLogger.LogMovement(Name, transform.position, targetPosition, speed);
+                        BTLogger.LogMovement(this, transform.position, targetPosition, speed);
                     }
                     else
                     {
-                        BTLogger.LogSystemError("Movement", $"MoveToPosition '{Name}': Target '{target}' still not found!");
+                        BTLogger.LogSystemError(this, $"Target '{target}' still not found!");
                         return BTNodeResult.Failure;
                     }
                 }
                 else
                 {
-                    BTLogger.LogSystemError("Movement", $"MoveToPosition '{Name}': No target name specified!");
+                    BTLogger.LogSystemError(this, "No target name specified!");
                     return BTNodeResult.Failure;
                 }
             }
@@ -81,12 +81,12 @@ namespace ArcBT.Actions
             var currentPos = transform.position;
             var distance = Vector3.Distance(currentPos, targetPosition);
 
-            BTLogger.LogSystem("Movement", $"MoveToPosition '{Name}': Current pos = {currentPos}, Target pos = {targetPosition}");
-            BTLogger.LogSystem("Movement", $"MoveToPosition '{Name}': Distance = {distance:F2}, Tolerance = {tolerance}");
+            BTLogger.LogSystem(this, $"Current pos = {currentPos}, Target pos = {targetPosition}");
+            BTLogger.LogSystem(this, $"Distance = {distance:F2}, Tolerance = {tolerance}");
 
             if (distance <= tolerance)
             {
-                BTLogger.LogDestinationReached(Name, targetPosition, Time.time);
+                BTLogger.LogDestinationReached(this, targetPosition, Time.time);
                 return BTNodeResult.Success;
             }
 
@@ -102,13 +102,13 @@ namespace ArcBT.Actions
                 blackBoard.SetValue($"{Name}_is_moving", true);
             }
 
-            BTLogger.LogSystem("Movement", $"MoveToPosition '{Name}': → Moving to '{target}' (Distance: {distance:F2}, Speed: {speed})");
+            BTLogger.LogSystem(this, $"→ Moving to '{target}' (Distance: {distance:F2}, Speed: {speed})");
             return BTNodeResult.Running;
         }
 
         public override void OnConditionFailed()
         {
-            BTLogger.LogSystem(Name, "🚨 Condition failed - stopping movement");
+            BTLogger.LogSystem(this, "Condition failed - stopping movement");
 
             // BlackBoardに停止状態を記録
             if (blackBoard != null)

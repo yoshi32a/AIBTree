@@ -92,7 +92,7 @@ namespace ArcBT.Core
 
             // 構造化ログを使用
             var logLevel = result == BTNodeResult.Failure ? Microsoft.Extensions.Logging.LogLevel.Warning : Microsoft.Extensions.Logging.LogLevel.Information;
-            BTLogger.LogSystem(RootNode.Name,
+            BTLogger.LogSystem(RootNode,
                 $"BT[{RootNode.Name}] → {result}{changeInfo} " +
                 $"(実行回数: {executionCount}, 時刻: {Time.time:F1}s)" +
                 (repetitionCount > 10 ? $" [繰り返し×{repetitionCount}]" : ""));
@@ -100,7 +100,7 @@ namespace ArcBT.Core
             // BlackBoard状態も表示（変化があった場合）
             if (BlackBoard.HasRecentChanges())
             {
-                BTLogger.LogBlackBoard($"BlackBoard更新: {BlackBoard.GetRecentChangeSummary()}", "");
+                BTLogger.Debug($"BlackBoard更新: {BlackBoard.GetRecentChangeSummary()}", "");
             }
 
             lastLogTime = Time.time;
@@ -139,7 +139,7 @@ namespace ArcBT.Core
                     SetupDynamicConditionChecking(RootNode);
 
                     BTLogger.LogSystem($"Successfully loaded behaviour tree from: {filePath}", "");
-                    BTLogger.LogSystem($"Root node: {RootNode.Name}", "");
+                    BTLogger.LogSystem(RootNode, $"Root node: {RootNode.Name}");
                     LogTreeStructure(RootNode, 0);
                     return true;
                 }
@@ -170,7 +170,7 @@ namespace ArcBT.Core
 
             // このMonoBehaviourとBlackBoardを渡してノードを初期化
             node.Initialize(this, BlackBoard);
-            BTLogger.LogSystem($"✅ Initialized node: {node.Name}", node.Name);
+            BTLogger.LogSystem(node, $"✅ Initialized node: {node.Name}");
 
             // 子ノードも再帰的に初期化
             foreach (var child in node.Children)
@@ -238,7 +238,7 @@ namespace ArcBT.Core
             }
 
             var indent = new string(' ', depth * 2);
-            BTLogger.LogSystem($"{indent}{node.Name}", node.Name);
+            BTLogger.LogSystem(node, $"{indent}{node.Name}");
 
             foreach (var child in node.Children)
             {

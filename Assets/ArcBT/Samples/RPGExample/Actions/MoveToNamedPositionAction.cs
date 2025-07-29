@@ -37,7 +37,7 @@ namespace ArcBT.Samples.RPG.Actions
         {
             base.Initialize(owner, blackBoard);
             aiController = owner.GetComponent<ExampleAI>();
-            
+
             if (aiController == null)
             {
                 BTLogger.LogSystemError("Movement", "MoveToNamedPositionAction requires ExampleAI component");

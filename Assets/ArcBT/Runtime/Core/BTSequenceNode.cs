@@ -2,6 +2,7 @@ namespace ArcBT.Core
 {
     /// <summary>Sequenceノード：全ての子ノードが成功するまで実行</summary>
     [System.Serializable]
+    [BTNode("Sequence")]
     public class BTSequenceNode : BTCompositeNode
     {
         public override BTNodeResult Execute()

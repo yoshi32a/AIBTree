@@ -34,7 +34,7 @@ namespace ArcBT.Samples.RPG.Conditions
                 float safetyTimer = blackBoard.GetValue<float>("safety_timer", 0f);
                 if (Time.time < safetyTimer)
                 {
-                    BTLogger.LogSystem(Name, "In safety period - skipping emergency check");
+                    BTLogger.LogSystem(this, "In safety period - skipping emergency check");
                     return BTNodeResult.Failure; // 緊急時チェックをスキップ
                 }
             }
@@ -42,7 +42,7 @@ namespace ArcBT.Samples.RPG.Conditions
             // スマートログ: 10回に1回だけ詳細ログを出力
             if (Time.frameCount % 10 == 0)
             {
-                BTLogger.LogCondition($"=== HealthCheckCondition '{Name}' EXECUTING ===", Name, ownerComponent);
+                BTLogger.LogCondition(this, $"=== HealthCheckCondition '{Name}' EXECUTING ===");
             }
 
             if (healthComponent == null)
@@ -70,8 +70,8 @@ namespace ArcBT.Samples.RPG.Conditions
             // 結果に変化があった場合のみログ出力
             if (Time.frameCount % 10 == 0 || !healthOK)
             {
-                BTLogger.LogCondition($"HealthCheck '{Name}': Current health = {currentHealth}, Required = {minHealth}", Name, ownerComponent);
-                BTLogger.LogCondition($"HealthCheck '{Name}': Result = {(healthOK ? "SUCCESS ✓" : "FAILURE ✗")}", Name, ownerComponent);
+                BTLogger.LogCondition(this, $"HealthCheck '{Name}': Current health = {currentHealth}, Required = {minHealth}");
+                BTLogger.LogCondition(this, $"HealthCheck '{Name}': Result = {(healthOK ? "SUCCESS ✓" : "FAILURE ✗")}");
             }
 
             return healthOK ? BTNodeResult.Success : BTNodeResult.Failure;

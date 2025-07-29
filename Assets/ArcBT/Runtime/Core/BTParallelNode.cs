@@ -2,6 +2,7 @@ namespace ArcBT.Core
 {
     /// <summary>Parallelノード：全ての子ノードを並行実行</summary>
     [System.Serializable]
+    [BTNode("Parallel")]
     public class BTParallelNode : BTCompositeNode
     {
         public enum ParallelPolicy

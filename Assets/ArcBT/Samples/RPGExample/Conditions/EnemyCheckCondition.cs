@@ -20,7 +20,7 @@ namespace ArcBT.Samples.RPG.Conditions
 
         protected override BTNodeResult CheckCondition()
         {
-            BTLogger.LogCondition($"=== EnemyCheckCondition '{Name}' EXECUTING ===", Name, ownerComponent);
+            BTLogger.LogCondition(this, $"=== EnemyCheckCondition '{Name}' EXECUTING ===");
 
             if (detectionRange <= 0)
             {
@@ -36,7 +36,7 @@ namespace ArcBT.Samples.RPG.Conditions
                 var distance = Vector3.Distance(transform.position, enemy.transform.position);
                 if (distance <= detectionRange)
                 {
-                    BTLogger.LogCondition($"EnemyCheck '{Name}': Enemy detected at distance {distance:F2} ✓", Name, ownerComponent);
+                    BTLogger.LogCondition(this, $"EnemyCheck '{Name}': Enemy detected at distance {distance:F2} ✓");
 
                     // 検出した敵の情報を保存（他のノードで使用可能）
                     if (ownerComponent is BehaviourTreeRunner runner)
@@ -48,7 +48,7 @@ namespace ArcBT.Samples.RPG.Conditions
                 }
             }
 
-            BTLogger.LogCondition($"EnemyCheck '{Name}': No enemies in range {detectionRange} ✗", Name, ownerComponent);
+            BTLogger.LogCondition(this, $"EnemyCheck '{Name}': No enemies in range {detectionRange} ✗");
             return BTNodeResult.Failure;
         }
 

@@ -12,8 +12,8 @@ namespace ArcBT.Tests
     [TestFixture]
     public class BTParserTests : BTTestBase
     {
-        private BTParser parser;
-        private string tempFilePath;
+        BTParser parser;
+        string tempFilePath;
 
         [SetUp]
         public override void SetUp()

@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
-using ArcBT.Decorators;
 using ArcBT.Logger;
-using Microsoft.Extensions.Logging;
 
 namespace ArcBT.Core
 {
@@ -18,7 +16,7 @@ namespace ArcBT.Core
         /// <summary>ノードを作成（統一メソッド）</summary>
         public static BTNode CreateNode(string nodeTypeString, string scriptName)
         {
-            // 1. 登録済みノードから検索
+            // 登録済みノードから検索
             if (allNodes.TryGetValue(scriptName, out var factory))
             {
                 var node = factory.Invoke();
@@ -27,14 +25,6 @@ namespace ArcBT.Core
                     node.Name = scriptName;
                     return node;
                 }
-            }
-
-            // 2. フォールバック：組み込みノード作成
-            var builtinNode = CreateBuiltinNode(nodeTypeString, scriptName);
-            if (builtinNode != null)
-            {
-                builtinNode.Name = scriptName;
-                return builtinNode;
             }
 
             BTLogger.LogSystemError("Parser", $"Failed to create node: {nodeTypeString} {scriptName}");
@@ -59,21 +49,6 @@ namespace ArcBT.Core
             BTLogger.LogSystem("NodeRegistry", $"Registered node: {scriptName}");
         }
 
-        /// <summary>組み込みノード作成</summary>
-        static BTNode CreateBuiltinNode(string nodeType, string scriptName)
-        {
-            return nodeType.ToLower() switch
-            {
-                "sequence" => new BTSequenceNode(),
-                "selector" => new BTSelectorNode(),
-                "parallel" => new BTParallelNode(),
-                "inverter" => new InverterDecorator(),
-                "repeat" => new RepeatDecorator(),
-                "retry" => new RetryDecorator(),
-                "timeout" => new TimeoutDecorator(),
-                _ => null
-            };
-        }
 
         /// <summary>登録されているノード名</summary>
         public static IEnumerable<string> GetRegisteredNodeNames() => allNodes.Keys;
