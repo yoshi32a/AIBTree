@@ -36,9 +36,7 @@ namespace ArcBT.Tests
                 BTLogger.Log(LogLevel.Debug, LogCategory.System, "Debug message");
             }, "基本ログ出力で例外が発生");
             
-            // Assert: ZLoggerに委譲されているため、履歴取得は空配列
-            var logs = BTLogger.GetRecentLogs(10);
-            Assert.AreEqual(0, logs.Length, "Phase 6.4: 履歴管理はZLoggerに委譲されているため空配列");
+            // Assert: Phase 6.4でGetRecentLogs削除済み - ZLoggerに履歴管理を完全委譲
             
             Debug.Log("Phase 6.4: 基本ログ出力テスト完了");
         }
@@ -56,9 +54,7 @@ namespace ArcBT.Tests
                 BTLogger.Log(LogLevel.Information, LogCategory.System, "System message");
             }, "カテゴリ別ログ出力で例外が発生");
             
-            // Assert: ZLoggerに委譲されているため、履歴取得は空配列
-            var logs = BTLogger.GetRecentLogs(10);
-            Assert.AreEqual(0, logs.Length, "Phase 6.4: 履歴管理はZLoggerに委譲されているため空配列");
+            // Assert: Phase 6.4でGetRecentLogs削除済み - ZLoggerに履歴管理を完全委譲
             
             Debug.Log("Phase 6.4: カテゴリ別ログ出力テスト完了");
         }
@@ -76,12 +72,7 @@ namespace ArcBT.Tests
                 }
             }, "ログ出力で例外が発生");
             
-            // Assert: ZLoggerに委譲されているため、履歴取得は空配列
-            var recentLogs5 = BTLogger.GetRecentLogs(5);
-            var recentLogs10 = BTLogger.GetRecentLogs(10);
-            
-            Assert.AreEqual(0, recentLogs5.Length, "Phase 6.3: 履歴管理はZLoggerに委譲 - 空配列");
-            Assert.AreEqual(0, recentLogs10.Length, "Phase 6.3: 履歴管理はZLoggerに委譲 - 空配列");
+            // Assert: Phase 6.4でGetRecentLogs削除済み - ZLoggerに履歴管理を完全委譲
             
             Debug.Log("Phase 6.3: ログ履歴管理テスト完了 - ZLoggerプロバイダーに委譲");
         }
@@ -100,9 +91,7 @@ namespace ArcBT.Tests
                 BTLogger.LogCombat("Attack message 3");
             }, "カテゴリ別ログ出力で例外が発生");
             
-            // Assert: ZLoggerに委譲されているため、履歴取得は空配列
-            var combatLogs = BTLogger.GetLogsByCategory(LogCategory.Combat, 10);
-            Assert.AreEqual(0, combatLogs.Length, "Phase 6.3: カテゴリ別履歴管理はZLoggerに委譲 - 空配列");
+            // Assert: Phase 6.4でGetLogsByCategory削除済み - ZLoggerに履歴管理を完全委譲
             
             Debug.Log("Phase 6.3: カテゴリ別ログ取得テスト完了 - ZLoggerタグベース管理");
         }
@@ -177,9 +166,7 @@ namespace ArcBT.Tests
                 BTLogger.LogError(LogCategory.Combat, "Critical error occurred", "ErrorNode");
             }, "エラーログ出力で例外が発生");
             
-            // Assert: ZLoggerに委譲されているため、履歴取得は空配列
-            var logs = BTLogger.GetRecentLogs(1);
-            Assert.AreEqual(0, logs.Length, "Phase 6.3: 履歴管理はZLoggerに委譲 - 空配列");
+            // Assert: Phase 6.4でGetRecentLogs削除済み - ZLoggerに履歴管理を完全委譲
             
             Debug.Log("Phase 6.3: エラーログテスト完了 - ZLoggerエラー出力");
         }
@@ -198,9 +185,7 @@ namespace ArcBT.Tests
             
             var afterTime = DateTime.Now;
             
-            // Assert: ZLoggerがタイムスタンプを管理
-            var logs = BTLogger.GetRecentLogs(1);
-            Assert.AreEqual(0, logs.Length, "Phase 6.3: タイムスタンプ管理はZLoggerに委譲 - 空配列");
+            // Assert: Phase 6.4でGetRecentLogs削除済み - ZLoggerがタイムスタンプを管理
                 
             Debug.Log($"Phase 6.3: タイムスタンプテスト完了 - ZLoggerタイムスタンプ管理 ({(afterTime - beforeTime).TotalMilliseconds:F2}ms)");
         }
@@ -263,9 +248,7 @@ namespace ArcBT.Tests
                 BTLogger.LogSystem("After disposal test");
             }, "リソース解放と再初期化で例外が発生");
             
-            // Assert: ZLoggerに委譲されているため、履歴取得は空配列
-            var logs = BTLogger.GetRecentLogs(2);
-            Assert.AreEqual(0, logs.Length, "Phase 6.3: 履歴管理はZLoggerに委譲 - 空配列");
+            // Assert: Phase 6.4でGetRecentLogs削除済み - ZLoggerに履歴管理を完全委譲
             
             Debug.Log("Phase 6.3: ZLoggerリソース解放テスト完了 - 後方互換性維持");
         }

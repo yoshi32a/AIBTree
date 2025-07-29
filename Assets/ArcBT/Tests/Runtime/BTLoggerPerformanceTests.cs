@@ -47,9 +47,7 @@ namespace ArcBT.Tests
             var elapsedMs = stopwatch.ElapsedMilliseconds;
             Assert.Less(elapsedMs, 1500, $"ZLoggerによる{logCount}件ログ出力が1.5秒以内で完了（実測: {elapsedMs}ms）");
             
-            // Phase 6.4: GetRecentLogsは常に空配列を返す
-            var logs = BTLogger.GetRecentLogs(200);
-            Assert.AreEqual(0, logs.Length, "Phase 6.4: 履歴管理はZLoggerに委譲 - 空配列");
+            // Phase 6.4: GetRecentLogs削除済み - ZLoggerに履歴管理を完全委譲
             
             Debug.Log($"ZLogger high volume test: {logCount} logs in {elapsedMs}ms");
         }
@@ -77,8 +75,7 @@ namespace ArcBT.Tests
             var elapsedMs = stopwatch.ElapsedMilliseconds;
             Assert.Less(elapsedMs, 800, $"ZLoggerフィルタリング処理が超高速（実測: {elapsedMs}ms）");
             
-            var logs = BTLogger.GetRecentLogs(100);
-            Assert.AreEqual(0, logs.Length, "Phase 6.4: 履歴管理はZLoggerに委譲 - 空配列");
+            // Phase 6.4: GetRecentLogs削除済み - ZLoggerに履歴管理を完全委譲
             
             Debug.Log($"ZLogger filtering test: {logCount * 3} filtered logs in {elapsedMs}ms");
         }
@@ -122,9 +119,7 @@ namespace ArcBT.Tests
             // Unity Editor環境を考慮した実用的なメモリ基準
             Assert.Less(Math.Abs(memoryIncreaseMB), 20, $"ZLoggerメモリ効率テスト（{logCount}件）: {memoryIncreaseMB:F2}MB（Unity Editor環境）");
             
-            // Phase 6.4: GetRecentLogsは常に空配列を返す
-            var logs = BTLogger.GetRecentLogs(200);
-            Assert.AreEqual(0, logs.Length, "Phase 6.4: 履歴管理はZLoggerに委譲 - 空配列");
+            // Phase 6.4: GetRecentLogs削除済み - ZLoggerに履歴管理を完全委譲
             
             Debug.Log($"ZLogger memory efficiency: {logCount} logs with {memoryIncreaseMB:F2}MB memory change");
         }
@@ -163,9 +158,7 @@ namespace ArcBT.Tests
             // Assert: 並行処理が適切に処理されている
             Assert.Less(elapsedTime, 3.0f, "並行ログ処理が適切な時間内で完了");
             
-            // Phase 6.4: GetRecentLogsは常に空配列を返すため、時間ベースでのテストのみ
-            var logs = BTLogger.GetRecentLogs(200);
-            Assert.AreEqual(0, logs.Length, "Phase 6.4: 履歴管理はZLoggerに委譲 - 空配列");
+            // Phase 6.4: GetRecentLogs削除済み - 時間ベースでのテストのみ実行
         }
 
         IEnumerator LoggingTask(int taskIndex, int logCount)
@@ -230,9 +223,7 @@ namespace ArcBT.Tests
                 {
                     yield return null;
                     
-                    // Phase 6.4: GetRecentLogsは常に空配列を返す
-                    var logs = BTLogger.GetRecentLogs(10);
-                    Assert.AreEqual(0, logs.Length, "Phase 6.4: 履歴管理はZLoggerに委譲 - 空配列");
+                    // Phase 6.4: GetRecentLogs削除済み - ZLoggerに履歴管理を完全委譲
                 }
             }
             
@@ -241,9 +232,7 @@ namespace ArcBT.Tests
             // Assert: 長時間実行でも安定している
             Assert.Less(elapsedTime, 10.0f, "長時間実行が適切な時間内で完了");
             
-            // Phase 6.4: GetRecentLogsは常に空配列を返す
-            var finalLogs = BTLogger.GetRecentLogs(200);
-            Assert.AreEqual(0, finalLogs.Length, "Phase 6.4: 履歴管理はZLoggerに委譲 - 空配列");
+            // Phase 6.4: GetRecentLogs削除済み - ZLoggerに履歴管理を完全委譲
         }
 
         /// <summary>ZLogger構造化ログパフォーマンステスト</summary>
@@ -362,9 +351,7 @@ namespace ArcBT.Tests
             var elapsedMs = stopwatch.ElapsedMilliseconds;
             Assert.Less(elapsedMs, 500, $"ZLoggerリソース管理（{cycles}サイクル）が500ms以内で完了（実測: {elapsedMs}ms）");
             
-            // Phase 6.4: GetRecentLogsは常に空配列を返す
-            var logs = BTLogger.GetRecentLogs(5);
-            Assert.AreEqual(0, logs.Length, "Phase 6.4: 履歴管理はZLoggerに委譲 - 空配列");
+            // Phase 6.4: GetRecentLogs削除済み - ZLoggerに履歴管理を完全委譲
             
             Debug.Log($"ZLogger resource management: {cycles} cycles in {elapsedMs}ms");
         }
