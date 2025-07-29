@@ -13,69 +13,55 @@ namespace ArcBT.Tests
         [SetUp]
         public void SetUp()
         {
-            // 各テスト前にBTLoggerをデフォルト状態にリセット
-            BTLogger.ResetToDefaults();
-            BTLogger.ClearHistory();
-            
-            // テスト用にすべてのカテゴリを有効化
-            foreach (LogCategory category in System.Enum.GetValues(typeof(LogCategory)))
-            {
-                BTLogger.SetCategoryFilter(category, true);
-            }
+            // Phase 6.4: レガシーAPI削除に伴い、SetUpを簡素化
+            // フィルタリングはユーザーのLoggerFactory設定で制御
         }
 
         [TearDown]
         public void TearDown()
         {
-            // テスト後のクリーンアップ
-            BTLogger.ClearHistory();
+            // Phase 6.4: レガシーAPI削除に伴い、TearDownを簡素化
         }
 
-        /// <summary>ログレベル設定とフィルタリングのテスト</summary>
-        [Test][Description("Phase 6.3: ログレベル制御がZLoggerに委譲されていることを確認")]
-        public void TestLogLevelFiltering()
+        /// <summary>ログ出力機能の基本テスト</summary>
+        [Test][Description("Phase 6.4: 基本ログ出力機能が正常に動作することを確認")]
+        public void TestBasicLogging()
         {
-            // Arrange & Act: 後方互換性メソッドが例外なく動作することを確認
+            // Act: 基本ログ出力が例外なく動作することを確認
             Assert.DoesNotThrow(() =>
             {
-                BTLogger.SetLogLevel(Microsoft.Extensions.Logging.LogLevel.Warning);
-                
                 // 異なるレベルのログを出力（ZLoggerが実際のフィルタリングを制御）
                 BTLogger.Log(Microsoft.Extensions.Logging.LogLevel.Error, LogCategory.System, "Error message");
                 BTLogger.Log(Microsoft.Extensions.Logging.LogLevel.Warning, LogCategory.System, "Warning message");
                 BTLogger.Log(Microsoft.Extensions.Logging.LogLevel.Information, LogCategory.System, "Info message");
                 BTLogger.Log(Microsoft.Extensions.Logging.LogLevel.Debug, LogCategory.System, "Debug message");
-            }, "ログレベル設定と出力で例外が発生");
+            }, "基本ログ出力で例外が発生");
             
             // Assert: ZLoggerに委譲されているため、履歴取得は空配列
             var logs = BTLogger.GetRecentLogs(10);
-            Assert.AreEqual(0, logs.Length, "Phase 6.3: 履歴管理はZLoggerに委譲されているため空配列");
+            Assert.AreEqual(0, logs.Length, "Phase 6.4: 履歴管理はZLoggerに委譲されているため空配列");
             
-            UnityEngine.Debug.Log("Phase 6.3: ログレベル制御テスト完了 - ZLoggerに委譲");
+            UnityEngine.Debug.Log("Phase 6.4: 基本ログ出力テスト完了");
         }
 
-        /// <summary>カテゴリフィルタリングのテスト</summary>
-        [Test][Description("Phase 6.3: カテゴリフィルタリングがZLoggerに委譲されていることを確認")]
-        public void TestCategoryFiltering()
+        /// <summary>カテゴリ別ログ出力のテスト</summary>
+        [Test][Description("Phase 6.4: カテゴリ別ログ出力が正常に動作することを確認")]
+        public void TestCategoryLogging()
         {
-            // Arrange & Act: 後方互換性メソッドが例外なく動作することを確認
+            // Act: カテゴリ別ログ出力が例外なく動作することを確認
             Assert.DoesNotThrow(() =>
             {
-                BTLogger.SetCategoryFilter(LogCategory.Combat, true);
-                BTLogger.SetCategoryFilter(LogCategory.Movement, false);
-                BTLogger.SetCategoryFilter(LogCategory.System, false);
-                
                 // 異なるカテゴリのログを出力（ZLoggerがタグベースで制御）
                 BTLogger.Log(Microsoft.Extensions.Logging.LogLevel.Information, LogCategory.Combat, "Combat message");
                 BTLogger.Log(Microsoft.Extensions.Logging.LogLevel.Information, LogCategory.Movement, "Movement message");
                 BTLogger.Log(Microsoft.Extensions.Logging.LogLevel.Information, LogCategory.System, "System message");
-            }, "カテゴリフィルタリング設定で例外が発生");
+            }, "カテゴリ別ログ出力で例外が発生");
             
             // Assert: ZLoggerに委譲されているため、履歴取得は空配列
             var logs = BTLogger.GetRecentLogs(10);
-            Assert.AreEqual(0, logs.Length, "Phase 6.3: 履歴管理はZLoggerに委譲されているため空配列");
+            Assert.AreEqual(0, logs.Length, "Phase 6.4: 履歴管理はZLoggerに委譲されているため空配列");
             
-            UnityEngine.Debug.Log("Phase 6.3: カテゴリフィルタリングテスト完了 - ZLoggerタグベース制御");
+            UnityEngine.Debug.Log("Phase 6.4: カテゴリ別ログ出力テスト完了");
         }
 
         /// <summary>ログ履歴管理のテスト</summary>
@@ -123,14 +109,12 @@ namespace ArcBT.Tests
         }
 
         /// <summary>便利メソッドのテスト</summary>
-        [Test][Description("Phase 6.3: カテゴリ別便利メソッドが正常に動作することを確認")]
+        [Test][Description("Phase 6.4: カテゴリ別便利メソッドが正常に動作することを確認")]
         public void TestConvenienceMethods()
         {
-            // Arrange & Act: 各便利メソッドが例外なく実行されることを確認
+            // Act: 各便利メソッドが例外なく実行されることを確認
             Assert.DoesNotThrow(() =>
             {
-                BTLogger.SetLogLevel(Microsoft.Extensions.Logging.LogLevel.Debug);
-                
                 BTLogger.LogCombat("Combat test", "TestNode");
                 BTLogger.LogMovement("Movement test");
                 BTLogger.LogCondition("Condition test");
@@ -140,52 +124,48 @@ namespace ArcBT.Tests
             
             // Assert: ZLoggerに委譲されているため、履歴取得は空配列
             var logs = BTLogger.GetRecentLogs(10);
-            Assert.AreEqual(0, logs.Length, "Phase 6.3: 履歴管理はZLoggerに委譲 - 空配列");
+            Assert.AreEqual(0, logs.Length, "Phase 6.4: 履歴管理はZLoggerに委譲 - 空配列");
             
-            UnityEngine.Debug.Log("Phase 6.3: 便利メソッドテスト完了 - ZLoggerタグベース出力");
+            UnityEngine.Debug.Log("Phase 6.4: 便利メソッドテスト完了");
         }
 
-        /// <summary>ログクリア機能のテスト</summary>
-        [Test][Description("Phase 6.3: ログクリア機能がZLoggerに委譲されていることを確認")]
-        public void TestLogClearFunctionality()
+        /// <summary>継続ログ出力のテスト</summary>
+        [Test][Description("Phase 6.4: 継続的なログ出力が正常に動作することを確認")]
+        public void TestContinuousLogging()
         {
-            // Arrange & Act: ログ出力とクリア機能が例外なく動作することを確認
+            // Act: 継続的なログ出力が例外なく動作することを確認
             Assert.DoesNotThrow(() =>
             {
                 BTLogger.LogSystem("Test message 1");
                 BTLogger.LogSystem("Test message 2");
                 BTLogger.LogSystem("Test message 3");
-                BTLogger.ClearHistory();
-            }, "ログ出力とクリア処理で例外が発生");
+            }, "継続ログ出力で例外が発生");
             
             // Assert: ZLoggerに委譲されているため、履歴取得は常に空配列
-            var logsAfterClear = BTLogger.GetRecentLogs(10);
-            Assert.AreEqual(0, logsAfterClear.Length, "Phase 6.3: 履歴管理はZLoggerに委譲 - 常に空配列");
+            var logs = BTLogger.GetRecentLogs(10);
+            Assert.AreEqual(0, logs.Length, "Phase 6.4: 履歴管理はZLoggerに委譲 - 常に空配列");
             
-            UnityEngine.Debug.Log("Phase 6.3: ログクリアテスト完了 - ZLoggerプロバイダーに委譲");
+            UnityEngine.Debug.Log("Phase 6.4: 継続ログ出力テスト完了");
         }
 
-        /// <summary>デフォルト設定リセットのテスト</summary>
-        [Test][Description("Phase 6.3: デフォルト設定リセット機能の後方互換性確認")]
-        public void TestDefaultSettingsReset()
+        /// <summary>削除されたレガシーAPIテスト（Phase 6.4で削除）</summary>
+        [Test][Description("Phase 6.4: レガシーAPIが正しく削除されていることを確認")]
+        public void TestLegacyAPIRemoval()
         {
-            // Arrange & Act: 後方互換性メソッドが例外なく動作することを確認
-            Assert.DoesNotThrow(() =>
-            {
-                BTLogger.SetLogLevel(Microsoft.Extensions.Logging.LogLevel.Error);
-                BTLogger.SetCategoryFilter(LogCategory.Combat, false);
-                BTLogger.SetCategoryFilter(LogCategory.System, false);
-                BTLogger.ResetToDefaults();
-            }, "設定変更とリセット処理で例外が発生");
+            // Phase 6.4: SetLogLevel, GetCurrentLogLevel, SetCategoryFilter, IsCategoryEnabled, 
+            // ResetToDefaults, ClearHistoryメソッドが削除されていることを確認
             
-            // Assert: 後方互換性のため固定値を返すことを確認
-            Assert.AreEqual(Microsoft.Extensions.Logging.LogLevel.Information, BTLogger.GetCurrentLogLevel(), "Phase 6.3: 固定値Information");
-            Assert.IsTrue(BTLogger.IsCategoryEnabled(LogCategory.Combat), "Phase 6.3: 常にtrue");
-            Assert.IsTrue(BTLogger.IsCategoryEnabled(LogCategory.System), "Phase 6.3: 常にtrue");
-            Assert.IsTrue(BTLogger.IsCategoryEnabled(LogCategory.Parser), "Phase 6.3: 常にtrue");
-            Assert.IsTrue(BTLogger.IsCategoryEnabled(LogCategory.Debug), "Phase 6.3: 常にtrue");
+            // BTLoggerクラスにこれらのメソッドが存在しないことをリフレクションで確認
+            var btLoggerType = typeof(BTLogger);
             
-            UnityEngine.Debug.Log("Phase 6.3: デフォルト設定リセットテスト完了 - 後方互換性維持");
+            Assert.IsNull(btLoggerType.GetMethod("SetLogLevel"), "SetLogLevelメソッドが削除されていない");
+            Assert.IsNull(btLoggerType.GetMethod("GetCurrentLogLevel"), "GetCurrentLogLevelメソッドが削除されていない");
+            Assert.IsNull(btLoggerType.GetMethod("SetCategoryFilter"), "SetCategoryFilterメソッドが削除されていない");
+            Assert.IsNull(btLoggerType.GetMethod("IsCategoryEnabled"), "IsCategoryEnabledメソッドが削除されていない");
+            Assert.IsNull(btLoggerType.GetMethod("ResetToDefaults"), "ResetToDefaultsメソッドが削除されていない");
+            Assert.IsNull(btLoggerType.GetMethod("ClearHistory"), "ClearHistoryメソッドが削除されていない");
+            
+            UnityEngine.Debug.Log("Phase 6.4: レガシーAPI削除確認テスト完了");
         }
 
         /// <summary>エラーログ機能のテスト</summary>

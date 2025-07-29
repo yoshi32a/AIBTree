@@ -231,61 +231,9 @@ namespace ArcBT.Logger
             LogInternal(Microsoft.Extensions.Logging.LogLevel.Debug, LogCategory.System, $"{operation} completed in {elapsedMs:F2}ms", nodeName);
         }
 
-        // 後方互換性メソッド（新しい実装では機能を簡素化）
-        
-        /// <summary>
-        /// 後方互換性のためのResetメソッド（現在は何もしない）
-        /// </summary>
-        public static void ResetToDefaults()
-        {
-            // ZLoggerのフィルタリングに完全委譲しているため、このメソッドは現在何もしない
-            // テストコードの互換性のためにメソッドは残す
-        }
-
-        /// <summary>
-        /// 後方互換性：ログレベル設定（新実装では効果なし）
-        /// </summary>
-        public static void SetLogLevel(Microsoft.Extensions.Logging.LogLevel level)
-        {
-            // ZLoggerのフィルタリングに委譲しているため、このメソッドは効果なし
-            // 後方互換性のためにメソッドのみ残す
-        }
-
-        /// <summary>
-        /// 後方互換性：現在のログレベル取得（新実装では固定値）
-        /// </summary>
-        public static Microsoft.Extensions.Logging.LogLevel GetCurrentLogLevel()
-        {
-            // ZLoggerに委譲しているため、固定値を返す
-            return Microsoft.Extensions.Logging.LogLevel.Information;
-        }
-
-        /// <summary>
-        /// 後方互換性：カテゴリフィルター設定（新実装では効果なし）
-        /// </summary>
-        public static void SetCategoryFilter(LogCategory category, bool enabled)
-        {
-            // ZLoggerのフィルタリングに委譲しているため、このメソッドは効果なし
-            // 後方互換性のためにメソッドのみ残す
-        }
-
-        /// <summary>
-        /// 後方互換性：カテゴリ有効状態取得（新実装では常にtrue）
-        /// </summary>
-        public static bool IsCategoryEnabled(LogCategory category)
-        {
-            // ZLoggerに委譲しているため、常にtrueを返す
-            return true;
-        }
-
-        /// <summary>
-        /// 後方互換性：履歴クリア（新実装では何もしない）
-        /// </summary>
-        public static void ClearHistory()
-        {
-            // ZLoggerプロバイダーが履歴を管理するため、何もしない
-            // 後方互換性のためにメソッドのみ残す
-        }
+        // Phase 6.4: レガシーAPI削除完了
+        // SetLogLevel, GetCurrentLogLevel, SetCategoryFilter, IsCategoryEnabled, ResetToDefaults, ClearHistoryを削除
+        // ユーザーはLoggerFactory設定でフィルタリングを制御
 
         /// <summary>
         /// 後方互換性：最近のログ取得（Phase 6.3: 完全削除）

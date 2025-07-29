@@ -15,14 +15,12 @@ namespace ArcBT.Tests
         [SetUp]
         public void SetUp()
         {
-            BTLogger.ResetToDefaults();
-            BTLogger.ClearHistory();
+            // Phase 6.4: レガシーAPI削除に伴い簡素化
         }
 
         [TearDown] 
         public void TearDown()
         {
-            BTLogger.ClearHistory();
             BTLogger.Dispose(); // ZLoggerリソース解放
         }
 
@@ -57,11 +55,7 @@ namespace ArcBT.Tests
         [Test][Description("ZLoggerの条件付きコンパイル・フィルタリング機能による高性能処理をベンチマーク")]
         public void TestZLoggerFilteringPerformance()
         {
-            // Arrange: すべてのカテゴリを無効化してフィルタリングを強制
-            foreach (LogCategory category in System.Enum.GetValues(typeof(LogCategory)))
-            {
-                BTLogger.SetCategoryFilter(category, false);
-            }
+            // Phase 6.4: SetCategoryFilter削除に伴い、フィルタリングはLoggerFactory設定で制御
             
             const int logCount = 1000; // ZLoggerの高速フィルタリングにより増量
             var stopwatch = new Stopwatch();
@@ -212,25 +206,27 @@ namespace ArcBT.Tests
             Assert.Less(elapsedMs, 100, $"ログ取得処理が高速である（実測: {elapsedMs}ms）");
         }
 
-        /// <summary>設定変更処理のパフォーマンステスト</summary>
-        [Test][Description("ログレベルやカテゴリフィルタの動的変更処理の性能をベンチマークテスト（1000回変更が50ms以内）")]
-        public void TestSettingsChangePerformance()
+        /// <summary>基本ログ出力処理パフォーマンステスト</summary>
+        [Test][Description("Phase 6.4: 基本ログ出力処理の性能をベンチマークテスト（3000回出力が200ms以内）")]
+        public void TestBasicLoggingPerformance()
         {
             var stopwatch = new Stopwatch();
             
-            // Act: 設定変更処理の速度を測定
+            // Act: 基本ログ出力処理の速度を測定
             stopwatch.Start();
             for (int i = 0; i < 1000; i++)
             {
-                BTLogger.SetLogLevel((LogLevel)(i % 5));
-                BTLogger.SetCategoryFilter(LogCategory.Combat, i % 2 == 0);
-                BTLogger.SetCategoryFilter(LogCategory.Movement, i % 2 == 1);
+                BTLogger.LogSystem($"Performance test message {i}");
+                BTLogger.LogCombat($"Combat test message {i}");
+                BTLogger.LogMovement($"Movement test message {i}");
             }
             stopwatch.Stop();
             
-            // Assert: 設定変更が高速に処理されている
+            // Assert: ログ出力が高速に処理されている
             var elapsedMs = stopwatch.ElapsedMilliseconds;
-            Assert.Less(elapsedMs, 50, $"設定変更処理が高速である（実測: {elapsedMs}ms）");
+            Assert.Less(elapsedMs, 200, $"基本ログ出力処理が高速である（実測: {elapsedMs}ms）");
+            
+            UnityEngine.Debug.Log($"Phase 6.4: Basic logging performance: 3000 logs in {elapsedMs}ms");
         }
 
         /// <summary>長時間実行安定性テスト</summary>

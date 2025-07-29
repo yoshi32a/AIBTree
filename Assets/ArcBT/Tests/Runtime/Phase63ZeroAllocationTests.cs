@@ -160,32 +160,26 @@ namespace ArcBT.Tests
             UnityEngine.Debug.Log($"Phase 6.3 メモリ効率: {allocatedBytes} bytes ({(float)allocatedBytes/logCount:F1} bytes/log)");
         }
         
-        /// <summary>後方互換性APIの動作確認</summary>
-        [Test][Description("後方互換性APIが正常に動作することを確認")]
-        public void TestBackwardCompatibilityAPIs()
+        /// <summary>Phase 6.4での履歴管理API確認</summary>
+        [Test][Description("Phase 6.4: 履歴管理APIが正常に動作することを確認")]
+        public void TestHistoryManagementAPIs()
         {
-            // 後方互換性メソッドの実行（例外が発生しないことを確認）
+            // 履歴管理関連のAPIが正常に動作することを確認
             Assert.DoesNotThrow(() =>
             {
-                BTLogger.SetLogLevel(Microsoft.Extensions.Logging.LogLevel.Debug);
-                BTLogger.SetCategoryFilter(LogCategory.Combat, true);
-                BTLogger.ResetToDefaults();
-                BTLogger.ClearHistory();
-            }, "後方互換性APIで例外が発生しました");
+                // ログ出力
+                BTLogger.LogSystem("Test message");
+                BTLogger.LogCombat("Combat message");
+            }, "ログ出力で例外が発生しました");
             
-            // 戻り値の確認
-            var logLevel = BTLogger.GetCurrentLogLevel();
-            Assert.AreEqual(Microsoft.Extensions.Logging.LogLevel.Information, logLevel, 
-                "GetCurrentLogLevel()が期待される固定値を返さない");
-            
-            var isEnabled = BTLogger.IsCategoryEnabled(LogCategory.Combat);
-            Assert.IsTrue(isEnabled, "IsCategoryEnabled()が常にtrueを返さない");
-            
+            // 履歴取得APIの動作確認
             var recentLogs = BTLogger.GetRecentLogs(10);
             Assert.AreEqual(0, recentLogs.Length, "GetRecentLogs()が空配列を返さない");
             
             var categoryLogs = BTLogger.GetLogsByCategory(LogCategory.System, 5);
             Assert.AreEqual(0, categoryLogs.Length, "GetLogsByCategory()が空配列を返さない");
+            
+            UnityEngine.Debug.Log("Phase 6.4: 履歴管理API確認完了");
         }
         
         /// <summary>LoggerFactory設定状況の確認</summary>

@@ -15,7 +15,7 @@ namespace ArcBT.Tests
         {
             // テストモードを有効化（ログ抑制あり）
             BTLogger.EnableTestMode(suppressLogs: true);
-            BTLogger.ClearHistory();
+            // Phase 6.4: ClearHistory削除に伴い削除
         }
 
         [TearDown]
