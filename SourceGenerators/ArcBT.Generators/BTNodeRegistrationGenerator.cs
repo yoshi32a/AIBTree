@@ -125,7 +125,7 @@ namespace ArcBT.Generators
                     if (!SymbolEqualityComparer.Default.Equals(attribute.AttributeClass, btNodeAttributeSymbol))
                         continue;
 
-                    string scriptName = null;
+                    string? scriptName = null;
 
                     // BTNode継承チェック（NodeType判定不要）
                     if (!InheritsFromBTNode(classSymbol))
@@ -136,13 +136,14 @@ namespace ArcBT.Generators
                     {
                         scriptName = attribute.ConstructorArguments[0].Value?.ToString();
                     }
-                    else
+                    
+                    // スクリプト名が指定されていない場合、クラス名を使用
+                    if (string.IsNullOrEmpty(scriptName))
                     {
-                        // スクリプト名が指定されていない場合、クラス名を使用
                         scriptName = classSymbol.Name;
                     }
 
-                    if (scriptName == null)
+                    if (string.IsNullOrEmpty(scriptName))
                         continue;
 
                     var nodeInfo = new NodeInfo
@@ -153,10 +154,11 @@ namespace ArcBT.Generators
                         Namespace = classSymbol.ContainingNamespace?.ToDisplayString() ?? "global"
                     };
 
-                    if (!nodesByAssembly.ContainsKey(currentAssemblyName))
-                        nodesByAssembly[currentAssemblyName] = new List<NodeInfo>();
+                    var safeAssemblyName = currentAssemblyName ?? "Unknown";
+                    if (!nodesByAssembly.ContainsKey(safeAssemblyName))
+                        nodesByAssembly[safeAssemblyName] = new List<NodeInfo>();
 
-                    nodesByAssembly[currentAssemblyName].Add(nodeInfo);
+                    nodesByAssembly[safeAssemblyName].Add(nodeInfo);
                 }
             }
 
@@ -169,9 +171,9 @@ namespace ArcBT.Generators
                 if (nodes.Count == 0)
                     continue;
 
-                var source = GenerateRegistrationCode(currentAssemblyName, assemblyName, nodes);
+                var source = GenerateRegistrationCode(currentAssemblyName ?? "Unknown", assemblyName, nodes);
                 // ファイル名には実際のアセンブリ名を使用
-                var fileName = $"{SanitizeAssemblyName(currentAssemblyName)}.NodeRegistration.g.cs";
+                var fileName = $"{SanitizeAssemblyName(currentAssemblyName ?? "Unknown")}.NodeRegistration.g.cs";
                 context.AddSource(fileName, SourceText.From(source, Encoding.UTF8));
             }
         }
@@ -286,7 +288,7 @@ namespace ArcBT.Generators
             public string Namespace { get; set; } = "";
         }
 
-        private INamedTypeSymbol GetTypeFromAllAssemblies(Compilation compilation, string typeName)
+        private INamedTypeSymbol? GetTypeFromAllAssemblies(Compilation compilation, string typeName)
         {
             // 全てのアセンブリから指定された型名を検索
             foreach (var assembly in compilation.SourceModule.ReferencedAssemblySymbols.Concat(new[] { compilation.Assembly }))
