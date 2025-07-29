@@ -160,8 +160,9 @@ namespace ArcBT.Tests
             // Assert: 並行処理が適切に処理されている
             Assert.Less(elapsedTime, 3.0f, "並行ログ処理が適切な時間内で完了");
             
+            // Phase 6.4: GetRecentLogsは常に空配列を返すため、時間ベースでのテストのみ
             var logs = BTLogger.GetRecentLogs(200);
-            Assert.Greater(logs.Length, 50, "並行処理でもログが適切に記録されている");
+            Assert.AreEqual(0, logs.Length, "Phase 6.4: 履歴管理はZLoggerに委譲 - 空配列");
         }
 
         IEnumerator LoggingTask(int taskIndex, int logCount)
@@ -253,9 +254,9 @@ namespace ArcBT.Tests
                 {
                     yield return null;
                     
-                    // メモリ使用量が異常に増加していないかチェック
+                    // Phase 6.4: GetRecentLogsは常に空配列を返す
                     var logs = BTLogger.GetRecentLogs(10);
-                    Assert.LessOrEqual(logs.Length, 10, $"履歴管理が正常に機能している（Iteration {iteration}）");
+                    Assert.AreEqual(0, logs.Length, "Phase 6.4: 履歴管理はZLoggerに委譲 - 空配列");
                 }
             }
             
@@ -264,8 +265,9 @@ namespace ArcBT.Tests
             // Assert: 長時間実行でも安定している
             Assert.Less(elapsedTime, 10.0f, "長時間実行が適切な時間内で完了");
             
+            // Phase 6.4: GetRecentLogsは常に空配列を返す
             var finalLogs = BTLogger.GetRecentLogs(200);
-            Assert.LessOrEqual(finalLogs.Length, 100, "最終的なログ履歴が制限内に収まっている");
+            Assert.AreEqual(0, finalLogs.Length, "Phase 6.4: 履歴管理はZLoggerに委譲 - 空配列");
         }
 
         /// <summary>ZLogger構造化ログパフォーマンステスト</summary>
@@ -384,9 +386,9 @@ namespace ArcBT.Tests
             var elapsedMs = stopwatch.ElapsedMilliseconds;
             Assert.Less(elapsedMs, 500, $"ZLoggerリソース管理（{cycles}サイクル）が500ms以内で完了（実測: {elapsedMs}ms）");
             
-            // 最終的にログ機能が正常であることを確認
+            // Phase 6.4: GetRecentLogsは常に空配列を返す
             var logs = BTLogger.GetRecentLogs(5);
-            Assert.Greater(logs.Length, 0, "初期化・解放サイクル後もログ機能が正常");
+            Assert.AreEqual(0, logs.Length, "Phase 6.4: 履歴管理はZLoggerに委譲 - 空配列");
             
             UnityEngine.Debug.Log($"ZLogger resource management: {cycles} cycles in {elapsedMs}ms");
         }

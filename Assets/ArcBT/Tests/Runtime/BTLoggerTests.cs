@@ -203,7 +203,7 @@ namespace ArcBT.Tests
             var logs = BTLogger.GetRecentLogs(1);
             Assert.AreEqual(0, logs.Length, "Phase 6.3: タイムスタンプ管理はZLoggerに委譲 - 空配列");
                 
-            UnityEngine.Debug.Log($"Phase 6.3: タイムスタンプテスト完了 - ZLoggerタイムスタンプ管理 ({afterTime - beforeTime:F2}ms)");
+            UnityEngine.Debug.Log($"Phase 6.3: タイムスタンプテスト完了 - ZLoggerタイムスタンプ管理 ({(afterTime - beforeTime).TotalMilliseconds:F2}ms)");
         }
 
         /// <summary>ZLogger構造化ログ機能のテスト</summary>
