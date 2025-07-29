@@ -20,15 +20,15 @@ jobs:
         dotnet-version: '6.0.x'
     
     - name: Restore dependencies
-      run: dotnet restore
+      run: dotnet restore ArcBT.Generators.sln
       working-directory: SourceGenerators
     
     - name: Build
-      run: dotnet build -c Release --no-restore
+      run: dotnet build ArcBT.Generators.sln -c Release --no-restore
       working-directory: SourceGenerators
     
     - name: Pack
-      run: dotnet pack -c Release --no-build
+      run: dotnet pack ArcBT.Generators/ArcBT.Generators.csproj -c Release --no-build
       working-directory: SourceGenerators
     
     - name: Upload DLL artifact
