@@ -1,9 +1,7 @@
-using NUnit.Framework;
-using UnityEngine;
-using UnityEngine.TestTools;
 using ArcBT.Core;
 using ArcBT.Decorators;
-using ArcBT.Logger;
+using NUnit.Framework;
+using UnityEngine;
 
 namespace ArcBT.Tests
 {
@@ -29,7 +27,6 @@ namespace ArcBT.Tests
             base.TearDown(); // BTTestBaseのクリーンアップを実行
         }
 
-        #region InverterDecorator Tests
 
         [Test][Description("InverterDecoratorでSuccess子ノードをFailureに反転させる基本動作の確認")]
         public void InverterDecorator_WithSuccessChild_ReturnsFailure()
@@ -89,15 +86,11 @@ namespace ArcBT.Tests
             // Act
             var result = decorator.Execute();
 
-            // Assert - ログではなく実際の動作を検証
+            // Assert - 実際の動作を検証（エラーログはログシステムで処理される）
             Assert.AreEqual(BTNodeResult.Failure, result, "子ノードがない場合、Failureが返されるべき");
-            
-            // 注意: エラーログはLoggingBehaviorTestsで専用テストが行われます
         }
 
-        #endregion
 
-        #region RepeatDecorator Tests
 
         [Test][Description("RepeatDecoratorのmax_countパラメータで最大繰り返し回数設定機能の検証")]
         public void RepeatDecorator_SetProperty_SetsCorrectMaxCount()
@@ -214,9 +207,7 @@ namespace ArcBT.Tests
             Assert.AreEqual(0, decorator.GetCurrentCount());
         }
 
-        #endregion
 
-        #region RetryDecorator Tests
 
         [Test][Description("RetryDecoratorのmax_retriesパラメータで最大リトライ回数設定機能の検証")]
         public void RetryDecorator_SetProperty_SetsCorrectMaxRetries()
@@ -340,9 +331,7 @@ namespace ArcBT.Tests
             Assert.IsFalse(decorator.IsWaitingForRetry());
         }
 
-        #endregion
 
-        #region TimeoutDecorator Tests
 
         [Test][Description("TimeoutDecoratorのtimeoutパラメータでタイムアウト時間設定機能の検証")]
         public void TimeoutDecorator_SetProperty_SetsCorrectTimeout()
@@ -444,16 +433,12 @@ namespace ArcBT.Tests
             var decorator = new TimeoutDecorator();
             decorator.Initialize(testOwner.AddComponent<TestDecoratorComponent>(), blackBoard);
 
-            // Act & Assert
+            // Act & Assert - 実際の動作を検証（エラーログはログシステムで処理される）
             var result = decorator.Execute();
             Assert.AreEqual(BTNodeResult.Failure, result, "子ノードがない場合、Failureが返されるべき");
-            
-            // 注意: エラーログはLoggingBehaviorTestsで専用テストが行われます
         }
 
-        #endregion
 
-        #region Integration Tests
 
         [Test][Description("InverterとTimeoutのネストしたDecorator構造が正しく連携動作することを確認")]
         public void NestedDecorators_InverterWithTimeout_WorksCorrectly()
@@ -506,7 +491,6 @@ namespace ArcBT.Tests
             Assert.IsTrue(result is BTNodeResult.Running or BTNodeResult.Failure or BTNodeResult.Success);
         }
 
-        #endregion
     }
 
     /// <summary>テスト用のDecoratorコンポーネント</summary>

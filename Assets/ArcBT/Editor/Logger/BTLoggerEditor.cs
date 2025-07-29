@@ -2,18 +2,13 @@ using UnityEngine;
 using UnityEditor;
 using ArcBT.Core;
 using System;
-using System.Linq;
 using ArcBT.Logger;
+using Microsoft.Extensions.Logging;
 
 [CustomEditor(typeof(BehaviourTreeRunner))]
 public class BTLoggerEditor : Editor
 {
     static bool showLogSettings = false;
-    static bool showRecentLogs = false;
-    static LogCategory selectedLogCategory = LogCategory.System;
-    static int logDisplayCount = 10;
-    
-    Vector2 logScrollPosition;
     
     public override void OnInspectorGUI()
     {
@@ -21,22 +16,22 @@ public class BTLoggerEditor : Editor
         DrawDefaultInspector();
         
         EditorGUILayout.Space(10);
-        EditorGUILayout.LabelField("BT Logger Controls", EditorStyles.boldLabel);
+        EditorGUILayout.LabelField("BT Logger Controls (ZLogger統合版)", EditorStyles.boldLabel);
+        
+        // ZLogger統合情報
+        EditorGUILayout.HelpBox(
+            "ZLogger統合による高性能ログシステム (Phase 6.3)\n" +
+            "• ゼロアロケーション最適化完了\n" +
+            "• Microsoft.Extensions.Logging完全統合\n" +
+            "• ユーザーLoggerFactoryによるフィルタリング制御\n" +
+            "• 履歴管理はZLoggerプロバイダーに委譲", 
+            MessageType.Info);
         
         // ログ設定セクション
         showLogSettings = EditorGUILayout.Foldout(showLogSettings, "ログ設定", true);
         if (showLogSettings)
         {
             DrawLogSettings();
-        }
-        
-        EditorGUILayout.Space(5);
-        
-        // 最近のログ表示セクション
-        showRecentLogs = EditorGUILayout.Foldout(showRecentLogs, "最近のログ", true);
-        if (showRecentLogs)
-        {
-            DrawRecentLogs();
         }
         
         EditorGUILayout.Space(5);
@@ -49,199 +44,55 @@ public class BTLoggerEditor : Editor
     {
         EditorGUI.indentLevel++;
         
-        // ログレベル設定
-        EditorGUILayout.LabelField("ログレベル", EditorStyles.miniBoldLabel);
-        var currentLevel = BTLogger.GetCurrentLogLevel();
-        var newLevel = (LogLevel)EditorGUILayout.EnumPopup("表示レベル", currentLevel);
-        if (newLevel != currentLevel)
-        {
-            BTLogger.SetLogLevel(newLevel);
-            EditorUtility.SetDirty(target);
-        }
+        // 設定状況表示
+        EditorGUILayout.LabelField("BTLogger設定状況", EditorStyles.miniBoldLabel);
+        
+        var isConfigured = BTLogger.IsConfigured;
+        var statusColor = isConfigured ? Color.green : Color.yellow;
+        var statusMessage = isConfigured ? "✅ LoggerFactory設定済み" : "⚠️ LoggerFactory未設定（NullLogger使用中）";
+        
+        var originalColor = GUI.color;
+        GUI.color = statusColor;
+        EditorGUILayout.LabelField(statusMessage);
+        GUI.color = originalColor;
         
         EditorGUILayout.Space(3);
         
-        // カテゴリフィルター設定
-        EditorGUILayout.LabelField("カテゴリフィルター", EditorStyles.miniBoldLabel);
-        
-        foreach (LogCategory category in Enum.GetValues(typeof(LogCategory)))
-        {
-            var currentEnabled = BTLogger.IsCategoryEnabled(category);
-            var tag = GetCategoryTag(category);
-            var newEnabled = EditorGUILayout.Toggle($"{tag} {category}", currentEnabled);
-            
-            if (newEnabled != currentEnabled)
-            {
-                BTLogger.SetCategoryFilter(category, newEnabled);
-                EditorUtility.SetDirty(target);
-            }
-        }
+        // ユーザー向け設定ガイド
+        EditorGUILayout.LabelField("フィルタリング制御", EditorStyles.miniBoldLabel);
+        EditorGUILayout.HelpBox(
+            "Phase 6.3: ログフィルタリングはユーザーのLoggerFactory設定で制御します\n\n" +
+            "設定例:\n" +
+            "builder.AddFilter(\"ArcBT\", LogLevel.Information);", 
+            MessageType.Info);
         
         EditorGUI.indentLevel--;
     }
     
-    void DrawRecentLogs()
-    {
-        EditorGUI.indentLevel++;
-        
-        // ログ表示設定
-        EditorGUILayout.BeginHorizontal();
-        selectedLogCategory = (LogCategory)EditorGUILayout.EnumPopup("カテゴリ", selectedLogCategory);
-        logDisplayCount = EditorGUILayout.IntSlider("表示件数", logDisplayCount, 5, 50);
-        EditorGUILayout.EndHorizontal();
-        
-        if (GUILayout.Button("ログを更新"))
-        {
-            Repaint();
-        }
-        
-        EditorGUILayout.Space(3);
-        
-        // ログ表示エリア
-        var logs = selectedLogCategory == LogCategory.System 
-            ? BTLogger.GetRecentLogs(logDisplayCount)
-            : BTLogger.GetLogsByCategory(selectedLogCategory, logDisplayCount);
-            
-        if (logs.Length > 0)
-        {
-            EditorGUILayout.LabelField($"最新 {logs.Length} 件のログ:", EditorStyles.miniBoldLabel);
-            
-            logScrollPosition = EditorGUILayout.BeginScrollView(logScrollPosition, 
-                GUILayout.Height(200), GUILayout.ExpandWidth(true));
-            
-            foreach (var log in logs.Reverse())
-            {
-                DrawLogEntry(log);
-            }
-            
-            EditorGUILayout.EndScrollView();
-        }
-        else
-        {
-            EditorGUILayout.HelpBox("表示するログがありません", MessageType.Info);
-        }
-        
-        EditorGUI.indentLevel--;
-    }
-    
-    void DrawLogEntry(LogEntry log)
-    {
-        var style = GetLogStyle(log.Level);
-        var categoryTag = GetCategoryTag(log.Category);
-        var levelTag = GetLevelTag(log.Level);
-        var timeStr = log.Timestamp.ToString("HH:mm:ss.fff");
-        var nodeInfo = !string.IsNullOrEmpty(log.NodeName) ? $"[{log.NodeName}]" : "";
-        
-        EditorGUILayout.BeginVertical(EditorStyles.helpBox);
-        
-        // ログヘッダー
-        EditorGUILayout.BeginHorizontal();
-        EditorGUILayout.LabelField($"{timeStr}", GUILayout.Width(80));
-        EditorGUILayout.LabelField($"{levelTag}", GUILayout.Width(70));
-        EditorGUILayout.LabelField($"{categoryTag}", GUILayout.Width(80));
-        if (!string.IsNullOrEmpty(nodeInfo))
-        {
-            EditorGUILayout.LabelField(nodeInfo, GUILayout.Width(100));
-        }
-        EditorGUILayout.EndHorizontal();
-        
-        // ログメッセージ
-        EditorGUILayout.LabelField(log.Message, style);
-        
-        EditorGUILayout.EndVertical();
-    }
     
     void DrawLogControlButtons()
     {
         EditorGUILayout.BeginHorizontal();
         
-        if (GUILayout.Button("すべて有効"))
+        if (GUILayout.Button("設定ガイド表示"))
         {
-            foreach (LogCategory category in Enum.GetValues(typeof(LogCategory)))
-            {
-                BTLogger.SetCategoryFilter(category, true);
-            }
-            EditorUtility.SetDirty(target);
-        }
-        
-        if (GUILayout.Button("すべて無効"))
-        {
-            foreach (LogCategory category in Enum.GetValues(typeof(LogCategory)))
-            {
-                BTLogger.SetCategoryFilter(category, false);
-            }
-            EditorUtility.SetDirty(target);
-        }
-        
-        if (GUILayout.Button("デフォルト設定"))
-        {
-            BTLogger.ResetToDefaults();
-            EditorUtility.SetDirty(target);
+            EditorGUILayout.HelpBox(
+                "BTLogger設定方法:\n\n" +
+                "1. アプリケーション初期化時にLoggerFactoryを作成\n" +
+                "2. BTLogger.Configure(loggerFactory)を呼び出し\n" +
+                "3. AddFilter()でArcBTログレベルを制御\n\n" +
+                "詳細はCLAUDE.mdを参照してください。", 
+                MessageType.Info);
         }
         
         EditorGUILayout.EndHorizontal();
         
         EditorGUILayout.Space(5);
         
-        if (GUILayout.Button("ログ履歴をクリア"))
-        {
-            BTLogger.ClearHistory();
-            Repaint();
-        }
-    }
-    
-    GUIStyle GetLogStyle(LogLevel level)
-    {
-        var style = new GUIStyle(EditorStyles.label);
-        style.wordWrap = true;
-        
-        switch (level)
-        {
-            case LogLevel.Error:
-                style.normal.textColor = Color.red;
-                break;
-            case LogLevel.Warning:
-                style.normal.textColor = new Color(1f, 0.6f, 0f); // オレンジ
-                break;
-            case LogLevel.Info:
-                style.normal.textColor = EditorGUIUtility.isProSkin ? Color.white : Color.black;
-                break;
-            case LogLevel.Debug:
-                style.normal.textColor = Color.cyan;
-                break;
-            case LogLevel.Trace:
-                style.normal.textColor = Color.gray;
-                break;
-        }
-        
-        return style;
-    }
-    
-    string GetCategoryTag(LogCategory category)
-    {
-        switch (category)
-        {
-            case LogCategory.Combat: return "[ATK]";     // Attack
-            case LogCategory.Movement: return "[MOV]";   // Move
-            case LogCategory.Condition: return "[CHK]";  // Check
-            case LogCategory.BlackBoard: return "[BBD]"; // BlackBoard
-            case LogCategory.Parser: return "[PRS]";     // Parse
-            case LogCategory.System: return "[SYS]";     // System
-            case LogCategory.Debug: return "[DBG]";      // Debug
-            default: return "[UNK]";                     // Unknown
-        }
-    }
-    
-    string GetLevelTag(LogLevel level)
-    {
-        switch (level)
-        {
-            case LogLevel.Error: return "[ERR]";   // Error
-            case LogLevel.Warning: return "[WRN]"; // Warning
-            case LogLevel.Info: return "[INF]";    // Info
-            case LogLevel.Debug: return "[DBG]";   // Debug
-            case LogLevel.Trace: return "[TRC]";   // Trace
-            default: return "[UNK]";               // Unknown
-        }
+        // ZLoggerプロバイダー情報
+        EditorGUILayout.HelpBox(
+            "Phase 6.3完了: 履歴管理はZLoggerプロバイダーに完全委譲\n" +
+            "Consoleウィンドウまたは設定したログ出力先でログを確認してください。", 
+            MessageType.Info);
     }
 }

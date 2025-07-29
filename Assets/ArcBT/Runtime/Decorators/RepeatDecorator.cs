@@ -1,6 +1,5 @@
 using ArcBT.Core;
 using ArcBT.Logger;
-using UnityEngine;
 
 namespace ArcBT.Decorators
 {
@@ -53,7 +52,7 @@ namespace ArcBT.Decorators
             // 最大回数に達している場合
             if (maxCount >= 0 && currentCount >= maxCount)
             {
-                BTLogger.LogSystem($"Repeat '{Name}': Reached max count {maxCount}, returning Success", Name, ownerComponent);
+                BTLogger.LogSystem(this, $"Reached max count {maxCount}, returning Success");
                 return BTNodeResult.Success;
             }
 
@@ -67,12 +66,12 @@ namespace ArcBT.Decorators
 
                 case BTNodeResult.Success:
                     currentCount++;
-                    BTLogger.LogSystem($"Repeat '{Name}': Iteration {currentCount} completed successfully", Name, ownerComponent);
+                    BTLogger.LogSystem(this, $"Iteration {currentCount} completed successfully");
                     
                     // 最大回数に達したかチェック
                     if (maxCount >= 0 && currentCount >= maxCount)
                     {
-                        BTLogger.LogSystem($"Repeat '{Name}': All {maxCount} iterations completed", Name, ownerComponent);
+                        BTLogger.LogSystem(this, $"All {maxCount} iterations completed");
                         return BTNodeResult.Success;
                     }
                     
@@ -87,18 +86,18 @@ namespace ArcBT.Decorators
 
                 case BTNodeResult.Failure:
                     currentCount++;
-                    BTLogger.LogSystem($"Repeat '{Name}': Iteration {currentCount} failed", Name, ownerComponent);
+                    BTLogger.LogSystem(this, $"Iteration {currentCount} failed");
                     
                     if (stopOnFailure)
                     {
-                        BTLogger.LogSystem($"Repeat '{Name}': Stopping on failure", Name, ownerComponent);
+                        BTLogger.LogSystem(this, "Stopping on failure");
                         return BTNodeResult.Failure;
                     }
                     
                     // 最大回数に達したかチェック
                     if (maxCount >= 0 && currentCount >= maxCount)
                     {
-                        BTLogger.LogSystem($"Repeat '{Name}': All {maxCount} iterations completed (with failures)", Name, ownerComponent);
+                        BTLogger.LogSystem(this, $"All {maxCount} iterations completed (with failures)");
                         return BTNodeResult.Success;
                     }
                     

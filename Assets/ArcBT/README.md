@@ -126,7 +126,7 @@ BTLogger.LogSystem("ArcBT initialized");
 
 // Conditional compilation - only logs in development builds
 BTLogger.SetLogLevel(LogLevel.Warning); // Filter log levels
-BTLogger.SetCategoryFilter(LogCategory.Movement, false); // Disable category
+// Category-based filtering has been simplified in the new API
 ```
 
 ## 🎯 Examples

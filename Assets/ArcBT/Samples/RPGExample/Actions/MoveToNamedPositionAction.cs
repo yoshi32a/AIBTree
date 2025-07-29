@@ -37,10 +37,10 @@ namespace ArcBT.Samples.RPG.Actions
         {
             base.Initialize(owner, blackBoard);
             aiController = owner.GetComponent<ExampleAI>();
-            
+
             if (aiController == null)
             {
-                BTLogger.LogError(LogCategory.Movement, "MoveToNamedPositionAction requires ExampleAI component");
+                BTLogger.LogSystemError("Movement", "MoveToNamedPositionAction requires ExampleAI component");
             }
         }
 
@@ -48,18 +48,18 @@ namespace ArcBT.Samples.RPG.Actions
         {
             if (aiController == null)
             {
-                BTLogger.LogError(LogCategory.Movement, "ExampleAI controller not found");
+                BTLogger.LogSystemError("Movement", "ExampleAI controller not found");
                 return BTNodeResult.Failure;
             }
 
             if (string.IsNullOrEmpty(target))
             {
-                BTLogger.Log(LogLevel.Warning, LogCategory.Movement, "No target specified for move action");
+                BTLogger.LogSystemError("Movement", "No target specified for move action");
                 return BTNodeResult.Failure;
             }
 
             bool moveSucceeded = aiController.MoveToPosition(target, speed, tolerance);
-            BTLogger.Log(LogLevel.Debug, LogCategory.Movement, $"Moving to {target} at speed {speed}");
+            BTLogger.LogMovement($"Moving to {target} at speed {speed}");
             return moveSucceeded ? BTNodeResult.Success : BTNodeResult.Failure;
         }
     }

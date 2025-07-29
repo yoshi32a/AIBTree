@@ -1,34 +1,48 @@
 using ArcBT.Core;
+using ArcBT.Logger;
+using ArcBT.TagSystem;
 using UnityEngine;
 
 namespace ArcBT.Samples.RPG.Conditions
 {
-    /// <summary>ターゲットの存在をチェックする条件</summary>
     [BTNode("HasTarget")]
     public class HasTargetCondition : BTConditionNode
     {
+        GameplayTag targetTag = "Character.Enemy";
+
+        public override void SetProperty(string key, string value)
+        {
+            switch (key.ToLower())
+            {
+                case "tag":
+                case "target_tag":
+                    targetTag = new GameplayTag(value);
+                    break;
+            }
+        }
+
         protected override BTNodeResult CheckCondition()
         {
-            if (ownerComponent == null || blackBoard == null)
+            // BlackBoardからターゲット情報をチェック
+            if (blackBoard != null)
             {
-                return BTNodeResult.Failure;
+                var targetInfo = blackBoard.GetValue<GameObject>("target_enemy");
+                if (targetInfo != null)
+                {
+                    BTLogger.LogCondition($"BlackBoardにターゲット情報があります: {targetInfo.name}", Name);
+                    return BTNodeResult.Success;
+                }
             }
 
-            // BlackBoardからターゲット情報を取得
-            GameObject target = blackBoard.GetValue<GameObject>("current_target");
-
-            if (target != null && target.activeInHierarchy)
+            // シーン内でターゲットを検索
+            var targets = GameplayTagManager.FindGameObjectsWithTag(targetTag);
+            if (targets is { Length: > 0 })
             {
-                // ターゲットが有効な場合、距離も記録
-                float distance = Vector3.Distance(transform.position, target.transform.position);
-                blackBoard.SetValue("target_distance", distance);
+                BTLogger.LogCondition($"ターゲット発見: {targets.Length}体の{targetTag}", Name);
                 return BTNodeResult.Success;
             }
 
-            // ターゲット情報をクリア
-            blackBoard.SetValue("current_target", (GameObject)null);
-            blackBoard.RemoveValue("target_distance");
-
+            BTLogger.LogCondition($"ターゲット未発見: {targetTag}", Name);
             return BTNodeResult.Failure;
         }
     }

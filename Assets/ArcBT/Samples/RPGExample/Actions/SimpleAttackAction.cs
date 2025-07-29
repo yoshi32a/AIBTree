@@ -33,10 +33,10 @@ namespace ArcBT.Samples.RPG.Actions
         {
             base.Initialize(owner, blackBoard);
             aiController = owner.GetComponent<ExampleAI>();
-            
+
             if (aiController == null)
             {
-                BTLogger.LogError(LogCategory.Combat, "SimpleAttackAction requires ExampleAI component");
+                BTLogger.LogSystemError("Combat", "SimpleAttackAction requires ExampleAI component");
             }
         }
 
@@ -44,12 +44,12 @@ namespace ArcBT.Samples.RPG.Actions
         {
             if (aiController == null)
             {
-                BTLogger.LogError(LogCategory.Combat, "ExampleAI controller not found");
+                BTLogger.LogSystemError("Combat", "ExampleAI controller not found");
                 return BTNodeResult.Failure;
             }
 
             bool attackSucceeded = aiController.AttackEnemy(damage, attackRange);
-            BTLogger.Log(LogLevel.Debug, LogCategory.Combat, $"Executed attack with damage {damage}");
+            BTLogger.LogCombat($"Executed attack with damage {damage}");
             return attackSucceeded ? BTNodeResult.Success : BTNodeResult.Failure;
         }
     }

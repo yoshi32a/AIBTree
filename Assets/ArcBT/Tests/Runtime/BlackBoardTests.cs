@@ -1,8 +1,7 @@
+using System.Diagnostics;
+using ArcBT.Core;
 using NUnit.Framework;
 using UnityEngine;
-using UnityEngine.TestTools;
-using ArcBT.Core;
-using ArcBT.Logger;
 
 namespace ArcBT.Tests
 {
@@ -487,7 +486,7 @@ namespace ArcBT.Tests
         public void PerformanceTest_ManyOperations_CompletesQuickly()
         {
             // Arrange
-            var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+            var stopwatch = Stopwatch.StartNew();
             const int operationCount = 1000;
 
             // Act: 大量の操作を実行

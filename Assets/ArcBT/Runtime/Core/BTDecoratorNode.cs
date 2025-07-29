@@ -1,5 +1,4 @@
 using ArcBT.Logger;
-using UnityEngine;
 
 namespace ArcBT.Core
 {
@@ -15,7 +14,7 @@ namespace ArcBT.Core
         {
             if (childNode != null)
             {
-                BTLogger.LogError(LogCategory.System, $"Decorator '{Name}' already has a child. Replacing existing child.", Name, ownerComponent);
+                BTLogger.LogSystemError("System", $"Decorator '{Name}' already has a child. Replacing existing child.");
                 // 既存の子ノードをChildrenリストから削除
                 Children.Remove(childNode);
             }
@@ -50,7 +49,7 @@ namespace ArcBT.Core
         {
             if (childNode == null)
             {
-                BTLogger.LogError(LogCategory.System, $"Decorator '{Name}' has no child node", Name, ownerComponent);
+                BTLogger.LogSystemError("System", $"Decorator '{Name}' has no child node");
                 return BTNodeResult.Failure;
             }
 

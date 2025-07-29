@@ -31,7 +31,7 @@ namespace ArcBT.Samples.RPG.Conditions
             
             if (aiController == null)
             {
-                BTLogger.LogError(LogCategory.System, "EnemyDetectionCondition requires ExampleAI component");
+                BTLogger.LogSystemError("System", "EnemyDetectionCondition requires ExampleAI component");
             }
         }
 
@@ -39,12 +39,12 @@ namespace ArcBT.Samples.RPG.Conditions
         {
             if (aiController == null)
             {
-                BTLogger.LogError(LogCategory.System, "ExampleAI controller not found");
+                BTLogger.LogSystemError("System", "ExampleAI controller not found");
                 return BTNodeResult.Failure;
             }
 
             bool result = aiController.DetectEnemy(detectionRange);
-            BTLogger.Log(LogLevel.Debug, LogCategory.System, $"Enemy detection in range {detectionRange}: {result}");
+            BTLogger.LogSystem($"Enemy detection in range {detectionRange}: {result}");
             return result ? BTNodeResult.Success : BTNodeResult.Failure;
         }
     }

@@ -8,7 +8,8 @@ namespace ArcBT.Samples.RPG.Actions
 {
     /// <summary>魔法を詠唱するアクション</summary>
     [BTNode("CastSpell")]
-    public class CastSpellAction : BTActionNode    {
+    public class CastSpellAction : BTActionNode
+    {
         string spellName = "fireball";
         int damage = 40;
         int manaCost = 50;
@@ -33,14 +34,14 @@ namespace ArcBT.Samples.RPG.Actions
         {
             if (ownerComponent == null)
             {
-                BTLogger.LogError(LogCategory.System, "❌ CastSpell: Owner component is null", Name, ownerComponent);
+                BTLogger.LogSystemError("System", "❌ CastSpell: Owner component is null");
                 return BTNodeResult.Failure;
             }
 
             var mana = ownerComponent.GetComponent<Mana>();
             if (mana == null)
             {
-                BTLogger.LogError(LogCategory.System, "⚠️ CastSpell: Manaコンポーネントが見つかりません", Name, ownerComponent);
+                BTLogger.LogSystemError("System", "⚠️ CastSpell: Manaコンポーネントが見つかりません");
                 return BTNodeResult.Failure;
             }
 
@@ -73,19 +74,19 @@ namespace ArcBT.Samples.RPG.Actions
             {
                 targetHealth.TakeDamage(damage);
                 BTLogger.LogCombat($"✨ CastSpell: '{spellName}' で '{target.name}' に {damage} ダメージ！ (マナ消費: {manaCost})", Name, ownerComponent);
-                
+
                 // BlackBoardに魔法使用履歴を記録
                 if (blackBoard != null)
                 {
                     blackBoard.SetValue("last_spell_used", spellName);
                     blackBoard.SetValue("last_spell_time", Time.time);
                 }
-                
+
                 return BTNodeResult.Success;
             }
             else
             {
-                BTLogger.LogError(LogCategory.Combat, $"⚠️ CastSpell: ターゲット '{target.name}' にHealthコンポーネントがありません", Name, ownerComponent);
+                BTLogger.LogSystemError("Combat", $"⚠️ CastSpell: ターゲット '{target.name}' にHealthコンポーネントがありません");
                 return BTNodeResult.Failure;
             }
         }

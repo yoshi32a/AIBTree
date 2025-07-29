@@ -85,7 +85,7 @@ namespace ArcBT.Parser
         {
             if (!File.Exists(filePath))
             {
-                BTLogger.LogError(LogCategory.Parser, $"BT file not found: {filePath}");
+                BTLogger.LogSystemError("Parser", $"BT file not found: {filePath}");
                 return null;
             }
 
@@ -111,7 +111,7 @@ namespace ArcBT.Parser
                 currentTokenIndex++;
             }
 
-            BTLogger.LogError(LogCategory.Parser, "No tree definition found");
+            BTLogger.LogSystemError("Parser", "No tree definition found");
             return null;
         }
 
@@ -287,18 +287,18 @@ namespace ArcBT.Parser
             // tree name
             if (currentTokenIndex >= tokens.Length || tokens[currentTokenIndex].Type != TokenType.Identifier)
             {
-                BTLogger.LogError(LogCategory.Parser, "Expected tree name");
+                BTLogger.LogSystemError("Parser", "Expected tree name");
                 return null;
             }
 
             var treeName = tokens[currentTokenIndex++].Value; // インクリメントを同時に実行
 
-            BTLogger.Log(LogLevel.Info, LogCategory.Parser, $"📋 Parsing tree: {treeName}");
+            BTLogger.LogSystem("Parser", $"📋 Parsing tree: {treeName}");
 
             // opening brace
             if (currentTokenIndex >= tokens.Length || tokens[currentTokenIndex].Type != TokenType.LeftBrace)
             {
-                BTLogger.LogError(LogCategory.Parser, "Expected '{' after tree name");
+                BTLogger.LogSystemError("Parser", "Expected '{' after tree name");
                 return null;
             }
 
@@ -311,7 +311,7 @@ namespace ArcBT.Parser
             {
                 // ツリー名をルートノードのプロパティとして設定
                 rootNode.SetProperty("treeName", treeName);
-                BTLogger.Log(LogLevel.Debug, LogCategory.Parser, $"✅ Successfully parsed tree '{treeName}' with root node: {rootNode.Name}");
+                BTLogger.LogSystem("Parser", $"✅ Successfully parsed tree '{treeName}' with root node: {rootNode.Name}");
             }
 
             // closing brace
@@ -327,7 +327,7 @@ namespace ArcBT.Parser
         {
             if (currentTokenIndex >= tokens.Length || tokens[currentTokenIndex].Type != TokenType.Keyword)
             {
-                BTLogger.LogError(LogCategory.Parser, "Expected node type keyword");
+                BTLogger.LogSystemError("Parser", "Expected node type keyword");
                 return null;
             }
 
@@ -336,7 +336,7 @@ namespace ArcBT.Parser
             // script name (for Action/Condition) or node name (for Sequence/Selector)
             if (currentTokenIndex >= tokens.Length || tokens[currentTokenIndex].Type != TokenType.Identifier)
             {
-                BTLogger.LogError(LogCategory.Parser, $"Expected script/node name after {nodeType}");
+                BTLogger.LogSystemError("Parser", $"Expected script/node name after {nodeType}");
                 return null;
             }
 
@@ -345,7 +345,7 @@ namespace ArcBT.Parser
             // opening brace
             if (currentTokenIndex >= tokens.Length || tokens[currentTokenIndex].Type != TokenType.LeftBrace)
             {
-                BTLogger.LogError(LogCategory.Parser, "Expected '{' after node name");
+                BTLogger.LogSystemError("Parser", "Expected '{' after node name");
                 return null;
             }
 
@@ -395,17 +395,17 @@ namespace ArcBT.Parser
 
             // 新フォーマット: Action/Condition は直接スクリプト名、Sequence/Selector は従来通り
             BTNode node = null;
-            BTLogger.Log(LogLevel.Info, LogCategory.Parser, $"🔍 Creating node: {nodeType} {scriptOrNodeName}");
-            BTLogger.Log(LogLevel.Debug, LogCategory.Parser, $"🔍 Properties: {string.Join(", ", properties.Select(p => $"{p.Key}={p.Value}"))}");
+            BTLogger.LogSystem("Parser", $"🔍 Creating node: {nodeType} {scriptOrNodeName}");
+            BTLogger.LogSystem("Parser", $"🔍 Properties: {string.Join(", ", properties.Select(p => $"{p.Key}={p.Value}"))}");
 
             if (nodeType is "Action" or "Condition")
             {
-                BTLogger.Log(LogLevel.Info, LogCategory.Parser, $"🚀 Creating {nodeType} with script '{scriptOrNodeName}'");
+                BTLogger.LogSystem("Parser", $"🚀 Creating {nodeType} with script '{scriptOrNodeName}'");
                 node = CreateNodeFromScript(scriptOrNodeName, nodeType, properties);
             }
             else if (decoratorNodeFactories.ContainsKey(nodeType))
             {
-                BTLogger.Log(LogLevel.Debug, LogCategory.Parser, $"🔧 Creating decorator node: {nodeType}");
+                BTLogger.LogSystem("Parser", $"🔧 Creating decorator node: {nodeType}");
                 node = CreateDecoratorNode(nodeType);
                 if (node != null)
                 {
@@ -417,7 +417,7 @@ namespace ArcBT.Parser
             }
             else
             {
-                BTLogger.Log(LogLevel.Debug, LogCategory.Parser, $"🔧 Creating composite node: {nodeType}");
+                BTLogger.LogSystem("Parser", $"🔧 Creating composite node: {nodeType}");
                 node = CreateNode(nodeType);
                 if (node != null)
                 {
@@ -430,7 +430,7 @@ namespace ArcBT.Parser
 
             if (node == null)
             {
-                BTLogger.LogError(LogCategory.Parser, $"Failed to create node of type: {nodeType}");
+                BTLogger.LogSystemError("Parser", $"Failed to create node of type: {nodeType}");
                 return null;
             }
 
@@ -467,7 +467,7 @@ namespace ArcBT.Parser
 
             if (currentTokenIndex >= tokens.Length || tokens[currentTokenIndex].Type != TokenType.Colon)
             {
-                BTLogger.LogError(LogCategory.Parser, "Expected ':' after property name");
+                BTLogger.LogSystemError("Parser", "Expected ':' after property name");
                 return false;
             }
 
@@ -476,7 +476,7 @@ namespace ArcBT.Parser
             if (currentTokenIndex >= tokens.Length ||
                 (tokens[currentTokenIndex].Type != TokenType.String && tokens[currentTokenIndex].Type != TokenType.Number))
             {
-                BTLogger.LogError(LogCategory.Parser, $"Expected property value, got: {(currentTokenIndex < tokens.Length ? tokens[currentTokenIndex].Type.ToString() : "END_OF_TOKENS")}");
+                BTLogger.LogSystemError("Parser", $"Expected property value, got: {(currentTokenIndex < tokens.Length ? tokens[currentTokenIndex].Type.ToString() : "END_OF_TOKENS")}");
                 return false;
             }
 
@@ -498,7 +498,7 @@ namespace ArcBT.Parser
             if (compositeNodeFactories.TryGetValue(nodeType, out var factory))
                 return factory();
 
-            BTLogger.LogError(LogCategory.Parser, $"Unknown composite node type: {nodeType}");
+            BTLogger.LogSystemError("Parser", $"Unknown composite node type: {nodeType}");
             return null;
         }
 
@@ -507,20 +507,20 @@ namespace ArcBT.Parser
             if (decoratorNodeFactories.TryGetValue(nodeType, out var factory))
                 return factory();
             
-            BTLogger.LogError(LogCategory.Parser, $"Unknown decorator node type: {nodeType}");
+            BTLogger.LogSystemError("Parser", $"Unknown decorator node type: {nodeType}");
             return null;
         }
 
         BTNode CreateNodeFromScript(string scriptName, string nodeType, Dictionary<string, string> properties)
         {
-            BTLogger.Log(LogLevel.Debug, LogCategory.Parser, $"🔧 CreateNodeFromScript: script='{scriptName}', type='{nodeType}'");
+            BTLogger.LogSystem("Parser", $"🔧 CreateNodeFromScript: script='{scriptName}', type='{nodeType}'");
 
             // 統一レジストリから作成（全ノードタイプ対応）
             var node = BTStaticNodeRegistry.CreateNode(nodeType, scriptName);
 
             if (node != null)
             {
-                BTLogger.Log(LogLevel.Info, LogCategory.Parser, $"✅ Created {nodeType.ToLower()} for script '{scriptName}'");
+                BTLogger.LogSystem("Parser", $"✅ Created {nodeType.ToLower()} for script '{scriptName}'");
                 
                 // プロパティを設定
                 foreach (var prop in properties)
@@ -530,7 +530,7 @@ namespace ArcBT.Parser
             }
             else
             {
-                BTLogger.Log(LogLevel.Error, LogCategory.Parser,
+                BTLogger.LogSystemError("Parser",
                     $"Unknown {nodeType.ToLower()} script: {scriptName}. Please register the node in BTStaticNodeRegistry or use source generator.");
             }
 

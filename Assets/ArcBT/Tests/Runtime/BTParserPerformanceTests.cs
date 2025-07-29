@@ -129,14 +129,7 @@ tree ComplexTree {
         {
             var parser = new BTParser();
             
-            // テスト中はログを抑制（Errorレベルに設定でログを最小化）
-            var originalLogLevel = BTLogger.GetCurrentLogLevel();
-            var originalParserCategory = BTLogger.IsCategoryEnabled(LogCategory.Parser);
-            var originalSystemCategory = BTLogger.IsCategoryEnabled(LogCategory.System);
-            
-            BTLogger.SetLogLevel(LogLevel.Error);
-            BTLogger.SetCategoryFilter(LogCategory.Parser, false);
-            BTLogger.SetCategoryFilter(LogCategory.System, false);
+            // Phase 6.4: レガシーAPI削除に伴い、ログ制御はLoggerFactory設定で行う
             
             try
             {
@@ -224,10 +217,7 @@ tree ComplexTree {
             }
             finally
             {
-                // ログレベルとカテゴリフィルターを元に戻す
-                BTLogger.SetLogLevel(originalLogLevel);
-                BTLogger.SetCategoryFilter(LogCategory.Parser, originalParserCategory);
-                BTLogger.SetCategoryFilter(LogCategory.System, originalSystemCategory);
+                // Phase 6.4: レガシーAPI削除に伴い、ログ制御の復元は不要
             }
         }
 

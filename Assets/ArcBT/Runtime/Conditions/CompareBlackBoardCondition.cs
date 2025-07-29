@@ -46,19 +46,19 @@ namespace ArcBT.Conditions
         {
             if (blackBoard == null)
             {
-                BTLogger.LogError(LogCategory.BlackBoard, "CompareBlackBoard: BlackBoard is null", Name, ownerComponent);
+                BTLogger.LogSystemError(this, "BlackBoard is null");
                 return BTNodeResult.Failure;
             }
 
             if (string.IsNullOrEmpty(key1))
             {
-                BTLogger.LogError(LogCategory.BlackBoard, "CompareBlackBoard: key1 is empty", Name, ownerComponent);
+                BTLogger.LogSystemError(this, "key1 is empty");
                 return BTNodeResult.Failure;
             }
 
             if (!blackBoard.HasKey(key1))
             {
-                BTLogger.LogCondition($"CompareBlackBoard: key1 '{key1}' not found in BlackBoard", Name, ownerComponent);
+                BTLogger.LogCondition(this, $"key1 '{key1}' not found in BlackBoard");
                 return BTNodeResult.Failure;
             }
 
@@ -69,13 +69,13 @@ namespace ArcBT.Conditions
             {
                 if (string.IsNullOrEmpty(key2))
                 {
-                    BTLogger.LogError(LogCategory.BlackBoard, "CompareBlackBoard: key2 is empty", Name, ownerComponent);
+                    BTLogger.LogSystemError(this, "key2 is empty");
                     return BTNodeResult.Failure;
                 }
 
                 if (!blackBoard.HasKey(key2))
                 {
-                    BTLogger.LogCondition($"CompareBlackBoard: key2 '{key2}' not found in BlackBoard", Name, ownerComponent);
+                    BTLogger.LogCondition(this, $"key2 '{key2}' not found in BlackBoard");
                     return BTNodeResult.Failure;
                 }
 
@@ -89,7 +89,7 @@ namespace ArcBT.Conditions
             // 比較を実行
             var result = CompareValues(value1Obj, value2Obj, compareType);
 
-            BTLogger.LogCondition($"CompareBlackBoard: {key1}({value1Obj}) {compareType} {(useSecondKey ? key2 : "value")}({value2Obj}) = {result}", Name, ownerComponent);
+            BTLogger.LogCondition(this, $"{key1}({value1Obj}) {compareType} {(useSecondKey ? key2 : "value")}({value2Obj}) = {result}");
 
             return result ? BTNodeResult.Success : BTNodeResult.Failure;
         }
@@ -169,7 +169,7 @@ namespace ArcBT.Conditions
         {
             if (string.IsNullOrEmpty(expression))
             {
-                BTLogger.LogError(LogCategory.Condition, "CompareBlackBoard: Empty condition expression", Name, ownerComponent);
+                BTLogger.LogSystemError(this, "Empty condition expression");
                 return;
             }
 
@@ -222,17 +222,15 @@ namespace ArcBT.Conditions
                         useSecondKey = true;
                     }
 
-                    BTLogger.Log(LogLevel.Debug, LogCategory.Condition, 
-                        $"CompareBlackBoard '{Name}': Parsed '{expression}' → key1='{key1}', op='{compareType}', " +
-                        $"{(useSecondKey ? $"key2='{key2}'" : $"value='{value2}'")}", 
-                        Name, ownerComponent);
+                    BTLogger.LogSystem(this, 
+                        $"Parsed '{expression}' → key1='{key1}', op='{compareType}', " +
+                        $"{(useSecondKey ? $"key2='{key2}'" : $"value='{value2}'")}");
                     return;
                 }
             }
 
-            BTLogger.LogError(LogCategory.Condition, 
-                $"CompareBlackBoard '{Name}': No valid operator found in expression '{expression}'", 
-                Name, ownerComponent);
+            BTLogger.LogSystemError(this, 
+                $"No valid operator found in expression '{expression}'");
         }
 
         /// <summary>
