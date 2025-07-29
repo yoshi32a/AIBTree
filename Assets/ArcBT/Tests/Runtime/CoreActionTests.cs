@@ -243,6 +243,71 @@ namespace ArcBT.Tests
             Assert.AreEqual(BTNodeResult.Failure, result, "BlackBoardがnullの場合、Failureが返されるべき");
         }
 
+        [Test][Description("WaitUntilActionで条件が設定されていない場合にFailureが返されることを確認")]
+        public void WaitUntilAction_ExecuteWithoutCondition_ReturnsFailure()
+        {
+            // Arrange
+            var action = new WaitUntilAction();
+            action.Initialize(testOwner.AddComponent<TestCoreActionComponent>(), blackBoard);
+
+            // Act
+            var result = action.Execute();
+
+            // Assert
+            Assert.AreEqual(BTNodeResult.Failure, result, "conditionが設定されていない場合、Failureが返されるべき");
+        }
+
+        [Test][Description("WaitUntilActionで条件式形式(condition: \"key\" == \"value\")が正しく動作することを確認")]
+        public void WaitUntilAction_ExecuteWithConditionExpression_ReturnsSuccess()
+        {
+            // Arrange
+            var action = new WaitUntilAction();
+            action.SetProperty("condition", "enemy_defeated == true");
+            action.Initialize(testOwner.AddComponent<TestCoreActionComponent>(), blackBoard);
+
+            // BlackBoardに期待値を設定
+            blackBoard.SetValue("enemy_defeated", "true");
+
+            // Act
+            var result = action.Execute();
+
+            // Assert
+            Assert.AreEqual(BTNodeResult.Success, result, "条件式が満たされた場合、Successが返されるべき");
+        }
+
+        [Test][Description("WaitUntilActionで条件式形式が満たされていない場合にRunningが返されることを確認")]
+        public void WaitUntilAction_ExecuteWithUnmetConditionExpression_ReturnsRunning()
+        {
+            // Arrange
+            var action = new WaitUntilAction();
+            action.SetProperty("condition", "enemy_defeated == true");
+            action.Initialize(testOwner.AddComponent<TestCoreActionComponent>(), blackBoard);
+
+            // BlackBoardに異なる値を設定
+            blackBoard.SetValue("enemy_defeated", "false");
+
+            // Act
+            var result = action.Execute();
+
+            // Assert
+            Assert.AreEqual(BTNodeResult.Running, result, "条件式が満たされていない場合、Runningが返されるべき");
+        }
+
+        [Test][Description("WaitUntilActionで無効な条件式形式の場合にRunningが返されることを確認")]
+        public void WaitUntilAction_ExecuteWithInvalidConditionExpression_ReturnsRunning()
+        {
+            // Arrange
+            var action = new WaitUntilAction();
+            action.SetProperty("condition", "invalid expression");
+            action.Initialize(testOwner.AddComponent<TestCoreActionComponent>(), blackBoard);
+
+            // Act
+            var result = action.Execute();
+
+            // Assert
+            Assert.AreEqual(BTNodeResult.Running, result, "無効な条件式の場合、Runningが返されるべき");
+        }
+
     }
 
     /// <summary>テスト用のCoreActionコンポーネント</summary>
