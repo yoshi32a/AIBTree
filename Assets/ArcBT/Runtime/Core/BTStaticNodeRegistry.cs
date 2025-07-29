@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using ArcBT.Decorators;
 using ArcBT.Logger;
 
 namespace ArcBT.Core
@@ -18,7 +16,7 @@ namespace ArcBT.Core
         /// <summary>ノードを作成（統一メソッド）</summary>
         public static BTNode CreateNode(string nodeTypeString, string scriptName)
         {
-            // 1. 登録済みノードから検索
+            // 登録済みノードから検索
             if (allNodes.TryGetValue(scriptName, out var factory))
             {
                 var node = factory.Invoke();
@@ -29,15 +27,7 @@ namespace ArcBT.Core
                 }
             }
 
-            // 2. フォールバック：組み込みノード作成
-            var builtinNode = CreateBuiltinNode(nodeTypeString, scriptName);
-            if (builtinNode != null)
-            {
-                builtinNode.Name = scriptName;
-                return builtinNode;
-            }
-
-            BTLogger.LogError(LogCategory.Parser, $"Failed to create node: {nodeTypeString} {scriptName}");
+            BTLogger.LogSystemError("Parser", $"Failed to create node: {nodeTypeString} {scriptName}");
             return null;
         }
 
@@ -52,28 +42,13 @@ namespace ArcBT.Core
         {
             if (allNodes.ContainsKey(scriptName))
             {
-                BTLogger.Log(Microsoft.Extensions.Logging.LogLevel.Warning, LogCategory.System, $"Node '{scriptName}' is already registered. Overwriting.");
+                BTLogger.LogSystem("System", $"Node '{scriptName}' is already registered. Overwriting.");
             }
 
             allNodes[scriptName] = factory;
-            BTLogger.LogSystem($"Registered node: {scriptName}");
+            BTLogger.LogSystem("NodeRegistry", $"Registered node: {scriptName}");
         }
 
-        /// <summary>組み込みノード作成</summary>
-        static BTNode CreateBuiltinNode(string nodeType, string scriptName)
-        {
-            return nodeType.ToLower() switch
-            {
-                "sequence" => new BTSequenceNode(),
-                "selector" => new BTSelectorNode(),
-                "parallel" => new BTParallelNode(),
-                "inverter" => new InverterDecorator(),
-                "repeat" => new RepeatDecorator(),
-                "retry" => new RetryDecorator(),
-                "timeout" => new TimeoutDecorator(),
-                _ => null
-            };
-        }
 
         /// <summary>登録されているノード名</summary>
         public static IEnumerable<string> GetRegisteredNodeNames() => allNodes.Keys;

@@ -1,10 +1,9 @@
+using System.Collections.Generic;
+using ArcBT.Core;
+using ArcBT.Samples.RPG.Components;
+using ArcBT.Samples.RPG.Conditions;
 using NUnit.Framework;
 using UnityEngine;
-using UnityEngine.TestTools;
-using ArcBT.Core;
-using ArcBT.Logger;
-using ArcBT.Samples.RPG.Conditions;
-using ArcBT.Samples.RPG.Components;
 
 namespace ArcBT.Tests.Samples
 {
@@ -30,7 +29,6 @@ namespace ArcBT.Tests.Samples
             base.TearDown(); // BTTestBaseのクリーンアップを実行
         }
 
-        #region HealthCheckCondition Tests
 
         [Test][Description("HealthCheckCondition実行時に現在体力がmin_health闾値を上回る健康状態の場合の動作")]
         public void HealthCheckCondition_WithSufficientHealth_ReturnsSuccess()
@@ -108,9 +106,7 @@ namespace ArcBT.Tests.Samples
             Assert.AreEqual(BTNodeResult.Failure, result); // 緊急時チェックをスキップ
         }
 
-        #endregion
 
-        #region HasManaCondition Tests
 
         [Test][Description("HasManaCondition実行時に現在マナがmin_mana闾値を上回る十分なマナ状態の場合の動作")]
         public void HasManaCondition_WithSufficientMana_ReturnsSuccess()
@@ -166,9 +162,7 @@ namespace ArcBT.Tests.Samples
             Assert.AreEqual(BTNodeResult.Failure, result);
         }
 
-        #endregion
 
-        #region HasItemCondition Tests
 
         [Test][Description("HasItemCondition実行時にInventoryコンポーネントに指定アイテムが存在する場合の動作")]
         public void HasItemCondition_WithRequiredItem_ReturnsSuccess()
@@ -212,9 +206,7 @@ namespace ArcBT.Tests.Samples
             Assert.AreEqual(BTNodeResult.Failure, result);
         }
 
-        #endregion
 
-        #region EnemyCheckCondition Tests
 
         [Test][Description("EnemyCheckConditionのdetection_rangeパラメータで敵検出範囲設定機能の検証")]
         public void EnemyCheckCondition_SetProperty_SetsCorrectRange()
@@ -255,9 +247,7 @@ namespace ArcBT.Tests.Samples
             Object.DestroyImmediate(enemyObject);
         }
 
-        #endregion
 
-        #region IsInitializedCondition Tests
 
         [Test][Description("IsInitializedCondition実行時にBlackBoardにis_initializedフラグがtrueの場合の動作")]
         public void IsInitializedCondition_WithInitializedFlag_ReturnsSuccess()
@@ -294,9 +284,7 @@ namespace ArcBT.Tests.Samples
             Assert.AreEqual(true, blackBoard.GetValue<bool>("is_initialized"));
         }
 
-        #endregion
 
-        #region Multiple Conditions Integration Tests
 
         [Test][Description("複数のRPGConditionノード（体力、マナ、初期化）の連続評価が正しく動作することを確認")]
         public void RPGConditions_ChainEvaluation_WorksCorrectly()
@@ -369,7 +357,6 @@ namespace ArcBT.Tests.Samples
             Assert.IsNotNull(blackBoard);
         }
 
-        #endregion
     }
 
     /// <summary>テスト用のRPGConditionコンポーネント</summary>
@@ -381,8 +368,8 @@ namespace ArcBT.Tests.Samples
     /// <summary>テスト用のRPGCondition Inventoryコンポーネント</summary>
     public class TestRPGConditionInventoryComponent : MonoBehaviour
     {
-        readonly System.Collections.Generic.Dictionary<string, int> items = 
-            new System.Collections.Generic.Dictionary<string, int>();
+        readonly Dictionary<string, int> items = 
+            new Dictionary<string, int>();
 
         public void AddItem(string itemName, int quantity)
         {

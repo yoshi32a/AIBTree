@@ -1,0 +1,176 @@
+# Force LF line endings for all text files
+* text=auto eol=lf
+
+# Unity meta files
+*.meta text eol=lf
+
+# C# source files
+*.cs text eol=lf
+*.csx text eol=lf
+
+# Unity files
+*.unity text eol=lf
+*.prefab text eol=lf
+*.asset text eol=lf
+*.mat text eol=lf
+*.anim text eol=lf
+*.controller text eol=lf
+*.overrideController text eol=lf
+*.physicMaterial text eol=lf
+*.physicsMaterial2D text eol=lf
+*.playable text eol=lf
+*.mask text eol=lf
+*.brush text eol=lf
+*.flare text eol=lf
+*.fontsettings text eol=lf
+*.guiskin text eol=lf
+*.giparams text eol=lf
+*.renderTexture text eol=lf
+*.cubemap text eol=lf
+*.mixer text eol=lf
+*.shadervariants text eol=lf
+*.spriteatlas text eol=lf
+*.terrainlayer text eol=lf
+*.asmdef text eol=lf
+*.asmref text eol=lf
+
+# Config files
+*.json text eol=lf
+*.xml text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.toml text eol=lf
+*.config text eol=lf
+*.properties text eol=lf
+*.props text eol=lf
+*.targets text eol=lf
+
+# Script files
+*.sh text eol=lf
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+
+# Documentation
+*.md text eol=lf
+*.txt text eol=lf
+*.rst text eol=lf
+*.adoc text eol=lf
+
+# Web files
+*.html text eol=lf
+*.htm text eol=lf
+*.css text eol=lf
+*.js text eol=lf
+*.ts text eol=lf
+*.tsx text eol=lf
+*.jsx text eol=lf
+*.vue text eol=lf
+
+# Other source files
+*.java text eol=lf
+*.py text eol=lf
+*.rb text eol=lf
+*.php text eol=lf
+*.go text eol=lf
+*.rs text eol=lf
+*.swift text eol=lf
+*.kt text eol=lf
+*.scala text eol=lf
+*.groovy text eol=lf
+
+# Binary files (don't modify)
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.tif binary
+*.tiff binary
+*.psd binary
+*.ai binary
+*.sketch binary
+
+# Unity binary files
+*.cubemap binary
+*.unitypackage binary
+*.dll binary
+*.so binary
+*.pdb binary
+*.mdb binary
+*.dylib binary
+*.a binary
+*.lib binary
+*.exe binary
+*.app binary
+*.ipa binary
+*.apk binary
+*.aab binary
+
+# Audio files
+*.mp3 binary
+*.ogg binary
+*.wav binary
+*.flac binary
+*.aac binary
+*.m4a binary
+
+# Video files
+*.mp4 binary
+*.mov binary
+*.avi binary
+*.mpg binary
+*.mpeg binary
+*.webm binary
+*.flv binary
+
+# 3D formats
+*.fbx binary
+*.dae binary
+*.3ds binary
+*.dxf binary
+*.obj text eol=lf
+*.mtl text eol=lf
+
+# Font files
+*.ttf binary
+*.otf binary
+*.woff binary
+*.woff2 binary
+*.eot binary
+
+# Archive files
+*.zip binary
+*.7z binary
+*.rar binary
+*.tar binary
+*.gz binary
+*.bz2 binary
+*.xz binary
+
+# Office files
+*.doc binary
+*.docx binary
+*.xls binary
+*.xlsx binary
+*.ppt binary
+*.pptx binary
+*.pdf binary
+
+# Shader files
+*.shader text eol=lf
+*.cginc text eol=lf
+*.hlsl text eol=lf
+*.glsl text eol=lf
+*.vert text eol=lf
+*.frag text eol=lf
+*.tesc text eol=lf
+*.tese text eol=lf
+*.geom text eol=lf
+*.comp text eol=lf
+
+# BehaviourTree files
+*.bt text eol=lf
+
+# Editor config
+.editorconfig text eol=lf

@@ -40,6 +40,7 @@ namespace ArcBT.Core
 
             data[key] = value;
             dataTypes[key] = typeof(T);
+            BTLogger.LogBlackBoardSet(key, value, typeof(T).Name);
 
             // 変更追跡
             if (isNewKey || isValueChanged)
@@ -52,7 +53,7 @@ namespace ArcBT.Core
                 {
                     var changeType = isNewKey ? "新規" : "更新";
                     var displayValue = value?.ToString() ?? "null";
-                    BTLogger.Log(Microsoft.Extensions.Logging.LogLevel.Information, LogCategory.BlackBoard, $"🗂️ BlackBoard[{changeType}]: {key} = {displayValue}");
+                    BTLogger.LogSystem("BlackBoard", $"🗂️ BlackBoard[{changeType}]: {key} = {displayValue}");
                 }
             }
         }
@@ -76,7 +77,7 @@ namespace ArcBT.Core
                 }
 
                 var valueTypeName = value?.GetType().Name ?? "null";
-                BTLogger.Log(Microsoft.Extensions.Logging.LogLevel.Warning, LogCategory.BlackBoard,
+                BTLogger.LogSystem("BlackBoard",
                     $"🗂️ BlackBoard: Type mismatch for key '{key}'. Expected {typeof(T).Name}, got {valueTypeName}");
             }
 
@@ -95,7 +96,7 @@ namespace ArcBT.Core
             if (data.Remove(key))
             {
                 dataTypes.Remove(key);
-                BTLogger.Log(Microsoft.Extensions.Logging.LogLevel.Information, LogCategory.BlackBoard, $"🗂️ BlackBoard: Removed '{key}'");
+                BTLogger.LogSystem("BlackBoard", $"🗂️ BlackBoard: Removed '{key}'");
             }
         }
 
@@ -104,16 +105,16 @@ namespace ArcBT.Core
         {
             data.Clear();
             dataTypes.Clear();
-            BTLogger.Log(Microsoft.Extensions.Logging.LogLevel.Information, LogCategory.BlackBoard, "🗂️ BlackBoard: Cleared all data");
+            BTLogger.LogSystem("BlackBoard", "🗂️ BlackBoard: Cleared all data");
         }
 
         /// <summary>デバッグ用：全てのキーと値を表示</summary>
         public void DebugLog()
         {
-            BTLogger.Log(Microsoft.Extensions.Logging.LogLevel.Information, LogCategory.BlackBoard, "🗂️ BlackBoard Contents:");
+            BTLogger.LogSystem("BlackBoard", "🗂️ BlackBoard Contents:");
             foreach (var kvp in data)
             {
-                BTLogger.Log(Microsoft.Extensions.Logging.LogLevel.Information, LogCategory.BlackBoard, $"  - {kvp.Key}: {kvp.Value} ({dataTypes[kvp.Key].Name})");
+                BTLogger.LogSystem("BlackBoard", $"  - {kvp.Key}: {kvp.Value} ({dataTypes[kvp.Key].Name})");
             }
         }
 

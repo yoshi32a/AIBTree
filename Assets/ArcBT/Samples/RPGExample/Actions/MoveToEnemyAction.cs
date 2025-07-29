@@ -7,11 +7,12 @@ namespace ArcBT.Samples.RPG.Actions
 {
     /// <summary>BlackBoardから敵位置を取得して移動するアクション</summary>
     [BTNode("MoveToEnemy")]
-    public class MoveToEnemyAction : BTActionNode    {
+    public class MoveToEnemyAction : BTActionNode
+    {
         float speed = 15.0f;
         float tolerance = 1.0f;
         Vector3 targetPosition;
-        
+
         // ログ最適化用
         float lastLoggedDistance = -1f;
         float lastLogTime = 0f;
@@ -33,7 +34,7 @@ namespace ArcBT.Samples.RPG.Actions
         {
             if (ownerComponent == null || blackBoard == null)
             {
-                BTLogger.LogError(LogCategory.Movement, "MoveToEnemy: Owner or BlackBoard is null", Name, ownerComponent);
+                BTLogger.LogSystemError("Movement", "MoveToEnemy: Owner or BlackBoard is null");
                 return BTNodeResult.Failure;
             }
 
@@ -78,10 +79,10 @@ namespace ArcBT.Samples.RPG.Actions
             }
 
             // スマートログ: 距離に大きな変化があった場合か、3秒間隔でのみログ出力
-            bool shouldLog = lastLoggedDistance < 0 ||  // 初回
-                           Mathf.Abs(distance - lastLoggedDistance) > 0.5f ||  // 0.5m以上の変化
-                           Time.time - lastLogTime > 3f;  // 3秒間隔
-            
+            bool shouldLog = lastLoggedDistance < 0 || // 初回
+                             Mathf.Abs(distance - lastLoggedDistance) > 0.5f || // 0.5m以上の変化
+                             Time.time - lastLogTime > 3f; // 3秒間隔
+
             if (shouldLog)
             {
                 BTLogger.LogMovement($"🏃 MoveToEnemy: '{enemyTarget.name}' へ移動中 (距離: {distance:F1}m)", Name, ownerComponent);

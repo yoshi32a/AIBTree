@@ -8,16 +8,17 @@ namespace ArcBT.Samples.RPG
 {
     /// <summary>ランダムに徘徊するアクション</summary>
     [BTNode("RandomWander")]
-    public class RandomWanderAction : BTActionNode    {
+    public class RandomWanderAction : BTActionNode
+    {
         float wanderRadius = 10.0f;
         float speed = 25.0f; // 大幅高速化（検証時間短縮）
         float tolerance = 0.5f;
         Vector3 wanderTarget;
         Vector3 initialPosition;
         bool hasTarget = false;
-        
+
         MovementController movementController;
-        
+
         // スマートログ用
         float lastLoggedDistance = float.MaxValue;
         float lastLogTime = 0f;
@@ -46,7 +47,7 @@ namespace ArcBT.Samples.RPG
             {
                 initialPosition = owner.transform.position;
             }
-            
+
             // MovementControllerを取得または追加
             movementController = owner.GetComponent<MovementController>();
             if (movementController == null)
@@ -59,7 +60,7 @@ namespace ArcBT.Samples.RPG
         {
             if (ownerComponent == null || movementController == null)
             {
-                BTLogger.LogError(LogCategory.Movement, "RandomWander: Owner or MovementController is null", Name, ownerComponent);
+                BTLogger.LogSystemError("Movement", "RandomWander: Owner or MovementController is null");
                 return BTNodeResult.Failure;
             }
 
@@ -82,7 +83,8 @@ namespace ArcBT.Samples.RPG
             if (!movementController.IsMoving)
             {
                 movementController.SetTarget(wanderTarget, speed);
-                movementController.OnTargetReached = () => {
+                movementController.OnTargetReached = () =>
+                {
                     // ターゲットに到達したら新しいターゲットを設定
                     hasTarget = false;
                     BTLogger.LogMovement("RandomWander: Reached wander target, setting new target", Name, ownerComponent);
@@ -112,7 +114,7 @@ namespace ArcBT.Samples.RPG
                 lastLoggedDistance = distance;
                 lastLogTime = Time.time;
             }
-            
+
             if (shouldLog)
             {
                 BTLogger.LogMovement($"RandomWander: Moving to target - Distance: {distance:F1}", Name, ownerComponent);
@@ -128,7 +130,7 @@ namespace ArcBT.Samples.RPG
             wanderTarget = initialPosition + new Vector3(randomCircle.x, 0, randomCircle.y);
 
             BTLogger.LogMovement($"RandomWander: New target set at ({wanderTarget.x:F2}, {wanderTarget.y:F2}, {wanderTarget.z:F2})", Name, ownerComponent);
-            
+
             // ログ状態をリセット
             lastLoggedDistance = float.MaxValue;
             lastLogTime = Time.time;

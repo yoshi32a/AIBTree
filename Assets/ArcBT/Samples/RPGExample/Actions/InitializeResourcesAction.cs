@@ -7,7 +7,8 @@ namespace ArcBT.Samples.RPG.Actions
 {
     /// <summary>リソースを初期化するアクション</summary>
     [BTNode("InitializeResources")]
-    public class InitializeResourcesAction : BTActionNode    {
+    public class InitializeResourcesAction : BTActionNode
+    {
         protected override BTNodeResult ExecuteAction()
         {
             if (ownerComponent == null || blackBoard == null)
@@ -25,7 +26,7 @@ namespace ArcBT.Samples.RPG.Actions
             blackBoard.SetValue("resources_initialized", true);
             blackBoard.SetValue("initialization_time", Time.time);
 
-            BTLogger.LogSystem("InitializeResources: All resources initialized", Name, ownerComponent);
+            BTLogger.LogSystem(this, "All resources initialized");
             return BTNodeResult.Success;
         }
 

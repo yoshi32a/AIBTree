@@ -1,349 +1,256 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Diagnostics;
+using ArcBT.Core;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
+using UnityEngine;
 using ZLogger;
 
 namespace ArcBT.Logger
 {
     /// <summary>
-    /// ArcBTパッケージのログシステム
-    /// ユーザーアプリケーションのLoggerFactoryに統合されることを前提とした設計
+    /// ArcBT統合ログシステム - ZLoggerMessage Source Generator最適化版
     /// </summary>
-    public static class BTLogger
+    public static partial class BTLogger
     {
-        static ILogger instance = NullLogger.Instance;
-        static bool testModeEnabled = false;
-        static bool suppressLogsInTest = false;
+        /// <summary>
+        /// 単一グローバルロガーインスタンス（内部使用）
+        /// </summary>
+        static Microsoft.Extensions.Logging.ILogger globalLogger = NullLogger.Instance;
 
         /// <summary>
-        /// 現在設定されているILoggerインスタンス
+        /// ArcBTロガーを設定（アプリケーション起動時に一度だけ実行）
         /// </summary>
-        public static ILogger Instance => instance;
-
-        /// <summary>
-        /// ArcBTパッケージのロガーを設定します
-        /// アプリケーション起動時に一度だけ呼び出してください
-        /// </summary>
-        /// <param name="loggerFactory">ユーザーアプリケーションのLoggerFactory</param>
         public static void Configure(ILoggerFactory loggerFactory)
         {
             if (loggerFactory == null)
                 throw new ArgumentNullException(nameof(loggerFactory));
                 
-            instance = loggerFactory.CreateLogger("ArcBT");
+            globalLogger = loggerFactory.CreateLogger("ArcBT");
         }
-        
+
         /// <summary>
         /// 直接ILoggerを設定（高度な使用例）
         /// </summary>
-        public static void Configure(ILogger logger)
+        public static void Configure(Microsoft.Extensions.Logging.ILogger logger)
         {
-            instance = logger ?? throw new ArgumentNullException(nameof(logger));
+            globalLogger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
-        
+
         /// <summary>
         /// 設定状況の確認
         /// </summary>
-        public static bool IsConfigured => instance != NullLogger.Instance;
+        public static bool IsConfigured => globalLogger != NullLogger.Instance;
+
+        // Combat関連ログ - ZLoggerMessage Source Generator自動最適化
+        [ZLoggerMessage(LogLevel.Information, "[ATK][{nodeName}] Attack {targetName} with {damage} damage")]
+        static partial void LogAttackInternal(this Microsoft.Extensions.Logging.ILogger logger, string nodeName, string targetName, int damage);
+
+        [ZLoggerMessage(LogLevel.Information, "[ATK][{nodeName}] Health {currentHealth}/{maxHealth} after taking {damage} damage")]
+        static partial void LogHealthChangeInternal(this Microsoft.Extensions.Logging.ILogger logger, string nodeName, int currentHealth, int maxHealth, int damage);
+
+        [ZLoggerMessage(LogLevel.Debug, "[ATK][{nodeName}] Calculating damage: base={baseDamage}, multiplier={multiplier}, final={finalDamage}")]
+        static partial void LogDamageCalculationInternal(this Microsoft.Extensions.Logging.ILogger logger, string nodeName, int baseDamage, float multiplier, int finalDamage);
+
+        // Movement関連ログ - ZLoggerMessage Source Generator自動最適化
+        [ZLoggerMessage(LogLevel.Information, "[MOV][{nodeName}] Moving from {fromPos} to {toPos} at speed {speed:F1}")]
+        static partial void LogMovementInternal(this Microsoft.Extensions.Logging.ILogger logger, string nodeName, Vector3 fromPos, Vector3 toPos, float speed);
+
+        [ZLoggerMessage(LogLevel.Debug, "[MOV][{nodeName}] Reached destination {position} in {elapsedTime:F2}s")]
+        static partial void LogDestinationReachedInternal(this Microsoft.Extensions.Logging.ILogger logger, string nodeName, Vector3 position, float elapsedTime);
+
+        [ZLoggerMessage(LogLevel.Debug, "[MOV][{nodeName}] Movement progress: {currentDistance:F1}/{totalDistance:F1} ({progress:P1})")]
+        static partial void LogMovementProgressInternal(this Microsoft.Extensions.Logging.ILogger logger, string nodeName, float currentDistance, float totalDistance, float progress);
+
+        // BlackBoard関連ログ - ZLoggerMessage Source Generator自動最適化（ジェネリック回避）
+        [ZLoggerMessage(LogLevel.Debug, "[BBD] Set {key} = {value} (type: {valueType})")]
+        static partial void LogBlackBoardSetInternal(this Microsoft.Extensions.Logging.ILogger logger, string key, object value, string valueType);
+
+        [ZLoggerMessage(LogLevel.Debug, "[BBD] Get {key} returned {value}, (type: {valueType})")]
+        static partial void LogBlackBoardGetInternal(this Microsoft.Extensions.Logging.ILogger logger, string key, object value, string valueType);
+
+        [ZLoggerMessage(LogLevel.Debug, "[BBD][{nodeName}] Shared data updated: {sharedKey} with {itemCount} items")]
+        static partial void LogSharedDataUpdateInternal(this Microsoft.Extensions.Logging.ILogger logger, string nodeName, string sharedKey, int itemCount);
+
+        // Condition関連ログ - ZLoggerMessage Source Generator自動最適化
+        [ZLoggerMessage(LogLevel.Debug, "[CHK][{nodeName}] Condition {conditionName} evaluated to {result}")]
+        static partial void LogConditionResultInternal(this Microsoft.Extensions.Logging.ILogger logger, string nodeName, string conditionName, bool result);
+
+        [ZLoggerMessage(LogLevel.Debug, "[CHK][{nodeName}] Health check: {currentHealth}/{maxHealth} (threshold: {threshold})")]
+        static partial void LogHealthCheckInternal(this Microsoft.Extensions.Logging.ILogger logger, string nodeName, int currentHealth, int maxHealth, int threshold);
+
+        // Parser関連ログ - ZLoggerMessage Source Generator自動最適化
+        [ZLoggerMessage(LogLevel.Error, "[PRS] Failed to parse node {nodeType} at line {lineNumber}: {errorMessage}")]
+        static partial void LogParseErrorInternal(this Microsoft.Extensions.Logging.ILogger logger, string nodeType, int lineNumber, string errorMessage);
+
+        [ZLoggerMessage(LogLevel.Information, "[PRS] Successfully parsed tree '{treeName}' with {nodeCount} nodes")]
+        static partial void LogParseSuccessInternal(this Microsoft.Extensions.Logging.ILogger logger, string treeName, int nodeCount);
+
+        [ZLoggerMessage(LogLevel.Debug, "[PRS] Parsing token: {tokenType} = '{tokenValue}' at position {position}")]
+        static partial void LogTokenParsingInternal(this Microsoft.Extensions.Logging.ILogger logger, string tokenType, string tokenValue, int position);
+
+        // System関連ログ - ZLoggerMessage Source Generator自動最適化
+        [ZLoggerMessage(LogLevel.Information, "[SYS] {message}")]
+        static partial void LogSystemInternal(this Microsoft.Extensions.Logging.ILogger logger, string message);
+
+        [ZLoggerMessage(LogLevel.Information, "[SYS][{nodeName}] {message}")]
+        static partial void LogSystemInternal2(this Microsoft.Extensions.Logging.ILogger logger, string nodeName, string message);
+
+        [ZLoggerMessage(LogLevel.Error, "[SYS][{nodeName}] Error: {errorMessage}")]
+        static partial void LogSystemErrorInternal(this Microsoft.Extensions.Logging.ILogger logger, string nodeName, string errorMessage);
+
+        [ZLoggerMessage(LogLevel.Debug, "[SYS][{nodeName}] Performance: {operation} completed in {elapsedMs:F2}ms")]
+        static partial void LogPerformanceInternal(this Microsoft.Extensions.Logging.ILogger logger, string nodeName, string operation, float elapsedMs);
+
+        // ==========================================
+        // 公開API - ロガーインスタンス不要
+        // ==========================================
+
+        // Combat関連公開API
+
+
+
+        // BTNodeベースAPI（推奨）
+        public static void LogHealthChange(BTNode node, int currentHealth, int maxHealth, int damage)
+            => LogHealthChangeInternal(globalLogger, node?.Name ?? "Unknown", currentHealth, maxHealth, damage);
+
+
+        // BTNodeベースAPI（推奨）
+        public static void LogDamageCalculation(BTNode node, int baseDamage, float multiplier, int finalDamage)
+            => LogDamageCalculationInternal(globalLogger, node?.Name ?? "Unknown", baseDamage, multiplier, finalDamage);
+
+        // Movement関連公開API
+
+        // BTNodeベースAPI（推奨）
+        public static void LogMovement(BTNode node, Vector3 fromPos, Vector3 toPos, float speed)
+            => LogMovementInternal(globalLogger, node?.Name ?? "Unknown", fromPos, toPos, speed);
+
+
+        // BTNodeベースAPI（推奨）
+        public static void LogDestinationReached(BTNode node, Vector3 position, float elapsedTime)
+            => LogDestinationReachedInternal(globalLogger, node?.Name ?? "Unknown", position, elapsedTime);
+
+
+        // BTNodeベースAPI（推奨）
+        public static void LogMovementProgress(BTNode node, float currentDistance, float totalDistance, float progress)
+            => LogMovementProgressInternal(globalLogger, node?.Name ?? "Unknown", currentDistance, totalDistance, progress);
+
+        // BlackBoard関連公開API
+
+        // BTNodeベースAPI（推奨）
+        public static void LogBlackBoardSet(string key, object value, string valueType)
+            => LogBlackBoardSetInternal(globalLogger, key, value, valueType);
+
+
+        // BTNodeベースAPI（推奨）
+        public static void LogBlackBoardGet(string key, object value, string valueType)
+            => LogBlackBoardGetInternal(globalLogger, key, value, valueType);
+
+
+        // Condition関連公開API
+
+        // BTNodeベースAPI（推奨）
+        public static void LogConditionResult(BTNode node, string conditionName, bool result)
+            => LogConditionResultInternal(globalLogger, node?.Name ?? "Unknown", conditionName, result);
+
+
+        // BTNodeベースAPI（推奨）
+        public static void LogHealthCheck(BTNode node, int currentHealth, int maxHealth, int threshold)
+            => LogHealthCheckInternal(globalLogger, node?.Name ?? "Unknown", currentHealth, maxHealth, threshold);
+
+        // Parser関連公開API
+        public static void LogParseError(string nodeType, int lineNumber, string errorMessage)
+            => LogParseErrorInternal(globalLogger, nodeType, lineNumber, errorMessage);
+
+        public static void LogParseSuccess(string treeName, int nodeCount)
+            => LogParseSuccessInternal(globalLogger, treeName, nodeCount);
+
+        public static void LogTokenParsing(string tokenType, string tokenValue, int position)
+            => LogTokenParsingInternal(globalLogger, tokenType, tokenValue, position);
+
+        public static void LogSystem(string message)
+            => LogSystemInternal(globalLogger, message);
+
+        // 特定クラス専用API（Parser、BlackBoard、BehaviourTreeRunner等で使用）
+        public static void LogSystem(string context, string message)
+            => LogSystemInternal2(globalLogger, context, message);
+
+        public static void LogSystemError(string context, string errorMessage)
+            => LogSystemErrorInternal(globalLogger, context, errorMessage);
+
+        // System関連公開API（BTNodeベース）
+
+        // BTNodeベースAPI（推奨）
+        public static void LogSystem(BTNode node, string message)
+            => LogSystemInternal2(globalLogger, node?.Name ?? "Unknown", message);
+
+
+        // BTNodeベースAPI（推奨）
+        public static void LogSystemError(BTNode node, string errorMessage)
+            => LogSystemErrorInternal(globalLogger, node?.Name ?? "Unknown", errorMessage);
+
+
+        // BTNodeベースAPI（推奨）
+        public static void LogPerformance(BTNode node, string operation, float elapsedMs)
+            => LogPerformanceInternal(globalLogger, node?.Name ?? "Unknown", operation, elapsedMs);
+
+        // Debug.Logから移行用の便利メソッド（後方互換性）
+        public static void Info(string message, string nodeName = "System")
+            => LogSystemInternal2(globalLogger, nodeName, message);
+
+        // BTNodeベースAPI（推奨）
+        public static void Info(BTNode node, string message)
+            => LogSystemInternal2(globalLogger, node?.Name ?? "Unknown", message);
+
+        public static void Error(string message, string nodeName = "System")
+            => LogSystemErrorInternal(globalLogger, nodeName, message);
+
+        // BTNodeベースAPI（推奨）
+        public static void Error(BTNode node, string message)
+            => LogSystemErrorInternal(globalLogger, node?.Name ?? "Unknown", message);
+
+        public static void Debug(string message, string nodeName = "System")
+            => LogSystemInternal2(globalLogger, nodeName, $"[DEBUG] {message}");
+
+        // BTNodeベースAPI（推奨）
+        public static void Debug(BTNode node, string message)
+            => LogSystemInternal2(globalLogger, node?.Name ?? "Unknown", $"[DEBUG] {message}");
+
+        public static void Warning(string message, string nodeName = "System")
+            => LogSystemInternal2(globalLogger, nodeName, $"[WARNING] {message}");
+
+        // BTNodeベースAPI（推奨）
+        public static void Warning(BTNode node, string message)
+            => LogSystemInternal2(globalLogger, node?.Name ?? "Unknown", $"[WARNING] {message}");
+
+        // 旧API互換性メソッド（LogCategory削除済み）
+        public static void LogCombat(string message, string nodeName = "", object context = null)
+            => LogSystemInternal2(globalLogger, nodeName, $"[ATK] {message}");
+
+        // BTNodeベースAPI（推奨）
+        public static void LogCombat(BTNode node, string message)
+            => LogSystemInternal2(globalLogger, node?.Name ?? "Unknown", $"[ATK] {message}");
+
+        public static void LogMovement(string message, string nodeName = "", object context = null)
+            => LogSystemInternal2(globalLogger, nodeName, $"[MOV] {message}");
+
+        // BTNodeベースAPI（推奨）
+        public static void LogMovement(BTNode node, string message)
+            => LogSystemInternal2(globalLogger, node?.Name ?? "Unknown", $"[MOV] {message}");
+
+        public static void LogCondition(string message, string nodeName = "", object context = null)
+            => LogConditionResultInternal(globalLogger, nodeName, "condition", message.Contains("true") || message.Contains("Success"));
+
+        // BTNodeベースAPI（推奨）
+        public static void LogCondition(BTNode node, string message)
+            => LogConditionResultInternal(globalLogger, node?.Name ?? "Unknown", "condition", message.Contains("true") || message.Contains("Success"));
 
         /// <summary>
-        /// テストモードを有効化（ログ抑制機能付き）
-        /// </summary>
-        public static void EnableTestMode(bool suppressLogs = false)
-        {
-            testModeEnabled = true;
-            suppressLogsInTest = suppressLogs;
-        }
-
-        /// <summary>
-        /// テストモードを無効化
-        /// </summary>
-        public static void DisableTestMode()
-        {
-            testModeEnabled = false;
-            suppressLogsInTest = false;
-        }
-
-        /// <summary>
-        /// テストモード状態の確認
-        /// </summary>
-        public static bool IsTestMode()
-        {
-            return testModeEnabled;
-        }
-
-        /// <summary>
-        /// 基本ログ出力メソッド（内部使用）
-        /// </summary>
-        [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD"), Conditional("BT_LOGGING_ENABLED")]
-        static void LogInternal(Microsoft.Extensions.Logging.LogLevel msLogLevel, LogCategory category, string message, string nodeName = "", UnityEngine.Object context = null)
-        {
-            // テストモード時のログ抑制
-            if (suppressLogsInTest) return;
-
-            // カテゴリ別タグ
-            var categoryTag = GetCategoryTag(category);
-            var nodeInfo = !string.IsNullOrEmpty(nodeName) ? $"[{nodeName}]" : "";
-            
-            // ZLoggerを使用した高性能ログ出力（ユーザー設定のフィルタリングも効く）
-            switch (msLogLevel)
-            {
-                case Microsoft.Extensions.Logging.LogLevel.Error:
-                    instance.ZLogError($"{categoryTag}{nodeInfo}: {message}");
-                    break;
-                case Microsoft.Extensions.Logging.LogLevel.Warning:
-                    instance.ZLogWarning($"{categoryTag}{nodeInfo}: {message}");
-                    break;
-                case Microsoft.Extensions.Logging.LogLevel.Information:
-                    instance.ZLogInformation($"{categoryTag}{nodeInfo}: {message}");
-                    break;
-                case Microsoft.Extensions.Logging.LogLevel.Debug:
-                    instance.ZLogDebug($"{categoryTag}{nodeInfo}: {message}");
-                    break;
-                case Microsoft.Extensions.Logging.LogLevel.Trace:
-                    instance.ZLogTrace($"{categoryTag}{nodeInfo}: {message}");
-                    break;
-            }
-        }
-
-        /// <summary>
-        /// カテゴリ別タグの取得
-        /// </summary>
-        static string GetCategoryTag(LogCategory category)
-        {
-            return category switch
-            {
-                LogCategory.Combat => "[ATK]",
-                LogCategory.Movement => "[MOV]",
-                LogCategory.Condition => "[CHK]",
-                LogCategory.BlackBoard => "[BBD]",
-                LogCategory.Parser => "[PRS]",
-                LogCategory.System => "[SYS]",
-                LogCategory.Debug => "[DBG]",
-                _ => "[UNK]"
-            };
-        }
-
-        // カテゴリ別便利メソッド（ZLoggerネイティブ機能を活用）
-        [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD"), Conditional("BT_LOGGING_ENABLED")]
-        public static void LogCombat(string message, string nodeName = "", UnityEngine.Object context = null)
-        {
-            LogInternal(Microsoft.Extensions.Logging.LogLevel.Information, LogCategory.Combat, message, nodeName, context);
-        }
-
-        [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD"), Conditional("BT_LOGGING_ENABLED")]
-        public static void LogMovement(string message, string nodeName = "", UnityEngine.Object context = null)
-        {
-            LogInternal(Microsoft.Extensions.Logging.LogLevel.Information, LogCategory.Movement, message, nodeName, context);
-        }
-
-        [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD"), Conditional("BT_LOGGING_ENABLED")]
-        public static void LogCondition(string message, string nodeName = "", UnityEngine.Object context = null)
-        {
-            LogInternal(Microsoft.Extensions.Logging.LogLevel.Debug, LogCategory.Condition, message, nodeName, context);
-        }
-
-        [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD"), Conditional("BT_LOGGING_ENABLED")]
-        public static void LogBlackBoard(string message, string nodeName = "", UnityEngine.Object context = null)
-        {
-            LogInternal(Microsoft.Extensions.Logging.LogLevel.Debug, LogCategory.BlackBoard, message, nodeName, context);
-        }
-
-        [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD"), Conditional("BT_LOGGING_ENABLED")]
-        public static void LogSystem(string message, string nodeName = "", UnityEngine.Object context = null)
-        {
-            LogInternal(Microsoft.Extensions.Logging.LogLevel.Information, LogCategory.System, message, nodeName, context);
-        }
-
-        // エラーログは本番環境でも表示する
-        public static void LogError(LogCategory category, string message, string nodeName = "", UnityEngine.Object context = null)
-        {
-            LogInternal(Microsoft.Extensions.Logging.LogLevel.Error, category, message, nodeName, context);
-        }
-
-        // Debug.Logから移行用の便利メソッド
-        [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD"), Conditional("BT_LOGGING_ENABLED")]
-        public static void Info(string message, UnityEngine.Object context = null)
-        {
-            LogInternal(Microsoft.Extensions.Logging.LogLevel.Information, LogCategory.System, message, "", context);
-        }
-
-        [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD"), Conditional("BT_LOGGING_ENABLED")]
-        public static void Warning(string message, UnityEngine.Object context = null)
-        {
-            LogInternal(Microsoft.Extensions.Logging.LogLevel.Warning, LogCategory.System, message, "", context);
-        }
-
-        public static void Error(string message, UnityEngine.Object context = null)
-        {
-            LogInternal(Microsoft.Extensions.Logging.LogLevel.Error, LogCategory.System, message, "", context);
-        }
-
-        [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD"), Conditional("BT_LOGGING_ENABLED")]
-        public static void Debug(string message, UnityEngine.Object context = null)
-        {
-            LogInternal(Microsoft.Extensions.Logging.LogLevel.Debug, LogCategory.Debug, message, "", context);
-        }
-
-        // 構造化ログ出力（ZLogger推奨）
-        [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD"), Conditional("BT_LOGGING_ENABLED")]
-        public static void LogStructured<T>(Microsoft.Extensions.Logging.LogLevel level, LogCategory category, string template, T value, string nodeName = "")
-        {
-            if (suppressLogsInTest) return;
-
-            var categoryTag = GetCategoryTag(category);
-            var nodeInfo = !string.IsNullOrEmpty(nodeName) ? $"[{nodeName}]" : "";
-            
-            switch (level)
-            {
-                case Microsoft.Extensions.Logging.LogLevel.Error:
-                    instance.ZLogError($"{categoryTag}{nodeInfo}: {template}", value);
-                    break;
-                case Microsoft.Extensions.Logging.LogLevel.Warning:
-                    instance.ZLogWarning($"{categoryTag}{nodeInfo}: {template}", value);
-                    break;
-                case Microsoft.Extensions.Logging.LogLevel.Information:
-                    instance.ZLogInformation($"{categoryTag}{nodeInfo}: {template}", value);
-                    break;
-                case Microsoft.Extensions.Logging.LogLevel.Debug:
-                    instance.ZLogDebug($"{categoryTag}{nodeInfo}: {template}", value);
-                    break;
-                case Microsoft.Extensions.Logging.LogLevel.Trace:
-                    instance.ZLogTrace($"{categoryTag}{nodeInfo}: {template}", value);
-                    break;
-            }
-        }
-
-        // 基本Logメソッド（Microsoft.Extensions.Logging.LogLevel使用）
-        [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD"), Conditional("BT_LOGGING_ENABLED")]
-        public static void Log(Microsoft.Extensions.Logging.LogLevel level, LogCategory category, string message, string nodeName = "", UnityEngine.Object context = null)
-        {
-            LogInternal(level, category, message, nodeName, context);
-        }
-
-        // パフォーマンス測定用ログ
-        [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD"), Conditional("BT_LOGGING_ENABLED")]
-        public static void LogPerformance(string operation, float elapsedMs, string nodeName = "")
-        {
-            LogInternal(Microsoft.Extensions.Logging.LogLevel.Debug, LogCategory.System, $"{operation} completed in {elapsedMs:F2}ms", nodeName);
-        }
-
-        // 後方互換性メソッド（新しい実装では機能を簡素化）
-        
-        /// <summary>
-        /// 後方互換性のためのResetメソッド（現在は何もしない）
-        /// </summary>
-        public static void ResetToDefaults()
-        {
-            // ZLoggerのフィルタリングに完全委譲しているため、このメソッドは現在何もしない
-            // テストコードの互換性のためにメソッドは残す
-        }
-
-        /// <summary>
-        /// 後方互換性：ログレベル設定（新実装では効果なし）
-        /// </summary>
-        public static void SetLogLevel(Microsoft.Extensions.Logging.LogLevel level)
-        {
-            // ZLoggerのフィルタリングに委譲しているため、このメソッドは効果なし
-            // 後方互換性のためにメソッドのみ残す
-        }
-
-        /// <summary>
-        /// 後方互換性：現在のログレベル取得（新実装では固定値）
-        /// </summary>
-        public static Microsoft.Extensions.Logging.LogLevel GetCurrentLogLevel()
-        {
-            // ZLoggerに委譲しているため、固定値を返す
-            return Microsoft.Extensions.Logging.LogLevel.Information;
-        }
-
-        /// <summary>
-        /// 後方互換性：カテゴリフィルター設定（新実装では効果なし）
-        /// </summary>
-        public static void SetCategoryFilter(LogCategory category, bool enabled)
-        {
-            // ZLoggerのフィルタリングに委譲しているため、このメソッドは効果なし
-            // 後方互換性のためにメソッドのみ残す
-        }
-
-        /// <summary>
-        /// 後方互換性：カテゴリ有効状態取得（新実装では常にtrue）
-        /// </summary>
-        public static bool IsCategoryEnabled(LogCategory category)
-        {
-            // ZLoggerに委譲しているため、常にtrueを返す
-            return true;
-        }
-
-        /// <summary>
-        /// 後方互換性：履歴クリア（新実装では何もしない）
-        /// </summary>
-        public static void ClearHistory()
-        {
-            // ZLoggerプロバイダーが履歴を管理するため、何もしない
-            // 後方互換性のためにメソッドのみ残す
-        }
-
-        /// <summary>
-        /// 後方互換性：最近のログ取得（Phase 6.3: 完全削除）
-        /// </summary>
-        public static string[] GetRecentLogs(int count = 10)
-        {
-            // Phase 6.3: LogEntry完全削除のため、空文字列配列を返す
-            // ZLoggerプロバイダーが履歴を管理
-            return new string[0];
-        }
-
-        /// <summary>
-        /// 後方互換性：カテゴリ別ログ取得（Phase 6.3: 完全削除）
-        /// </summary>
-        public static string[] GetLogsByCategory(LogCategory category, int count = 10)
-        {
-            // Phase 6.3: LogEntry完全削除のため、空文字列配列を返す
-            // ZLoggerプロバイダーが履歴を管理
-            return new string[0];
-        }
-
-        /// <summary>
-        /// 後方互換性：フォーマットログ（Combat）- ZLoggerネイティブ最適化
-        /// </summary>
-        [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD"), Conditional("BT_LOGGING_ENABLED")]
-        public static void LogCombatFormat(string format, object arg1, string nodeName = "", UnityEngine.Object context = null)
-        {
-            if (suppressLogsInTest) return;
-
-            var categoryTag = GetCategoryTag(LogCategory.Combat);
-            var nodeInfo = !string.IsNullOrEmpty(nodeName) ? $"[{nodeName}]" : "";
-            
-            // ZLoggerネイティブフォーマット（ゼロアロケーション）
-            instance.ZLogInformation($"{categoryTag}{nodeInfo}: {format}", arg1);
-        }
-
-        /// <summary>
-        /// 後方互換性：フォーマットログ（Movement）- ZLoggerネイティブ最適化
-        /// </summary>
-        [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD"), Conditional("BT_LOGGING_ENABLED")]
-        public static void LogMovementFormat(string format, object arg1, string nodeName = "", UnityEngine.Object context = null)
-        {
-            if (suppressLogsInTest) return;
-
-            var categoryTag = GetCategoryTag(LogCategory.Movement);
-            var nodeInfo = !string.IsNullOrEmpty(nodeName) ? $"[{nodeName}]" : "";
-            
-            // ZLoggerネイティブフォーマット（ゼロアロケーション）
-            instance.ZLogInformation($"{categoryTag}{nodeInfo}: {format}", arg1);
-        }
-
-        /// <summary>
-        /// 後方互換性：リソース解放（新実装では何もしない）
+        /// 後方互換性：レガシーAPI削除のため何もしない
         /// </summary>
         public static void Dispose()
         {
             // ユーザーのLoggerFactoryを使用しているため、何もしない
-            // 後方互換性のためにメソッドのみ残す
         }
     }
+
 }

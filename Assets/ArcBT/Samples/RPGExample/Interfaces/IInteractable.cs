@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace ArcBT.Actions
+namespace ArcBT.Samples.RPG.Interfaces
 {
     public interface IInteractable
     {

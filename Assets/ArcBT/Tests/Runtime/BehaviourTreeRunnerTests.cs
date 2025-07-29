@@ -7,6 +7,7 @@ using System.Collections;
 using System.IO;
 using ArcBT.Logger;
 using ArcBT.Samples.RPG;
+using ArcBT.Samples.RPG.Actions;
 
 namespace ArcBT.Tests
 {

@@ -2,6 +2,7 @@ namespace ArcBT.Core
 {
     /// <summary>Selectorノード：いずれかの子ノードが成功するまで実行</summary>
     [System.Serializable]
+    [BTNode("Selector")]
     public class BTSelectorNode : BTCompositeNode
     {
         public override BTNodeResult Execute()

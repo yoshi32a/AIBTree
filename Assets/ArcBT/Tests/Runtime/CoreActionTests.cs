@@ -1,9 +1,8 @@
+using ArcBT.Actions;
+using ArcBT.Core;
+using ArcBT.Samples.RPG.Actions;
 using NUnit.Framework;
 using UnityEngine;
-using UnityEngine.TestTools;
-using ArcBT.Core;
-using ArcBT.Actions;
-using ArcBT.Logger;
 
 namespace ArcBT.Tests
 {
@@ -29,7 +28,6 @@ namespace ArcBT.Tests
             base.TearDown(); // BTTestBaseのクリーンアップを実行
         }
 
-        #region MoveToPositionAction Tests
 
         [Test][Description("MoveToPositionActionの初期化処理でターゲット位置とプロパティが正しくBlackBoardに設定されることを確認")]
         public void MoveToPositionAction_Initialize_SetsUpCorrectly()
@@ -93,9 +91,7 @@ namespace ArcBT.Tests
             Assert.IsFalse(blackBoard.HasKey(expectedKey), "失敗時にはBlackBoardに位置情報が設定されるべきではない");
         }
 
-        #endregion
 
-        #region WaitAction Tests
 
         [Test][Description("WaitActionで待機時間のプロパティが正しく設定され、実行中にRunningが返されることを確認")]
         public void WaitAction_SetProperty_SetsCorrectDuration()
@@ -143,9 +139,7 @@ namespace ArcBT.Tests
             // テスト環境では完了まで待つのが困難なので、Runningが返ることを確認
         }
 
-        #endregion
 
-        #region LogAction Tests
 
         [Test][Description("LogActionでメッセージのログ出力が正しく動作することを確認")]
         public void LogAction_Execute_OutputsMessage()
@@ -181,9 +175,7 @@ namespace ArcBT.Tests
             Assert.AreEqual(BTNodeResult.Success, result);
         }
 
-        #endregion
 
-        #region SetBlackBoardAction Tests
 
         [Test][Description("SetBlackBoardActionでint型の値（health=100）をBlackBoardに設定")]
         public void SetBlackBoardAction_SetProperty_SetsIntValue()
@@ -251,7 +243,6 @@ namespace ArcBT.Tests
             Assert.AreEqual(BTNodeResult.Failure, result, "BlackBoardがnullの場合、Failureが返されるべき");
         }
 
-        #endregion
     }
 
     /// <summary>テスト用のCoreActionコンポーネント</summary>

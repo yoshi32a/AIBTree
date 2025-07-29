@@ -8,7 +8,8 @@ namespace ArcBT.Samples.RPG.Actions
 {
     /// <summary>汎用攻撃アクション</summary>
     [BTNode("Attack")]
-    public class AttackAction : BTActionNode    {
+    public class AttackAction : BTActionNode
+    {
         int damage = 25;
         float attackRange = 2.0f;
         float cooldown = 1.0f;
@@ -46,7 +47,7 @@ namespace ArcBT.Samples.RPG.Actions
 
             if (target == null || !target.activeInHierarchy)
             {
-                BTLogger.LogCombat("No valid target found");
+                BTLogger.LogCombat(this, "No valid target found");
                 return BTNodeResult.Failure;
             }
 
@@ -54,7 +55,7 @@ namespace ArcBT.Samples.RPG.Actions
             float distance = Vector3.Distance(transform.position, target.transform.position);
             if (distance > attackRange)
             {
-                BTLogger.LogCombat($"Target out of range ({distance:F1} > {attackRange})");
+                BTLogger.LogCombat(this, $"Target out of range ({distance:F1} > {attackRange})");
                 return BTNodeResult.Failure;
             }
 
@@ -83,21 +84,21 @@ namespace ArcBT.Samples.RPG.Actions
                 blackBoard.SetValue("last_attack_damage", damage);
                 blackBoard.SetValue("target_remaining_health", targetHealth.CurrentHealth);
 
-                BTLogger.LogCombat($"Attacked '{target.name}' for {damage} damage. Target health: {targetHealth.CurrentHealth}");
+                BTLogger.LogCombat(this, $"Attacked '{target.name}' for {damage} damage. Target health: {targetHealth.CurrentHealth}");
 
                 // ターゲットが死んだ場合
                 if (targetHealth.CurrentHealth <= 0)
                 {
                     blackBoard.SetValue("target_defeated", true);
                     blackBoard.SetValue("current_target", (GameObject)null);
-                    BTLogger.LogCombat($"Target '{target.name}' defeated");
+                    BTLogger.LogCombat(this, $"Target '{target.name}' defeated");
                 }
 
                 return BTNodeResult.Success;
             }
             else
             {
-                BTLogger.Log(Microsoft.Extensions.Logging.LogLevel.Warning, LogCategory.Combat, $"Target '{target.name}' has no Health component", "Attack");
+                BTLogger.LogSystemError("Attack", $"Target '{target.name}' has no Health component");
                 return BTNodeResult.Failure;
             }
         }

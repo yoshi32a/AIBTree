@@ -293,8 +293,8 @@ BTLogger.LogSystem("システムメッセージ");
 BTLogger.LogCombat("戦闘ログ", nodeName, context);
 
 // エラー・警告
-BTLogger.LogError(LogCategory.Parser, "エラーメッセージ", nodeName, context);
-BTLogger.Log(LogLevel.Warning, LogCategory.System, "警告メッセージ");
+BTLogger.LogSystemError("システム名", "エラーメッセージ");
+BTLogger.LogSystem("システム名", "警告メッセージ");
 
 // Debug.Logからの移行用
 BTLogger.Info("情報メッセージ");

@@ -22,29 +22,29 @@ namespace ArcBT.Samples.RPG.Conditions
 
             if (inventoryComponent == null)
             {
-                BTLogger.LogError(LogCategory.System, $"HasItem '{Name}': No Inventory component found on {gameObject.name}", Name, ownerComponent);
+                BTLogger.LogSystemError("System", $"HasItem '{Name}': No Inventory component found on {gameObject.name}");
             }
         }
 
         protected override BTNodeResult CheckCondition()
         {
-            BTLogger.LogCondition($"=== HasItemCondition '{Name}' EXECUTING ===", Name, ownerComponent);
+            BTLogger.LogCondition(this, $"=== HasItemCondition '{Name}' EXECUTING ===");
 
             if (inventoryComponent == null)
             {
-                BTLogger.LogError(LogCategory.System, $"HasItem '{Name}': No inventory component - assuming no items", Name, ownerComponent);
+                BTLogger.LogSystemError("System", $"HasItem '{Name}': No inventory component - assuming no items");
                 return BTNodeResult.Failure;
             }
 
             if (string.IsNullOrEmpty(itemType))
             {
-                BTLogger.LogError(LogCategory.System, $"HasItem '{Name}': No item type specified", Name, ownerComponent);
+                BTLogger.LogSystemError("System", $"HasItem '{Name}': No item type specified");
                 return BTNodeResult.Failure;
             }
 
             var hasItem = inventoryComponent.HasItem(itemType);
 
-            BTLogger.LogCondition($"HasItem '{Name}': Checking for '{itemType}' = {(hasItem ? "FOUND ✓" : "NOT FOUND ✗")}", Name, ownerComponent);
+            BTLogger.LogCondition(this, $"HasItem '{Name}': Checking for '{itemType}' = {(hasItem ? "FOUND ✓" : "NOT FOUND ✗")}");
 
             return hasItem ? BTNodeResult.Success : BTNodeResult.Failure;
         }

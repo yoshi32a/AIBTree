@@ -7,11 +7,12 @@ namespace ArcBT.Samples.RPG.Actions
 {
     /// <summary>ターゲットに移動するアクション</summary>
     [BTNode("MoveToTarget")]
-    public class MoveToTargetAction : BTActionNode    {
+    public class MoveToTargetAction : BTActionNode
+    {
         string moveType = "normal";
         float speed = 20.0f; // 高速化（検証時間短縮）
         float tolerance = 1.0f;
-        
+
         MovementController movementController;
 
         public override void SetProperty(string key, string value)
@@ -33,7 +34,7 @@ namespace ArcBT.Samples.RPG.Actions
         public override void Initialize(MonoBehaviour owner, BlackBoard sharedBlackBoard = null)
         {
             base.Initialize(owner, sharedBlackBoard);
-            
+
             // MovementControllerを取得または追加
             movementController = owner.GetComponent<MovementController>();
             if (movementController == null)
@@ -88,9 +89,7 @@ namespace ArcBT.Samples.RPG.Actions
             if (!movementController.IsMoving)
             {
                 movementController.SetTarget(targetPosition, speed);
-                movementController.OnTargetReached = () => {
-                    BTLogger.LogMovement($"MoveToTarget: Reached target ({moveType})", Name, ownerComponent);
-                };
+                movementController.OnTargetReached = () => { BTLogger.LogMovement($"MoveToTarget: Reached target ({moveType})", Name, ownerComponent); };
             }
 
             // 移動完了チェック

@@ -22,7 +22,7 @@ namespace ArcBT.Samples.RPG.Conditions
 
             if (healthComponent == null)
             {
-                BTLogger.LogError(LogCategory.System, $"HealthCheck: No Health component found on {gameObject.name}", Name, ownerComponent);
+                BTLogger.LogSystemError("System", $"HealthCheck: No Health component found on {gameObject.name}");
             }
         }
 
@@ -34,7 +34,7 @@ namespace ArcBT.Samples.RPG.Conditions
                 float safetyTimer = blackBoard.GetValue<float>("safety_timer", 0f);
                 if (Time.time < safetyTimer)
                 {
-                    BTLogger.LogSystem($"HealthCheck '{Name}': In safety period - skipping emergency check", Name, ownerComponent);
+                    BTLogger.LogSystem(this, "In safety period - skipping emergency check");
                     return BTNodeResult.Failure; // 緊急時チェックをスキップ
                 }
             }
@@ -42,16 +42,16 @@ namespace ArcBT.Samples.RPG.Conditions
             // スマートログ: 10回に1回だけ詳細ログを出力
             if (Time.frameCount % 10 == 0)
             {
-                BTLogger.LogCondition($"=== HealthCheckCondition '{Name}' EXECUTING ===", Name, ownerComponent);
+                BTLogger.LogCondition(this, $"=== HealthCheckCondition '{Name}' EXECUTING ===");
             }
 
             if (healthComponent == null)
             {
-                BTLogger.LogError(LogCategory.System, $"HealthCheck '{Name}': Health component is null - trying to find it again", Name, ownerComponent);
+                BTLogger.LogSystemError("System", $"HealthCheck '{Name}': Health component is null - trying to find it again");
                 healthComponent = GetComponent<Health>();
                 if (healthComponent == null)
                 {
-                    BTLogger.LogError(LogCategory.System, $"HealthCheck '{Name}': Still no Health component found!", Name, ownerComponent);
+                    BTLogger.LogSystemError("System", $"HealthCheck '{Name}': Still no Health component found!");
                     return BTNodeResult.Failure;
                 }
             }
@@ -70,8 +70,8 @@ namespace ArcBT.Samples.RPG.Conditions
             // 結果に変化があった場合のみログ出力
             if (Time.frameCount % 10 == 0 || !healthOK)
             {
-                BTLogger.LogCondition($"HealthCheck '{Name}': Current health = {currentHealth}, Required = {minHealth}", Name, ownerComponent);
-                BTLogger.LogCondition($"HealthCheck '{Name}': Result = {(healthOK ? "SUCCESS ✓" : "FAILURE ✗")}", Name, ownerComponent);
+                BTLogger.LogCondition(this, $"HealthCheck '{Name}': Current health = {currentHealth}, Required = {minHealth}");
+                BTLogger.LogCondition(this, $"HealthCheck '{Name}': Result = {(healthOK ? "SUCCESS ✓" : "FAILURE ✗")}");
             }
 
             return healthOK ? BTNodeResult.Success : BTNodeResult.Failure;

@@ -469,8 +469,8 @@ BTLogger.LogMovement("移動先到達", nodeName, context);
 BTLogger.LogParser("パース成功", nodeName, context);
 
 // レベル指定ログ
-BTLogger.Log(LogLevel.Warning, LogCategory.System, "警告メッセージ");
-BTLogger.Log(LogLevel.Error, LogCategory.Parser, "エラーメッセージ");
+BTLogger.LogSystem("システム名", "警告メッセージ");
+BTLogger.LogSystemError("システム名", "エラーメッセージ");
 
 // Debug.Logからの移行用
 BTLogger.Info("情報メッセージ");
@@ -698,7 +698,7 @@ public class HealthCheckCondition : BTConditionNode
         var healthComponent = ownerComponent.GetComponent<IHealth>();
         if (healthComponent == null)
         {
-            BTLogger.LogError(LogCategory.System, "Health component not found");
+            BTLogger.LogSystemError("System", "Health component not found");
             return BTNodeResult.Failure;
         }
         

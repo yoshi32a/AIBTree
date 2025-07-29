@@ -31,7 +31,7 @@ namespace ArcBT.Samples.RPG.Conditions
             
             if (aiController == null)
             {
-                BTLogger.LogError(LogCategory.System, "SimpleHealthCheckCondition requires ExampleAI component");
+                BTLogger.LogSystemError("System", "SimpleHealthCheckCondition requires ExampleAI component");
             }
         }
 
@@ -39,12 +39,12 @@ namespace ArcBT.Samples.RPG.Conditions
         {
             if (aiController == null)
             {
-                BTLogger.LogError(LogCategory.System, "ExampleAI controller not found");
+                BTLogger.LogSystemError("System", "ExampleAI controller not found");
                 return BTNodeResult.Failure;
             }
 
             bool result = aiController.CheckHealth(minHealth);
-            BTLogger.Log(Microsoft.Extensions.Logging.LogLevel.Debug, LogCategory.System, $"Simple health check: {aiController.Health} >= {minHealth} = {result}");
+            BTLogger.LogSystem($"Simple health check: {aiController.Health} >= {minHealth} = {result}");
             return result ? BTNodeResult.Success : BTNodeResult.Failure;
         }
     }

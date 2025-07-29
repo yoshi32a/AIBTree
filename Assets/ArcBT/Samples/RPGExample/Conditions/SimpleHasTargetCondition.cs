@@ -24,7 +24,7 @@ namespace ArcBT.Samples.RPG.Conditions
             
             if (aiController == null)
             {
-                BTLogger.LogError(LogCategory.System, "SimpleHasTargetCondition requires ExampleAI component");
+                BTLogger.LogSystemError("System", "SimpleHasTargetCondition requires ExampleAI component");
             }
         }
 
@@ -32,12 +32,12 @@ namespace ArcBT.Samples.RPG.Conditions
         {
             if (aiController == null)
             {
-                BTLogger.LogError(LogCategory.System, "ExampleAI controller not found");
+                BTLogger.LogSystemError("System", "ExampleAI controller not found");
                 return BTNodeResult.Failure;
             }
 
             bool hasTarget = aiController.Target != null;
-            BTLogger.Log(Microsoft.Extensions.Logging.LogLevel.Debug, LogCategory.System, $"Simple has target: {hasTarget}");
+            BTLogger.LogSystem($"Simple has target: {hasTarget}");
             return hasTarget ? BTNodeResult.Success : BTNodeResult.Failure;
         }
     }

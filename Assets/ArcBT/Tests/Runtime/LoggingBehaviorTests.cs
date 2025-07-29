@@ -1,10 +1,9 @@
-using NUnit.Framework;
-using UnityEngine;
-using UnityEngine.TestTools;
-using ArcBT.Core;
 using ArcBT.Actions;
 using ArcBT.Conditions;
-using ArcBT.Logger;
+using ArcBT.Core;
+using ArcBT.Samples.RPG.Actions;
+using NUnit.Framework;
+using UnityEngine;
 
 namespace ArcBT.Tests
 {
@@ -25,7 +24,7 @@ namespace ArcBT.Tests
             base.SetUp();
             testOwner = CreateTestGameObject("TestOwner");
             blackBoard = new BlackBoard();
-            
+
             // ログテストのためログを有効化
             EnableLoggingForTest();
         }
@@ -37,9 +36,9 @@ namespace ArcBT.Tests
             base.TearDown();
         }
 
-        #region エラーログテスト - ユーザーへの重要な情報提供
 
-        [Test][Description("MoveToPositionActionで存在しないターゲットが指定された場合のエラーログ出力")]
+        [Test]
+        [Description("MoveToPositionActionで存在しないターゲットが指定された場合のエラーログ出力")]
         public void MoveToPositionAction_InvalidTarget_LogsError()
         {
             // Arrange
@@ -54,7 +53,8 @@ namespace ArcBT.Tests
             Assert.IsFalse(blackBoard.HasKey(expectedKey), "エラー時にはBlackBoardに設定されるべきではない");
         }
 
-        [Test][Description("HasSharedEnemyInfoConditionでBlackBoardがnullの場合のエラーログ出力")]
+        [Test]
+        [Description("HasSharedEnemyInfoConditionでBlackBoardがnullの場合のエラーログ出力")]
         public void HasSharedEnemyInfoCondition_NullBlackBoard_LogsError()
         {
             // Arrange
@@ -68,7 +68,8 @@ namespace ArcBT.Tests
             Assert.AreEqual(BTNodeResult.Failure, result, "BlackBoardがnullの場合はFailureが返されるべき");
         }
 
-        [Test][Description("BehaviourTreeRunnerで存在しないファイルをロードしようとした場合のエラーログ出力")]
+        [Test]
+        [Description("BehaviourTreeRunnerで存在しないファイルをロードしようとした場合のエラーログ出力")]
         public void BehaviourTreeRunner_InvalidFile_LogsError()
         {
             // Arrange
@@ -81,11 +82,9 @@ namespace ArcBT.Tests
             Assert.IsNull(runner.RootNode, "ファイルが存在しない場合、ツリーは設定されるべきではない");
         }
 
-        #endregion
 
-        #region 警告ログテスト - 潜在的な問題の通知
-
-        [Test][Description("BlackBoardで存在しないキーを取得しようとした場合の警告ログ出力")]
+        [Test]
+        [Description("BlackBoardで存在しないキーを取得しようとした場合の警告ログ出力")]
         public void BlackBoard_GetNonExistentKey_LogsWarning()
         {
             // Arrange
@@ -94,16 +93,13 @@ namespace ArcBT.Tests
             // Act & Assert - 警告ログの出力確認
             // 注意: このテストは実際の警告ログ実装に依存する
             var result = testBlackBoard.GetValue<string>("non_existent_key");
-            
+
             // 機能面も確認
             Assert.IsNull(result, "存在しないキーの場合、nullまたはデフォルト値が返されるべき");
         }
 
-        #endregion
-
-        #region デバッグログテスト - 開発時の詳細情報（必要最小限）
-
-        [Test][Description("BlackBoardへの値設定時のデバッグログ出力（開発時のみ重要）")]
+        [Test]
+        [Description("BlackBoardへの値設定時のデバッグログ出力（開発時のみ重要）")]
         public void BlackBoard_SetValue_LogsDebugInfo()
         {
             // Arrange
@@ -119,7 +115,5 @@ namespace ArcBT.Tests
             Assert.IsTrue(testBlackBoard.HasKey("debug_key"), "値が正しく設定されているべき");
             Assert.AreEqual("debug_value", testBlackBoard.GetValue<string>("debug_key"), "設定した値が取得できるべき");
         }
-
-        #endregion
     }
 }

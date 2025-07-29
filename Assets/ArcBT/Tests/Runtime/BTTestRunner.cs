@@ -23,7 +23,7 @@ namespace ArcBT.Tests
             
             if (!Directory.Exists(btDirectory))
             {
-                BTLogger.LogError(LogCategory.System, $"❌ BehaviourTrees directory not found: {btDirectory}", "", null);
+                BTLogger.LogSystemError("System", $"❌ BehaviourTrees directory not found: {btDirectory}");
                 return;
             }
             
@@ -55,14 +55,14 @@ namespace ArcBT.Tests
                     {
                         failCount++;
                         failedFiles.Add(fileName);
-                        BTLogger.LogError(LogCategory.Parser, $"❌ {fileName} - FAILED (returned null)", "", null);
+                        BTLogger.LogSystemError("Parser", $"❌ {fileName} - FAILED (returned null)");
                     }
                 }
                 catch (System.Exception ex)
                 {
                     failCount++;
                     failedFiles.Add(fileName);
-                    BTLogger.LogError(LogCategory.Parser, $"❌ {fileName} - FAILED ({ex.Message})", "", null);
+                    BTLogger.LogSystemError("Parser", $"❌ {fileName} - FAILED ({ex.Message})");
                 }
             }
             
@@ -74,7 +74,7 @@ namespace ArcBT.Tests
             
             if (failedFiles.Count > 0)
             {
-                BTLogger.LogError(LogCategory.System, $"💥 Failed files: {string.Join(", ", failedFiles)}", "", null);
+                BTLogger.LogSystemError("System", $"💥 Failed files: {string.Join(", ", failedFiles)}");
             }
             else
             {

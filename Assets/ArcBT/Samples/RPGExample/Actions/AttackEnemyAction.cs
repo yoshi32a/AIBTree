@@ -26,13 +26,13 @@ namespace ArcBT.Samples.RPG.Actions
 
         protected override BTNodeResult ExecuteAction()
         {
-            BTLogger.LogCombat($"=== AttackEnemyAction '{Name}' EXECUTING ===", Name, ownerComponent);
+            BTLogger.LogCombat(this, $"=== AttackEnemyAction '{Name}' EXECUTING ===");
 
             // クールダウンチェック
             if (Time.time - lastAttackTime < cooldown)
             {
                 var remainingCooldown = cooldown - (Time.time - lastAttackTime);
-                BTLogger.LogCombat($"AttackEnemy '{Name}': On cooldown ({remainingCooldown:F1}s remaining)", Name, ownerComponent);
+                BTLogger.LogCombat(this, $"AttackEnemy '{Name}': On cooldown ({remainingCooldown:F1}s remaining)");
                 return BTNodeResult.Running;
             }
 
@@ -53,23 +53,23 @@ namespace ArcBT.Samples.RPG.Actions
 
             if (targetEnemy == null)
             {
-                BTLogger.LogCombat($"AttackEnemy '{Name}': No enemies in attack range {attackRange} ✗", Name, ownerComponent);
+                BTLogger.LogCombat(this, $"AttackEnemy '{Name}': No enemies in attack range {attackRange} ✗");
                 return BTNodeResult.Failure;
             }
 
             // 攻撃実行
-            BTLogger.LogCombat($"AttackEnemy '{Name}': Attacking {targetEnemy.name} with {damage} {attackType} damage ⚔️", Name, ownerComponent);
+            BTLogger.LogCombat(this, $"AttackEnemy '{Name}': Attacking {targetEnemy.name} with {damage} {attackType} damage ⚔️");
 
             // 敵にダメージを与える
             var enemyHealth = targetEnemy.GetComponent<Health>();
             if (enemyHealth != null)
             {
                 enemyHealth.TakeDamage(damage);
-                BTLogger.LogCombat($"AttackEnemy '{Name}': Dealt {damage} damage to {targetEnemy.name}", Name, ownerComponent);
+                BTLogger.LogCombat(this, $"AttackEnemy '{Name}': Dealt {damage} damage to {targetEnemy.name}");
             }
             else
             {
-                BTLogger.LogCombat($"AttackEnemy '{Name}': Enemy has no Health component - attack missed", Name, ownerComponent);
+                BTLogger.LogCombat(this, $"AttackEnemy '{Name}': Enemy has no Health component - attack missed");
             }
 
             lastAttackTime = Time.time;
