@@ -25,15 +25,15 @@ jobs:
     
     - name: Restore dependencies
       run: dotnet restore
-      working-directory: SourceGenerators/ArcBT.Generators
+      working-directory: SourceGenerators
     
     - name: Build
       run: dotnet build -c Release --no-restore
-      working-directory: SourceGenerators/ArcBT.Generators
+      working-directory: SourceGenerators
     
     - name: Pack
       run: dotnet pack -c Release --no-build
-      working-directory: SourceGenerators/ArcBT.Generators
+      working-directory: SourceGenerators
     
     - name: Upload DLL artifact
       uses: actions/upload-artifact@v4
