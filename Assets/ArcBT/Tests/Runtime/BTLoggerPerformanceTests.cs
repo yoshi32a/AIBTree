@@ -1,11 +1,14 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading;
+using ArcBT.Logger;
+using Microsoft.Extensions.Logging;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
-using ArcBT.Logger;
-using Microsoft.Extensions.Logging;
+using Debug = UnityEngine.Debug;
 
 namespace ArcBT.Tests
 {
@@ -48,7 +51,7 @@ namespace ArcBT.Tests
             var logs = BTLogger.GetRecentLogs(200);
             Assert.LessOrEqual(logs.Length, 100, "履歴は最大100件に制限されている");
             
-            UnityEngine.Debug.Log($"ZLogger high volume test: {logCount} logs in {elapsedMs}ms");
+            Debug.Log($"ZLogger high volume test: {logCount} logs in {elapsedMs}ms");
         }
 
         /// <summary>ZLoggerフィルタリング機能の高性能テスト</summary>
@@ -77,7 +80,7 @@ namespace ArcBT.Tests
             var logs = BTLogger.GetRecentLogs(100);
             Assert.AreEqual(0, logs.Length, "フィルタリングによりログが記録されていない");
             
-            UnityEngine.Debug.Log($"ZLogger filtering test: {logCount * 3} filtered logs in {elapsedMs}ms");
+            Debug.Log($"ZLogger filtering test: {logCount * 3} filtered logs in {elapsedMs}ms");
         }
 
         /// <summary>ZLoggerゼロアロケーションメモリ効率テスト</summary>
@@ -86,11 +89,11 @@ namespace ArcBT.Tests
         public IEnumerator TestZLoggerMemoryEfficiency()
         {
             // Arrange: 初期状態でGCを実行してベースラインを安定化
-            System.GC.Collect();
-            System.GC.WaitForPendingFinalizers();
-            System.GC.Collect();
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
             yield return new WaitForEndOfFrame();
-            var initialMemory = System.GC.GetTotalMemory(false);
+            var initialMemory = GC.GetTotalMemory(false);
             
             // Act: ZLoggerによる大量ログ生成（ゼロアロケーション効果を測定）
             const int logCount = 3000; // ZLoggerの効率性により増量
@@ -107,10 +110,10 @@ namespace ArcBT.Tests
             
             // 複数回GCを実行して正確なメモリ測定
             yield return new WaitForEndOfFrame();
-            System.GC.Collect();
+            GC.Collect();
             yield return new WaitForEndOfFrame();
-            System.GC.Collect();
-            var finalMemory = System.GC.GetTotalMemory(false);
+            GC.Collect();
+            var finalMemory = GC.GetTotalMemory(false);
             
             // Assert: ZLoggerのメモリ効率性確認
             var memoryIncrease = finalMemory - initialMemory;
@@ -123,7 +126,7 @@ namespace ArcBT.Tests
             var logs = BTLogger.GetRecentLogs(200);
             Assert.LessOrEqual(logs.Length, 100, "履歴上限によりメモリ使用量が制御されている");
             
-            UnityEngine.Debug.Log($"ZLogger memory efficiency: {logCount} logs with {memoryIncreaseMB:F2}MB memory change");
+            Debug.Log($"ZLogger memory efficiency: {logCount} logs with {memoryIncreaseMB:F2}MB memory change");
         }
 
         /// <summary>並行アクセス耐性テスト</summary>
@@ -138,7 +141,7 @@ namespace ArcBT.Tests
             var startTime = Time.realtimeSinceStartup;
             
             // Act: 複数の処理を並行実行（コルーチンではなく直接実行）
-            var tasks = new System.Collections.Generic.List<IEnumerator>();
+            var tasks = new List<IEnumerator>();
             
             for (int i = 0; i < threadCount; i++)
             {
@@ -227,7 +230,7 @@ namespace ArcBT.Tests
             var elapsedMs = stopwatch.ElapsedMilliseconds;
             Assert.Less(elapsedMs, 200, $"基本ログ出力処理が高速である（実測: {elapsedMs}ms）");
             
-            UnityEngine.Debug.Log($"Phase 6.4: Basic logging performance: 3000 logs in {elapsedMs}ms");
+            Debug.Log($"Phase 6.4: Basic logging performance: 3000 logs in {elapsedMs}ms");
         }
 
         /// <summary>長時間実行安定性テスト</summary>
@@ -291,7 +294,7 @@ namespace ArcBT.Tests
                     Active = i % 2 == 0
                 };
                 
-                BTLogger.LogStructured(Microsoft.Extensions.Logging.LogLevel.Information, LogCategory.System, 
+                BTLogger.LogStructured(LogLevel.Information, LogCategory.System,
                     "Structured performance test {Index} with {Value} at {Position} named {Name} active {Active}", 
                     structuredData, "StructuredPerformance");
             }
@@ -301,7 +304,7 @@ namespace ArcBT.Tests
             var elapsedMs = stopwatch.ElapsedMilliseconds;
             Assert.Less(elapsedMs, 1000, $"ZLogger構造化ログ（{logCount}件）が1秒以内で完了（実測: {elapsedMs}ms）");
             
-            UnityEngine.Debug.Log($"ZLogger structured logging performance: {logCount} logs in {elapsedMs}ms");
+            Debug.Log($"ZLogger structured logging performance: {logCount} logs in {elapsedMs}ms");
         }
 
         /// <summary>ZLoggerフォーマットメソッドパフォーマンステスト</summary>
@@ -327,7 +330,7 @@ namespace ArcBT.Tests
             var elapsedMs = stopwatch.ElapsedMilliseconds;
             Assert.Less(elapsedMs, 800, $"ZLoggerフォーマットメソッド（{logCount * 2}件）が800ms以内で完了（実測: {elapsedMs}ms）");
             
-            UnityEngine.Debug.Log($"ZLogger format methods performance: {logCount * 2} logs in {elapsedMs}ms");
+            Debug.Log($"ZLogger format methods performance: {logCount * 2} logs in {elapsedMs}ms");
         }
 
         /// <summary>ZLoggerパフォーマンス測定機能テスト</summary>
@@ -345,7 +348,7 @@ namespace ArcBT.Tests
                 var operationStart = Time.realtimeSinceStartup;
                 
                 // 何らかの処理をシミュレート
-                System.Threading.Thread.Sleep(1);
+                Thread.Sleep(1);
                 
                 var elapsedMs = (Time.realtimeSinceStartup - operationStart) * 1000;
                 BTLogger.LogPerformance($"PerformanceOperation_{i}", elapsedMs, "PerfMeasurementPerformance");
@@ -356,7 +359,7 @@ namespace ArcBT.Tests
             var totalElapsedMs = stopwatch.ElapsedMilliseconds;
             Assert.Less(totalElapsedMs, 1000, $"ZLoggerパフォーマンス測定（{operationCount}件）が1秒以内で完了（実測: {totalElapsedMs}ms）");
             
-            UnityEngine.Debug.Log($"ZLogger performance measurement: {operationCount} measurements in {totalElapsedMs}ms");
+            Debug.Log($"ZLogger performance measurement: {operationCount} measurements in {totalElapsedMs}ms");
         }
 
         /// <summary>ZLoggerリソース管理パフォーマンステスト</summary>
@@ -390,7 +393,7 @@ namespace ArcBT.Tests
             var logs = BTLogger.GetRecentLogs(5);
             Assert.AreEqual(0, logs.Length, "Phase 6.4: 履歴管理はZLoggerに委譲 - 空配列");
             
-            UnityEngine.Debug.Log($"ZLogger resource management: {cycles} cycles in {elapsedMs}ms");
+            Debug.Log($"ZLogger resource management: {cycles} cycles in {elapsedMs}ms");
         }
     }
 }

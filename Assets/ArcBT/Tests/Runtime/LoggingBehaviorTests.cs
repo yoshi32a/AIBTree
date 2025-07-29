@@ -1,10 +1,8 @@
-using NUnit.Framework;
-using UnityEngine;
-using UnityEngine.TestTools;
-using ArcBT.Core;
 using ArcBT.Actions;
 using ArcBT.Conditions;
-using ArcBT.Logger;
+using ArcBT.Core;
+using NUnit.Framework;
+using UnityEngine;
 
 namespace ArcBT.Tests
 {

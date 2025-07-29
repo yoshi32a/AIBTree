@@ -1,15 +1,11 @@
 ﻿using System.IO;
-using System.Text.RegularExpressions;
 using ArcBT.Actions;
 using ArcBT.Core;
-using ArcBT.Logger;
+using ArcBT.Parser;
 using ArcBT.Samples.RPG;
 using ArcBT.Samples.RPG.Actions;
 using ArcBT.Samples.RPG.Conditions;
-using ArcBT.Parser;
 using NUnit.Framework;
-using UnityEngine;
-using UnityEngine.TestTools;
 
 namespace ArcBT.Tests
 {

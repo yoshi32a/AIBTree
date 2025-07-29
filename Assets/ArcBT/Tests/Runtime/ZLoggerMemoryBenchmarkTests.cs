@@ -1,10 +1,10 @@
 using System;
 using System.Collections;
-using System.Diagnostics;
+using ArcBT.Logger;
+using Microsoft.Extensions.Logging;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
-using ArcBT.Logger;
 
 namespace ArcBT.Tests
 {
@@ -64,7 +64,7 @@ namespace ArcBT.Tests
             Assert.Less(memoryIncreaseMB, 8.0, 
                 $"ZLoggerゼロアロケーション（{logCount}件）のメモリ増加が8MB以内（実測: {memoryIncreaseMB:F2}MB）");
             
-            UnityEngine.Debug.Log($"ZLogger Zero Allocation Memory Test: {memoryIncreaseMB:F2}MB increase for {logCount} logs");
+            Debug.Log($"ZLogger Zero Allocation Memory Test: {memoryIncreaseMB:F2}MB increase for {logCount} logs");
         }
 
         /// <summary>ZLogger vs 従来string.Format のメモリ使用量比較</summary>
@@ -133,7 +133,7 @@ namespace ArcBT.Tests
             var traditionalMemoryIncrease = traditionalFinalMemory - traditionalInitialMemory;
             
             // Assert: ZLoggerのメモリ効率性確認
-            UnityEngine.Debug.Log($"Memory Comparison - ZLogger: {zloggerMemoryIncrease / 1024.0:F1}KB, Traditional: {traditionalMemoryIncrease / 1024.0:F1}KB");
+            Debug.Log($"Memory Comparison - ZLogger: {zloggerMemoryIncrease / 1024.0:F1}KB, Traditional: {traditionalMemoryIncrease / 1024.0:F1}KB");
             
             // Unity Editor環境での実用的な検証：メモリ使用量が合理的な範囲内であることを確認
             Assert.Less(Math.Abs(zloggerMemoryIncrease) / 1024.0, 10000, // 10MB以内
@@ -146,18 +146,18 @@ namespace ArcBT.Tests
             var memoryDiff = traditionalMemoryIncrease - zloggerMemoryIncrease;
             if (Math.Abs(memoryDiff) < 1024) // 1KB以内なら同等
             {
-                UnityEngine.Debug.Log("ZLoggerと従来方式が同等メモリ効率 - ゼロアロケーション効果により実用上優位");
+                Debug.Log("ZLoggerと従来方式が同等メモリ効率 - ゼロアロケーション効果により実用上優位");
                 Assert.Pass("メモリ効率が同等レベルで、ZLoggerのゼロアロケーション効果により実用上優位");
             }
             else if (memoryDiff > 0)
             {
                 var reductionPercent = (memoryDiff / (double)Math.Abs(traditionalMemoryIncrease)) * 100;
-                UnityEngine.Debug.Log($"ZLoggerによるメモリ削減: {reductionPercent:F1}%");
+                Debug.Log($"ZLoggerによるメモリ削減: {reductionPercent:F1}%");
                 Assert.Pass($"ZLoggerによるメモリ削減効果確認: {reductionPercent:F1}%");
             }
             else
             {
-                UnityEngine.Debug.Log("Unity Editor環境でのGC動作により測定誤差範囲内 - ZLoggerのゼロアロケーション効果は実用上有効");
+                Debug.Log("Unity Editor環境でのGC動作により測定誤差範囲内 - ZLoggerのゼロアロケーション効果は実用上有効");
                 Assert.Pass("Unity Editor環境での測定制約内で、ZLoggerの実用的優位性を確認");
             }
         }
@@ -184,7 +184,7 @@ namespace ArcBT.Tests
                     Active = i % 2 == 0
                 };
                 
-                BTLogger.LogStructured(Microsoft.Extensions.Logging.LogLevel.Information, LogCategory.System, 
+                BTLogger.LogStructured(LogLevel.Information, LogCategory.System, 
                     "Structured log {Index} with {Value} at {Position} named {Name} active {Active}", 
                     structuredData, "StructuredMemory");
                 
@@ -207,7 +207,7 @@ namespace ArcBT.Tests
             Assert.Less(memoryIncreaseMB, 6.0, 
                 $"ZLogger構造化ログ（{logCount}件）のメモリ増加が6MB以内（実測: {memoryIncreaseMB:F2}MB）");
             
-            UnityEngine.Debug.Log($"ZLogger Structured Logging Memory: {memoryIncreaseMB:F2}MB for {logCount} structured logs");
+            Debug.Log($"ZLogger Structured Logging Memory: {memoryIncreaseMB:F2}MB for {logCount} structured logs");
         }
 
         /// <summary>ZLogger長時間実行時のメモリリーク検出</summary>
@@ -230,7 +230,7 @@ namespace ArcBT.Tests
                     BTLogger.LogSystem($"Leak test cycle {cycle} log {i}", "LeakDetection");
                     BTLogger.LogCombatFormat("Combat cycle {0} iteration {1} with damage {2}", 
                         $"cycle_{cycle}_iter_{i}_damage_{i * 10}", "LeakDetection");
-                    BTLogger.LogStructured(Microsoft.Extensions.Logging.LogLevel.Debug, LogCategory.Movement, 
+                    BTLogger.LogStructured(LogLevel.Debug, LogCategory.Movement, 
                         "Movement cycle {Cycle} step {Step}", 
                         new { Cycle = cycle, Step = i }, "LeakDetection");
                 }
@@ -265,7 +265,7 @@ namespace ArcBT.Tests
             Assert.Less(totalMemoryIncreaseMB, 10.0, 
                 $"ZLogger長時間実行（{cycles * logsPerCycle * 3}ログ）でメモリリークなし（増加: {totalMemoryIncreaseMB:F2}MB）");
             
-            UnityEngine.Debug.Log($"ZLogger Memory Leak Test: {totalMemoryIncreaseMB:F2}MB increase after {cycles} cycles");
+            Debug.Log($"ZLogger Memory Leak Test: {totalMemoryIncreaseMB:F2}MB increase after {cycles} cycles");
         }
 
         /// <summary>ZLoggerフィルタリング時のメモリ効率測定</summary>
@@ -285,8 +285,8 @@ namespace ArcBT.Tests
                 // これらのログはフィルタリングされるため処理されない
                 BTLogger.LogCombat($"Filtered combat log {i}", "FilterMemory");
                 BTLogger.LogMovement($"Filtered movement log {i}", "FilterMemory");
-                BTLogger.Log(Microsoft.Extensions.Logging.LogLevel.Information, LogCategory.System, $"Filtered info log {i}", "FilterMemory");
-                BTLogger.Log(Microsoft.Extensions.Logging.LogLevel.Debug, LogCategory.Debug, $"Filtered debug log {i}", "FilterMemory");
+                BTLogger.Log(LogLevel.Information, LogCategory.System, $"Filtered info log {i}", "FilterMemory");
+                BTLogger.Log(LogLevel.Debug, LogCategory.Debug, $"Filtered debug log {i}", "FilterMemory");
                 
                 if (i % 250 == 0)
                 {
@@ -309,7 +309,7 @@ namespace ArcBT.Tests
             var logs = BTLogger.GetRecentLogs(100);
             Assert.AreEqual(0, logs.Length, "Phase 6.3: 履歴管理はZLoggerに委謗 - 空配列");
             
-            UnityEngine.Debug.Log($"ZLogger Filtering Memory: {memoryIncreaseMB:F2}MB increase for {logCount * 4} filtered logs");
+            Debug.Log($"ZLogger Filtering Memory: {memoryIncreaseMB:F2}MB increase for {logCount * 4} filtered logs");
         }
 
         /// <summary>ZLoggerガベージコレクション負荷測定</summary>
@@ -327,7 +327,7 @@ namespace ArcBT.Tests
             for (int i = 0; i < logCount; i++)
             {
                 BTLogger.LogSystem($"GC impact test {i} with data {i * 2.5f}", "GCImpact");
-                BTLogger.LogStructured(Microsoft.Extensions.Logging.LogLevel.Information, LogCategory.Combat, 
+                BTLogger.LogStructured(LogLevel.Information, LogCategory.Combat, 
                     "GC test {Index} value {Value}", 
                     new { Index = i, Value = i * 1.5f }, "GCImpact");
                 
@@ -355,7 +355,7 @@ namespace ArcBT.Tests
             Assert.Less(gen2Increases, 2, 
                 $"ZLoggerのGen2 GC発生が最小限（{gen2Increases}回）");
             
-            UnityEngine.Debug.Log($"ZLogger GC Impact - Gen0: {gen0Increases}, Gen1: {gen1Increases}, Gen2: {gen2Increases} for {logCount * 2} logs");
+            Debug.Log($"ZLogger GC Impact - Gen0: {gen0Increases}, Gen1: {gen1Increases}, Gen2: {gen2Increases} for {logCount * 2} logs");
         }
     }
 }

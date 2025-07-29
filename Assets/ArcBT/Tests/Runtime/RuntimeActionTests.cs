@@ -1,11 +1,9 @@
 using System.Linq;
+using ArcBT.Actions;
+using ArcBT.Core;
+using ArcBT.TagSystem;
 using NUnit.Framework;
 using UnityEngine;
-using UnityEngine.TestTools;
-using ArcBT.Core;
-using ArcBT.Actions;
-using ArcBT.Logger;
-using ArcBT.TagSystem;
 
 namespace ArcBT.Tests
 {
@@ -549,7 +547,7 @@ namespace ArcBT.Tests
     }
 
     /// <summary>テスト用のインタラクト可能コンポーネント</summary>
-    public class TestInteractableComponent : MonoBehaviour, ArcBT.Actions.IInteractable
+    public class TestInteractableComponent : MonoBehaviour, IInteractable
     {
         public bool isInteracted = false;
 

@@ -1,10 +1,14 @@
 using System;
 using System.Collections;
 using System.Diagnostics;
+using System.Threading;
+using ArcBT.Logger;
+using Microsoft.Extensions.Logging;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
-using ArcBT.Logger;
+using Debug = UnityEngine.Debug;
+using Random = UnityEngine.Random;
 
 namespace ArcBT.Tests
 {
@@ -30,7 +34,7 @@ namespace ArcBT.Tests
         public void TestZLoggerConditionalCompilationInProduction()
         {
             // Arrange: 本番環境をシミュレート（BT_LOGGING_ENABLEDが未定義状態をテスト）
-            var stopwatch = new System.Diagnostics.Stopwatch();
+            var stopwatch = new Stopwatch();
             
             // Act: 条件付きコンパイルによるログ処理
             stopwatch.Start();
@@ -50,7 +54,7 @@ namespace ArcBT.Tests
             Assert.Less(elapsedMs, 1000, $"開発環境でのZLoggerログ処理が適切な速度（実測: {elapsedMs}ms）");
             var logs = BTLogger.GetRecentLogs(50);
             Assert.AreEqual(0, logs.Length, "Phase 6.3: 履歴管理はZLoggerに委譲 - 空配列");
-            UnityEngine.Debug.Log($"開発環境での条件付きコンパイルテスト: {elapsedMs}ms, ZLogger委謗完了");
+            Debug.Log($"開発環境での条件付きコンパイルテスト: {elapsedMs}ms, ZLogger委謗完了");
             #else
             // 本番環境では条件付きコンパイルによりログ処理が除去される
             Assert.Less(elapsedMs, 100, $"本番環境でのログ処理が条件付きコンパイルにより最適化（実測: {elapsedMs}ms）");
@@ -111,7 +115,7 @@ namespace ArcBT.Tests
             Assert.AreEqual(0, logs.Length, "Phase 6.3: 履歴管理はZLoggerに委謗 - 空配列");
             
             // ファイル出力によるパフォーマンスへの影響が最小限であることを確認
-            var stopwatch = new System.Diagnostics.Stopwatch();
+            var stopwatch = new Stopwatch();
             stopwatch.Start();
             for (int i = 0; i < 100; i++)
             {
@@ -147,7 +151,7 @@ namespace ArcBT.Tests
                 LongString = new string('B', 5000),
                 NestedObject = new { Inner = "test" }
             };
-            BTLogger.LogStructured(Microsoft.Extensions.Logging.LogLevel.Information, LogCategory.System, 
+            BTLogger.LogStructured(LogLevel.Information, LogCategory.System, 
                 "Complex object: {ComplexObject}", complexObject, "ExceptionTest");
             
             // Assert: 例外が発生せずに処理が完了
@@ -171,7 +175,7 @@ namespace ArcBT.Tests
             BTLogger.LogSystem("🎮🔥⚡🚀 Emoji test 🎯🎲🎪🎨", "MultiLanguageTest");
             
             // 構造化ログでも多言語テスト
-            BTLogger.LogStructured(Microsoft.Extensions.Logging.LogLevel.Information, LogCategory.System, 
+            BTLogger.LogStructured(LogLevel.Information, LogCategory.System, 
                 "多言語構造化テスト {Message}", 
                 new { Message = "日本語メッセージ with English and 한국어" }, "MultiLanguageTest");
             
@@ -197,27 +201,27 @@ namespace ArcBT.Tests
             for (int threadIndex = 0; threadIndex < threadCount; threadIndex++)
             {
                 var index = threadIndex;
-                var thread = new System.Threading.Thread(() =>
+                var thread = new Thread(() =>
                 {
                     try
                     {
                         for (int i = 0; i < logsPerThread; i++)
                         {
                             BTLogger.LogSystem($"Thread {index} message {i}", $"Thread{index}");
-                            BTLogger.LogStructured(Microsoft.Extensions.Logging.LogLevel.Information, LogCategory.Combat, 
+                            BTLogger.LogStructured(LogLevel.Information, LogCategory.Combat, 
                                 "Thread {ThreadId} combat {Index}", 
                                 new { ThreadId = index, Index = i }, $"Thread{index}");
                             
                             // スレッド間でのタイミング競合をシミュレート
                             if (i % 50 == 0)
                             {
-                                System.Threading.Thread.Sleep(1);
+                                Thread.Sleep(1);
                             }
                         }
                     }
                     finally
                     {
-                        System.Threading.Interlocked.Increment(ref completed);
+                        Interlocked.Increment(ref completed);
                     }
                 });
                 
@@ -238,7 +242,7 @@ namespace ArcBT.Tests
             var logs = BTLogger.GetRecentLogs(100);
             Assert.AreEqual(0, logs.Length, "Phase 6.3: 履歴管理はZLoggerに委謗 - 空配列");
             
-            UnityEngine.Debug.Log($"Thread safety test: マルチスレッドログ出力が正常完了 - ZLoggerのスレッドセーフ性確認");
+            Debug.Log($"Thread safety test: マルチスレッドログ出力が正常完了 - ZLoggerのスレッドセーフ性確認");
             Assert.Pass("マルチスレッドテストが正常完了 - ZLoggerスレッドセーフ性確認済み");
         }
 
@@ -264,11 +268,11 @@ namespace ArcBT.Tests
                     // 多様なログパターンを本番環境相当で実行
                     BTLogger.LogSystem($"Production log {index} with data {index * 1.5f}", "ProductionOverall");
                     BTLogger.LogCombatFormat("Combat {0} damage {1}", $"Action{index}_damage_{index * 10}", "ProductionOverall");
-                    BTLogger.LogStructured(Microsoft.Extensions.Logging.LogLevel.Information, LogCategory.Movement, 
+                    BTLogger.LogStructured(LogLevel.Information, LogCategory.Movement, 
                         "Movement {Index} to {Position}", 
                         new { Index = index, Position = new Vector3(index, index, index) }, "ProductionOverall");
                     
-                    if (UnityEngine.Random.Range(0, 100) < 5) // 5%の確率でエラーログ
+                    if (Random.Range(0, 100) < 5) // 5%の確率でエラーログ
                     {
                         BTLogger.LogError(LogCategory.System, $"Simulated error {index}", "ProductionOverall");
                     }
@@ -291,7 +295,7 @@ namespace ArcBT.Tests
             var finalLogs = BTLogger.GetRecentLogs(100);
             Assert.AreEqual(0, finalLogs.Length, "Phase 6.3: 履歴管理はZLoggerに委謗 - 空配列");
             
-            UnityEngine.Debug.Log($"ZLogger Production Performance: {elapsedTime:F2}s, {memoryIncrease:F2}MB for {totalLogs * 3}+ logs");
+            Debug.Log($"ZLogger Production Performance: {elapsedTime:F2}s, {memoryIncrease:F2}MB for {totalLogs * 3}+ logs");
         }
     }
 }

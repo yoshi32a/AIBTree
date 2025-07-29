@@ -1,9 +1,8 @@
-using NUnit.Framework;
-using UnityEngine;
-using UnityEngine.TestTools;
-using System.Linq;
+using System;
 using ArcBT.Logger;
 using Microsoft.Extensions.Logging;
+using NUnit.Framework;
+using UnityEngine;
 
 namespace ArcBT.Tests
 {
@@ -31,17 +30,17 @@ namespace ArcBT.Tests
             Assert.DoesNotThrow(() =>
             {
                 // 異なるレベルのログを出力（ZLoggerが実際のフィルタリングを制御）
-                BTLogger.Log(Microsoft.Extensions.Logging.LogLevel.Error, LogCategory.System, "Error message");
-                BTLogger.Log(Microsoft.Extensions.Logging.LogLevel.Warning, LogCategory.System, "Warning message");
-                BTLogger.Log(Microsoft.Extensions.Logging.LogLevel.Information, LogCategory.System, "Info message");
-                BTLogger.Log(Microsoft.Extensions.Logging.LogLevel.Debug, LogCategory.System, "Debug message");
+                BTLogger.Log(LogLevel.Error, LogCategory.System, "Error message");
+                BTLogger.Log(LogLevel.Warning, LogCategory.System, "Warning message");
+                BTLogger.Log(LogLevel.Information, LogCategory.System, "Info message");
+                BTLogger.Log(LogLevel.Debug, LogCategory.System, "Debug message");
             }, "基本ログ出力で例外が発生");
             
             // Assert: ZLoggerに委譲されているため、履歴取得は空配列
             var logs = BTLogger.GetRecentLogs(10);
             Assert.AreEqual(0, logs.Length, "Phase 6.4: 履歴管理はZLoggerに委譲されているため空配列");
             
-            UnityEngine.Debug.Log("Phase 6.4: 基本ログ出力テスト完了");
+            Debug.Log("Phase 6.4: 基本ログ出力テスト完了");
         }
 
         /// <summary>カテゴリ別ログ出力のテスト</summary>
@@ -52,16 +51,16 @@ namespace ArcBT.Tests
             Assert.DoesNotThrow(() =>
             {
                 // 異なるカテゴリのログを出力（ZLoggerがタグベースで制御）
-                BTLogger.Log(Microsoft.Extensions.Logging.LogLevel.Information, LogCategory.Combat, "Combat message");
-                BTLogger.Log(Microsoft.Extensions.Logging.LogLevel.Information, LogCategory.Movement, "Movement message");
-                BTLogger.Log(Microsoft.Extensions.Logging.LogLevel.Information, LogCategory.System, "System message");
+                BTLogger.Log(LogLevel.Information, LogCategory.Combat, "Combat message");
+                BTLogger.Log(LogLevel.Information, LogCategory.Movement, "Movement message");
+                BTLogger.Log(LogLevel.Information, LogCategory.System, "System message");
             }, "カテゴリ別ログ出力で例外が発生");
             
             // Assert: ZLoggerに委譲されているため、履歴取得は空配列
             var logs = BTLogger.GetRecentLogs(10);
             Assert.AreEqual(0, logs.Length, "Phase 6.4: 履歴管理はZLoggerに委譲されているため空配列");
             
-            UnityEngine.Debug.Log("Phase 6.4: カテゴリ別ログ出力テスト完了");
+            Debug.Log("Phase 6.4: カテゴリ別ログ出力テスト完了");
         }
 
         /// <summary>ログ履歴管理のテスト</summary>
@@ -84,7 +83,7 @@ namespace ArcBT.Tests
             Assert.AreEqual(0, recentLogs5.Length, "Phase 6.3: 履歴管理はZLoggerに委譲 - 空配列");
             Assert.AreEqual(0, recentLogs10.Length, "Phase 6.3: 履歴管理はZLoggerに委譲 - 空配列");
             
-            UnityEngine.Debug.Log("Phase 6.3: ログ履歴管理テスト完了 - ZLoggerプロバイダーに委譲");
+            Debug.Log("Phase 6.3: ログ履歴管理テスト完了 - ZLoggerプロバイダーに委譲");
         }
 
         /// <summary>カテゴリ別ログ取得のテスト</summary>
@@ -105,7 +104,7 @@ namespace ArcBT.Tests
             var combatLogs = BTLogger.GetLogsByCategory(LogCategory.Combat, 10);
             Assert.AreEqual(0, combatLogs.Length, "Phase 6.3: カテゴリ別履歴管理はZLoggerに委譲 - 空配列");
             
-            UnityEngine.Debug.Log("Phase 6.3: カテゴリ別ログ取得テスト完了 - ZLoggerタグベース管理");
+            Debug.Log("Phase 6.3: カテゴリ別ログ取得テスト完了 - ZLoggerタグベース管理");
         }
 
         /// <summary>便利メソッドのテスト</summary>
@@ -126,7 +125,7 @@ namespace ArcBT.Tests
             var logs = BTLogger.GetRecentLogs(10);
             Assert.AreEqual(0, logs.Length, "Phase 6.4: 履歴管理はZLoggerに委譲 - 空配列");
             
-            UnityEngine.Debug.Log("Phase 6.4: 便利メソッドテスト完了");
+            Debug.Log("Phase 6.4: 便利メソッドテスト完了");
         }
 
         /// <summary>継続ログ出力のテスト</summary>
@@ -145,7 +144,7 @@ namespace ArcBT.Tests
             var logs = BTLogger.GetRecentLogs(10);
             Assert.AreEqual(0, logs.Length, "Phase 6.4: 履歴管理はZLoggerに委譲 - 常に空配列");
             
-            UnityEngine.Debug.Log("Phase 6.4: 継続ログ出力テスト完了");
+            Debug.Log("Phase 6.4: 継続ログ出力テスト完了");
         }
 
         /// <summary>削除されたレガシーAPIテスト（Phase 6.4で削除）</summary>
@@ -165,7 +164,7 @@ namespace ArcBT.Tests
             Assert.IsNull(btLoggerType.GetMethod("ResetToDefaults"), "ResetToDefaultsメソッドが削除されていない");
             Assert.IsNull(btLoggerType.GetMethod("ClearHistory"), "ClearHistoryメソッドが削除されていない");
             
-            UnityEngine.Debug.Log("Phase 6.4: レガシーAPI削除確認テスト完了");
+            Debug.Log("Phase 6.4: レガシーAPI削除確認テスト完了");
         }
 
         /// <summary>エラーログ機能のテスト</summary>
@@ -182,7 +181,7 @@ namespace ArcBT.Tests
             var logs = BTLogger.GetRecentLogs(1);
             Assert.AreEqual(0, logs.Length, "Phase 6.3: 履歴管理はZLoggerに委譲 - 空配列");
             
-            UnityEngine.Debug.Log("Phase 6.3: エラーログテスト完了 - ZLoggerエラー出力");
+            Debug.Log("Phase 6.3: エラーログテスト完了 - ZLoggerエラー出力");
         }
 
         /// <summary>タイムスタンプ機能のテスト</summary>
@@ -190,20 +189,20 @@ namespace ArcBT.Tests
         public void TestTimestampFunctionality()
         {
             // Arrange & Act: ログ出力が例外なく動作することを確認
-            var beforeTime = System.DateTime.Now;
+            var beforeTime = DateTime.Now;
             
             Assert.DoesNotThrow(() =>
             {
                 BTLogger.LogSystem("Timestamp test");
             }, "タイムスタンプ付きログ出力で例外が発生");
             
-            var afterTime = System.DateTime.Now;
+            var afterTime = DateTime.Now;
             
             // Assert: ZLoggerがタイムスタンプを管理
             var logs = BTLogger.GetRecentLogs(1);
             Assert.AreEqual(0, logs.Length, "Phase 6.3: タイムスタンプ管理はZLoggerに委譲 - 空配列");
                 
-            UnityEngine.Debug.Log($"Phase 6.3: タイムスタンプテスト完了 - ZLoggerタイムスタンプ管理 ({(afterTime - beforeTime).TotalMilliseconds:F2}ms)");
+            Debug.Log($"Phase 6.3: タイムスタンプテスト完了 - ZLoggerタイムスタンプ管理 ({(afterTime - beforeTime).TotalMilliseconds:F2}ms)");
         }
 
         /// <summary>ZLogger構造化ログ機能のテスト</summary>
@@ -218,12 +217,12 @@ namespace ArcBT.Tests
                 Active = true 
             };
             
-            BTLogger.LogStructured(Microsoft.Extensions.Logging.LogLevel.Information, LogCategory.System, 
+            BTLogger.LogStructured(LogLevel.Information, LogCategory.System,
                 "Player {PlayerId} scored {Score} in level {Level} with status {Active}", 
                 testData, "StructuredTest");
             
             // Assert: ログが記録されていることを確認（構造化ログは内部処理されるため履歴確認のみ）
-            UnityEngine.Debug.Log("ZLogger structured logging test: Successfully executed structured log");
+            Debug.Log("ZLogger structured logging test: Successfully executed structured log");
             Assert.Pass("ZLoggerの構造化ログ機能が正常に動作");
         }
 
@@ -236,7 +235,7 @@ namespace ArcBT.Tests
             BTLogger.LogMovementFormat("Moving to position {0} at speed {1}", "Position_Vector3_Speed_Float", "FormatTest");
             
             // Assert: フォーマットメソッドが正常に実行されることを確認
-            UnityEngine.Debug.Log("ZLogger format methods test: Successfully executed formatted logs");
+            Debug.Log("ZLogger format methods test: Successfully executed formatted logs");
             Assert.Pass("ZLoggerの高性能フォーマットメソッドが正常に動作");
         }
 
@@ -248,7 +247,7 @@ namespace ArcBT.Tests
             BTLogger.LogPerformance("TestOperation", 123.45f, "PerformanceTest");
             
             // Assert: パフォーマンス測定ログが正常に実行されることを確認
-            UnityEngine.Debug.Log("ZLogger performance logging test: Successfully logged performance data");
+            Debug.Log("ZLogger performance logging test: Successfully logged performance data");
             Assert.Pass("ZLoggerのパフォーマンス測定ログ機能が正常に動作");
         }
 
@@ -268,7 +267,7 @@ namespace ArcBT.Tests
             var logs = BTLogger.GetRecentLogs(2);
             Assert.AreEqual(0, logs.Length, "Phase 6.3: 履歴管理はZLoggerに委譲 - 空配列");
             
-            UnityEngine.Debug.Log("Phase 6.3: ZLoggerリソース解放テスト完了 - 後方互換性維持");
+            Debug.Log("Phase 6.3: ZLoggerリソース解放テスト完了 - 後方互換性維持");
         }
     }
 }

@@ -1,10 +1,9 @@
+using System.Collections.Generic;
+using ArcBT.Core;
+using ArcBT.Samples.RPG.Components;
+using ArcBT.Samples.RPG.Conditions;
 using NUnit.Framework;
 using UnityEngine;
-using UnityEngine.TestTools;
-using ArcBT.Core;
-using ArcBT.Logger;
-using ArcBT.Samples.RPG.Conditions;
-using ArcBT.Samples.RPG.Components;
 
 namespace ArcBT.Tests.Samples
 {
@@ -381,8 +380,8 @@ namespace ArcBT.Tests.Samples
     /// <summary>テスト用のRPGCondition Inventoryコンポーネント</summary>
     public class TestRPGConditionInventoryComponent : MonoBehaviour
     {
-        readonly System.Collections.Generic.Dictionary<string, int> items = 
-            new System.Collections.Generic.Dictionary<string, int>();
+        readonly Dictionary<string, int> items = 
+            new Dictionary<string, int>();
 
         public void AddItem(string itemName, int quantity)
         {

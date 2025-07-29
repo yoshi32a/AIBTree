@@ -1,11 +1,9 @@
-using NUnit.Framework;
-using UnityEngine;
-using UnityEngine.TestTools;
 using ArcBT.Core;
+using ArcBT.Samples.RPG;
 using ArcBT.Samples.RPG.Actions;
 using ArcBT.Samples.RPG.Conditions;
-using ArcBT.Samples.RPG;
-using ArcBT.Logger;
+using NUnit.Framework;
+using UnityEngine;
 
 namespace ArcBT.Tests.Samples
 {

@@ -1,11 +1,10 @@
-using NUnit.Framework;
-using UnityEngine;
-using UnityEngine.TestTools;
 using System;
 using System.Diagnostics;
 using ArcBT.Logger;
 using Microsoft.Extensions.Logging;
+using NUnit.Framework;
 using ZLogger;
+using Debug = UnityEngine.Debug;
 using LogCategory = ArcBT.Logger.LogCategory;
 
 namespace ArcBT.Tests
@@ -23,7 +22,7 @@ namespace ArcBT.Tests
             // Unity EditorTest環境用LoggerFactory（外部プロバイダーなし）
             testLoggerFactory = LoggerFactory.Create(builder =>
             {
-                builder.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
+                builder.SetMinimumLevel(LogLevel.Trace);
                 // EditorTestでは外部プロバイダーを使わずシンプルに設定
                 builder.AddZLoggerConsole();
             });
@@ -61,7 +60,7 @@ namespace ArcBT.Tests
             Assert.Less(allocatedBytes, 100, 
                 $"基本ログ出力で予想以上のメモリアロケーションが発生: {allocatedBytes} bytes");
             
-            UnityEngine.Debug.Log($"Phase 6.3 基本ログアロケーション: {allocatedBytes} bytes");
+            Debug.Log($"Phase 6.3 基本ログアロケーション: {allocatedBytes} bytes");
         }
         
         /// <summary>構造化ログのゼロアロケーション検証</summary>
@@ -77,7 +76,7 @@ namespace ArcBT.Tests
             
             // 構造化ログ出力
             var testData = new { PlayerId = 123, Score = 456.7f, Level = "TestLevel" };
-            BTLogger.LogStructured(Microsoft.Extensions.Logging.LogLevel.Information, 
+            BTLogger.LogStructured(LogLevel.Information, 
                 LogCategory.System, "Player {PlayerId} scored {Score} in level {Level}", 
                 testData, "StructuredTest");
             
@@ -88,7 +87,7 @@ namespace ArcBT.Tests
             Assert.Less(allocatedBytes, 200, 
                 $"構造化ログで予想以上のメモリアロケーションが発生: {allocatedBytes} bytes");
             
-            UnityEngine.Debug.Log($"Phase 6.3 構造化ログアロケーション: {allocatedBytes} bytes");
+            Debug.Log($"Phase 6.3 構造化ログアロケーション: {allocatedBytes} bytes");
         }
         
         /// <summary>フォーマットログの最適化検証</summary>
@@ -113,7 +112,7 @@ namespace ArcBT.Tests
             Assert.Less(allocatedBytes, 150, 
                 $"フォーマットログで予想以上のメモリアロケーションが発生: {allocatedBytes} bytes");
             
-            UnityEngine.Debug.Log($"Phase 6.3 フォーマットログアロケーション: {allocatedBytes} bytes");
+            Debug.Log($"Phase 6.3 フォーマットログアロケーション: {allocatedBytes} bytes");
         }
         
         /// <summary>大量ログ処理のパフォーマンス検証</summary>
@@ -137,7 +136,7 @@ namespace ArcBT.Tests
                 
                 if (i % 100 == 0)
                 {
-                    BTLogger.LogStructured(Microsoft.Extensions.Logging.LogLevel.Information, 
+                    BTLogger.LogStructured(LogLevel.Information, 
                         LogCategory.System, "Progress: {iteration}/{total}", 
                         new { iteration = i, total = logCount }, "BulkTest");
                 }
@@ -155,9 +154,9 @@ namespace ArcBT.Tests
             Assert.Less(allocatedBytes, logCount * 50, 
                 $"大量ログ処理でメモリ効率が悪すぎます: {allocatedBytes} bytes for {logCount} logs");
             
-            UnityEngine.Debug.Log($"Phase 6.3 大量ログパフォーマンス: {stopwatch.ElapsedMilliseconds}ms for {logCount} logs");
-            UnityEngine.Debug.Log($"Phase 6.3 平均処理時間: {avgTimePerLog:F3}ms/log");
-            UnityEngine.Debug.Log($"Phase 6.3 メモリ効率: {allocatedBytes} bytes ({(float)allocatedBytes/logCount:F1} bytes/log)");
+            Debug.Log($"Phase 6.3 大量ログパフォーマンス: {stopwatch.ElapsedMilliseconds}ms for {logCount} logs");
+            Debug.Log($"Phase 6.3 平均処理時間: {avgTimePerLog:F3}ms/log");
+            Debug.Log($"Phase 6.3 メモリ効率: {allocatedBytes} bytes ({(float)allocatedBytes/logCount:F1} bytes/log)");
         }
         
         /// <summary>Phase 6.4での履歴管理API確認</summary>
@@ -179,7 +178,7 @@ namespace ArcBT.Tests
             var categoryLogs = BTLogger.GetLogsByCategory(LogCategory.System, 5);
             Assert.AreEqual(0, categoryLogs.Length, "GetLogsByCategory()が空配列を返さない");
             
-            UnityEngine.Debug.Log("Phase 6.4: 履歴管理API確認完了");
+            Debug.Log("Phase 6.4: 履歴管理API確認完了");
         }
         
         /// <summary>LoggerFactory設定状況の確認</summary>

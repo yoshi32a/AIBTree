@@ -1,12 +1,13 @@
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using NUnit.Framework;
-using UnityEngine;
-using UnityEngine.TestTools;
-using ArcBT.Parser;
 using ArcBT.Core;
 using ArcBT.Logger;
+using ArcBT.Parser;
+using NUnit.Framework;
+using UnityEngine;
 
 namespace ArcBT.Tests
 {
@@ -92,7 +93,7 @@ namespace ArcBT.Tests
                         BTLogger.Error($"❌ Failed to parse: {fileName} - returned null");
                     }
                 }
-                catch (System.Exception ex)
+                catch (Exception ex)
                 {
                     failedFiles.Add($"{fileName} ({ex.Message})");
                     BTLogger.Error($"❌ Exception while parsing {fileName}: {ex.Message}");
@@ -123,7 +124,7 @@ namespace ArcBT.Tests
         [Test][Description("各BTファイル（blackboard_sample.bt、team_coordination_sample.bt等）の詳細なノード構造を検証")]
         public void TestSpecificBTFileStructures()
         {
-            var testCases = new Dictionary<string, System.Action<BTNode>>
+            var testCases = new Dictionary<string, Action<BTNode>>
             {
                 {
                     "blackboard_sample.bt",
@@ -167,7 +168,7 @@ namespace ArcBT.Tests
                         testCase.Value(rootNode);
                         BTLogger.Info($"✅ Structure validation passed for: {testCase.Key}");
                     }
-                    catch (System.Exception ex)
+                    catch (Exception ex)
                     {
                         Assert.Fail($"Structure validation failed for {testCase.Key}: {ex.Message}");
                     }
@@ -319,7 +320,7 @@ namespace ArcBT.Tests
                 return;
             }
             
-            var stopwatch = new System.Diagnostics.Stopwatch();
+            var stopwatch = new Stopwatch();
             
             foreach (var filePath in btFiles)
             {
