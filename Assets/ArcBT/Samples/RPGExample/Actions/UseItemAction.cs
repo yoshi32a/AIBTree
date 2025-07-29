@@ -31,7 +31,7 @@ namespace ArcBT.Samples.RPG.Actions
             var inventory = ownerComponent.GetComponent<Inventory>();
             if (inventory == null)
             {
-                BTLogger.LogError(LogCategory.System, "UseItem: No Inventory component found", Name, ownerComponent);
+                BTLogger.LogSystemError("System", "UseItem: No Inventory component found");
                 return BTNodeResult.Failure;
             }
 

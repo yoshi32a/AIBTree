@@ -22,7 +22,7 @@ namespace ArcBT.Samples.RPG.Conditions
 
             if (inventoryComponent == null)
             {
-                BTLogger.LogError(LogCategory.System, $"HasItem '{Name}': No Inventory component found on {gameObject.name}", Name, ownerComponent);
+                BTLogger.LogSystemError("System", $"HasItem '{Name}': No Inventory component found on {gameObject.name}");
             }
         }
 
@@ -32,13 +32,13 @@ namespace ArcBT.Samples.RPG.Conditions
 
             if (inventoryComponent == null)
             {
-                BTLogger.LogError(LogCategory.System, $"HasItem '{Name}': No inventory component - assuming no items", Name, ownerComponent);
+                BTLogger.LogSystemError("System", $"HasItem '{Name}': No inventory component - assuming no items");
                 return BTNodeResult.Failure;
             }
 
             if (string.IsNullOrEmpty(itemType))
             {
-                BTLogger.LogError(LogCategory.System, $"HasItem '{Name}': No item type specified", Name, ownerComponent);
+                BTLogger.LogSystemError("System", $"HasItem '{Name}': No item type specified");
                 return BTNodeResult.Failure;
             }
 

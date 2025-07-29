@@ -35,7 +35,7 @@ namespace ArcBT.Samples.RPG.Actions
         {
             if (ownerComponent == null || blackBoard == null)
             {
-                BTLogger.LogError(LogCategory.Combat, "AttackTarget: Owner or BlackBoard is null", Name, ownerComponent);
+                BTLogger.LogSystemError("Combat", "AttackTarget: Owner or BlackBoard is null");
                 return BTNodeResult.Failure;
             }
 
@@ -74,7 +74,7 @@ namespace ArcBT.Samples.RPG.Actions
             var enemyHealth = enemyTarget.GetComponent<Health>();
             if (enemyHealth == null)
             {
-                BTLogger.LogError(LogCategory.Combat, $"AttackTarget: Enemy '{enemyTarget.name}' has no Health component", Name, ownerComponent);
+                BTLogger.LogSystemError("Combat", $"AttackTarget: Enemy '{enemyTarget.name}' has no Health component");
                 return BTNodeResult.Failure;
             }
 

@@ -24,7 +24,7 @@ namespace ArcBT.Samples.RPG.Conditions
 
             if (detectionRange <= 0)
             {
-                BTLogger.LogError(LogCategory.System, $"EnemyCheck '{Name}': Invalid detection range: {detectionRange}", Name, ownerComponent);
+                BTLogger.LogSystemError("System", $"EnemyCheck '{Name}': Invalid detection range: {detectionRange}");
                 return BTNodeResult.Failure;
             }
 

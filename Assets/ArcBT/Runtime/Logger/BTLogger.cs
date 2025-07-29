@@ -181,10 +181,7 @@ namespace ArcBT.Logger
         public static void Warning(string message, string nodeName = "System")
             => LogSystemInternal2(globalLogger, nodeName, $"[WARNING] {message}");
 
-        // 旧API互換性メソッド
-        public static void LogError(LogCategory category, string message, string nodeName = "", object context = null)
-            => LogSystemErrorInternal(globalLogger, nodeName, $"[{GetCategoryTag(category)}] {message}");
-
+        // 旧API互換性メソッド（LogCategory削除済み）
         public static void LogCombat(string message, string nodeName = "", object context = null)
             => LogSystemInternal2(globalLogger, nodeName, $"[ATK] {message}");
 
@@ -193,36 +190,6 @@ namespace ArcBT.Logger
 
         public static void LogCondition(string message, string nodeName = "", object context = null)
             => LogConditionResultInternal(globalLogger, nodeName, "condition", message.Contains("true") || message.Contains("Success"));
-
-        public static void Log(LogLevel level, LogCategory category, string message, string nodeName = "", object context = null)
-        {
-            var categoryTag = GetCategoryTag(category);
-            switch (level)
-            {
-                case LogLevel.Error:
-                    LogSystemErrorInternal(globalLogger, nodeName, $"{categoryTag} {message}");
-                    break;
-                default:
-                    LogSystemInternal2(globalLogger, nodeName, $"{categoryTag} {message}");
-                    break;
-            }
-        }
-
-        // カテゴリタグヘルパー
-        static string GetCategoryTag(LogCategory category)
-        {
-            return category switch
-            {
-                LogCategory.Combat => "[ATK]",
-                LogCategory.Movement => "[MOV]",
-                LogCategory.Condition => "[CHK]",
-                LogCategory.BlackBoard => "[BBD]",
-                LogCategory.Parser => "[PRS]",
-                LogCategory.System => "[SYS]",
-                LogCategory.Debug => "[DBG]",
-                _ => "[UNK]"
-            };
-        }
 
         /// <summary>
         /// 後方互換性：レガシーAPI削除のため何もしない
@@ -233,15 +200,4 @@ namespace ArcBT.Logger
         }
     }
 
-    // LogCategory列挙型の再定義（後方互換性のため）
-    public enum LogCategory
-    {
-        System,
-        Combat,
-        Movement,
-        Condition,
-        BlackBoard,
-        Parser,
-        Debug
-    }
 }

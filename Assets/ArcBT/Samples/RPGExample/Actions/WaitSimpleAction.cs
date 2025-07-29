@@ -31,7 +31,7 @@ namespace ArcBT.Samples.RPG.Actions
             
             if (aiController == null)
             {
-                BTLogger.LogError(LogCategory.System, "WaitSimpleAction requires ExampleAI component");
+                BTLogger.LogSystemError("System", "WaitSimpleAction requires ExampleAI component");
             }
         }
 
@@ -39,12 +39,12 @@ namespace ArcBT.Samples.RPG.Actions
         {
             if (aiController == null)
             {
-                BTLogger.LogError(LogCategory.System, "ExampleAI controller not found");
+                BTLogger.LogSystemError("System", "ExampleAI controller not found");
                 return BTNodeResult.Failure;
             }
 
             aiController.Wait(duration);
-            BTLogger.Log(Microsoft.Extensions.Logging.LogLevel.Debug, LogCategory.System, $"Executed wait for {duration} seconds");
+            BTLogger.LogSystem($"Executed wait for {duration} seconds");
             return BTNodeResult.Success;
         }
     }

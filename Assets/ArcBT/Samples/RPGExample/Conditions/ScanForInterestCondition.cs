@@ -111,13 +111,13 @@ namespace ArcBT.Samples.RPG.Conditions
             catch (UnityException)
             {
                 // Unity固有の例外（タグ未定義など）をキャッチ
-                BTLogger.LogError(LogCategory.System, $"Tag '{tagName}' is not defined in Unity Tag Manager.", Name, ownerComponent);
+                BTLogger.LogSystemError("System", $"Tag '{tagName}' is not defined in Unity Tag Manager.");
                 return false;
             }
             catch (Exception ex)
             {
                 // その他の例外
-                BTLogger.LogError(LogCategory.System, $"Unexpected error checking tag '{tagName}': {ex.Message}", Name, ownerComponent);
+                BTLogger.LogSystemError("System", $"Unexpected error checking tag '{tagName}': {ex.Message}");
                 return false;
             }
         }

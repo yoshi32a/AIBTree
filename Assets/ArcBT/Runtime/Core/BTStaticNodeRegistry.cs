@@ -37,7 +37,7 @@ namespace ArcBT.Core
                 return builtinNode;
             }
 
-            BTLogger.LogError(LogCategory.Parser, $"Failed to create node: {nodeTypeString} {scriptName}");
+            BTLogger.LogSystemError("Parser", $"Failed to create node: {nodeTypeString} {scriptName}");
             return null;
         }
 
@@ -52,7 +52,7 @@ namespace ArcBT.Core
         {
             if (allNodes.ContainsKey(scriptName))
             {
-                BTLogger.Log(LogLevel.Warning, LogCategory.System, $"Node '{scriptName}' is already registered. Overwriting.");
+                BTLogger.LogSystem("System", $"Node '{scriptName}' is already registered. Overwriting.");
             }
 
             allNodes[scriptName] = factory;

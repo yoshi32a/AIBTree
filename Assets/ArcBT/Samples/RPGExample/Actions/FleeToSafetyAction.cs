@@ -104,7 +104,7 @@ namespace ArcBT.Samples.RPG.Actions
                 }
                 else
                 {
-                    BTLogger.LogError(LogCategory.Movement, "FleeToSafety: No threat detected", Name, ownerComponent);
+                    BTLogger.LogSystemError("Movement", "FleeToSafety: No threat detected");
                     return BTNodeResult.Failure;
                 }
             }

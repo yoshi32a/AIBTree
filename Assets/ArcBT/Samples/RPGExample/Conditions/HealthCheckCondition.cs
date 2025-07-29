@@ -22,7 +22,7 @@ namespace ArcBT.Samples.RPG.Conditions
 
             if (healthComponent == null)
             {
-                BTLogger.LogError(LogCategory.System, $"HealthCheck: No Health component found on {gameObject.name}", Name, ownerComponent);
+                BTLogger.LogSystemError("System", $"HealthCheck: No Health component found on {gameObject.name}");
             }
         }
 
@@ -47,11 +47,11 @@ namespace ArcBT.Samples.RPG.Conditions
 
             if (healthComponent == null)
             {
-                BTLogger.LogError(LogCategory.System, $"HealthCheck '{Name}': Health component is null - trying to find it again", Name, ownerComponent);
+                BTLogger.LogSystemError("System", $"HealthCheck '{Name}': Health component is null - trying to find it again");
                 healthComponent = GetComponent<Health>();
                 if (healthComponent == null)
                 {
-                    BTLogger.LogError(LogCategory.System, $"HealthCheck '{Name}': Still no Health component found!", Name, ownerComponent);
+                    BTLogger.LogSystemError("System", $"HealthCheck '{Name}': Still no Health component found!");
                     return BTNodeResult.Failure;
                 }
             }

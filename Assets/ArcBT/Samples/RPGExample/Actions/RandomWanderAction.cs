@@ -59,7 +59,7 @@ namespace ArcBT.Samples.RPG
         {
             if (ownerComponent == null || movementController == null)
             {
-                BTLogger.LogError(LogCategory.Movement, "RandomWander: Owner or MovementController is null", Name, ownerComponent);
+                BTLogger.LogSystemError("Movement", "RandomWander: Owner or MovementController is null");
                 return BTNodeResult.Failure;
             }
 

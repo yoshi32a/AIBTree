@@ -92,16 +92,15 @@ namespace ArcBT.Core
 
             // 構造化ログを使用
             var logLevel = result == BTNodeResult.Failure ? Microsoft.Extensions.Logging.LogLevel.Warning : Microsoft.Extensions.Logging.LogLevel.Information;
-            BTLogger.Log(logLevel, LogCategory.System,
+            BTLogger.LogSystem(RootNode.Name,
                 $"BT[{RootNode.Name}] → {result}{changeInfo} " +
                 $"(実行回数: {executionCount}, 時刻: {Time.time:F1}s)" +
-                (repetitionCount > 10 ? $" [繰り返し×{repetitionCount}]" : ""),
-                RootNode.Name, this);
+                (repetitionCount > 10 ? $" [繰り返し×{repetitionCount}]" : ""));
 
             // BlackBoard状態も表示（変化があった場合）
             if (BlackBoard.HasRecentChanges())
             {
-                BTLogger.LogBlackBoard($"BlackBoard更新: {BlackBoard.GetRecentChangeSummary()}", "", this);
+                BTLogger.LogBlackBoard($"BlackBoard更新: {BlackBoard.GetRecentChangeSummary()}", "");
             }
 
             lastLogTime = Time.time;
@@ -124,7 +123,7 @@ namespace ArcBT.Core
                     }
                     else
                     {
-                        BTLogger.LogError(LogCategory.System, $"BT file not found: {filePath}", "", this);
+                        BTLogger.LogSystemError("System", $"BT file not found: {filePath}");
                         return false;
                     }
                 }
@@ -145,12 +144,12 @@ namespace ArcBT.Core
                     return true;
                 }
 
-                BTLogger.LogError(LogCategory.Parser, $"Failed to parse behaviour tree: {filePath}", "", this);
+                BTLogger.LogSystemError("Parser", $"Failed to parse behaviour tree: {filePath}");
                 return false;
             }
             catch (System.Exception e)
             {
-                BTLogger.LogError(LogCategory.System, $"Error loading behaviour tree: {e.Message}", "", this);
+                BTLogger.LogSystemError("System", $"Error loading behaviour tree: {e.Message}");
                 return false;
             }
         }
@@ -165,7 +164,7 @@ namespace ArcBT.Core
             // BlackBoardの確認
             if (BlackBoard == null)
             {
-                BTLogger.LogError(LogCategory.BlackBoard, $"❌ InitializeNodeTree: BlackBoard is null for node {node.Name}", node.Name, this);
+                BTLogger.LogSystemError("BlackBoard", $"❌ InitializeNodeTree: BlackBoard is null for node {node.Name}");
                 return;
             }
 
@@ -208,12 +207,12 @@ namespace ArcBT.Core
                     return true;
                 }
 
-                BTLogger.LogError(LogCategory.Parser, "Failed to parse behaviour tree content", "", this);
+                BTLogger.LogSystemError("Parser", "Failed to parse behaviour tree content");
                 return false;
             }
             catch (System.Exception e)
             {
-                BTLogger.LogError(LogCategory.System, $"Error parsing behaviour tree content: {e.Message}", "", this);
+                BTLogger.LogSystemError("System", $"Error parsing behaviour tree content: {e.Message}");
                 return false;
             }
         }
@@ -273,7 +272,7 @@ namespace ArcBT.Core
             }
             else
             {
-                BTLogger.LogError(LogCategory.BlackBoard, "BlackBoard is null", "", this);
+                BTLogger.LogSystemError("BlackBoard", "BlackBoard is null");
             }
         }
 

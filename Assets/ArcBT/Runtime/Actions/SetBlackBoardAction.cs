@@ -25,13 +25,13 @@ namespace ArcBT.Actions
         {
             if (blackBoard == null)
             {
-                BTLogger.LogError(LogCategory.BlackBoard, "SetBlackBoard: BlackBoard is null", Name, ownerComponent);
+                BTLogger.LogSystemError("BlackBoard", "SetBlackBoard: BlackBoard is null");
                 return BTNodeResult.Failure;
             }
 
             if (assignments.Count == 0)
             {
-                BTLogger.LogError(LogCategory.BlackBoard, "SetBlackBoard: No assignments specified", Name, ownerComponent);
+                BTLogger.LogSystemError("BlackBoard", "SetBlackBoard: No assignments specified");
                 return BTNodeResult.Failure;
             }
 
@@ -52,7 +52,7 @@ namespace ArcBT.Actions
             }
             catch (System.Exception e)
             {
-                BTLogger.LogError(LogCategory.BlackBoard, $"SetBlackBoard error: {e.Message}", Name, ownerComponent);
+                BTLogger.LogSystemError("BlackBoard", $"SetBlackBoard error: {e.Message}");
                 return BTNodeResult.Failure;
             }
         }
@@ -64,7 +64,7 @@ namespace ArcBT.Actions
         {
             if (string.IsNullOrEmpty(key))
             {
-                BTLogger.LogError(LogCategory.BlackBoard, "SetBlackBoard: Key is empty", Name, ownerComponent);
+                BTLogger.LogSystemError("BlackBoard", "SetBlackBoard: Key is empty");
                 return false;
             }
 

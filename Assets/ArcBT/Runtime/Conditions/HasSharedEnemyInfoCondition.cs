@@ -24,7 +24,7 @@ namespace ArcBT.Conditions
         {
             if (blackBoard == null)
             {
-                BTLogger.LogError(LogCategory.BlackBoard, "HasSharedEnemyInfo: BlackBoard is null");
+                BTLogger.LogSystemError("BlackBoard", "HasSharedEnemyInfo: BlackBoard is null");
                 return BTNodeResult.Failure;
             }
 

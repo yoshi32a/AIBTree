@@ -33,14 +33,14 @@ namespace ArcBT.Samples.RPG.Actions
         {
             if (ownerComponent == null)
             {
-                BTLogger.LogError(LogCategory.System, "❌ CastSpell: Owner component is null", Name, ownerComponent);
+                BTLogger.LogSystemError("System", "❌ CastSpell: Owner component is null");
                 return BTNodeResult.Failure;
             }
 
             var mana = ownerComponent.GetComponent<Mana>();
             if (mana == null)
             {
-                BTLogger.LogError(LogCategory.System, "⚠️ CastSpell: Manaコンポーネントが見つかりません", Name, ownerComponent);
+                BTLogger.LogSystemError("System", "⚠️ CastSpell: Manaコンポーネントが見つかりません");
                 return BTNodeResult.Failure;
             }
 
@@ -85,7 +85,7 @@ namespace ArcBT.Samples.RPG.Actions
             }
             else
             {
-                BTLogger.LogError(LogCategory.Combat, $"⚠️ CastSpell: ターゲット '{target.name}' にHealthコンポーネントがありません", Name, ownerComponent);
+                BTLogger.LogSystemError("Combat", $"⚠️ CastSpell: ターゲット '{target.name}' にHealthコンポーネントがありません");
                 return BTNodeResult.Failure;
             }
         }

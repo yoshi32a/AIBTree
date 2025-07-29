@@ -97,7 +97,7 @@ namespace ArcBT.Samples.RPG.Actions
             }
             else
             {
-                BTLogger.Log(Microsoft.Extensions.Logging.LogLevel.Warning, LogCategory.Combat, $"Target '{target.name}' has no Health component", "Attack");
+                BTLogger.LogSystemError("Attack", $"Target '{target.name}' has no Health component");
                 return BTNodeResult.Failure;
             }
         }

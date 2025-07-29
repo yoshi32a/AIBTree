@@ -47,7 +47,7 @@ namespace ArcBT.Conditions
                 }
                 else
                 {
-                    BTLogger.LogError(LogCategory.Condition, $"Distance2DCheck '{Name}': BlackBoard key '{blackBoardPositionKey}' not found", Name, ownerComponent);
+                    BTLogger.LogSystemError("Condition", $"Distance2DCheck '{Name}': BlackBoard key '{blackBoardPositionKey}' not found");
                     return BTNodeResult.Failure;
                 }
             }
@@ -89,9 +89,8 @@ namespace ArcBT.Conditions
                 _ => false
             };
 
-            BTLogger.Log(Microsoft.Extensions.Logging.LogLevel.Debug, LogCategory.Condition, 
-                $"Distance2DCheck '{Name}': Ground Distance={actualDistance:F2}, Target={distance:F2}, Comparison={comparison}, Result={conditionMet}", 
-                Name, ownerComponent);
+            BTLogger.LogSystem(Name, 
+                $"Ground Distance={actualDistance:F2}, Target={distance:F2}, Comparison={comparison}, Result={conditionMet}");
 
             return conditionMet ? BTNodeResult.Success : BTNodeResult.Failure;
         }
@@ -108,7 +107,7 @@ namespace ArcBT.Conditions
                 if (targetObject != null)
                 {
                     hasValidTarget = true;
-                    BTLogger.Log(Microsoft.Extensions.Logging.LogLevel.Debug, LogCategory.Condition, $"Distance2DCheck '{Name}': Found target by name '{targetName}'", Name, ownerComponent);
+                    BTLogger.LogSystem(Name, $"Found target by name '{targetName}'");
                     return;
                 }
             }
@@ -120,14 +119,13 @@ namespace ArcBT.Conditions
                 if (targetObject != null)
                 {
                     hasValidTarget = true;
-                    BTLogger.Log(Microsoft.Extensions.Logging.LogLevel.Debug, LogCategory.Condition, $"Distance2DCheck '{Name}': Found target by GameplayTag '{targetTag}'", Name, ownerComponent);
+                    BTLogger.LogSystem(Name, $"Found target by GameplayTag '{targetTag}'");
                     return;
                 }
             }
 
-            BTLogger.LogError(LogCategory.Condition, 
-                $"Distance2DCheck '{Name}': No target found (name='{targetName}', tag='{targetTag}')", 
-                Name, ownerComponent);
+            BTLogger.LogSystemError("Condition", 
+                $"Distance2DCheck '{Name}': No target found (name='{targetName}', tag='{targetTag}')");
         }
 
         /// <summary>
@@ -189,15 +187,13 @@ namespace ArcBT.Conditions
             }
             else
             {
-                BTLogger.LogError(LogCategory.Condition, 
-                    $"Distance2DCheck '{Name}': Failed to parse distance expression '{expression}'", 
-                    Name, ownerComponent);
+                BTLogger.LogSystemError("Condition", 
+                    $"Distance2DCheck '{Name}': Failed to parse distance expression '{expression}'");
                 distance = 5.0f;
             }
 
-            BTLogger.Log(Microsoft.Extensions.Logging.LogLevel.Debug, LogCategory.Condition, 
-                $"Distance2DCheck '{Name}': Parsed expression '{distanceExpression}' → {comparison} {distance}", 
-                Name, ownerComponent);
+            BTLogger.LogSystem(Name, 
+                $"Parsed expression '{distanceExpression}' → {comparison} {distance}");
         }
 
         public override void SetProperty(string propertyName, string value)

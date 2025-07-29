@@ -33,7 +33,7 @@ namespace ArcBT.Samples.RPG.Actions
         {
             if (ownerComponent == null || blackBoard == null)
             {
-                BTLogger.LogError(LogCategory.Movement, "MoveToEnemy: Owner or BlackBoard is null", Name, ownerComponent);
+                BTLogger.LogSystemError("Movement", "MoveToEnemy: Owner or BlackBoard is null");
                 return BTNodeResult.Failure;
             }
 

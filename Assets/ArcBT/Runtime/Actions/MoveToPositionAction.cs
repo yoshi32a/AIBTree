@@ -40,7 +40,7 @@ namespace ArcBT.Actions
                 }
                 else
                 {
-                    BTLogger.LogError(LogCategory.Movement, $"MoveToPosition: Target '{target}' not found!", Name, ownerComponent);
+                    BTLogger.LogSystemError("Movement", $"MoveToPosition: Target '{target}' not found!");
                     hasValidTarget = false;
                 }
             }
@@ -52,7 +52,7 @@ namespace ArcBT.Actions
 
             if (!hasValidTarget)
             {
-                BTLogger.LogError(LogCategory.Movement, $"MoveToPosition '{Name}': No valid target '{target}' - trying to find it again", Name, ownerComponent);
+                BTLogger.LogSystemError("Movement", $"MoveToPosition '{Name}': No valid target '{target}' - trying to find it again");
 
                 // ターゲットを再検索
                 if (!string.IsNullOrEmpty(target))
@@ -66,13 +66,13 @@ namespace ArcBT.Actions
                     }
                     else
                     {
-                        BTLogger.LogError(LogCategory.Movement, $"MoveToPosition '{Name}': Target '{target}' still not found!", Name, ownerComponent);
+                        BTLogger.LogSystemError("Movement", $"MoveToPosition '{Name}': Target '{target}' still not found!");
                         return BTNodeResult.Failure;
                     }
                 }
                 else
                 {
-                    BTLogger.LogError(LogCategory.Movement, $"MoveToPosition '{Name}': No target name specified!", Name, ownerComponent);
+                    BTLogger.LogSystemError("Movement", $"MoveToPosition '{Name}': No target name specified!");
                     return BTNodeResult.Failure;
                 }
             }
@@ -81,10 +81,8 @@ namespace ArcBT.Actions
             var currentPos = transform.position;
             var distance = Vector3.Distance(currentPos, targetPosition);
 
-            BTLogger.Log(Microsoft.Extensions.Logging.LogLevel.Debug, LogCategory.Movement, $"MoveToPosition '{Name}': Current pos = {currentPos}, Target pos = {targetPosition}", Name,
-                ownerComponent);
-            BTLogger.Log(Microsoft.Extensions.Logging.LogLevel.Debug, LogCategory.Movement, $"MoveToPosition '{Name}': Distance = {distance:F2}, Tolerance = {tolerance}", Name,
-                ownerComponent);
+            BTLogger.LogSystem("Movement", $"MoveToPosition '{Name}': Current pos = {currentPos}, Target pos = {targetPosition}");
+            BTLogger.LogSystem("Movement", $"MoveToPosition '{Name}': Distance = {distance:F2}, Tolerance = {tolerance}");
 
             if (distance <= tolerance)
             {
@@ -104,8 +102,7 @@ namespace ArcBT.Actions
                 blackBoard.SetValue($"{Name}_is_moving", true);
             }
 
-            BTLogger.Log(Microsoft.Extensions.Logging.LogLevel.Debug, LogCategory.Movement, $"MoveToPosition '{Name}': → Moving to '{target}' (Distance: {distance:F2}, Speed: {speed})",
-                Name, ownerComponent);
+            BTLogger.LogSystem("Movement", $"MoveToPosition '{Name}': → Moving to '{target}' (Distance: {distance:F2}, Speed: {speed})");
             return BTNodeResult.Running;
         }
 

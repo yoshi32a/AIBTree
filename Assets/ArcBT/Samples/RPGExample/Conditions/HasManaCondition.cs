@@ -31,7 +31,7 @@ namespace ArcBT.Samples.RPG.Conditions
             var mana = ownerComponent.GetComponent<Mana>();
             if (mana == null)
             {
-                BTLogger.LogError(LogCategory.System, "⚠️ HasMana: Manaコンポーネントが見つかりません", Name, ownerComponent);
+                BTLogger.LogSystemError("System", "⚠️ HasMana: Manaコンポーネントが見つかりません");
                 return BTNodeResult.Failure;
             }
 
