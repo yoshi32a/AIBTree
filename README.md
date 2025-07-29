@@ -11,6 +11,8 @@ Unity用の高度なBehaviourTreeシステムです。BlackBoardによるデー�
 - **🚀 並列実行**: Parallelノードによる複数行動の同時実行
 - **🏷️ GameplayTagSystem**: 階層的タグシステムによる柔軟な分類
 - **🔧 VSCode完全対応**: シンタックスハイライト、スニペット、自動補完
+- **⚙️ ソースジェネレーター**: BTNode属性による自動ノード登録
+- **📊 ZLogger統合**: ゼロアロケーション・構造化ログ出力
 
 ## プロジェクト構成
 
@@ -262,17 +264,33 @@ public class MyAction : BTActionNode
 
 ### 新しいActionノードの作成
 
-1. `Assets/Scripts/BehaviourTree/Actions/`に新しいクラスを作成
-2. `BTActionNode`を継承
-3. `ExecuteAction()`メソッドを実装
-4. `SetProperty()`でプロパティ処理を追加
+1. `Assets/ArcBT/Runtime/Actions/` または `Assets/ArcBT/Samples/RPGExample/Actions/` に新しいクラスを作成
+2. `ArcBT.Core.BTActionNode`を継承
+3. **BTNode属性を追加**: `[BTNode("ScriptName")]`
+4. `ExecuteAction()`メソッドを実装
+5. `SetProperty(string key, string value)`でプロパティ処理を追加
 
 ### 新しいConditionノードの作成
 
-1. `Assets/Scripts/BehaviourTree/Conditions/`に新しいクラスを作成
-2. `BTConditionNode`を継承
-3. `CheckCondition()`メソッドを実装
-4. `SetProperty()`でプロパティ処理を追加
+1. `Assets/ArcBT/Runtime/Conditions/` または `Assets/ArcBT/Samples/RPGExample/Conditions/` に新しいクラスを作成
+2. `ArcBT.Core.BTConditionNode`を継承
+3. **BTNode属性を追加**: `[BTNode("ScriptName")]`
+4. `protected override BTNodeResult CheckCondition()`メソッドを実装
+5. `SetProperty(string key, string value)`でプロパティ処理を追加
+
+### ソースジェネレーターによる自動登録
+
+BTNode属性を付けたノードはソースジェネレーターによって自動的に登録されます：
+
+```csharp
+[BTNode("MyCustomAction")]
+public class MyCustomAction : BTActionNode
+{
+    // コード生成された{AssemblyName}.NodeRegistration.g.csで自動登録
+}
+```
+
+ノードタイプは基底クラスから自動判定されるため、属性にはスクリプト名のみを指定します。
 
 ### デバッグ
 
@@ -313,18 +331,33 @@ AIBTreeは高速なノード登録システムを採用：
 - **IHealthインターフェース**: 型安全なコンポーネントアクセス
 - **自己登録パターン**: RPGサンプルノードは`RuntimeInitializeOnLoadMethod`で自動登録
 
-### ノード登録方法
+### ZLoggerベースの高性能ログシステム
+
+ArcBTはZLogger（Cysharp製）をベースとしたゼロアロケーションログシステムを採用：
 
 ```csharp
-// Runtimeノードは BTStaticNodeRegistry に直接登録
-BTStaticNodeRegistry.RegisterAction("MyAction", () => new MyAction());
+// カテゴリベースの構造化ログ
+BTLogger.LogSystem("System", "Node registered: MoveToPosition");
+BTLogger.LogCombat(this, $"Attacking target with damage: {damage}");
+BTLogger.LogMovement(this, $"Moving to position: {targetPosition}");
 
-// Samplesノードは自己登録パターンを使用
-[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
-static void RegisterNodes()
-{
-    BTStaticNodeRegistry.RegisterAction("CustomAction", () => new CustomAction());
-}
+// エラー・警告
+BTLogger.LogSystemError("Parser", "Failed to parse node");
+BTLogger.LogSystemWarning("Condition", "Health check failed");
+```
+
+#### ログ出力フォーマット
+```
+[INF][SYS]: Node registered: MoveToPosition
+[DBG][CMB][AttackAction]: Attacking target with damage: 30
+[ERR][PRS]: Failed to parse node: InvalidNodeType
+```
+
+#### コンパイル時最適化
+```csharp
+#if !ENABLE_BT_LOGGING
+// 本番環境ではログコードが完全に削除されます
+#endif
 ```
 
 ## 🆕 最新の改善 (2025年7月27日)

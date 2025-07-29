@@ -20,7 +20,8 @@
 - **動的条件チェック**: Action実行中の条件変化に即座に対応
 - **.btファイル形式**: 人間が読みやすい階層形式でのAI定義
 - **VSCode拡張機能**: シンタックスハイライト、自動補完、診断機能
-- **動的スクリプトローダー**: .btファイルからC#クラスへの動的マッピング
+- **ソースジェネレーターによる自動ノード登録**: BTNode属性による統一的なノード管理
+- **ZLoggerベースの高性能ログシステム**: ゼロアロケーション・構造化ログ出力
 - **視覚的フィードバックシステム**: リアルタイムAI状態表示、3Dアクションインジケーター、高度なカメラ制御
 
 ## Unity 開発ワークフロー
@@ -179,6 +180,31 @@ Unity プロジェクトは Unity エディタを通じてビルドされます�
    - BTNode属性により自動的に登録コードが生成される
    - 各アセンブリで `{AssemblyName}.NodeRegistration.g.cs` が自動生成
 
+### 新しいDecoratorノード作成（ArcBT対応）
+1. `Assets/ArcBT/Runtime/Decorators/` に `[DecoratorName]Decorator.cs` を作成（1ファイル1クラス）
+2. `ArcBT.Core.BTDecoratorNode` を継承
+3. **BTNode属性を追加**: `[BTNode("ScriptName")]` （自動判定）
+4. `protected override BTNodeResult DecorateExecution(BTNode child)` メソッドをオーバーライド
+5. `SetProperty(string key, string value)` メソッドをオーバーライド（必要に応じて）
+6. .btファイルで `DecoratorName { ... }` として使用
+
+### ソースジェネレーターによる自動ノード登録
+
+#### 概要
+BTNode属性を付けたすべてのノード（Action、Condition、Decorator、組み込みComposite）がソースジェネレーターによって自動的に登録されます。
+
+#### 仕組み
+1. **BTNode属性**: `[BTNode("ScriptName")]` をクラスに付与
+2. **自動判定**: 基底クラスからノードタイプを自動判別
+3. **コード生成**: 各アセンブリに登録コードを自動生成
+4. **統一管理**: BTStaticNodeRegistryですべてのノードを統一管理
+
+#### 利点
+- 手動登録不要
+- リフレクション不要で高性能
+- 新しいノードの追加が簡単
+- 組み込みノードも同じ仕組みで管理
+
 ### テストとデバッグ
 - **自動テスト実行**:
   - Unity Test Runner: `Window > General > Test Runner`
@@ -247,13 +273,13 @@ public class YourTestClass : BTTestBase
 ## BTLoggerシステム
 
 ### 概要
-BTLoggerは統合ログシステムで、ZLogger（Cysharp製）をベースとした高性能ログ機能を提供します。
+BTLoggerはZLogger（Cysharp製）をベースとした高性能ログシステムで、ゼロアロケーション・構造化ログ出力を提供します。
 
 ### 主要機能
-- **ILogger注入方式**: ユーザーのLoggerFactoryと完全統合
-- **ZLoggerベース**: ゼロアロケーション高性能ログ出力
-- **カテゴリベースタグ**: Combat, Movement, Parser等のカテゴリ別タグ
-- **ユーザー制御**: フィルタリング・出力先をユーザーが完全制御
+- **ZLoggerネイティブ統合**: Unity用プロバイダとシームレスに統合
+- **ゼロアロケーションログ**: 文字列補間による高性能ログ出力
+- **構造化ログ**: カテゴリ、ノード名、コンテキスト情報を含む
+- **コンパイル時最適化**: 本番環境での完全なログ削除オプション
 
 ### ユーザー設定（重要）
 ArcBTパッケージを使用する際は、アプリケーション起動時にBTLoggerを設定してください：
