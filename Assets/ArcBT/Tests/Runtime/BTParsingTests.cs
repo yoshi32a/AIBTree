@@ -27,7 +27,7 @@ namespace ArcBT.Tests
         public void TearDown()
         {
             parser = null;
-            BTLogger.ResetToDefaults(); // テスト後は通常モードに戻す
+            // Phase 6.4: ResetToDefaults削除に伴い削除
         }
 
         /// <summary>全ての.btファイルが正常にパースできるかテスト</summary>

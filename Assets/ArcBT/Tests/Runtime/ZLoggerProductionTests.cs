@@ -15,14 +15,12 @@ namespace ArcBT.Tests
         public override void SetUp()
         {
             base.SetUp();
-            BTLogger.ResetToDefaults();
-            BTLogger.ClearHistory();
+            // Phase 6.4: レガシーAPI削除に伴い削除
         }
 
         [TearDown] 
         public override void TearDown()
         {
-            BTLogger.ClearHistory();
             BTLogger.Dispose();
             base.TearDown();
         }

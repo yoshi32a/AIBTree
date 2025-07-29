@@ -15,14 +15,12 @@ namespace ArcBT.Tests
         public override void SetUp()
         {
             base.SetUp();
-            BTLogger.ResetToDefaults();
-            BTLogger.ClearHistory();
+            // Phase 6.4: レガシーAPI削除に伴い削除
         }
 
         [TearDown] 
         public override void TearDown()
         {
-            BTLogger.ClearHistory();
             BTLogger.Dispose(); // ZLoggerリソース解放
             base.TearDown();
         }
@@ -105,8 +103,7 @@ namespace ArcBT.Tests
         {
             const int logCount = 5000; // より多くのログで測定精度を向上
             
-            // 測定前にログ履歴をクリア
-            BTLogger.ClearHistory();
+            // Phase 6.4: ClearHistory削除に伴い削除
             
             // ZLoggerベースの測定（複数回実行して平均を取る）
             var zloggerTimes = new long[3];
@@ -120,7 +117,7 @@ namespace ArcBT.Tests
                 }
                 stopwatch.Stop();
                 zloggerTimes[run] = stopwatch.ElapsedMilliseconds;
-                BTLogger.ClearHistory();
+                // Phase 6.4: ClearHistory削除に伴い削除
             }
             var zloggerMs = (zloggerTimes[0] + zloggerTimes[1] + zloggerTimes[2]) / 3;
             
@@ -137,7 +134,7 @@ namespace ArcBT.Tests
                 }
                 stopwatch.Stop();
                 traditionalTimes[run] = stopwatch.ElapsedMilliseconds;
-                BTLogger.ClearHistory();
+                // Phase 6.4: ClearHistory削除に伴い削除
             }
             var traditionalMs = (traditionalTimes[0] + traditionalTimes[1] + traditionalTimes[2]) / 3;
             
@@ -206,8 +203,7 @@ namespace ArcBT.Tests
         [Test][Description("ZLoggerの条件付きコンパイル機能による性能向上をベンチマーク")]
         public void TestZLoggerConditionalCompilation()
         {
-            // Arrange: ログレベルを高く設定してフィルタリングを強制
-            BTLogger.SetLogLevel(Microsoft.Extensions.Logging.LogLevel.Error);
+            // Phase 6.4: SetLogLevel削除に伴い、フィルタリングはLoggerFactory設定で制御
             const int logCount = 5000; // より多くのログで測定精度向上
             var stopwatch = new Stopwatch();
             

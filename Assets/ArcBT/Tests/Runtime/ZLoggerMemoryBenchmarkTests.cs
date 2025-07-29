@@ -15,8 +15,7 @@ namespace ArcBT.Tests
         public override void SetUp()
         {
             base.SetUp();
-            BTLogger.ResetToDefaults();
-            BTLogger.ClearHistory();
+            // Phase 6.4: レガシーAPI削除に伴い削除
             
             // メモリ測定前に2回GCを実行してベースラインを安定化
             GC.Collect();
@@ -27,7 +26,6 @@ namespace ArcBT.Tests
         [TearDown] 
         public override void TearDown()
         {
-            BTLogger.ClearHistory();
             BTLogger.Dispose();
             base.TearDown();
         }
@@ -104,8 +102,7 @@ namespace ArcBT.Tests
             var zloggerFinalMemory = GC.GetTotalMemory(false);
             var zloggerMemoryIncrease = zloggerFinalMemory - zloggerInitialMemory;
             
-            // ログ履歴をクリアして次の測定に備える
-            BTLogger.ClearHistory();
+            // Phase 6.4: ClearHistory削除に伴い削除
             
             // 従来方式メモリ測定
             yield return new WaitForEndOfFrame();
@@ -238,8 +235,7 @@ namespace ArcBT.Tests
                         new { Cycle = cycle, Step = i }, "LeakDetection");
                 }
                 
-                // 各サイクル後にログ履歴をクリア（実際の運用パターンをシミュレート）
-                BTLogger.ClearHistory();
+                // Phase 6.4: ClearHistory削除に伴い削除
                 
                 // 定期的なGCとメモリチェック
                 if (cycle % 3 == 0)
@@ -277,15 +273,7 @@ namespace ArcBT.Tests
         [Description("ZLoggerのログフィルタリングによるメモリ効率性をベンチマーク")]
         public IEnumerator TestZLoggerFilteringMemoryEfficiency()
         {
-            // Arrange: フィルタリング設定で無効ログを大量生成
-            BTLogger.SetLogLevel(Microsoft.Extensions.Logging.LogLevel.Error); // InfoとDebugをフィルタ
-            foreach (LogCategory category in Enum.GetValues(typeof(LogCategory)))
-            {
-                if (category != LogCategory.System)
-                {
-                    BTLogger.SetCategoryFilter(category, false);
-                }
-            }
+            // Phase 6.4: SetLogLevel, SetCategoryFilter削除に伴い、フィルタリングはLoggerFactory設定で制御
             
             yield return new WaitForEndOfFrame();
             var initialMemory = GC.GetTotalMemory(true);
