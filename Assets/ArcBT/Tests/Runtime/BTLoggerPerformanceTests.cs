@@ -47,9 +47,9 @@ namespace ArcBT.Tests
             var elapsedMs = stopwatch.ElapsedMilliseconds;
             Assert.Less(elapsedMs, 1500, $"ZLoggerによる{logCount}件ログ出力が1.5秒以内で完了（実測: {elapsedMs}ms）");
             
-            // 履歴の上限制御が機能しているか確認
+            // Phase 6.4: GetRecentLogsは常に空配列を返す
             var logs = BTLogger.GetRecentLogs(200);
-            Assert.LessOrEqual(logs.Length, 100, "履歴は最大100件に制限されている");
+            Assert.AreEqual(0, logs.Length, "Phase 6.4: 履歴管理はZLoggerに委譲 - 空配列");
             
             Debug.Log($"ZLogger high volume test: {logCount} logs in {elapsedMs}ms");
         }
@@ -78,7 +78,7 @@ namespace ArcBT.Tests
             Assert.Less(elapsedMs, 800, $"ZLoggerフィルタリング処理が超高速（実測: {elapsedMs}ms）");
             
             var logs = BTLogger.GetRecentLogs(100);
-            Assert.AreEqual(0, logs.Length, "フィルタリングによりログが記録されていない");
+            Assert.AreEqual(0, logs.Length, "Phase 6.4: 履歴管理はZLoggerに委譲 - 空配列");
             
             Debug.Log($"ZLogger filtering test: {logCount * 3} filtered logs in {elapsedMs}ms");
         }
@@ -122,9 +122,9 @@ namespace ArcBT.Tests
             // Unity Editor環境を考慮した実用的なメモリ基準
             Assert.Less(Math.Abs(memoryIncreaseMB), 20, $"ZLoggerメモリ効率テスト（{logCount}件）: {memoryIncreaseMB:F2}MB（Unity Editor環境）");
             
-            // 履歴制限が機能しているか確認
+            // Phase 6.4: GetRecentLogsは常に空配列を返す
             var logs = BTLogger.GetRecentLogs(200);
-            Assert.LessOrEqual(logs.Length, 100, "履歴上限によりメモリ使用量が制御されている");
+            Assert.AreEqual(0, logs.Length, "Phase 6.4: 履歴管理はZLoggerに委譲 - 空配列");
             
             Debug.Log($"ZLogger memory efficiency: {logCount} logs with {memoryIncreaseMB:F2}MB memory change");
         }
@@ -182,33 +182,6 @@ namespace ArcBT.Tests
             }
         }
 
-        /// <summary>ログ取得処理のパフォーマンステスト</summary>
-        [Test][Description("ログ履歴取得処理の性能をベンチマークテスト（カテゴリ別取得、最新ログ取得の高速処理を確認）")]
-        public void TestLogRetrievalPerformance()
-        {
-            // Arrange: 履歴にログを蓄積
-            for (int i = 0; i < 100; i++)
-            {
-                BTLogger.LogCombat($"Combat log {i}");
-                BTLogger.LogMovement($"Movement log {i}");
-                BTLogger.LogSystem($"System log {i}");
-            }
-            
-            var stopwatch = new Stopwatch();
-            
-            // Act: ログ取得処理の速度を測定
-            stopwatch.Start();
-            for (int i = 0; i < 100; i++)
-            {
-                var recentLogs = BTLogger.GetRecentLogs(10);
-                var combatLogs = BTLogger.GetLogsByCategory(LogCategory.Combat, 5);
-            }
-            stopwatch.Stop();
-            
-            // Assert: ログ取得が高速に処理されている
-            var elapsedMs = stopwatch.ElapsedMilliseconds;
-            Assert.Less(elapsedMs, 100, $"ログ取得処理が高速である（実測: {elapsedMs}ms）");
-        }
 
         /// <summary>基本ログ出力処理パフォーマンステスト</summary>
         [Test][Description("Phase 6.4: 基本ログ出力処理の性能をベンチマークテスト（3000回出力が200ms以内）")]
