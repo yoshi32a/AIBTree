@@ -25,7 +25,7 @@ namespace ArcBT.Samples.RPG.Actions
             blackBoard.SetValue("resources_initialized", true);
             blackBoard.SetValue("initialization_time", Time.time);
 
-            BTLogger.LogSystem("InitializeResources: All resources initialized", Name, ownerComponent);
+            BTLogger.LogSystem(Name, "All resources initialized");
             return BTNodeResult.Success;
         }
 

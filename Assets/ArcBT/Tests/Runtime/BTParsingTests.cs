@@ -20,7 +20,7 @@ namespace ArcBT.Tests
         public void SetUp()
         {
             parser = new BTParser();
-            BTLogger.EnableTestMode(); // テストモードでパーサーログを有効化
+            // 新しいBTLoggerではテストモードが削除されているため、何もしない
         }
 
 

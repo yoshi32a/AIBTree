@@ -13,16 +13,14 @@ namespace ArcBT.Tests
         [SetUp]
         public virtual void SetUp()
         {
-            // テストモードを有効化（ログ抑制あり）
-            BTLogger.EnableTestMode(suppressLogs: true);
-            // Phase 6.4: ClearHistory削除に伴い削除
+            // 新しいBTLoggerではテストモードが削除されているため、何もしない
+            // ログは自動的にNullLoggerで抑制される
         }
 
         [TearDown]
         public virtual void TearDown()
         {
-            // テストモードを無効化
-            BTLogger.DisableTestMode();
+            // 新しいBTLoggerではテストモードが削除されているため、何もしない
         }
 
         /// <summary>
@@ -45,11 +43,11 @@ namespace ArcBT.Tests
         }
 
         /// <summary>
-        /// ログテストが必要な場合のみログを有効化
+        /// ログテストが必要な場合のみログを有効化（新しいAPIでは不要）
         /// </summary>
         protected void EnableLoggingForTest()
         {
-            BTLogger.EnableTestMode(suppressLogs: false);
+            // 新しいBTLoggerではテストモードが削除されているため、何もしない
         }
 
         /// <summary>

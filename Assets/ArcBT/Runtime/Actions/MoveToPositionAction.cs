@@ -36,7 +36,7 @@ namespace ArcBT.Actions
                         blackBoard.SetValue($"{Name}_target_name", target);
                     }
 
-                    BTLogger.LogMovement($"MoveToPosition: Target found '{target}' at {targetPosition}", Name, ownerComponent);
+                    BTLogger.LogMovement(Name, transform.position, targetPosition, speed);
                 }
                 else
                 {
@@ -48,7 +48,7 @@ namespace ArcBT.Actions
 
         protected override BTNodeResult ExecuteAction()
         {
-            BTLogger.LogMovement($"=== MoveToPositionAction '{Name}' EXECUTING ===", Name, ownerComponent);
+            BTLogger.LogSystem(Name, "=== MoveToPositionAction EXECUTING ===");
 
             if (!hasValidTarget)
             {
@@ -62,7 +62,7 @@ namespace ArcBT.Actions
                     {
                         targetPosition = targetObj.transform.position;
                         hasValidTarget = true;
-                        BTLogger.LogMovement($"MoveToPosition '{Name}': Found target '{target}' at {targetPosition}", Name, ownerComponent);
+                        BTLogger.LogMovement(Name, transform.position, targetPosition, speed);
                     }
                     else
                     {
@@ -88,7 +88,7 @@ namespace ArcBT.Actions
 
             if (distance <= tolerance)
             {
-                BTLogger.LogMovement($"MoveToPosition '{Name}': ✓ REACHED target '{target}' (Distance: {distance:F2} <= {tolerance})", Name, ownerComponent);
+                BTLogger.LogDestinationReached(Name, targetPosition, Time.time);
                 return BTNodeResult.Success;
             }
 
@@ -111,7 +111,7 @@ namespace ArcBT.Actions
 
         public override void OnConditionFailed()
         {
-            BTLogger.LogMovement($"MoveToPosition '{Name}': 🚨 Condition failed - stopping movement", Name, ownerComponent);
+            BTLogger.LogSystem(Name, "🚨 Condition failed - stopping movement");
 
             // BlackBoardに停止状態を記録
             if (blackBoard != null)

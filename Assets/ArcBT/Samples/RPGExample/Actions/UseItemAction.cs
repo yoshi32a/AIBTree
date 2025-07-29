@@ -37,7 +37,7 @@ namespace ArcBT.Samples.RPG.Actions
 
             if (!inventory.HasItem(itemType))
             {
-                BTLogger.LogSystem($"UseItem: No {itemType} available", Name, ownerComponent);
+                BTLogger.LogSystem(Name, $"No {itemType} available");
                 return BTNodeResult.Failure;
             }
 
@@ -45,7 +45,7 @@ namespace ArcBT.Samples.RPG.Actions
             bool used = inventory.UseItem(itemType);
             if (!used)
             {
-                BTLogger.LogSystem($"UseItem: Failed to use {itemType}", Name, ownerComponent);
+                BTLogger.LogSystem(Name, $"Failed to use {itemType}");
                 return BTNodeResult.Failure;
             }
 
@@ -56,7 +56,7 @@ namespace ArcBT.Samples.RPG.Actions
             blackBoard.SetValue("last_used_item", itemType);
             blackBoard.SetValue("item_use_time", Time.time);
 
-            BTLogger.LogSystem($"UseItem: Successfully used {itemType}", Name, ownerComponent);
+            BTLogger.LogSystem(Name, $"Successfully used {itemType}");
             return BTNodeResult.Success;
         }
 

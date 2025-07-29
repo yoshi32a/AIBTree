@@ -31,7 +31,6 @@ namespace ArcBT.Tests.Samples
             base.TearDown(); // BTTestBaseのクリーンアップを実行
         }
 
-        #region SimpleAttackAction Tests
 
         [Test][Description("SimpleAttackActionのdamageプロパティが正しく設定されることを確認")]
         public void SimpleAttackAction_SetProperty_SetsCorrectDamage()
@@ -147,9 +146,7 @@ namespace ArcBT.Tests.Samples
             Object.DestroyImmediate(nonAIOwner);
         }
 
-        #endregion
 
-        #region WaitSimpleAction Tests
 
         [Test][Description("WaitSimpleActionのdurationプロパティが正しく設定され、AIの待機メソッドを呼び出すことを確認")]
         public void WaitSimpleAction_SetProperty_SetsCorrectDuration()
@@ -204,9 +201,7 @@ namespace ArcBT.Tests.Samples
             Object.DestroyImmediate(nonAIOwner);
         }
 
-        #endregion
 
-        #region MoveToNamedPositionAction Tests
 
         [Test][Description("MoveToNamedPositionActionのtargetプロパティが正しく設定されることを確認")]
         public void MoveToNamedPositionAction_SetProperty_SetsCorrectTarget()
@@ -297,9 +292,7 @@ namespace ArcBT.Tests.Samples
             Object.DestroyImmediate(nonAIOwner);
         }
 
-        #endregion
 
-        #region SimpleHasTargetCondition Tests
 
         [Test][Description("SimpleHasTargetConditionがターゲットありで実行された時にSuccessを返すことを確認")]
         public void SimpleHasTargetCondition_ExecuteWithTarget_ReturnsSuccess()
@@ -359,9 +352,7 @@ namespace ArcBT.Tests.Samples
             Object.DestroyImmediate(nonAIOwner);
         }
 
-        #endregion
 
-        #region EnemyDetectionCondition Tests
 
         [Test][Description("EnemyDetectionConditionのdetection_rangeプロパティが正しく設定され、敵検出処理で使用されることを確認")]
         public void EnemyDetectionCondition_SetProperty_SetsCorrectDetectionRange()
@@ -436,9 +427,7 @@ namespace ArcBT.Tests.Samples
             Object.DestroyImmediate(nonAIOwner);
         }
 
-        #endregion
 
-        #region SimpleHealthCheckCondition Tests
 
         [Test][Description("SimpleHealthCheckConditionのmin_healthプロパティが正しく設定され、体力チェック処理で使用されることを確認")]
         public void SimpleHealthCheckCondition_SetProperty_SetsCorrectMinHealth()
@@ -515,7 +504,6 @@ namespace ArcBT.Tests.Samples
             Object.DestroyImmediate(nonAIOwner);
         }
 
-        #endregion
     }
 
     /// <summary>テスト用のRPGコンポーネント</summary>

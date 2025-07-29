@@ -27,7 +27,6 @@ namespace ArcBT.Tests
             base.TearDown(); // BTTestBaseのクリーンアップを実行
         }
 
-        #region HasSharedEnemyInfoCondition Tests
 
         [Test][Description("HasSharedEnemyInfoConditionのbb_keyパラメータでカスタムBlackBoardキー指定機能の検証")]
         public void HasSharedEnemyInfoCondition_SetProperty_SetsCorrectKey()
@@ -138,9 +137,7 @@ namespace ArcBT.Tests
             Object.DestroyImmediate(enemyObject);
         }
 
-        #endregion
 
-        #region CompareBlackBoardCondition Tests
 
         [Test][Description("CompareBlackBoardConditionのプロパティ設定でシンプルな比較式が正しくパースされることを確認")]
         public void CompareBlackBoardCondition_SetProperty_ParsesSimpleExpression()
@@ -260,9 +257,7 @@ namespace ArcBT.Tests
             // 注意: エラーログはLoggingBehaviorTestsで専用テストが行われます
         }
 
-        #endregion
 
-        #region RandomCondition Tests
 
         [Test][Description("RandomConditionのプロパティ設定で確率が正しく設定され、統計的に適切な結果を返すことを確認")]
         public void RandomCondition_SetProperty_SetsCorrectProbability()
@@ -310,7 +305,6 @@ namespace ArcBT.Tests
             Assert.AreEqual(BTNodeResult.Success, result);
         }
 
-        #endregion
     }
 
     /// <summary>テスト用のCoreConditionコンポーネント</summary>

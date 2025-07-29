@@ -47,65 +47,65 @@ namespace ArcBT.Decorators
 
         protected override BTNodeResult DecorateExecution(BTNode child)
         {
-            BTLogger.LogSystem($"Retry '{Name}': Execute() called - isWaitingForRetry={isWaitingForRetry}, currentRetries={currentRetries}", Name, ownerComponent);
+            BTLogger.LogSystem(Name, $"Execute() called - isWaitingForRetry={isWaitingForRetry}, currentRetries={currentRetries}");
             
             // リトライ準備状態の場合
             if (isWaitingForRetry)
             {
-                BTLogger.LogSystem($"Retry '{Name}': In waiting state, retryDelay={retryDelay}, time since last={Time.time - lastRetryTime}", Name, ownerComponent);
+                BTLogger.LogSystem(Name, $"In waiting state, retryDelay={retryDelay}");
                 
                 // リトライ限界チェック - リトライ開始前に判定
                 if (currentRetries > maxRetries)
                 {
-                    BTLogger.LogSystem($"Retry '{Name}': Max retries ({maxRetries}) exceeded, giving up", Name, ownerComponent);
+                    BTLogger.LogSystem(Name, $"Max retries ({maxRetries}) exceeded, giving up");
                     isWaitingForRetry = false;
                     currentRetries = 0;
-                    BTLogger.LogSystem($"Retry '{Name}': Returning FAILURE", Name, ownerComponent);
+                    BTLogger.LogSystem(Name, "Returning FAILURE");
                     return BTNodeResult.Failure;
                 }
                 
                 // 遅延がある場合は時間チェック
                 if (retryDelay > 0f && Time.time - lastRetryTime < retryDelay)
                 {
-                    BTLogger.LogSystem($"Retry '{Name}': Still waiting for delay, returning Running", Name, ownerComponent);
+                    BTLogger.LogSystem(Name, "Still waiting for delay, returning Running");
                     return BTNodeResult.Running;
                 }
                 
                 // 遅延終了またはdelay=0の場合、リトライ実行準備
                 isWaitingForRetry = false;
                 child.Reset();
-                BTLogger.LogSystem($"Retry '{Name}': Starting retry attempt {currentRetries + 1}/{maxRetries + 1}", Name, ownerComponent);
+                BTLogger.LogSystem(Name, $"Starting retry attempt {currentRetries + 1}/{maxRetries + 1}");
             }
 
             var result = child.Execute();
-            BTLogger.LogSystem($"Retry '{Name}': Child returned {result}", Name, ownerComponent);
+            BTLogger.LogSystem(Name, $"Child returned {result}");
 
             switch (result)
             {
                 case BTNodeResult.Running:
-                    BTLogger.LogSystem($"Retry '{Name}': Child running, returning Running", Name, ownerComponent);
+                    BTLogger.LogSystem(Name, "Child running, returning Running");
                     return BTNodeResult.Running;
 
                 case BTNodeResult.Success:
                     currentRetries = 0;
-                    BTLogger.LogSystem($"Retry '{Name}': Child succeeded, returning Success", Name, ownerComponent);
+                    BTLogger.LogSystem(Name, "Child succeeded, returning Success");
                     return BTNodeResult.Success;
 
                 case BTNodeResult.Failure:
                     currentRetries++;
-                    BTLogger.LogSystem($"Retry '{Name}': Attempt {currentRetries} failed", Name, ownerComponent);
+                    BTLogger.LogSystem(Name, $"Attempt {currentRetries} failed");
                     
                     // 失敗時は常にリトライ準備（限界チェックは次のExecute()で行う）
                     isWaitingForRetry = true;
                     lastRetryTime = Time.time;
                     
-                    BTLogger.LogSystem($"Retry '{Name}': Ready for immediate retry {currentRetries + 1}/{maxRetries + 1}", Name, ownerComponent);
-                    BTLogger.LogSystem($"Retry '{Name}': Returning RUNNING", Name, ownerComponent);
+                    BTLogger.LogSystem(Name, $"Ready for immediate retry {currentRetries + 1}/{maxRetries + 1}");
+                    BTLogger.LogSystem(Name, "Returning RUNNING");
                     
                     return BTNodeResult.Running;
 
                 default:
-                    BTLogger.LogSystem($"Retry '{Name}': Unexpected result {result}, returning Failure", Name, ownerComponent);
+                    BTLogger.LogSystem(Name, $"Unexpected result {result}, returning Failure");
                     return BTNodeResult.Failure;
             }
         }

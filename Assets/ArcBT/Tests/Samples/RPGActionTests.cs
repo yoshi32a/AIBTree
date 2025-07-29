@@ -29,7 +29,6 @@ namespace ArcBT.Tests.Samples
             base.TearDown(); // BTTestBaseのクリーンアップを実行
         }
 
-        #region AttackEnemyAction Tests
 
         [Test][Description("AttackEnemyActionのプロパティ設定(ダメージ、攻撃範囲、クールダウン)が正しく適用されることを確認")]
         public void AttackEnemyAction_SetProperty_SetsCorrectValues()
@@ -101,9 +100,7 @@ namespace ArcBT.Tests.Samples
             Object.DestroyImmediate(enemyObj);
         }
 
-        #endregion
 
-        #region CastSpellAction Tests
 
         [Test][Description("CastSpellActionのプロパティ設定(魔法名、ダメージ、マナコスト、詠唱時間)が正しく適用されることを確認")]
         public void CastSpellAction_SetProperty_SetsCorrectValues()
@@ -152,9 +149,7 @@ namespace ArcBT.Tests.Samples
             // 注意: マナ不足ログはLoggingBehaviorTestsで専用テストが行われます
         }
 
-        #endregion
 
-        #region UseItemAction Tests
 
         [Test][Description("UseItemActionのプロパティ設定(アイテム名、数量)が正しく適用されることを確認")]
         public void UseItemAction_SetProperty_SetsCorrectValues()
@@ -217,9 +212,7 @@ namespace ArcBT.Tests.Samples
             Assert.AreEqual(1, inventoryComponent.GetItemCount("healing_potion")); // アイテムが1つ消費された
         }
 
-        #endregion
 
-        #region FleeToSafetyAction Tests
 
         [Test][Description("FleeToSafetyActionのプロパティ設定(逃走速度、安全距離)が正しく適用されることを確認")]
         public void FleeToSafetyAction_SetProperty_SetsCorrectValues()
@@ -275,9 +268,7 @@ namespace ArcBT.Tests.Samples
             Object.DestroyImmediate(enemyObj);
         }
 
-        #endregion
 
-        #region Multiple Actions Integration Tests
 
         [Test][Description("複数のRPGアクション（攻撃、魔法、アイテム使用）の連続実行が正しく動作することを確認")]
         public void RPGActions_ChainExecution_WorksCorrectly()
@@ -331,7 +322,6 @@ namespace ArcBT.Tests.Samples
             // 注意: ターゲット不在のログはLoggingBehaviorTestsで専用テストが行われます
         }
 
-        #endregion
     }
 
     /// <summary>テスト用のRPGActionコンポーネント</summary>

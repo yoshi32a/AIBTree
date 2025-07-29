@@ -60,7 +60,6 @@ namespace ArcBT.Tests
             base.TearDown(); // BTTestBaseのクリーンアップを実行
         }
 
-        #region EnvironmentScanAction Tests
 
         [Test][Description("EnvironmentScanActionのscan_rangeパラメータ設定機能の動作検証")]
         public void EnvironmentScanAction_SetProperty_SetsCorrectRange()
@@ -135,9 +134,7 @@ namespace ArcBT.Tests
             Object.DestroyImmediate(itemObj);
         }
 
-        #endregion
 
-        #region SearchForEnemyAction Tests
 
         [Test][Description("SearchForEnemyActionのsearch_rangeパラメータ設定機能の検証")]
         public void SearchForEnemyAction_SetProperty_SetsCorrectRange()
@@ -247,9 +244,7 @@ namespace ArcBT.Tests
             Object.DestroyImmediate(nearEnemyObj);
         }
 
-        #endregion
 
-        #region InteractAction Tests
 
         [Test][Description("InteractActionのtarget_tagパラメータでスイッチ等の特定タグ指定機能の検証")]
         public void InteractAction_SetProperty_SetsCorrectTargetTag()
@@ -323,9 +318,7 @@ namespace ArcBT.Tests
             Object.DestroyImmediate(interactableObj);
         }
 
-        #endregion
 
-        #region LogAction Tests
 
         [Test][Description("LogActionのmessageパラメータで日本語メッセージ出力機能の検証")]
         public void LogAction_SetProperty_SetsCorrectMessage()
@@ -396,9 +389,7 @@ namespace ArcBT.Tests
             Assert.AreEqual(BTNodeResult.Success, result);
         }
 
-        #endregion
 
-        #region SetBlackBoardAction Tests
 
         [Test][Description("SetBlackBoardActionでint型の値（health=100）をBlackBoardに設定")]
         public void SetBlackBoardAction_SetProperty_SetsIntValue()
@@ -537,7 +528,6 @@ namespace ArcBT.Tests
             Assert.IsFalse(blackBoard.HasKey("test"), "割り当てなしの場合、BlackBoardにキーが追加されるべきではない");
         }
 
-        #endregion
     }
 
     /// <summary>テスト用のActionコンポーネント</summary>

@@ -139,8 +139,8 @@ namespace ArcBT.Core
                     // 動的条件チェックを設定
                     SetupDynamicConditionChecking(RootNode);
 
-                    BTLogger.LogSystem($"Successfully loaded behaviour tree from: {filePath}", "", this);
-                    BTLogger.LogSystem($"Root node: {RootNode.Name}", "", this);
+                    BTLogger.LogSystem($"Successfully loaded behaviour tree from: {filePath}", "");
+                    BTLogger.LogSystem($"Root node: {RootNode.Name}", "");
                     LogTreeStructure(RootNode, 0);
                     return true;
                 }
@@ -171,7 +171,7 @@ namespace ArcBT.Core
 
             // このMonoBehaviourとBlackBoardを渡してノードを初期化
             node.Initialize(this, BlackBoard);
-            BTLogger.LogSystem($"✅ Initialized node: {node.Name}", node.Name, this);
+            BTLogger.LogSystem($"✅ Initialized node: {node.Name}", node.Name);
 
             // 子ノードも再帰的に初期化
             foreach (var child in node.Children)
@@ -203,7 +203,7 @@ namespace ArcBT.Core
 
                 if (RootNode != null)
                 {
-                    BTLogger.LogSystem("Successfully loaded behaviour tree from content", "", this);
+                    BTLogger.LogSystem("Successfully loaded behaviour tree from content", "");
                     LogTreeStructure(RootNode, 0);
                     return true;
                 }
@@ -239,7 +239,7 @@ namespace ArcBT.Core
             }
 
             var indent = new string(' ', depth * 2);
-            BTLogger.LogSystem($"{indent}{node.Name}", node.Name, this);
+            BTLogger.LogSystem($"{indent}{node.Name}", node.Name);
 
             foreach (var child in node.Children)
             {
@@ -261,7 +261,7 @@ namespace ArcBT.Core
         internal void ResetTreeState()
         {
             ResetTree();
-            BTLogger.LogSystem("Behaviour tree state reset", "", this);
+            BTLogger.LogSystem("Behaviour tree state reset", "");
         }
 
         [ContextMenu("Show BlackBoard Contents")]

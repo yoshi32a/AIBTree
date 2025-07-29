@@ -56,7 +56,7 @@ namespace ArcBT.Core
             }
 
             allNodes[scriptName] = factory;
-            BTLogger.LogSystem($"Registered node: {scriptName}");
+            BTLogger.LogSystem("NodeRegistry", $"Registered node: {scriptName}");
         }
 
         /// <summary>組み込みノード作成</summary>

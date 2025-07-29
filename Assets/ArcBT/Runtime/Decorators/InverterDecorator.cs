@@ -23,7 +23,7 @@ namespace ArcBT.Decorators
                 _ => BTNodeResult.Failure
             };
 
-            BTLogger.LogSystem($"Inverter '{Name}': {result} → {invertedResult}", Name, ownerComponent);
+            BTLogger.LogSystem(Name, $"Inverter: {result} → {invertedResult}");
 
             return invertedResult;
         }

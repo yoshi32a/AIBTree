@@ -34,7 +34,7 @@ namespace ArcBT.Samples.RPG.Conditions
                 float safetyTimer = blackBoard.GetValue<float>("safety_timer", 0f);
                 if (Time.time < safetyTimer)
                 {
-                    BTLogger.LogSystem($"HealthCheck '{Name}': In safety period - skipping emergency check", Name, ownerComponent);
+                    BTLogger.LogSystem(Name, "In safety period - skipping emergency check");
                     return BTNodeResult.Failure; // 緊急時チェックをスキップ
                 }
             }

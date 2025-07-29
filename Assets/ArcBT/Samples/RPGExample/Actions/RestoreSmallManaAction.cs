@@ -41,12 +41,12 @@ namespace ArcBT.Samples.RPG.Actions
                 blackBoard.SetValue("mana_restored", actualGain);
                 blackBoard.SetValue("last_mana_restore_time", Time.time);
 
-                BTLogger.LogSystem($"RestoreSmallMana: Restored {actualGain} mana ({currentMana} -> {newMana})", Name, ownerComponent);
+                BTLogger.LogSystem(Name, $"Restored {actualGain} mana ({currentMana} -> {newMana})");
                 return BTNodeResult.Success;
             }
             else
             {
-                BTLogger.LogSystem("RestoreSmallMana: Mana already at maximum", Name, ownerComponent);
+                BTLogger.LogSystem(Name, "Mana already at maximum");
                 return BTNodeResult.Failure;
             }
         }

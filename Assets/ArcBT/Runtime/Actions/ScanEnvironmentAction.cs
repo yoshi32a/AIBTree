@@ -105,7 +105,7 @@ namespace ArcBT.Actions
 
             blackBoard.SetValue("threat_level", threatLevel);
 
-            BTLogger.LogSystem($"EnvironmentScan: Enemies:{enemyCount}, Items:{itemCount}, Threat:{threatLevel}", Name, ownerComponent);
+            BTLogger.LogSystem($"ScanEnvironment", $"EnvironmentScan: Enemies:{enemyCount}, Items:{itemCount}");
 
             return BTNodeResult.Success;
         }

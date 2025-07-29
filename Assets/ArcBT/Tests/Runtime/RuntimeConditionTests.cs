@@ -28,7 +28,6 @@ namespace ArcBT.Tests
             base.TearDown(); // BTTestBaseのクリーンアップを実行
         }
 
-        #region ScanForInterestCondition Tests
 
         [Test][Description("ScanForInterestConditionのscan_rangeパラメータ設定機能の検証")]
         public void ScanForInterestCondition_SetProperty_SetsCorrectRange()
@@ -73,9 +72,7 @@ namespace ArcBT.Tests
             Object.DestroyImmediate(itemObj);
         }
 
-        #endregion
 
-        #region RandomCondition Tests
 
         [Test][Description("RandomConditionのプロパティ設定で確率が正しく設定され、統計的に適切な結果を返すことを確認")]
         public void RandomCondition_SetProperty_SetsCorrectProbability()
@@ -171,9 +168,7 @@ namespace ArcBT.Tests
                 $"期待される成功率: 0-20%, 実際: {successCount}/50");
         }
 
-        #endregion
 
-        #region HasTargetCondition Tests
 
         [Test][Description("HasTargetConditionのtarget_tagパラメータでモンスター等のカスタムタグ指定機能の検証")]
         public void HasTargetCondition_SetProperty_SetsCorrectTargetTag()
@@ -247,9 +242,7 @@ namespace ArcBT.Tests
             Assert.AreEqual(BTNodeResult.Failure, result);
         }
 
-        #endregion
 
-        #region DistanceCheckCondition Tests
 
         [Test][Description("DistanceCheckConditionのtarget_nameパラメータでGameObject名指定機能の検証")]
         public void DistanceCheckCondition_SetProperty_SetsCorrectTargetName()
@@ -354,9 +347,7 @@ namespace ArcBT.Tests
             Assert.AreEqual(BTNodeResult.Success, result);
         }
 
-        #endregion
 
-        #region Distance2DCheckCondition Tests
 
         [Test][Description("Distance2DCheckConditionのtarget_tagパラメータでウェイポイント等のタグ指定機能の検証")]
         public void Distance2DCheckCondition_SetProperty_SetsCorrectTargetTag()
@@ -425,9 +416,7 @@ namespace ArcBT.Tests
             Object.DestroyImmediate(targetObj);
         }
 
-        #endregion
 
-        #region CompareBlackBoardCondition Tests
 
         [Test][Description("CompareBlackBoardConditionのプロパティ設定でシンプルな比較式が正しくパースされることを確認")]
         public void CompareBlackBoardCondition_SetProperty_ParsesSimpleExpression()
@@ -547,7 +536,6 @@ namespace ArcBT.Tests
             // 注意: エラーログはLoggingBehaviorTestsで専用テストが行われます
         }
 
-        #endregion
     }
 
     /// <summary>Runtime Condition Tests用のテストコンポーネント</summary>

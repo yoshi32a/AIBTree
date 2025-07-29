@@ -22,12 +22,12 @@ namespace ArcBT.Actions
 
         protected override BTNodeResult ExecuteAction()
         {
-            BTLogger.LogSystem($"=== WaitAction '{Name}' EXECUTING ===", Name, ownerComponent);
+            BTLogger.LogSystem(Name, "=== WaitAction EXECUTING ===");
 
             if (startTime < 0)
             {
                 startTime = Time.time;
-                BTLogger.LogSystem($"Wait '{Name}': Starting wait for {duration} seconds ⏱️", Name, ownerComponent);
+                BTLogger.LogSystem(Name, $"Starting wait for {duration} seconds ⏱️");
             }
 
             var elapsed = Time.time - startTime;
@@ -35,12 +35,12 @@ namespace ArcBT.Actions
 
             if (elapsed >= duration)
             {
-                BTLogger.LogSystem($"Wait '{Name}': Wait completed ✅ (waited {elapsed:F1}s)", Name, ownerComponent);
+                BTLogger.LogSystem(Name, $"Wait completed ✅ (waited {elapsed:F1}s)");
                 startTime = -1f; // リセット
                 return BTNodeResult.Success;
             }
 
-            BTLogger.LogSystem($"Wait '{Name}': Waiting... ({remaining:F1}s remaining) ⏳", Name, ownerComponent);
+            BTLogger.LogSystem(Name, $"Waiting... ({remaining:F1}s remaining) ⏳");
             return BTNodeResult.Running;
         }
 

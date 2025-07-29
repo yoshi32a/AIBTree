@@ -88,7 +88,7 @@ namespace ArcBT.Samples.RPG
 
         public virtual void Wait(float duration)
         {
-            BTLogger.LogSystem($"Waiting for {duration} seconds", gameObject.name, this);
+            BTLogger.LogSystem(gameObject.name, $"Waiting for {duration} seconds");
             // 実際の待機ロジック（コルーチンなどで実装）
         }
 

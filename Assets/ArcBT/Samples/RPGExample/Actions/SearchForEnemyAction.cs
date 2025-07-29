@@ -41,7 +41,7 @@ namespace ArcBT.Samples.RPG.Actions
                 isSearching = true;
                 searchStartTime = Time.time;
                 blackBoard.SetValue("is_searching", true);
-                BTLogger.LogSystem("SearchForEnemy: Started enemy search", Name, ownerComponent);
+                BTLogger.LogSystem(Name, "Started enemy search");
             }
 
             // 敵を検索
@@ -78,7 +78,7 @@ namespace ArcBT.Samples.RPG.Actions
                     blackBoard.SetValue("is_alert", true);
                     blackBoard.SetValue("alert_reason", "enemy_found");
 
-                    BTLogger.LogSystem($"SearchForEnemy: Found enemy '{nearestEnemy.name}' at distance {nearestDistance:F1}", Name, ownerComponent);
+                    BTLogger.LogSystem(Name, $"Found enemy '{nearestEnemy.name}' at distance {nearestDistance:F1}");
 
                     // 検索完了
                     isSearching = false;
@@ -95,7 +95,7 @@ namespace ArcBT.Samples.RPG.Actions
                 blackBoard.SetValue("is_searching", false);
                 blackBoard.SetValue("last_search_time", Time.time);
 
-                BTLogger.LogSystem("SearchForEnemy: Search completed, no enemies found", Name, ownerComponent);
+                BTLogger.LogSystem(Name, "Search completed, no enemies found");
 
                 isSearching = false;
                 return BTNodeResult.Failure;
