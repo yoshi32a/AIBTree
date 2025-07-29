@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using ArcBT.Decorators;
 using ArcBT.Logger;
+using Microsoft.Extensions.Logging;
 
 namespace ArcBT.Core
 {
@@ -52,7 +52,7 @@ namespace ArcBT.Core
         {
             if (allNodes.ContainsKey(scriptName))
             {
-                BTLogger.Log(Microsoft.Extensions.Logging.LogLevel.Warning, LogCategory.System, $"Node '{scriptName}' is already registered. Overwriting.");
+                BTLogger.Log(LogLevel.Warning, LogCategory.System, $"Node '{scriptName}' is already registered. Overwriting.");
             }
 
             allNodes[scriptName] = factory;

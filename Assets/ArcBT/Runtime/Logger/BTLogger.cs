@@ -1,10 +1,10 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Diagnostics;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using ZLogger;
+using ILogger = Microsoft.Extensions.Logging.ILogger;
+using Object = UnityEngine.Object;
 
 namespace ArcBT.Logger
 {
@@ -79,7 +79,7 @@ namespace ArcBT.Logger
         /// 基本ログ出力メソッド（内部使用）
         /// </summary>
         [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD"), Conditional("BT_LOGGING_ENABLED")]
-        static void LogInternal(Microsoft.Extensions.Logging.LogLevel msLogLevel, LogCategory category, string message, string nodeName = "", UnityEngine.Object context = null)
+        static void LogInternal(LogLevel msLogLevel, LogCategory category, string message, string nodeName = "", Object context = null)
         {
             // テストモード時のログ抑制
             if (suppressLogsInTest) return;
@@ -91,19 +91,19 @@ namespace ArcBT.Logger
             // ZLoggerを使用した高性能ログ出力（ユーザー設定のフィルタリングも効く）
             switch (msLogLevel)
             {
-                case Microsoft.Extensions.Logging.LogLevel.Error:
+                case LogLevel.Error:
                     instance.ZLogError($"{categoryTag}{nodeInfo}: {message}");
                     break;
-                case Microsoft.Extensions.Logging.LogLevel.Warning:
+                case LogLevel.Warning:
                     instance.ZLogWarning($"{categoryTag}{nodeInfo}: {message}");
                     break;
-                case Microsoft.Extensions.Logging.LogLevel.Information:
+                case LogLevel.Information:
                     instance.ZLogInformation($"{categoryTag}{nodeInfo}: {message}");
                     break;
-                case Microsoft.Extensions.Logging.LogLevel.Debug:
+                case LogLevel.Debug:
                     instance.ZLogDebug($"{categoryTag}{nodeInfo}: {message}");
                     break;
-                case Microsoft.Extensions.Logging.LogLevel.Trace:
+                case LogLevel.Trace:
                     instance.ZLogTrace($"{categoryTag}{nodeInfo}: {message}");
                     break;
             }
@@ -129,68 +129,68 @@ namespace ArcBT.Logger
 
         // カテゴリ別便利メソッド（ZLoggerネイティブ機能を活用）
         [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD"), Conditional("BT_LOGGING_ENABLED")]
-        public static void LogCombat(string message, string nodeName = "", UnityEngine.Object context = null)
+        public static void LogCombat(string message, string nodeName = "", Object context = null)
         {
-            LogInternal(Microsoft.Extensions.Logging.LogLevel.Information, LogCategory.Combat, message, nodeName, context);
+            LogInternal(LogLevel.Information, LogCategory.Combat, message, nodeName, context);
         }
 
         [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD"), Conditional("BT_LOGGING_ENABLED")]
-        public static void LogMovement(string message, string nodeName = "", UnityEngine.Object context = null)
+        public static void LogMovement(string message, string nodeName = "", Object context = null)
         {
-            LogInternal(Microsoft.Extensions.Logging.LogLevel.Information, LogCategory.Movement, message, nodeName, context);
+            LogInternal(LogLevel.Information, LogCategory.Movement, message, nodeName, context);
         }
 
         [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD"), Conditional("BT_LOGGING_ENABLED")]
-        public static void LogCondition(string message, string nodeName = "", UnityEngine.Object context = null)
+        public static void LogCondition(string message, string nodeName = "", Object context = null)
         {
-            LogInternal(Microsoft.Extensions.Logging.LogLevel.Debug, LogCategory.Condition, message, nodeName, context);
+            LogInternal(LogLevel.Debug, LogCategory.Condition, message, nodeName, context);
         }
 
         [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD"), Conditional("BT_LOGGING_ENABLED")]
-        public static void LogBlackBoard(string message, string nodeName = "", UnityEngine.Object context = null)
+        public static void LogBlackBoard(string message, string nodeName = "", Object context = null)
         {
-            LogInternal(Microsoft.Extensions.Logging.LogLevel.Debug, LogCategory.BlackBoard, message, nodeName, context);
+            LogInternal(LogLevel.Debug, LogCategory.BlackBoard, message, nodeName, context);
         }
 
         [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD"), Conditional("BT_LOGGING_ENABLED")]
-        public static void LogSystem(string message, string nodeName = "", UnityEngine.Object context = null)
+        public static void LogSystem(string message, string nodeName = "", Object context = null)
         {
-            LogInternal(Microsoft.Extensions.Logging.LogLevel.Information, LogCategory.System, message, nodeName, context);
+            LogInternal(LogLevel.Information, LogCategory.System, message, nodeName, context);
         }
 
         // エラーログは本番環境でも表示する
-        public static void LogError(LogCategory category, string message, string nodeName = "", UnityEngine.Object context = null)
+        public static void LogError(LogCategory category, string message, string nodeName = "", Object context = null)
         {
-            LogInternal(Microsoft.Extensions.Logging.LogLevel.Error, category, message, nodeName, context);
+            LogInternal(LogLevel.Error, category, message, nodeName, context);
         }
 
         // Debug.Logから移行用の便利メソッド
         [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD"), Conditional("BT_LOGGING_ENABLED")]
-        public static void Info(string message, UnityEngine.Object context = null)
+        public static void Info(string message, Object context = null)
         {
-            LogInternal(Microsoft.Extensions.Logging.LogLevel.Information, LogCategory.System, message, "", context);
+            LogInternal(LogLevel.Information, LogCategory.System, message, "", context);
         }
 
         [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD"), Conditional("BT_LOGGING_ENABLED")]
-        public static void Warning(string message, UnityEngine.Object context = null)
+        public static void Warning(string message, Object context = null)
         {
-            LogInternal(Microsoft.Extensions.Logging.LogLevel.Warning, LogCategory.System, message, "", context);
+            LogInternal(LogLevel.Warning, LogCategory.System, message, "", context);
         }
 
-        public static void Error(string message, UnityEngine.Object context = null)
+        public static void Error(string message, Object context = null)
         {
-            LogInternal(Microsoft.Extensions.Logging.LogLevel.Error, LogCategory.System, message, "", context);
+            LogInternal(LogLevel.Error, LogCategory.System, message, "", context);
         }
 
         [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD"), Conditional("BT_LOGGING_ENABLED")]
-        public static void Debug(string message, UnityEngine.Object context = null)
+        public static void Debug(string message, Object context = null)
         {
-            LogInternal(Microsoft.Extensions.Logging.LogLevel.Debug, LogCategory.Debug, message, "", context);
+            LogInternal(LogLevel.Debug, LogCategory.Debug, message, "", context);
         }
 
         // 構造化ログ出力（ZLogger推奨）
         [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD"), Conditional("BT_LOGGING_ENABLED")]
-        public static void LogStructured<T>(Microsoft.Extensions.Logging.LogLevel level, LogCategory category, string template, T value, string nodeName = "")
+        public static void LogStructured<T>(LogLevel level, LogCategory category, string template, T value, string nodeName = "")
         {
             if (suppressLogsInTest) return;
 
@@ -199,19 +199,19 @@ namespace ArcBT.Logger
             
             switch (level)
             {
-                case Microsoft.Extensions.Logging.LogLevel.Error:
+                case LogLevel.Error:
                     instance.ZLogError($"{categoryTag}{nodeInfo}: {template}", value);
                     break;
-                case Microsoft.Extensions.Logging.LogLevel.Warning:
+                case LogLevel.Warning:
                     instance.ZLogWarning($"{categoryTag}{nodeInfo}: {template}", value);
                     break;
-                case Microsoft.Extensions.Logging.LogLevel.Information:
+                case LogLevel.Information:
                     instance.ZLogInformation($"{categoryTag}{nodeInfo}: {template}", value);
                     break;
-                case Microsoft.Extensions.Logging.LogLevel.Debug:
+                case LogLevel.Debug:
                     instance.ZLogDebug($"{categoryTag}{nodeInfo}: {template}", value);
                     break;
-                case Microsoft.Extensions.Logging.LogLevel.Trace:
+                case LogLevel.Trace:
                     instance.ZLogTrace($"{categoryTag}{nodeInfo}: {template}", value);
                     break;
             }
@@ -219,7 +219,7 @@ namespace ArcBT.Logger
 
         // 基本Logメソッド（Microsoft.Extensions.Logging.LogLevel使用）
         [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD"), Conditional("BT_LOGGING_ENABLED")]
-        public static void Log(Microsoft.Extensions.Logging.LogLevel level, LogCategory category, string message, string nodeName = "", UnityEngine.Object context = null)
+        public static void Log(LogLevel level, LogCategory category, string message, string nodeName = "", Object context = null)
         {
             LogInternal(level, category, message, nodeName, context);
         }
@@ -228,7 +228,7 @@ namespace ArcBT.Logger
         [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD"), Conditional("BT_LOGGING_ENABLED")]
         public static void LogPerformance(string operation, float elapsedMs, string nodeName = "")
         {
-            LogInternal(Microsoft.Extensions.Logging.LogLevel.Debug, LogCategory.System, $"{operation} completed in {elapsedMs:F2}ms", nodeName);
+            LogInternal(LogLevel.Debug, LogCategory.System, $"{operation} completed in {elapsedMs:F2}ms", nodeName);
         }
 
         // Phase 6.4: レガシーAPI削除完了
@@ -259,7 +259,7 @@ namespace ArcBT.Logger
         /// 後方互換性：フォーマットログ（Combat）- ZLoggerネイティブ最適化
         /// </summary>
         [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD"), Conditional("BT_LOGGING_ENABLED")]
-        public static void LogCombatFormat(string format, object arg1, string nodeName = "", UnityEngine.Object context = null)
+        public static void LogCombatFormat(string format, object arg1, string nodeName = "", Object context = null)
         {
             if (suppressLogsInTest) return;
 
@@ -274,7 +274,7 @@ namespace ArcBT.Logger
         /// 後方互換性：フォーマットログ（Movement）- ZLoggerネイティブ最適化
         /// </summary>
         [Conditional("UNITY_EDITOR"), Conditional("DEVELOPMENT_BUILD"), Conditional("BT_LOGGING_ENABLED")]
-        public static void LogMovementFormat(string format, object arg1, string nodeName = "", UnityEngine.Object context = null)
+        public static void LogMovementFormat(string format, object arg1, string nodeName = "", Object context = null)
         {
             if (suppressLogsInTest) return;
 
