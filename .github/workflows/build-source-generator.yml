@@ -5,10 +5,6 @@ on:
     paths:
       - 'SourceGenerators/**'
       - '.github/workflows/build-source-generator.yml'
-  pull_request:
-    paths:
-      - 'SourceGenerators/**'
-      - '.github/workflows/build-source-generator.yml'
   workflow_dispatch:
 
 jobs:
