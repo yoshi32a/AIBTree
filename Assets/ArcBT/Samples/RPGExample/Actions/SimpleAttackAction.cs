@@ -16,7 +16,7 @@ namespace ArcBT.Samples.RPG.Actions
 
         public override void SetProperty(string key, string value)
         {
-            switch (key)
+            switch (key.ToLowerInvariant())
             {
                 case "damage":
                     if (int.TryParse(value, out var damageValue))

@@ -40,9 +40,13 @@ namespace ArcBT.Core
         /// <summary>ノードを動的に登録（統一メソッド）</summary>
         public static void RegisterNode(string scriptName, Func<BTNode> factory)
         {
-            if (allNodes.ContainsKey(scriptName))
+            if (allNodes.TryGetValue(scriptName, out var existing))
             {
-                BTLogger.LogSystem("System", $"Node '{scriptName}' is already registered. Overwriting.");
+                // 重複登録はエラーとして報告（ホットリロード時の上書きは許可するが目立つようにする）
+                var existingTypeName = existing.Invoke()?.GetType().FullName ?? "unknown";
+                var newTypeName = factory.Invoke()?.GetType().FullName ?? "unknown";
+                BTLogger.LogSystemError("NodeRegistry",
+                    $"Duplicate node name '{scriptName}': existing={existingTypeName}, new={newTypeName}. Overwriting.");
             }
 
             allNodes[scriptName] = factory;

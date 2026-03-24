@@ -262,15 +262,19 @@ namespace ArcBT.Generators
             var currentType = classSymbol.BaseType;
             while (currentType != null)
             {
-                // BTNodeまたはその派生クラスを継承していればOK
-                switch (currentType.Name)
+                // 名前空間を含む完全修飾名でチェック（名前だけだと別パッケージの同名クラスと誤判定する）
+                var fullName = currentType.ContainingNamespace != null && !currentType.ContainingNamespace.IsGlobalNamespace
+                    ? $"{currentType.ContainingNamespace.ToDisplayString()}.{currentType.Name}"
+                    : currentType.Name;
+
+                switch (fullName)
                 {
-                    case "BTNode":
-                    case "BTActionNode":
-                    case "BTConditionNode":
-                    case "BTCompositeNode":
-                    case "BTDecoratorNode":
-                    case "BTServiceNode":
+                    case "ArcBT.Core.BTNode":
+                    case "ArcBT.Core.BTActionNode":
+                    case "ArcBT.Core.BTConditionNode":
+                    case "ArcBT.Core.BTCompositeNode":
+                    case "ArcBT.Core.BTDecoratorNode":
+                    case "ArcBT.Core.BTServiceNode":
                         return true;
                 }
                 currentType = currentType.BaseType;

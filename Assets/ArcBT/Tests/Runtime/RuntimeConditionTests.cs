@@ -1,7 +1,7 @@
 using ArcBT.Conditions;
 using ArcBT.Core;
 using ArcBT.Samples.RPG.Conditions;
-using ArcBT.TagSystem;
+using GameplayTags;
 using NUnit.Framework;
 using UnityEngine;
 

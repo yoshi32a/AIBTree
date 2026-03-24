@@ -35,7 +35,7 @@ namespace ArcBT.Conditions
 
         public override void SetProperty(string key, string value)
         {
-            if (key.ToLower() == "condition")
+            if (key.ToLowerInvariant() == "condition")
             {
                 conditionExpression = value;
                 ParseConditionExpression(conditionExpression);

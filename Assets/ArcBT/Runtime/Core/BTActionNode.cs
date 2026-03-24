@@ -58,10 +58,20 @@ namespace ArcBT.Core
             }
         }
 
-        /// <summary>条件が失敗した時に呼ばれる（オーバーライド可能）</summary>
+        /// <summary>条件が失敗した時に呼ばれる（実行中フラグをクリアし、中断処理を実行）</summary>
         public override void OnConditionFailed()
         {
+            if (isExecuting)
+            {
+                isExecuting = false;
+                OnAbort();
+            }
             base.OnConditionFailed();
+        }
+
+        /// <summary>実行中にノードが中断された時に呼ばれる（サブクラスでリソース解放等をオーバーライド可能）</summary>
+        protected virtual void OnAbort()
+        {
             // デフォルトでは何もしない
         }
 

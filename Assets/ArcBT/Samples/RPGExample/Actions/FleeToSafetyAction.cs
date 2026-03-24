@@ -1,7 +1,7 @@
 using System;
 using ArcBT.Core;
 using ArcBT.Logger;
-using ArcBT.TagSystem;
+using GameplayTags;
 using UnityEngine;
 
 namespace ArcBT.Samples.RPG.Actions
@@ -19,7 +19,7 @@ namespace ArcBT.Samples.RPG.Actions
 
         public override void SetProperty(string key, string value)
         {
-            switch (key)
+            switch (key.ToLowerInvariant())
             {
                 case "min_distance":
                     minDistance = Convert.ToSingle(value);

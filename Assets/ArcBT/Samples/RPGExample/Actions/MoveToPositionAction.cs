@@ -120,7 +120,7 @@ namespace ArcBT.Samples.RPG.Actions
 
         public override void SetProperty(string propertyName, string value)
         {
-            switch (propertyName.ToLower())
+            switch (propertyName.ToLowerInvariant())
             {
                 case "target":
                     target = value;

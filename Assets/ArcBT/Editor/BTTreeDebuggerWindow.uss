@@ -1,0 +1,354 @@
+/* =============================================================
+ * BTTreeDebuggerWindow.uss
+ * BehaviourTree デバッガーウィンドウのスタイル定義
+ * ============================================================= */
+
+/* --- ルート --- */
+.debugger-root {
+    flex-grow: 1;
+    flex-direction: column;
+}
+
+/* --- ツールバー --- */
+.toolbar {
+    flex-direction: row;
+    align-items: center;
+    height: 24px;
+    padding: 0 4px;
+    background-color: rgba(40, 40, 40, 0.8);
+    border-bottom-width: 1px;
+    border-bottom-color: rgba(20, 20, 20, 0.6);
+}
+
+.toolbar__target-label {
+    min-width: 200px;
+    -unity-font-style: bold;
+    font-size: 11px;
+    padding: 0 6px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.toolbar__play-state {
+    font-size: 10px;
+    color: rgba(180, 180, 180, 0.8);
+    margin-left: 8px;
+}
+
+.toolbar__spacer {
+    flex-grow: 1;
+}
+
+.toolbar__button {
+    height: 20px;
+    font-size: 11px;
+    padding: 0 8px;
+    margin-left: 4px;
+    border-radius: 3px;
+    background-color: rgba(60, 60, 60, 0.9);
+    border-width: 1px;
+    border-color: rgba(80, 80, 80, 0.5);
+}
+
+.toolbar__button:hover {
+    background-color: rgba(80, 80, 80, 0.9);
+}
+
+/* --- メインコンテンツ（TwoPaneSplitView内） --- */
+.main-content {
+    flex-grow: 1;
+}
+
+/* --- 空状態メッセージ --- */
+.empty-state {
+    flex-grow: 1;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+}
+
+.empty-state__message {
+    font-size: 14px;
+    -unity-text-align: middle-center;
+    white-space: normal;
+    color: rgba(180, 180, 180, 0.9);
+    margin-bottom: 16px;
+}
+
+.empty-state__button {
+    width: 200px;
+    height: 30px;
+    font-size: 12px;
+    border-radius: 4px;
+}
+
+/* --- 左パネル: ツリービュー --- */
+.tree-panel {
+    flex-grow: 1;
+    flex-direction: column;
+    min-width: 200px;
+}
+
+.tree-panel__header {
+    -unity-font-style: bold;
+    font-size: 12px;
+    padding: 6px 8px 4px 8px;
+}
+
+.tree-panel__scroll {
+    flex-grow: 1;
+}
+
+.tree-panel__container {
+    padding: 2px 4px;
+}
+
+/* --- ノード行 --- */
+.node-row {
+    flex-direction: row;
+    align-items: center;
+    height: 22px;
+    padding: 0 4px;
+    border-radius: 2px;
+    margin: 1px 0;
+}
+
+.node-row:hover {
+    background-color: rgba(100, 100, 100, 0.2);
+}
+
+/* インデントレベル（C#側で margin-left を AddToClassList ではなく USS で段階設定） */
+.node-row--depth-0 { margin-left: 0; }
+.node-row--depth-1 { margin-left: 20px; }
+.node-row--depth-2 { margin-left: 40px; }
+.node-row--depth-3 { margin-left: 60px; }
+.node-row--depth-4 { margin-left: 80px; }
+.node-row--depth-5 { margin-left: 100px; }
+.node-row--depth-6 { margin-left: 120px; }
+.node-row--depth-7 { margin-left: 140px; }
+.node-row--depth-8 { margin-left: 160px; }
+.node-row--depth-9 { margin-left: 180px; }
+.node-row--depth-10 { margin-left: 200px; }
+
+/* --- ノードアイコン --- */
+.node__icon {
+    width: 14px;
+    height: 14px;
+    border-radius: 2px;
+    margin-right: 4px;
+    flex-shrink: 0;
+    background-color: rgb(128, 128, 128);
+}
+
+/* --- ノードラベル --- */
+.node__label {
+    font-size: 11px;
+    flex-grow: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* --- ノード状態色 --- */
+.node--running {
+    background-color: rgba(255, 230, 50, 0.3);
+}
+
+.node--running > .node__icon {
+    background-color: rgb(255, 230, 50);
+}
+
+.node--success {
+    background-color: rgba(50, 230, 75, 0.2);
+}
+
+.node--success > .node__icon {
+    background-color: rgb(50, 230, 75);
+}
+
+.node--failure {
+    background-color: rgba(230, 50, 50, 0.2);
+}
+
+.node--failure > .node__icon {
+    background-color: rgb(230, 50, 50);
+}
+
+.node--idle > .node__icon {
+    background-color: rgb(128, 128, 128);
+}
+
+.node--selected {
+    background-color: rgba(60, 120, 230, 0.3);
+}
+
+/* --- 右パネル --- */
+.right-panel {
+    flex-grow: 1;
+    flex-direction: column;
+    min-width: 200px;
+}
+
+/* --- ノード詳細パネル --- */
+.detail-panel {
+    flex-shrink: 0;
+    max-height: 220px;
+    padding: 4px 8px;
+}
+
+.detail-panel__header {
+    -unity-font-style: bold;
+    font-size: 12px;
+    padding: 4px 0;
+}
+
+.detail-panel__scroll {
+    flex-grow: 1;
+}
+
+.detail-panel__row {
+    flex-direction: row;
+    align-items: center;
+    height: 20px;
+    padding: 0 2px;
+}
+
+.detail-panel__key {
+    width: 90px;
+    font-size: 11px;
+    color: rgba(170, 170, 170, 0.9);
+    -unity-font-style: bold;
+    flex-shrink: 0;
+}
+
+.detail-panel__value {
+    flex-grow: 1;
+    font-size: 11px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* 実行結果の色 */
+.detail-value--running {
+    color: rgb(255, 230, 50);
+}
+
+.detail-value--success {
+    color: rgb(50, 230, 75);
+}
+
+.detail-value--failure {
+    color: rgb(230, 50, 50);
+}
+
+/* --- セパレーター --- */
+.separator {
+    height: 1px;
+    background-color: rgba(80, 80, 80, 0.6);
+    margin: 4px 8px;
+}
+
+/* --- BlackBoard パネル --- */
+.blackboard-panel {
+    flex-grow: 1;
+    flex-direction: column;
+    padding: 4px 8px;
+}
+
+.blackboard-panel__header {
+    -unity-font-style: bold;
+    font-size: 12px;
+    padding: 4px 0;
+}
+
+.blackboard-panel__scroll {
+    flex-grow: 1;
+}
+
+.blackboard-panel__empty {
+    font-size: 10px;
+    color: rgba(150, 150, 150, 0.8);
+    -unity-font-style: italic;
+    padding: 4px 0;
+}
+
+/* --- BlackBoard テーブルヘッダー --- */
+.blackboard__header-row {
+    flex-direction: row;
+    height: 20px;
+    padding: 0 2px;
+    border-bottom-width: 1px;
+    border-bottom-color: rgba(80, 80, 80, 0.6);
+}
+
+.blackboard__header-cell {
+    font-size: 10px;
+    -unity-font-style: bold;
+    color: rgba(170, 170, 170, 0.9);
+}
+
+.blackboard__header-key {
+    width: 120px;
+}
+
+.blackboard__header-value {
+    width: 150px;
+}
+
+.blackboard__header-type {
+    flex-grow: 1;
+}
+
+/* --- BlackBoard テーブル行 --- */
+.blackboard__row {
+    flex-direction: row;
+    align-items: center;
+    height: 20px;
+    padding: 0 2px;
+}
+
+.blackboard__row:hover {
+    background-color: rgba(100, 100, 100, 0.15);
+}
+
+.blackboard__cell-key {
+    width: 120px;
+    font-size: 11px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.blackboard__cell-value {
+    width: 150px;
+    font-size: 11px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.blackboard__cell-type {
+    flex-grow: 1;
+    font-size: 10px;
+    color: rgba(160, 160, 160, 0.8);
+}
+
+/* --- 警告ボックス --- */
+.warning-box {
+    padding: 8px 12px;
+    margin: 4px 8px;
+    background-color: rgba(200, 150, 0, 0.15);
+    border-radius: 4px;
+    border-width: 1px;
+    border-color: rgba(200, 150, 0, 0.3);
+    font-size: 11px;
+    color: rgba(220, 200, 100, 0.9);
+}
+
+.info-box {
+    padding: 8px 12px;
+    margin: 4px 8px;
+    background-color: rgba(50, 120, 200, 0.15);
+    border-radius: 4px;
+    border-width: 1px;
+    border-color: rgba(50, 120, 200, 0.3);
+    font-size: 11px;
+    color: rgba(150, 190, 230, 0.9);
+}

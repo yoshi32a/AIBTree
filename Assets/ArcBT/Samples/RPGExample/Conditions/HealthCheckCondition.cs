@@ -79,7 +79,7 @@ namespace ArcBT.Samples.RPG.Conditions
 
         public override void SetProperty(string propertyName, string value)
         {
-            switch (propertyName.ToLower())
+            switch (propertyName.ToLowerInvariant())
             {
                 case "min_health":
                 case "minhealth":

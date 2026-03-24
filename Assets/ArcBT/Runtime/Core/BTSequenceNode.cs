@@ -22,12 +22,15 @@ namespace ArcBT.Core
                         return BTNodeResult.Running;
 
                     case BTNodeResult.Failure:
-                        Reset();
+                        // 現在実行中だった子ノードのみリセットし、インデックスを先頭に戻す
+                        Children[i].Reset();
+                        currentChildIndex = 0;
                         return BTNodeResult.Failure;
                 }
             }
 
-            Reset();
+            // 全子ノードが成功した場合、インデックスを先頭に戻す
+            currentChildIndex = 0;
             return BTNodeResult.Success;
         }
     }

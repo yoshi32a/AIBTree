@@ -12,7 +12,7 @@ namespace ArcBT.Samples.RPG.Conditions
 
         public override void SetProperty(string key, string value)
         {
-            switch (key)
+            switch (key.ToLowerInvariant())
             {
                 case "min_mana":
                     minMana = Convert.ToInt32(value);

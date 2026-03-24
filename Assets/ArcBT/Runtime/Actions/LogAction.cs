@@ -16,7 +16,7 @@ namespace ArcBT.Actions
 
         public override void SetProperty(string key, string value)
         {
-            switch (key.ToLower())
+            switch (key.ToLowerInvariant())
             {
                 case "message":
                     message = value;

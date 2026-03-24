@@ -1,7 +1,7 @@
 using System;
 using ArcBT.Core;
 using ArcBT.Logger;
-using ArcBT.TagSystem;
+using GameplayTags;
 using UnityEngine;
 
 namespace ArcBT.Samples.RPG.Conditions
@@ -54,7 +54,7 @@ namespace ArcBT.Samples.RPG.Conditions
 
         public override void SetProperty(string propertyName, string value)
         {
-            switch (propertyName.ToLower())
+            switch (propertyName.ToLowerInvariant())
             {
                 case "detection_range":
                 case "detectionrange":

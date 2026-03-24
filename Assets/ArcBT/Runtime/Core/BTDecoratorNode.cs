@@ -8,26 +8,24 @@ namespace ArcBT.Core
     /// </summary>
     public abstract class BTDecoratorNode : BTNode
     {
-        protected BTNode childNode;
+        /// <summary>子ノード（Children[0]のショートカット）</summary>
+        public BTNode Child => Children.Count > 0 ? Children[0] : null;
 
         public override void AddChild(BTNode child)
         {
-            if (childNode != null)
+            if (Child != null)
             {
                 BTLogger.LogSystemError("System", $"Decorator '{Name}' already has a child. Replacing existing child.");
-                // 既存の子ノードをChildrenリストから削除
-                Children.Remove(childNode);
+                // 既存の子ノードをリセットしてからchildrenリストから削除
+                var oldChild = Child;
+                oldChild.Reset();
+                oldChild.Parent = null;
+                children.Remove(oldChild);
             }
-            
-            childNode = child;
+
             child.Parent = this;
-            
-            // Childrenリストにも追加（BTNodeの基本構造との整合性のため）
-            if (!Children.Contains(child))
-            {
-                Children.Add(child);
-            }
-            
+            children.Add(child);
+
             // 子ノードを初期化
             if (ownerComponent != null)
             {
@@ -37,23 +35,22 @@ namespace ArcBT.Core
 
         public override void RemoveChild(BTNode child)
         {
-            if (childNode == child)
+            if (Child == child)
             {
-                childNode = null;
                 child.Parent = null;
-                Children.Remove(child);
+                children.Remove(child);
             }
         }
 
         public override BTNodeResult Execute()
         {
-            if (childNode == null)
+            if (Child == null)
             {
                 BTLogger.LogSystemError("System", $"Decorator '{Name}' has no child node");
                 return BTNodeResult.Failure;
             }
 
-            return DecorateExecution(childNode);
+            return DecorateExecution(Child);
         }
 
         /// <summary>
@@ -64,23 +61,17 @@ namespace ArcBT.Core
         /// <returns>修飾された実行結果</returns>
         protected abstract BTNodeResult DecorateExecution(BTNode child);
 
-        public override void Reset()
-        {
-            base.Reset();
-            childNode?.Reset();
-        }
-
         /// <summary>子ノードを取得</summary>
-        public BTNode GetChild() => childNode;
+        public BTNode GetChild() => Child;
 
         /// <summary>子ノードが存在するかチェック</summary>
-        public bool HasChild() => childNode != null;
-        
+        public bool HasChild() => Child != null;
+
         /// <summary>条件失敗時の処理</summary>
         public override void OnConditionFailed()
         {
             base.OnConditionFailed();
-            childNode?.OnConditionFailed();
+            Child?.OnConditionFailed();
         }
     }
 }

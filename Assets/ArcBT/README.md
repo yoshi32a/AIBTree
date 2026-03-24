@@ -70,7 +70,7 @@ tree MyAI {
 ### 3. Custom Action Node
 ```csharp
 using ArcBT.Core;
-using ArcBT.TagSystem;
+using GameplayTags;
 
 [BTNode("MyCustom")] // Auto-detects as Action
 public class MyCustomAction : BTActionNode

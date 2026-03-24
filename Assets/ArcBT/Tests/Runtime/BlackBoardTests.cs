@@ -57,23 +57,128 @@ namespace ArcBT.Tests
             Assert.AreEqual(false, blackBoard.GetValue<bool>("non_existent"));
         }
 
-        [Test][Description("型が一致しない値を取得するとデフォルト値を返すことを確認")]
-        public void GetValue_TypeMismatch_ReturnsDefault()
+        [Test][Description("型が一致しない値を取得するとInvalidCastExceptionがスローされることを確認")]
+        public void GetValue_TypeMismatch_ThrowsInvalidCastException()
         {
             // Arrange
             blackBoard.SetValue("test_key", "string_value");
 
-            // Act - 型の不一致（string → int）
-            var result = blackBoard.GetValue<int>("test_key", 999);
+            // Act & Assert - 型の不一致（string → int）でInvalidCastExceptionがスローされる
+            Assert.Throws<System.InvalidCastException>(() => blackBoard.GetValue<int>("test_key", 999));
 
-            // Assert - ログではなく実際の動作を検証
-            Assert.AreEqual(999, result, "型が一致しない場合、指定したデフォルト値が返されるべき");
-            
             // 元のデータは変更されていないことを確認
             Assert.IsTrue(blackBoard.HasKey("test_key"), "元のキーは残存しているべき");
             Assert.AreEqual("string_value", blackBoard.GetValue<string>("test_key"), "元の値は変更されていないべき");
-            
-            // 注意: 警告ログはLoggingBehaviorTestsで専用テストが行われます
+        }
+
+        [Test][Description("TryGetValueで型が一致しない場合にfalseが返されることを確認")]
+        public void TryGetValue_TypeMismatch_ReturnsFalse()
+        {
+            // Arrange
+            blackBoard.SetValue("test_key", "string_value");
+
+            // Act
+            var success = blackBoard.TryGetValue<int>("test_key", out var result);
+
+            // Assert
+            Assert.IsFalse(success, "型が一致しない場合、falseが返されるべき");
+            Assert.AreEqual(0, result, "falseの場合、デフォルト値が設定されるべき");
+        }
+
+        [Test][Description("TryGetValueで型が一致する場合にtrueと正しい値が返されることを確認")]
+        public void TryGetValue_TypeMatch_ReturnsTrueAndValue()
+        {
+            // Arrange
+            blackBoard.SetValue("test_key", "string_value");
+
+            // Act
+            var success = blackBoard.TryGetValue<string>("test_key", out var result);
+
+            // Assert
+            Assert.IsTrue(success, "型が一致する場合、trueが返されるべき");
+            Assert.AreEqual("string_value", result, "正しい値が返されるべき");
+        }
+
+        [Test][Description("TryGetValueで存在しないキーの場合にfalseが返されることを確認")]
+        public void TryGetValue_NonExistentKey_ReturnsFalse()
+        {
+            // Act
+            var success = blackBoard.TryGetValue<string>("non_existent", out var result);
+
+            // Assert
+            Assert.IsFalse(success, "キーが存在しない場合、falseが返されるべき");
+            Assert.IsNull(result, "falseの場合、デフォルト値が設定されるべき");
+        }
+
+        [Test][Description("float型の値をint型で取得するとInvalidCastExceptionがスローされることを確認")]
+        public void GetValue_FloatAsInt_ThrowsInvalidCastException()
+        {
+            // Arrange
+            blackBoard.SetValue("float_key", 3.14f);
+
+            // Act & Assert - float → int の型不一致でInvalidCastExceptionがスローされる
+            Assert.Throws<System.InvalidCastException>(() => blackBoard.GetValue<int>("float_key"));
+
+            // 元のデータは変更されていないことを確認
+            Assert.IsTrue(blackBoard.HasKey("float_key"), "元のキーは残存しているべき");
+            Assert.AreEqual(3.14f, blackBoard.GetValue<float>("float_key"), "元のfloat値は変更されていないべき");
+        }
+
+        [Test][Description("TryGetValueでfloat型の値をint型で取得するとfalseが返されることを確認")]
+        public void TryGetValue_FloatAsInt_ReturnsFalse()
+        {
+            // Arrange
+            blackBoard.SetValue("float_key", 3.14f);
+
+            // Act
+            var success = blackBoard.TryGetValue<int>("float_key", out var result);
+
+            // Assert
+            Assert.IsFalse(success, "float → int の型不一致の場合、falseが返されるべき");
+            Assert.AreEqual(0, result, "falseの場合、intのデフォルト値0が設定されるべき");
+        }
+
+        [Test][Description("TryGetValueでint型の値をfloat型で取得するとfalseが返されることを確認")]
+        public void TryGetValue_IntAsFloat_ReturnsFalse()
+        {
+            // Arrange
+            blackBoard.SetValue("int_key", 42);
+
+            // Act
+            var success = blackBoard.TryGetValue<float>("int_key", out var result);
+
+            // Assert
+            Assert.IsFalse(success, "int → float の型不一致の場合、falseが返されるべき");
+            Assert.AreEqual(0f, result, "falseの場合、floatのデフォルト値0fが設定されるべき");
+        }
+
+        [Test][Description("存在しないキーに対してGetValueがデフォルト値を返し例外をスローしないことを確認")]
+        public void GetValue_NonExistentKey_ReturnsDefault_NoException()
+        {
+            // Act & Assert - 例外が発生しないことを確認
+            Assert.DoesNotThrow(() =>
+            {
+                var intResult = blackBoard.GetValue<int>("missing_int");
+                Assert.AreEqual(0, intResult, "存在しないintキーはデフォルト値0を返すべき");
+            });
+
+            Assert.DoesNotThrow(() =>
+            {
+                var floatResult = blackBoard.GetValue<float>("missing_float");
+                Assert.AreEqual(0f, floatResult, "存在しないfloatキーはデフォルト値0fを返すべき");
+            });
+
+            Assert.DoesNotThrow(() =>
+            {
+                var stringResult = blackBoard.GetValue<string>("missing_string");
+                Assert.IsNull(stringResult, "存在しないstringキーはデフォルト値nullを返すべき");
+            });
+
+            Assert.DoesNotThrow(() =>
+            {
+                var boolResult = blackBoard.GetValue<bool>("missing_bool");
+                Assert.IsFalse(boolResult, "存在しないboolキーはデフォルト値falseを返すべき");
+            });
         }
 
         [Test][Description("存在するキーに対してHasKeyがtrueを返すことを確認")]

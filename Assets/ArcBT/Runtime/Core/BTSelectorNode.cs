@@ -14,7 +14,9 @@ namespace ArcBT.Core
                 switch (result)
                 {
                     case BTNodeResult.Success:
-                        Reset();
+                        // 成功した子ノードのみリセットし、インデックスを先頭に戻す
+                        Children[i].Reset();
+                        currentChildIndex = 0;
                         return BTNodeResult.Success;
 
                     case BTNodeResult.Running:
@@ -27,7 +29,8 @@ namespace ArcBT.Core
                 }
             }
 
-            Reset();
+            // 全子ノードが失敗した場合、インデックスを先頭に戻す
+            currentChildIndex = 0;
             return BTNodeResult.Failure;
         }
     }

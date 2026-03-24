@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace ArcBT.TagSystem
+namespace GameplayTags
 {
     /// <summary>
     /// UnityのTag APIとの互換性を提供する拡張メソッド

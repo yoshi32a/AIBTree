@@ -1,4 +1,4 @@
-using ArcBT.TagSystem;
+using GameplayTags;
 using NUnit.Framework;
 using UnityEngine;
 
@@ -15,17 +15,17 @@ namespace ArcBT.Tests
             Assert.AreEqual("Character.Player", tag.TagName);
         }
 
-        [Test][Description("GameplayTagのMatchesTagメソッドで階層マッチングが正しく動作することを確認")]
-        public void GameplayTag_MatchesTag_WorksCorrectly()
+        [Test][Description("GameplayTagのMatchesメソッドで階層マッチングが正しく動作することを確認")]
+        public void GameplayTag_Matches_WorksCorrectly()
         {
             var parentTag = new GameplayTag("Character");
             var childTag = new GameplayTag("Character.Player");
             var unrelatedTag = new GameplayTag("Object.Item");
 
-            Assert.IsTrue(childTag.MatchesTag(parentTag));
-            Assert.IsTrue(parentTag.MatchesTag(parentTag));
-            Assert.IsFalse(parentTag.MatchesTag(childTag));
-            Assert.IsFalse(childTag.MatchesTag(unrelatedTag));
+            Assert.IsTrue(childTag.Matches(parentTag));
+            Assert.IsTrue(parentTag.Matches(parentTag));
+            Assert.IsFalse(parentTag.Matches(childTag));
+            Assert.IsFalse(childTag.Matches(unrelatedTag));
         }
 
         [Test][Description("GameplayTagのGetParentTagメソッドで正しい親タグが取得できることを確認")]

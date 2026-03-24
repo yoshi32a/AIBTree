@@ -2,7 +2,7 @@ using System.Linq;
 using ArcBT.Actions;
 using ArcBT.Core;
 using ArcBT.Samples.RPG.Actions;
-using ArcBT.TagSystem;
+using GameplayTags;
 using NUnit.Framework;
 using UnityEngine;
 
@@ -23,7 +23,7 @@ namespace ArcBT.Tests
             blackBoard = new BlackBoard();
             
             // GameplayTagManagerを強制初期化
-            var existingManager = GameObject.FindFirstObjectByType<GameplayTagManager>();
+            var existingManager = GameObject.FindAnyObjectByType<GameplayTagManager>();
             if (existingManager != null)
             {
                 Object.DestroyImmediate(existingManager.gameObject);

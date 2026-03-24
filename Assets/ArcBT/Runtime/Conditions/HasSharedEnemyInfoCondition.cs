@@ -12,7 +12,7 @@ namespace ArcBT.Conditions
 
         public override void SetProperty(string key, string value)
         {
-            switch (key)
+            switch (key.ToLowerInvariant())
             {
                 case "bb_key":
                     blackBoardKey = value;

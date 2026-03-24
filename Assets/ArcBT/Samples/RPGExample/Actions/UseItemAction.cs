@@ -13,7 +13,7 @@ namespace ArcBT.Samples.RPG.Actions
 
         public override void SetProperty(string key, string value)
         {
-            switch (key)
+            switch (key.ToLowerInvariant())
             {
                 case "item_type":
                     itemType = value;

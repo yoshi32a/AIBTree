@@ -1,7 +1,7 @@
 using ArcBT.Core;
 using ArcBT.Logger;
 using ArcBT.Samples.RPG.Interfaces;
-using ArcBT.TagSystem;
+using GameplayTags;
 using UnityEngine;
 
 namespace ArcBT.Samples.RPG.Conditions
@@ -14,7 +14,7 @@ namespace ArcBT.Samples.RPG.Conditions
 
         public override void SetProperty(string key, string value)
         {
-            switch (key.ToLower())
+            switch (key.ToLowerInvariant())
             {
                 case "min_health":
                 case "min_health_percent":

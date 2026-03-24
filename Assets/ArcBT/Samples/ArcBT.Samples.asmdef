@@ -2,7 +2,8 @@
     "name": "ArcBT.Samples",
     "rootNamespace": "ArcBT.Samples",
     "references": [
-        "GUID:7cbf063345181db4cb5144548ff0eca5"
+        "ArcBT",
+        "GameplayTags"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

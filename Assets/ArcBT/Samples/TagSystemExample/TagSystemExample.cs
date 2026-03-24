@@ -1,4 +1,4 @@
-using ArcBT.TagSystem;
+using GameplayTags;
 using ArcBT.Logger;
 using UnityEngine;
 
@@ -40,7 +40,7 @@ namespace ArcBT.Samples.TagSystem
             BTLogger.LogSystem($"プレイヤータグコンテナ: {playerTags}", nameof(TagSystemExample));
 
             // タグの階層チェック
-            BTLogger.LogSystem($"プレイヤータグは 'Character' タグにマッチ: {playerTag.MatchesTag(new GameplayTag("Character"))}", nameof(TagSystemExample));
+            BTLogger.LogSystem($"プレイヤータグは 'Character' タグにマッチ: {playerTag.Matches(new GameplayTag("Character"))}", nameof(TagSystemExample));
         }
 
         /// <summary>
@@ -86,9 +86,9 @@ namespace ArcBT.Samples.TagSystem
             BTLogger.LogSystem($"ボスタグの親: {bossTag.GetParentTag()}", nameof(TagSystemExample));
 
             // 階層マッチング
-            BTLogger.LogSystem($"ボスは 'Character' にマッチ: {bossTag.MatchesTag(new GameplayTag("Character"))}", nameof(TagSystemExample));
-            BTLogger.LogSystem($"ボスは 'Character.Enemy' にマッチ: {bossTag.MatchesTag(new GameplayTag("Character.Enemy"))}", nameof(TagSystemExample));
-            BTLogger.LogSystem($"ボスは 'Character.Player' にマッチ: {bossTag.MatchesTag(new GameplayTag("Character.Player"))}", nameof(TagSystemExample));
+            BTLogger.LogSystem($"ボスは 'Character' にマッチ: {bossTag.Matches(new GameplayTag("Character"))}", nameof(TagSystemExample));
+            BTLogger.LogSystem($"ボスは 'Character.Enemy' にマッチ: {bossTag.Matches(new GameplayTag("Character.Enemy"))}", nameof(TagSystemExample));
+            BTLogger.LogSystem($"ボスは 'Character.Player' にマッチ: {bossTag.Matches(new GameplayTag("Character.Player"))}", nameof(TagSystemExample));
 
             // 展開されたタグコンテナ
             var bossContainer = new GameplayTagContainer(bossTag);

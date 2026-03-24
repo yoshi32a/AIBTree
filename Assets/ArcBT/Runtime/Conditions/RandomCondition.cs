@@ -17,7 +17,7 @@ namespace ArcBT.Conditions
 
         public override void SetProperty(string key, string value)
         {
-            switch (key.ToLower())
+            switch (key.ToLowerInvariant())
             {
                 case "probability":
                 case "chance":

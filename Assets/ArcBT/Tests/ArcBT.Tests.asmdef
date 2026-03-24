@@ -6,7 +6,8 @@
         "ArcBT.Samples",
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
-        "ZLogger.Unity"
+        "ZLogger.Unity",
+        "GameplayTags"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

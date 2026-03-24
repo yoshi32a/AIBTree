@@ -1,6 +1,6 @@
 using ArcBT.Core;
 using ArcBT.Logger;
-using ArcBT.TagSystem;
+using GameplayTags;
 using UnityEngine;
 
 namespace ArcBT.Samples.RPG.Conditions
@@ -12,7 +12,7 @@ namespace ArcBT.Samples.RPG.Conditions
 
         public override void SetProperty(string key, string value)
         {
-            switch (key.ToLower())
+            switch (key.ToLowerInvariant())
             {
                 case "tag":
                 case "target_tag":

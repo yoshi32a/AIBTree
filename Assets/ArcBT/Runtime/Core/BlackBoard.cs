@@ -1,10 +1,16 @@
+using System;
 using System.Collections.Generic;
 using ArcBT.Logger;
 using UnityEngine;
 
 namespace ArcBT.Core
 {
-    /// <summary>AI間でデータを共有するためのBlackBoardシステム</summary>
+    /// <summary>
+    /// AI間でデータを共有するためのBlackBoardシステム。
+    /// スレッドセーフではありません。メインスレッド（Unityのメインループ）からのみ使用してください。
+    /// UniTaskのawait後もメインスレッドで実行される限り安全ですが、
+    /// Task.Run等で別スレッドからアクセスする場合は外部で同期が必要です。
+    /// </summary>
     public class BlackBoard
     {
         readonly Dictionary<string, object> data = new();
@@ -61,12 +67,20 @@ namespace ArcBT.Core
         bool IsImportantKey(string key)
         {
             // 重要なキーのみログに出力（ノイズ低減）
-            return key.Contains("enemy") || key.Contains("target") ||
-                   key.Contains("position") || key.Contains("health") ||
-                   key.Contains("state") || key.Contains("action");
+            // StringComparison.Ordinalを使用して文字列比較を高速化
+            return key.Contains("enemy", StringComparison.OrdinalIgnoreCase) ||
+                   key.Contains("target", StringComparison.OrdinalIgnoreCase) ||
+                   key.Contains("position", StringComparison.OrdinalIgnoreCase) ||
+                   key.Contains("health", StringComparison.OrdinalIgnoreCase) ||
+                   key.Contains("state", StringComparison.OrdinalIgnoreCase) ||
+                   key.Contains("action", StringComparison.OrdinalIgnoreCase);
         }
 
-        /// <summary>値を取得する</summary>
+        /// <summary>
+        /// 値を取得する。キーが存在しない場合はdefaultValueを返す。
+        /// キーが存在するが型が一致しない場合はInvalidCastExceptionをスローする。
+        /// 型不一致を例外なく処理したい場合は <see cref="TryGetValue{T}"/> を使用する。
+        /// </summary>
         public T GetValue<T>(string key, T defaultValue = default)
         {
             if (data.TryGetValue(key, out var value))
@@ -77,11 +91,27 @@ namespace ArcBT.Core
                 }
 
                 var valueTypeName = value?.GetType().Name ?? "null";
-                BTLogger.LogSystem("BlackBoard",
-                    $"🗂️ BlackBoard: Type mismatch for key '{key}'. Expected {typeof(T).Name}, got {valueTypeName}");
+                throw new System.InvalidCastException(
+                    $"BlackBoard: Type mismatch for key '{key}'. Expected {typeof(T).Name}, got {valueTypeName}");
             }
 
             return defaultValue;
+        }
+
+        /// <summary>
+        /// 値の取得を試みる。キーが存在し型が一致する場合はtrueを返す。
+        /// キーが存在しない場合、または型が一致しない場合はfalseを返しvalueにはdefaultが設定される。
+        /// </summary>
+        public bool TryGetValue<T>(string key, out T value)
+        {
+            if (data.TryGetValue(key, out var rawValue) && rawValue is T typedValue)
+            {
+                value = typedValue;
+                return true;
+            }
+
+            value = default;
+            return false;
         }
 
         /// <summary>キーが存在するかチェック</summary>

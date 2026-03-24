@@ -1,7 +1,7 @@
 using ArcBT.Core;
 using ArcBT.Logger;
 using ArcBT.Samples.RPG.Interfaces;
-using ArcBT.TagSystem;
+using GameplayTags;
 using UnityEngine;
 
 namespace ArcBT.Samples.RPG.Actions
@@ -14,7 +14,7 @@ namespace ArcBT.Samples.RPG.Actions
 
         public override void SetProperty(string key, string value)
         {
-            switch (key.ToLower())
+            switch (key.ToLowerInvariant())
             {
                 case "damage":
                     if (float.TryParse(value, out var d)) damage = d;

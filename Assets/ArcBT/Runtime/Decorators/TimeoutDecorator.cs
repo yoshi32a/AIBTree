@@ -17,18 +17,18 @@ namespace ArcBT.Decorators
 
         public override void SetProperty(string key, string value)
         {
-            switch (key.ToLower())
+            switch (key.ToLowerInvariant())
             {
                 case "timeout":
                 case "duration":
-                    if (float.TryParse(value, out var timeout))
+                    if (TryParseFloat(value, out var timeout))
                     {
                         timeoutDuration = Mathf.Max(0.1f, timeout); // 最小0.1秒
                     }
                     break;
                 case "success_on_timeout":
                 case "return_success":
-                    if (bool.TryParse(value, out var returnSuccess))
+                    if (TryParseBool(value, out var returnSuccess))
                     {
                         returnSuccessOnTimeout = returnSuccess;
                     }
@@ -59,10 +59,10 @@ namespace ArcBT.Decorators
             {
                 // タイムアウト発生
                 BTLogger.LogSystem(this, $"Timed out after {elapsedTime:F2}s");
-                
-                // 子ノードに条件失敗を通知
-                child.OnConditionFailed();
-                
+
+                // 子ノードを停止し、状態をクリーンアップ
+                child.Reset();
+
                 isRunning = false;
                 return returnSuccessOnTimeout ? BTNodeResult.Success : BTNodeResult.Failure;
             }

@@ -1,7 +1,7 @@
 using ArcBT.Core;
 using ArcBT.Samples.RPG.Actions;
 using ArcBT.Samples.RPG.Components;
-using ArcBT.TagSystem;
+using GameplayTags;
 using NUnit.Framework;
 using UnityEngine;
 

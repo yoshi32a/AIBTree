@@ -1,7 +1,7 @@
 using System;
 using ArcBT.Core;
 using ArcBT.Logger;
-using ArcBT.TagSystem;
+using GameplayTags;
 using UnityEngine;
 
 namespace ArcBT.Conditions
@@ -198,7 +198,7 @@ namespace ArcBT.Conditions
 
         public override void SetProperty(string propertyName, string value)
         {
-            switch (propertyName.ToLower())
+            switch (propertyName.ToLowerInvariant())
             {
                 case "target":
                 case "target_name":

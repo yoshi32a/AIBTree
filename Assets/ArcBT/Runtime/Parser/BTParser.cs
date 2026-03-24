@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Text;
 using ArcBT.Core;
 using ArcBT.Decorators;
 using ArcBT.Logger;
@@ -27,13 +28,15 @@ namespace ArcBT.Parser
         {
             public readonly string Value; // 参照型を先頭に配置
             public readonly ushort Line; // 65535行まで対応、intより小さい
+            public readonly ushort Column; // カラム位置
             public readonly TokenType Type; // byteサイズ、最後に配置
 
-            public Token(TokenType type, string value, int line)
+            public Token(TokenType type, string value, int line, int column = 0)
             {
                 Type = type;
                 Value = value;
                 Line = (ushort)line;
+                Column = (ushort)column;
             }
 
             // 高速比較用メソッド（インライン化）
@@ -44,7 +47,7 @@ namespace ArcBT.Parser
             public bool IsType(TokenType type) => Type == type;
 
             // デバッグ用のToString
-            public override string ToString() => $"{Type}:{Value}@{Line}";
+            public override string ToString() => $"{Type}:{Value}@{Line}:{Column}";
         }
 
         // よく使用されるキーワードを静的参照として保持（FrozenSetで高速化）
@@ -77,9 +80,13 @@ namespace ArcBT.Parser
         const string RIGHT_BRACE = "}";
         const string COLON = ":";
 
+        // 再帰深度制限（StackOverflowException防止）
+        const int MaxNestingDepth = 128;
 
         Token[] tokens; // Listより配列の方が高速アクセス
         int currentTokenIndex;
+        int currentDepth;
+        readonly List<string> parseErrors = new();
 
         public BTNode ParseFile(string filePath)
         {
@@ -99,13 +106,23 @@ namespace ArcBT.Parser
             // 配列への変換（Unity互換性のためToArrayを使用）
             tokens = tokenList.ToArray();
             currentTokenIndex = 0;
+            currentDepth = 0;
+            parseErrors.Clear();
 
             while (currentTokenIndex < tokens.Length)
             {
                 var token = tokens[currentTokenIndex];
                 if (token.IsKeyword(TREE_KEYWORD))
                 {
-                    return ParseTree();
+                    var result = ParseTree();
+
+                    // 収集したエラーをまとめて報告
+                    foreach (var error in parseErrors)
+                    {
+                        BTLogger.LogSystemError("Parser", error);
+                    }
+
+                    return result;
                 }
 
                 currentTokenIndex++;
@@ -169,32 +186,83 @@ namespace ArcBT.Parser
                     switch (c)
                     {
                         case '{':
-                            tokens.Add(new Token(TokenType.LeftBrace, LEFT_BRACE, lineNum));
+                            tokens.Add(new Token(TokenType.LeftBrace, LEFT_BRACE, lineNum, linePos));
                             linePos++;
                             continue;
                         case '}':
-                            tokens.Add(new Token(TokenType.RightBrace, RIGHT_BRACE, lineNum));
+                            tokens.Add(new Token(TokenType.RightBrace, RIGHT_BRACE, lineNum, linePos));
                             linePos++;
                             continue;
                         case ':':
-                            tokens.Add(new Token(TokenType.Colon, COLON, lineNum));
+                            tokens.Add(new Token(TokenType.Colon, COLON, lineNum, linePos));
                             linePos++;
                             continue;
                     }
 
                     if (c is '"' or '\'')
                     {
-                        // 文字列リテラル
+                        // 文字列リテラル（エスケープシーケンス対応）
                         var quote = c;
+                        var tokenColumn = linePos;
                         linePos++;
                         var start = linePos;
-                        while (linePos < lineSpan.Length && lineSpan[linePos] != quote)
+                        var hasEscape = false;
+
+                        // エスケープの有無を先に確認
+                        var scanPos = linePos;
+                        while (scanPos < lineSpan.Length && lineSpan[scanPos] != quote)
                         {
-                            linePos++;
+                            if (lineSpan[scanPos] == '\\' && scanPos + 1 < lineSpan.Length)
+                            {
+                                hasEscape = true;
+                                scanPos += 2;
+                            }
+                            else
+                            {
+                                scanPos++;
+                            }
                         }
 
-                        var str = linePos > start ? new string(lineSpan.Slice(start, linePos - start)) : string.Empty;
-                        tokens.Add(new Token(TokenType.String, str, lineNum));
+                        string str;
+                        if (hasEscape)
+                        {
+                            // エスケープシーケンスを処理
+                            var sb = new StringBuilder();
+                            while (linePos < lineSpan.Length && lineSpan[linePos] != quote)
+                            {
+                                if (lineSpan[linePos] == '\\' && linePos + 1 < lineSpan.Length)
+                                {
+                                    linePos++;
+                                    sb.Append(lineSpan[linePos] switch
+                                    {
+                                        'n' => '\n',
+                                        't' => '\t',
+                                        '\\' => '\\',
+                                        '"' => '"',
+                                        '\'' => '\'',
+                                        _ => lineSpan[linePos]
+                                    });
+                                    linePos++;
+                                }
+                                else
+                                {
+                                    sb.Append(lineSpan[linePos]);
+                                    linePos++;
+                                }
+                            }
+                            str = sb.ToString();
+                        }
+                        else
+                        {
+                            // エスケープなしの高速パス
+                            while (linePos < lineSpan.Length && lineSpan[linePos] != quote)
+                            {
+                                linePos++;
+                            }
+                            str = linePos > start ? new string(lineSpan.Slice(start, linePos - start)) : string.Empty;
+                        }
+
+                        tokens.Add(new Token(TokenType.String, str, lineNum, tokenColumn));
                         if (linePos < lineSpan.Length)
                         {
                             linePos++; // 終端のクォートをスキップ
@@ -216,12 +284,12 @@ namespace ArcBT.Parser
                         if (IsKeywordSpan(wordSpan))
                         {
                             var word = new string(wordSpan);
-                            tokens.Add(new Token(TokenType.Keyword, word, lineNum));
+                            tokens.Add(new Token(TokenType.Keyword, word, lineNum, start));
                         }
                         else
                         {
                             var word = new string(wordSpan);
-                            tokens.Add(new Token(TokenType.Identifier, word, lineNum));
+                            tokens.Add(new Token(TokenType.Identifier, word, lineNum, start));
                         }
                     }
                     else if (char.IsDigit(c) || c == '.')
@@ -242,7 +310,7 @@ namespace ArcBT.Parser
                         }
 
                         var number = new string(lineSpan.Slice(start, linePos - start));
-                        tokens.Add(new Token(TokenType.Number, number, lineNum));
+                        tokens.Add(new Token(TokenType.Number, number, lineNum, start));
                     }
                     else
                     {
@@ -325,18 +393,57 @@ namespace ArcBT.Parser
 
         BTNode ParseNode()
         {
-            if (currentTokenIndex >= tokens.Length || tokens[currentTokenIndex].Type != TokenType.Keyword)
+            // 再帰深度チェック（Issue #3: StackOverflowException防止）
+            if (currentDepth >= MaxNestingDepth)
             {
-                BTLogger.LogSystemError("Parser", "Expected node type keyword");
+                var depthToken = currentTokenIndex < tokens.Length ? tokens[currentTokenIndex] : default;
+                BTLogger.LogSystemError("Parser", $"Maximum nesting depth ({MaxNestingDepth}) exceeded at line {depthToken.Line + 1}, column {depthToken.Column + 1}");
                 return null;
             }
 
-            var nodeType = tokens[currentTokenIndex++].Value; // インクリメントを同時に実行
+            currentDepth++;
+            try
+            {
+                return ParseNodeInternal();
+            }
+            finally
+            {
+                currentDepth--;
+            }
+        }
+
+        BTNode ParseNodeInternal()
+        {
+            if (currentTokenIndex >= tokens.Length || tokens[currentTokenIndex].Type != TokenType.Keyword)
+            {
+                var errorToken = currentTokenIndex < tokens.Length ? tokens[currentTokenIndex] : default;
+                BTLogger.LogSystemError("Parser", $"Expected node type keyword at line {errorToken.Line + 1}, column {errorToken.Column + 1}");
+                return null;
+            }
+
+            var nodeTypeToken = tokens[currentTokenIndex++];
+            var nodeType = nodeTypeToken.Value;
+
+            // Issue #14: 未知のノードタイプを解析時に検出
+            if (nodeType is not ("Action" or "Condition") &&
+                !decoratorNodeFactories.ContainsKey(nodeType) &&
+                !compositeNodeFactories.ContainsKey(nodeType))
+            {
+                var suggestion = FindSimilarNodeType(nodeType);
+                var warningMsg = $"Unknown node type '{nodeType}' at line {nodeTypeToken.Line + 1}, column {nodeTypeToken.Column + 1}";
+                if (suggestion != null)
+                {
+                    warningMsg += $". Did you mean '{suggestion}'?";
+                }
+                parseErrors.Add(warningMsg);
+                // 警告のみ、パースは継続
+            }
 
             // script name (for Action/Condition) or node name (for Sequence/Selector)
             if (currentTokenIndex >= tokens.Length || tokens[currentTokenIndex].Type != TokenType.Identifier)
             {
-                BTLogger.LogSystemError("Parser", $"Expected script/node name after {nodeType}");
+                var errorToken = currentTokenIndex < tokens.Length ? tokens[currentTokenIndex] : default;
+                BTLogger.LogSystemError("Parser", $"Expected script/node name after {nodeType} at line {errorToken.Line + 1}, column {errorToken.Column + 1}");
                 return null;
             }
 
@@ -345,7 +452,8 @@ namespace ArcBT.Parser
             // opening brace
             if (currentTokenIndex >= tokens.Length || tokens[currentTokenIndex].Type != TokenType.LeftBrace)
             {
-                BTLogger.LogSystemError("Parser", "Expected '{' after node name");
+                var errorToken = currentTokenIndex < tokens.Length ? tokens[currentTokenIndex] : default;
+                BTLogger.LogSystemError("Parser", $"Expected '{{' after node name at line {errorToken.Line + 1}, column {errorToken.Column + 1}");
                 return null;
             }
 
@@ -371,14 +479,21 @@ namespace ArcBT.Parser
                 }
                 else if (token.Type == TokenType.Identifier)
                 {
-                    // property
+                    // property（Issue #16: エラー回復付き）
                     if (TryParseProperty(out var propertyName, out var propertyValue))
                     {
                         properties[propertyName] = propertyValue;
                     }
                     else
                     {
-                        return null;
+                        // パース失敗時、次の行または '}' までスキップして継続
+                        var failedLine = currentTokenIndex < tokens.Length ? tokens[currentTokenIndex].Line : -1;
+                        while (currentTokenIndex < tokens.Length &&
+                               tokens[currentTokenIndex].Type != TokenType.RightBrace &&
+                               tokens[currentTokenIndex].Line == failedLine)
+                        {
+                            currentTokenIndex++;
+                        }
                     }
                 }
                 else
@@ -463,11 +578,12 @@ namespace ArcBT.Parser
                 return false;
             }
 
-            propertyName = tokens[currentTokenIndex++].Value; // インクリメントを同時に実行
+            var nameToken = tokens[currentTokenIndex++];
+            propertyName = nameToken.Value;
 
             if (currentTokenIndex >= tokens.Length || tokens[currentTokenIndex].Type != TokenType.Colon)
             {
-                BTLogger.LogSystemError("Parser", "Expected ':' after property name");
+                parseErrors.Add($"Expected ':' after property name '{propertyName}' at line {nameToken.Line + 1}, column {nameToken.Column + 1}");
                 return false;
             }
 
@@ -476,7 +592,9 @@ namespace ArcBT.Parser
             if (currentTokenIndex >= tokens.Length ||
                 (tokens[currentTokenIndex].Type != TokenType.String && tokens[currentTokenIndex].Type != TokenType.Number))
             {
-                BTLogger.LogSystemError("Parser", $"Expected property value, got: {(currentTokenIndex < tokens.Length ? tokens[currentTokenIndex].Type.ToString() : "END_OF_TOKENS")}");
+                var errorToken = currentTokenIndex < tokens.Length ? tokens[currentTokenIndex] : default;
+                var gotType = currentTokenIndex < tokens.Length ? errorToken.Type.ToString() : "END_OF_TOKENS";
+                parseErrors.Add($"Expected property value for '{propertyName}', got: {gotType} at line {errorToken.Line + 1}, column {errorToken.Column + 1}");
                 return false;
             }
 
@@ -535,6 +653,80 @@ namespace ArcBT.Parser
             }
 
             return node;
+        }
+
+        /// <summary>
+        /// 未知のノードタイプに対して類似の既知ノード名を提案する
+        /// </summary>
+        string FindSimilarNodeType(string unknown)
+        {
+            string bestMatch = null;
+            int bestDistance = int.MaxValue;
+            var threshold = Math.Max(2, unknown.Length / 2);
+
+            // 組み込みノードタイプを検索
+            var knownTypes = new List<string>(compositeNodeFactories.Keys);
+            knownTypes.AddRange(decoratorNodeFactories.Keys);
+            knownTypes.Add("Action");
+            knownTypes.Add("Condition");
+
+            // BTStaticNodeRegistryの登録ノードも検索
+            foreach (var name in BTStaticNodeRegistry.GetRegisteredNodeNames())
+            {
+                knownTypes.Add(name);
+            }
+
+            foreach (var known in knownTypes)
+            {
+                // プレフィックスマッチ
+                if (known.StartsWith(unknown, StringComparison.OrdinalIgnoreCase) ||
+                    unknown.StartsWith(known, StringComparison.OrdinalIgnoreCase))
+                {
+                    return known;
+                }
+
+                // 簡易Levenshtein距離
+                var dist = ComputeLevenshteinDistance(unknown.ToLowerInvariant(), known.ToLowerInvariant());
+                if (dist < bestDistance && dist <= threshold)
+                {
+                    bestDistance = dist;
+                    bestMatch = known;
+                }
+            }
+
+            return bestMatch;
+        }
+
+        /// <summary>
+        /// 簡易Levenshtein距離の計算
+        /// </summary>
+        static int ComputeLevenshteinDistance(string a, string b)
+        {
+            if (a.Length == 0) return b.Length;
+            if (b.Length == 0) return a.Length;
+
+            var costs = new int[b.Length + 1];
+            for (int j = 0; j <= b.Length; j++)
+            {
+                costs[j] = j;
+            }
+
+            for (int i = 1; i <= a.Length; i++)
+            {
+                int prev = costs[0];
+                costs[0] = i;
+
+                for (int j = 1; j <= b.Length; j++)
+                {
+                    int temp = costs[j];
+                    costs[j] = a[i - 1] == b[j - 1]
+                        ? prev
+                        : Math.Min(Math.Min(costs[j] + 1, costs[j - 1] + 1), prev + 1);
+                    prev = temp;
+                }
+            }
+
+            return costs[b.Length];
         }
     }
 }

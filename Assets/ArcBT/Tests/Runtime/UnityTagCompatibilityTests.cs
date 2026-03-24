@@ -1,6 +1,6 @@
 using NUnit.Framework;
 using UnityEngine;
-using ArcBT.TagSystem;
+using GameplayTags;
 
 namespace ArcBT.Tests
 {

@@ -15,21 +15,22 @@ namespace ArcBT.Decorators
         float retryDelay = 0f; // リトライ間の遅延（秒）
         float lastRetryTime = 0f;
         bool isWaitingForRetry = false;
+        bool needsFrameBreak = false; // delay=0時に最低1フレーム待機するためのフラグ
 
         public override void SetProperty(string key, string value)
         {
-            switch (key.ToLower())
+            switch (key.ToLowerInvariant())
             {
                 case "max_retries":
                 case "retries":
-                    if (int.TryParse(value, out var retries))
+                    if (TryParseInt(value, out var retries))
                     {
                         maxRetries = Mathf.Max(0, retries);
                     }
                     break;
                 case "delay":
                 case "retry_delay":
-                    if (float.TryParse(value, out var delay))
+                    if (TryParseFloat(value, out var delay))
                     {
                         retryDelay = Mathf.Max(0f, delay);
                     }
@@ -43,69 +44,74 @@ namespace ArcBT.Decorators
             currentRetries = 0;
             isWaitingForRetry = false;
             lastRetryTime = 0f;
+            needsFrameBreak = false;
         }
 
         protected override BTNodeResult DecorateExecution(BTNode child)
         {
-            BTLogger.LogSystem(this, $"Execute() called - isWaitingForRetry={isWaitingForRetry}, currentRetries={currentRetries}");
-            
             // リトライ準備状態の場合
             if (isWaitingForRetry)
             {
-                BTLogger.LogSystem(this, $"In waiting state, retryDelay={retryDelay}");
-                
                 // リトライ限界チェック - リトライ開始前に判定
-                if (currentRetries > maxRetries)
+                if (currentRetries >= maxRetries)
                 {
-                    BTLogger.LogSystem(this, $"Max retries ({maxRetries}) exceeded, giving up");
+                    BTLogger.LogSystem(this, $"All {maxRetries} retries exhausted, returning Failure");
                     isWaitingForRetry = false;
                     currentRetries = 0;
-                    BTLogger.LogSystem(this, "Returning FAILURE");
+                    needsFrameBreak = false;
                     return BTNodeResult.Failure;
                 }
-                
+
+                // delay=0の場合でも最低1フレーム待機して無限ループを防止
+                if (needsFrameBreak)
+                {
+                    needsFrameBreak = false;
+                    return BTNodeResult.Running;
+                }
+
                 // 遅延がある場合は時間チェック
                 if (retryDelay > 0f && Time.time - lastRetryTime < retryDelay)
                 {
-                    BTLogger.LogSystem(this, "Still waiting for delay, returning Running");
                     return BTNodeResult.Running;
                 }
-                
-                // 遅延終了またはdelay=0の場合、リトライ実行準備
+
+                // 遅延終了、リトライ実行準備
                 isWaitingForRetry = false;
                 child.Reset();
-                BTLogger.LogSystem(this, $"Starting retry attempt {currentRetries + 1}/{maxRetries + 1}");
+                BTLogger.LogSystem(this, $"Retry attempt {currentRetries}/{maxRetries}");
             }
 
             var result = child.Execute();
-            BTLogger.LogSystem(this, $"Child returned {result}");
 
             switch (result)
             {
                 case BTNodeResult.Running:
-                    BTLogger.LogSystem(this, "Child running, returning Running");
                     return BTNodeResult.Running;
 
                 case BTNodeResult.Success:
+                    if (currentRetries > 0)
+                    {
+                        BTLogger.LogSystem(this, $"Succeeded after {currentRetries} retries");
+                    }
                     currentRetries = 0;
-                    BTLogger.LogSystem(this, "Child succeeded, returning Success");
                     return BTNodeResult.Success;
 
                 case BTNodeResult.Failure:
                     currentRetries++;
-                    BTLogger.LogSystem(this, $"Attempt {currentRetries} failed");
-                    
+
                     // 失敗時は常にリトライ準備（限界チェックは次のExecute()で行う）
                     isWaitingForRetry = true;
                     lastRetryTime = Time.time;
-                    
-                    BTLogger.LogSystem(this, $"Ready for immediate retry {currentRetries + 1}/{maxRetries + 1}");
-                    BTLogger.LogSystem(this, "Returning RUNNING");
-                    
+
+                    // delay=0の場合、次のExecute()で1フレーム分待機させて無限ループを防止
+                    if (retryDelay <= 0f)
+                    {
+                        needsFrameBreak = true;
+                    }
+
                     return BTNodeResult.Running;
 
                 default:
-                    BTLogger.LogSystem(this, $"Unexpected result {result}, returning Failure");
                     return BTNodeResult.Failure;
             }
         }
@@ -116,6 +122,7 @@ namespace ArcBT.Decorators
             // 条件失敗時はリトライ状態をリセット
             currentRetries = 0;
             isWaitingForRetry = false;
+            needsFrameBreak = false;
         }
 
         /// <summary>現在のリトライ回数を取得</summary>

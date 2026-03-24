@@ -3,7 +3,8 @@
     "rootNamespace": "ArcBT",
     "references": [
         "Unity.InputSystem",
-        "ZLogger.Unity"
+        "ZLogger.Unity",
+        "GameplayTags"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

@@ -26,7 +26,7 @@ namespace ArcBT.Samples.RPG
 
         public override void SetProperty(string key, string value)
         {
-            switch (key)
+            switch (key.ToLowerInvariant())
             {
                 case "wander_radius":
                     wanderRadius = Convert.ToSingle(value);

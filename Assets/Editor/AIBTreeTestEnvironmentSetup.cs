@@ -3,7 +3,7 @@ using UnityEditor;
 using ArcBT.Core;
 using ArcBT.Logger;
 using ArcBT.Samples.RPG.Components;
-using ArcBT.TagSystem;
+using GameplayTags;
 
 namespace ArcBT.Editor
 {

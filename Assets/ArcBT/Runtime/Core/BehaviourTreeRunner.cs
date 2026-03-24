@@ -9,7 +9,8 @@ namespace ArcBT.Core
     {
         [SerializeField] string behaviourTreeFilePath;
         [SerializeField] float tickInterval = 0.1f; // AI判定は0.1秒間隔
-        [SerializeField] bool debugMode = true;
+        [SerializeField] bool debugMode = false;
+        [SerializeField] bool enableProfiling = false;
 
         float lastTickTime;
         BTParser parser;
@@ -30,6 +31,7 @@ namespace ArcBT.Core
         {
             parser = new BTParser();
             BlackBoard = new BlackBoard();
+            SyncProfilingState();
         }
 
         void Start()
@@ -45,7 +47,11 @@ namespace ArcBT.Core
             if (RootNode != null && Time.time - lastTickTime >= tickInterval)
             {
                 executionCount++;
+
+                var profiler = BTProfiler.Instance;
+                profiler.BeginNode(RootNode.Name);
                 var result = RootNode.Execute();
+                profiler.EndNode(RootNode.Name, result);
 
                 // スマートログ: 状態変化時または定期的にのみログ出力
                 var shouldLog = debugMode && (
@@ -322,6 +328,24 @@ namespace ArcBT.Core
         internal void SetDebugMode(bool isEnabled)
         {
             debugMode = isEnabled;
+        }
+
+        /// <summary>プロファイリング有効/無効設定（テスト用）</summary>
+        internal void SetProfiling(bool isEnabled)
+        {
+            enableProfiling = isEnabled;
+            SyncProfilingState();
+        }
+
+        /// <summary>SerializeFieldの値をBTProfilerに同期する</summary>
+        void SyncProfilingState()
+        {
+            BTProfiler.Instance.IsEnabled = enableProfiling;
+        }
+
+        void OnValidate()
+        {
+            SyncProfilingState();
         }
 
         // デバッグ用

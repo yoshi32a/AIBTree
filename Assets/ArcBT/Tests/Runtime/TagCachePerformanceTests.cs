@@ -1,6 +1,6 @@
 using NUnit.Framework;
 using UnityEngine;
-using ArcBT.TagSystem;
+using GameplayTags;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System;

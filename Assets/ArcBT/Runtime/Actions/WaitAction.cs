@@ -46,7 +46,7 @@ namespace ArcBT.Actions
 
         public override void SetProperty(string propertyName, string value)
         {
-            switch (propertyName.ToLower())
+            switch (propertyName.ToLowerInvariant())
             {
                 case "duration":
                     if (float.TryParse(value, out var dur))

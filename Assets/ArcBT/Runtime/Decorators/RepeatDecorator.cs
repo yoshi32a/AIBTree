@@ -16,24 +16,24 @@ namespace ArcBT.Decorators
 
         public override void SetProperty(string key, string value)
         {
-            switch (key.ToLower())
+            switch (key.ToLowerInvariant())
             {
                 case "count":
                 case "max_count":
-                    if (int.TryParse(value, out var count))
+                    if (TryParseInt(value, out var count))
                     {
                         maxCount = count;
                     }
                     break;
                 case "stop_on_failure":
-                    if (bool.TryParse(value, out var stop))
+                    if (TryParseBool(value, out var stop))
                     {
                         stopOnFailure = stop;
                     }
                     break;
                 case "reset_child":
                 case "reset_on_repeat":
-                    if (bool.TryParse(value, out var reset))
+                    if (TryParseBool(value, out var reset))
                     {
                         resetChildOnRepeat = reset;
                     }

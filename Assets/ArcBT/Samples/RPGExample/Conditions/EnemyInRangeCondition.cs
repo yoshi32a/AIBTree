@@ -1,6 +1,6 @@
 using System;
 using ArcBT.Core;
-using ArcBT.TagSystem;
+using GameplayTags;
 using UnityEngine;
 
 namespace ArcBT.Samples.RPG.Conditions
@@ -13,7 +13,7 @@ namespace ArcBT.Samples.RPG.Conditions
 
         public override void SetProperty(string key, string value)
         {
-            switch (key)
+            switch (key.ToLowerInvariant())
             {
                 case "attack_range":
                     attackRange = Convert.ToSingle(value);

@@ -15,7 +15,7 @@ namespace ArcBT.Samples.RPG.Conditions
 
         public override void SetProperty(string key, string value)
         {
-            switch (key)
+            switch (key.ToLowerInvariant())
             {
                 case "min_health":
                     if (float.TryParse(value, out var healthValue))

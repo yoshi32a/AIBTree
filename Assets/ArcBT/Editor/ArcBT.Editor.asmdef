@@ -2,7 +2,9 @@
     "name": "ArcBT.Editor",
     "rootNamespace": "ArcBT.Editor",
     "references": [
-        "ArcBT"
+        "ArcBT",
+        "GameplayTags",
+        "GameplayTags.Editor"
     ],
     "includePlatforms": [
         "Editor"
