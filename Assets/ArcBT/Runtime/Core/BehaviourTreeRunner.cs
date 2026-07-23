@@ -291,6 +291,26 @@ namespace ArcBT.Core
             }
         }
 
+        /// <summary>
+        /// 外部ループから手動 tick する場合の初期化。enabled=false のまま呼べる。
+        /// Awake/Start と重複しても安全（冪等）。
+        /// </summary>
+        public void InitializeForManualTick()
+        {
+            parser ??= new BTParser();
+            BlackBoard ??= new BlackBoard();
+            if (RootNode == null && !string.IsNullOrEmpty(behaviourTreeFilePath))
+            {
+                LoadBehaviourTree(behaviourTreeFilePath);
+            }
+        }
+
+        /// <summary>外部ループから 1 tick 実行する。RootNode 未設定なら Failure。</summary>
+        public BTNodeResult TickOnce()
+        {
+            return RootNode?.Execute() ?? BTNodeResult.Failure;
+        }
+
         // テスト用メソッド
         /// <summary>ワンショット実行（テスト用）</summary>
         internal BTNodeResult ExecuteOnce()
