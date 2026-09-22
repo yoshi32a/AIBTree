@@ -1,4 +1,4 @@
-# CLAUDE.md
+# AGENTS.md
 
 このファイルは、Claude Code (claude.ai/code) がこのリポジトリのコードを扱う際のガイダンスを提供します。
 
@@ -558,7 +558,7 @@ Unity → BehaviourTree → Quick Setup → Complex Example Test Environment
 
 ### 2025年7月26日の最新成果
 - **/update-docsスラッシュコマンド成功実装**: プロジェクト全体のドキュメント一括更新システムを実現
-- **包括的ドキュメント同期**: CLAUDE.md、README.md、BT_REFERENCE.md、UNITY_TEST_SETUP.md、ArcBTパッケージドキュメントの統合管理
+- **包括的ドキュメント同期**: AGENTS.md、README.md、BT_REFERENCE.md、UNITY_TEST_SETUP.md、ArcBTパッケージドキュメントの統合管理
 - **自動化されたドキュメント品質保証**: 152テスト結果とコードカバレッジ70.00%の正確な反映
 - **プロジェクト構造の完全把握**: ArcBTパッケージ化による10個のテストファイル、多数のRPGサンプル、BTLoggerシステムの体系的文書化
 

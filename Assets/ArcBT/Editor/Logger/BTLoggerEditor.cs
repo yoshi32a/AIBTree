@@ -89,7 +89,7 @@ public class BTLoggerEditor : Editor
                 "1. アプリケーション初期化時にLoggerFactoryを作成\n" +
                 "2. BTLogger.Configure(loggerFactory)を呼び出し\n" +
                 "3. AddFilter()でArcBTログレベルを制御\n\n" +
-                "詳細はCLAUDE.mdを参照してください。",
+                "詳細はAGENTS.mdを参照してください。",
                 MessageType.Info);
         }
 
