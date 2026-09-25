@@ -27,7 +27,7 @@ namespace ArcBT.Core
     /// <summary>
     /// ビヘイビアツリーの軽量パフォーマンスプロファイラー。
     /// ノードごとの実行回数・所要時間・結果を追跡する。
-    /// UNITY_EDITOR または DEVELOPMENT_BUILD でのみ有効。リリースビルドではゼロオーバーヘッド。
+    /// エディタと Development Build でのみ有効（6.6 以降は UNITY_INCLUDE_INSTRUMENTATION、それより前は UNITY_EDITOR と DEVELOPMENT_BUILD で判定する）。リリースビルドではゼロオーバーヘッド。
     /// </summary>
     public class BTProfiler
     {
@@ -49,8 +49,12 @@ namespace ArcBT.Core
         /// リリースビルドではコンパイル時に除去される。
         /// </summary>
         /// <param name="nodeName">計測対象のノード名</param>
+#if UNITY_6000_6_OR_NEWER
+        [Conditional("UNITY_INCLUDE_INSTRUMENTATION")]
+#else
         [Conditional("UNITY_EDITOR")]
         [Conditional("DEVELOPMENT_BUILD")]
+#endif
         public void BeginNode(string nodeName)
         {
             if (!IsEnabled)
@@ -73,8 +77,12 @@ namespace ArcBT.Core
         /// </summary>
         /// <param name="nodeName">計測対象のノード名</param>
         /// <param name="result">ノードの実行結果</param>
+#if UNITY_6000_6_OR_NEWER
+        [Conditional("UNITY_INCLUDE_INSTRUMENTATION")]
+#else
         [Conditional("UNITY_EDITOR")]
         [Conditional("DEVELOPMENT_BUILD")]
+#endif
         public void EndNode(string nodeName, BTNodeResult result)
         {
             if (!IsEnabled)
@@ -126,8 +134,12 @@ namespace ArcBT.Core
         /// <summary>
         /// 全統計をリセットする
         /// </summary>
+#if UNITY_6000_6_OR_NEWER
+        [Conditional("UNITY_INCLUDE_INSTRUMENTATION")]
+#else
         [Conditional("UNITY_EDITOR")]
         [Conditional("DEVELOPMENT_BUILD")]
+#endif
         public void Reset()
         {
             stats.Clear();
